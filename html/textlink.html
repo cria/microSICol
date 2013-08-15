@@ -1,0 +1,65 @@
+<script language="javascript" type="text/javascript" src="../js/external/tinymce/jscripts/tiny_mce/tiny_mce_popup.js"></script>
+<script language="javascript" type="text/javascript"> 
+	tinyMCEPopup.executeOnLoad('init();');
+</script>
+<body style="display: none; margin: 4px;">
+<form onsubmit="return false;" action="#">
+
+  <table style='width:100%%;'>
+    <tr>
+      <th align='left' id='left_one'>%(textlink_Type)s</th>
+      <th align='left' id='middle_one'>&nbsp;</th>
+      <th align='left' id='right_one'>&nbsp;</th>
+    </tr>
+    <tr>
+      <td>
+      <select id='sel_field' onchange='switch_fields(this.value)'>
+        <option value='doc'>%(textlink_Document)s</option>
+        <option value='link'>%(textlink_Link)s</option>
+        <option value='ref'>%(textlink_Reference)s</option>
+        <option value='tax'>%(textlink_Taxa)s</option>
+      </select>
+      </td>
+      <td>
+      <span id='link_link'>
+        <input type='text' id='link_text_link' name='link_text_link' />
+      </span>
+      <span id='ref_ref'>
+        <select id='ref_sel_ref' name='ref_sel_ref'>
+        %(sel_ref)s
+        </select>
+      </span>
+      <span id='tax_tax'>
+        <input type='text' id='tax_text_tax' name='tax_text_tax' />
+      </span>
+      <span id='doc_qualifier'>
+        <select id='doc_sel_qualifier' name='doc_sel_qualifier' onchange='filterDoc(this.value);'>
+          %(sel_qualifier_doc)s
+        </select>
+      </span>
+      </td>
+      <td id='third_column'>
+        <span id='doc_doc'>
+          <select name='doc_sel_doc' id='doc_sel_doc'>
+          %(sel_doc)s
+          </select>
+        </span>
+        <span id='link_title'>
+          <input type='text' name='link_title_link' id='link_title_link' />
+        </span>
+      </td>
+    </tr>
+  </table>
+
+  <table style='width:100%%;'>
+    <tr>
+      <td align='left'>
+        <input type="button" id="insert" name="insert" value="%(textlink_Insert)s" onclick="insertTextLink();" />
+      </td>
+      <td align='right'>
+        <input type="button" id="cancel" name="cancel" value="%(textlink_Cancel)s" onclick="tinyMCEPopup.close();" />
+      </td>
+    </tr>
+  </table>
+
+</form>

@@ -1,0 +1,123 @@
+@charset "utf-8"; 
+/* CSS Document */
+
+/* FILTER STYLE ##############################*/
+div#above_data label
+{
+ text-transform:lowercase;
+}
+
+input#filter
+{
+ font-family:"Courier New", Courier, monospace;
+ border-style: solid;
+ border-width: 1px;
+ border-color: rgb(155,176,107);
+ width:210px;
+ margin-top:2px;
+ margin-bottom:2px;
+ vertical-align:middle;
+}
+
+a#filter
+{
+ text-transform:lowercase;
+ word-spacing:8px;
+ font-weight:bold;
+ padding-left:5px;
+ padding-right:5px;
+}
+
+/* END - FILTER STYLE */
+
+/* TABLE DATA STYLE #############################*/
+table#data_table
+{
+ width:100%;
+}
+
+table#data_table thead
+{
+ background-color:#E0E0E0;
+ font-weight:bold;
+}
+
+table#data_table thead th
+{
+ cursor:default;
+ text-transform:lowercase;
+ text-align:left;
+}
+
+table#data_table tbody tr
+{
+ cursor:pointer;
+}
+
+table#data_table tbody tr:hover
+{
+ background-color:rgb(230,236,210);
+}
+/* END - TABLE DATA STYLE */
+
+/* FOOT PAGE STYLE */
+table#data_table tfoot tr
+{
+	background-color: #EAEAEA;	
+}
+
+table#data_table tfoot td
+{
+	text-align: center;	
+}
+
+table#data_table tfoot ul
+{
+	font-weight:bold;
+	list-style: none;
+	margin: 0px;
+}
+
+table#data_table tfoot li
+{
+	display: inline;
+	margin: 2px 4px 2px 4px
+}
+
+table#data_table tfoot li.specialpages
+{
+	text-decoration: none;
+}
+
+table#data_table tfoot li a.pageselected
+{
+	color: #B7683E;
+	text-decoration: none;
+}
+
+tr.row1
+{
+	background-color: #FBFBFB;
+}
+
+tr.row2
+{
+	background-color: #F6F6F6;
+}
+
+img.order
+{
+	margin-left: 8px;
+}
+
+/* END - FOOT PAGE STYLE */
+
+.popup_table
+{
+	background-color: #FFFFFF;
+}
+
+.popup_table tr th
+{
+	text-transform: lowercase;
+}

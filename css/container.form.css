@@ -1,0 +1,97 @@
+@charset "utf-8";
+/* CSS Document */ 
+
+.button {
+    width: 100px;
+}
+
+
+.date
+{
+    width: 70px;
+}
+
+.description
+{
+    width: 600px;
+}
+
+img.source
+{
+    cursor: pointer;
+}
+
+img.source_disabled
+{
+    cursor: default;
+}
+
+img.new_disabled
+{
+    cursor: default;
+}
+
+select#preservation_method
+{
+	width: 200px;
+}
+
+.img_insert
+{
+    cursor: pointer;
+}
+
+.img_delete
+{
+    cursor: pointer;
+}
+
+.img_insert_disabled
+{
+    cursor: default;
+}
+
+.img_delete_disabled
+{
+    cursor: default;
+}
+
+.text_position
+{
+    background-color: #FFFFFF;
+}
+
+.image
+{
+  width: 20px;
+  height: 20px;
+  border: none;
+  margin-left: 8px;
+  cursor: pointer; /* hand-shaped cursor */
+  cursor: hand; /* for IE 5.x */
+  background-repeat: no-repeat;
+  background-position: left;
+  background: transparent;
+  display:block;
+  float:left;
+}
+
+.container_add
+{
+  background-image: url(../img/container_add.png);
+}
+
+.container_remove
+{
+  background-image: url(../img/container_remove.png);
+}
+
+.container_copy
+{
+  background-image: url(../img/container_copy.png);
+}
+
+.container_paste
+{
+  background-image: url(../img/container_paste.png);
+}

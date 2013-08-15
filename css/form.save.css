@@ -1,0 +1,38 @@
+@charset "utf-8";
+/* CSS Document */ 
+
+#above_data
+{
+ word-spacing:0px;
+}
+
+div.data
+{
+ text-align:center;
+ font-weight:bold;
+ color:rgb(183,104,62);
+}
+
+div.data p a:hover
+{
+ text-decoration:underline;
+}
+
+div.data p#inform
+{
+ font-weight:normal;
+ color:#000000;
+}
+
+div#code
+{
+ background-color:#DDDDDD;
+ color:#000000;
+ width:500px;
+ margin:auto;
+ padding:5px;
+ font-weight:normal;
+ border:1px;
+ border-color:#999999;
+ border-style:dashed;
+}

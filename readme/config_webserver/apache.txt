@@ -1,0 +1,36 @@
+Configuração do Apache
+
+Requisitos:
+
+- apache_2.0.55-win32-x86-no_ssl
+- mod_python-3.2.5b.win32-py2.4 (recomendável)
+
+1- Instalar o Apache.
+
+2 - Recomenda-se instalar o mod_python (http://httpd.apache.org/modules/python-download.cgi).
+Durante a instalação informar o caminho do apache.
+Ex: 'C:\Arquivos de programas\Apache Group\Apache2'
+
+3 - Adicionar no arquivo de configurações do apache 'httpd.conf' as seguintes linhas:
+
+LoadModule python_module modules/mod_python.so ('caso tenha instalado o mod_python')
+
+Alias /sicol/ "<caminho do sistema>" (ex.: "c:\sicol")
+ScriptAlias /py/ "<caminho dos arquivos de extensão py>" (ex.: "c:\sicol\py")
+
+<Directory <caminho do sistema>/>
+    AddHandler cgi-script .cgi .py
+    AllowOverride All
+    Options +ExecCGI
+    Order allow,deny
+    Allow from all
+</Directory>
+
+3 - Reiniciar o apache
+
+---
+
+Deve-se dar permissão de escrita ao usuário do APACHE ao diretório /db
+
+No caso de sistema operacional Windows, no arquivo de configuração do Apache, insira (ou descomente) a seguinte linha:
+ScriptInterpreterSource registry

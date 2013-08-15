@@ -1,0 +1,268 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* COMPLETE TOP BAR ##############################*/
+div#top
+{ 
+ z-index:10;
+ background:none;
+/* height:90px;*/
+ width:984px; /*valor anttigo(Res. 800x600): 760px */
+}
+
+/* LEFT OF TOP */
+div#logo
+{
+ float:left;
+ margin-top:5px;
+ margin-left:5px;
+}
+
+p#coll_name /* Collection and Subcollection Name */
+{
+ font-weight:bold;
+ text-transform:uppercase;
+ font-size:16px;
+ color:rgb(155,176,107);
+ cursor:default;
+}
+/* END - LEFT OF TOP */
+
+/* CENTER OF TOP */
+div#top_center
+{
+ float:left;
+ margin-top:8px;
+ margin-left:30px;
+ width:300px;
+}
+
+div#user_name
+{
+ text-transform:lowercase;
+ padding-bottom:5px;
+ cursor:default;
+}
+
+p.user_menu
+{
+ text-transform:lowercase;
+ font-weight:bold;
+}
+
+p.user_menu img
+{
+ padding-left:3px;
+ padding-right:3px;
+}
+
+div#link_pref /*preferences*/
+{
+ float:left;
+ z-index:3;
+}
+/* END - CENTER OF TOP */
+
+div#link_exit
+{
+ float:right;
+ margin-right:5px;
+ font-weight:bold;
+ margin-top:5px;
+ text-transform:uppercase;
+}
+
+div#message
+{
+ background:#F9F9F9 !important;
+ float:left;
+ margin-top:30px;
+ margin-left:130px;
+ margin-bottom:2px;
+ width:330px;
+ height:55px;
+ border-style:outset;
+ border-width:1px;
+ border-color:rgb(155,176,107);
+ padding-left:5px;
+ padding-right:5px;
+ overflow:hidden;
+}
+/* END COMPLETE TOP BAR */
+
+/* COMPLETE MIDDLE DATA ##############################*/
+div#middle
+{
+ clear:both;
+}
+
+div#menu /* Principal Menu */
+{ 
+ float:left;
+ background-color:rgb(230,236,210);
+ padding:3px 5px 3px 5px;
+ margin-left:3px;
+ border-width:2px;
+ border-style:solid;
+ border-color:#FFFFFF;
+ word-spacing:7px;
+ text-transform:uppercase;
+ font-weight:bolder;
+ z-index:1;
+}
+
+div#bar_top /* Vertical bar on Top */
+{
+ float:left;
+ z-index:0;
+ padding-left:2px;
+ vertical-align:top;
+ margin-top:-83px;
+}
+
+div#prev_nav_button /* navigation buttons */
+{
+ float:left;
+ z-index:2000;
+ left:-15px;
+ *left:-15px;
+ top: 5px;
+ padding-left:1px;
+ vertical-align:top;
+ margin-top:-83px;
+}
+
+div#next_nav_button /* navigation buttons */
+{
+ float:left;
+ z-index:2;
+ left:2px;
+ top: 5px;
+ padding-left:0px;
+ vertical-align:top;
+ margin-top:-83px;
+}
+
+div#submenu /* new, reports and search */
+{
+ float:right;
+ text-transform:lowercase;
+ word-spacing:6px;
+ font-weight:bold;
+ padding-left:5px;
+ padding-right:5px;
+ margin-top:5px;
+ z-index:2;
+}
+
+div#copyleft_bar
+{
+ text-align: center;
+ padding-top: 3px;
+ width: 979px;
+ margin-left:5px;
+ margin-right: 5px;
+/* border-top:1px;
+ border-top-color:#969696;
+ border-top-style:solid;*/
+}
+
+div#thin_bar  /* Thin bar above Menu */
+{
+ clear:both;
+ margin-left:5px;
+ border-top:1px;
+ border-top-color:#969696;
+ border-top-style:solid;
+}
+/* END - COMPLETE MIDDLE DATA */
+
+/* SOFTWARE DATA ##############################*/
+div#data_container
+{
+ margin-left:20px;
+ margin-bottom:10px;
+}
+
+div#feedback
+{
+ vertical-align:middle;
+ font-weight:bold;
+ margin-top:5px;
+ margin-bottom:0px;
+ padding:3px 5px 3px 5px;
+ color:#FFFFFF;
+ display:none;
+}
+
+div.feedback_ok
+{
+ background-color:#688E23;/*#99CC99;#009933*/
+}
+
+div.feedback_ok_blink
+{
+ background-color:#85BA30;
+}
+
+div.feedback_error
+{
+ background-color:rgb(183,104,62);
+}
+
+div.feedback_error_blink
+{
+ background-color:rgb(153,74,32);
+}
+
+div.data
+{
+ border-color:rgb(155,176,107);
+ border-width:1px;
+ border-style:solid;
+ background-color:#F9F9F9;
+ padding-left:5px;
+ padding-right:5px;
+ overflow:auto;
+ display:none;
+}
+
+div#general
+{
+ display:block;
+}
+/* END - SOFTWARE DATA */
+
+/* SPECIES NAME STYLE ############################*/
+.sp_ponto
+{
+ font-style:normal;
+}
+
+.species
+{
+ font-style:normal;
+}
+/* END - SPECIES NAME STYLE */
+
+/* FOOTER */
+#footer
+{
+  text-align: center;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 10px;
+  color: black;
+  position:absolute;
+}
+#footer hr
+{
+  width: 90%;
+  border:1px solid #ccc;
+}
+
+.form_info
+{
+ color: black;
+ text-transform: none;
+ font-weight: bold;
+}

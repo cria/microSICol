@@ -1,0 +1,22 @@
+%(top)s
+			<!-- distribution.list.html -->
+			<div class="data" id="general">
+				<table id="data_table"> 
+					<thead>
+						<tr>
+							<th id="date"><a href="distribution.list.py?field_order=date&page=%(current_page)s">%(label_Distribution_General_Date)s</a>%(img_date)s</th>
+							<th id="lot"><a href="distribution.list.py?field_order=lot_name&page=%(current_page)s">%(label_Distribution_General_Lot_Number)s</a>%(img_lot_name)s</th>
+							<th id="strain"><a href="distribution.list.py?field_order=species&page=%(current_page)s">%(label_Distribution_General_Strain)s</a>%(img_species)s</th>
+							<th id="quantity"><a href="distribution.list.py?field_order=sum_quantity&page=%(current_page)s">%(label_Distribution_General_Quantity)s</a>%(img_sum_quantity)s</th>
+							<th id="institution"><a href="distribution.list.py?field_order=institution&page=%(current_page)s">%(label_Distribution_General_Institution)s</a>%(img_institution)s</th>
+						</tr>
+					</thead>
+					<tbody>
+						%(data)s
+					</tbody>
+					<tfoot>
+						%(datafoot)s
+					</tfoot>
+				</table>
+			</div>
+			<!-- END - distribution.list.html -->

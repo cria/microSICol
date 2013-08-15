@@ -1,0 +1,49 @@
+<!-- reports.form.step3.html -->
+<div id="above_data">
+	<p>
+		<a href="#" class="ativo" onclick="if (validateForm()) {saveData();  $('#step_next').val('1'); $('#formReports')[0].submit();}">%(menu_Rep_General)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="if (validateForm()) {saveData(); $('#step_next').val('2'); $('#formReports')[0].submit();}">%(menu_Rep_Fields)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="selecionado">%(menu_Rep_Filters)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick=" if (validateForm()) {saveData(); $('#step_next').val('4'); $('#formReports')[0].submit();}">%(menu_Rep_Format)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="inativo">%(menu_Rep_Security)s</a>
+	</p>
+</div>
+<script language="javascript">
+	
+	var arrayFields = %(arrayFields)s;
+	var arrayFieldsValues = %(arrayFieldsValues)s;
+	var arrayFieldsDef = %(arrayFieldsDef)s;
+	var arrayConnectors = %(arrayConnectors)s;
+	var arrayConditions = %(arrayConditions)s;	
+	var arrayConditionsValues = ['equal', 'differs', 'contains', 'in', 'not_in', 'greater', 'greater_or_equal', 'less', 'less_or_equal'];
+	var arrayTypes = %(arrayTypes)s;
+	var arrayTypesValues = ['Fixed','Variable','Field']
+	var lang_code = '%(lang_code)s';
+	var enum_label_values = %(enum_label_values)s;
+	var enum_values = %(enum_values)s;	
+</script>
+<form action="./reports.new.py" method="post" id="formReports" name="formReports">
+	<div class="content">
+		<input type="hidden" id="step" name="step" value="3" />
+		<input type="hidden" id="step_next" name="step_next" value="" />
+		
+		<div id="filterDiv_0" class="divWithoutChild">
+			<div id="filterDiv_0_Childs" class="divWithoutChild"></div>			
+			%(pageContents)s			
+		</div>
+	
+		<img src="../img/record_add.png" style="cursor:pointer;" onclick="return AddClick(this);" />
+	</div>
+	<!--<script language='javascript'>%(startup)s</script>-->
+	<input type="hidden" name="allFilters" id="allFilters" value="%(allFilters)s">
+</form>
+
+<form action="./reports.list.py" method="post" id="cancel">
+	<p><input type="hidden" name="id" value="%(id)s" /></p>
+	<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+</form>
+<!-- END - reports.form.step3.html -->

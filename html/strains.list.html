@@ -1,0 +1,22 @@
+%(top)s
+			<!-- strains.list.html --> 
+			<div class="data" id="general">
+				<input type="hidden" id="currentPopup" value="">
+				<table id="data_table">
+					<thead>
+						<tr>
+							<th id="code"><a href='strains.list.py?field_order=code&page=%(current_page)s'>%(label_Strains_General_Code)s</a>%(img_code)s</th>
+							<th id="species"><a href='strains.list.py?field_order=species&page=%(current_page)s'>%(label_Strains_General_Species)s</a>%(img_species)s</th>
+							<th id="internal_code"><a href='strains.list.py?field_order=internal_code&page=%(current_page)s'>%(label_Strains_General_Origin_Code)s</a>%(img_internal_code)s</th>							
+							<th id="type"><a href='strains.list.py?field_order=type&page=%(current_page)s'>%(label_Strains_General_Type)s</a>%(img_type)s</th>
+						</tr>
+					</thead>
+					<tbody>
+						%(data)s
+					</tbody>
+					<tfoot>
+						%(datafoot)s
+					</tfoot>
+				</table>
+			</div>
+			<!-- END - strains.list.html -->

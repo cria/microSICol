@@ -1,0 +1,21 @@
+@charset "utf-8"; 
+/* CSS Document */
+
+table#data_table thead th#nickname
+{
+ width:25%;
+}
+
+table#data_table thead th#name
+{
+ width:40%;
+}
+
+table#data_table thead th#complement
+{
+ width:35%;
+}
+
+table#data_table thead th#name
+{
+}

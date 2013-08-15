@@ -1,0 +1,44 @@
+@charset "utf-8";
+/* CSS Document */
+
+div#menu a#active_preservation 
+{
+	color:rgb(183,104,62);
+}
+
+.a_pointer
+{
+cursor:pointer;
+}
+
+.red_info
+{
+color: red;
+}
+
+div table
+{
+width:100%;
+}
+
+.td_3
+{
+width:32%;
+}
+
+.td_3 input,.td_2 input
+{
+width: 70%;
+}
+
+.td_2
+{
+width:48%;
+}
+
+checkbox {
+  border: none;
+  width: auto;
+  margin-right: 2px;
+  margin-bottom: 0px;
+}

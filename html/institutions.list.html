@@ -1,0 +1,20 @@
+%(top)s
+			<!-- institutions.list.html --> 
+			<div class="data" id="general">
+				<table id="data_table">
+					<thead>
+						<tr>
+							<th id="nickname"><a href="institutions.list.py?field_order=nickname&page=%(current_page)s">%(label_Institutions_General_Locator)s</a>%(img_nickname)s</th>
+							<th id="name"><a href="institutions.list.py?field_order=name&page=%(current_page)s">%(label_Institutions_General_Name)s</a>%(img_name)s</th>
+							<th id="complement"><a href="institutions.list.py?field_order=complement&page=%(current_page)s">%(label_Institutions_General_Complement)s</a>%(img_complement)s</th>
+						</tr>
+					</thead>
+					<tbody>
+						%(data)s
+					</tbody>
+					<tfoot>
+						%(datafoot)s
+					</tfoot>
+				</table>
+			</div>
+			<!-- END - institutions.list.html -->

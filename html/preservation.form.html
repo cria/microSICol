@@ -1,0 +1,214 @@
+<!-- preservation.form.html -->
+<div id="above_data">
+    <p>
+        <a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Preservation_General)s</a>
+        <a href="javascript:show('security');" id="tab_security">%(menu_Preservation_Security)s</a>
+    </p>
+</div>
+<form action="./%(who)s.save.py" method="post" id="edit" onsubmit="$('#preservation_method').removeAttr('disabled');">
+    <div class="data" id="general">
+        <p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+        <p class="hidden"><input type="hidden" id='id_lot' name="id_lot" value="%(main_lot_id)s" /></p>
+        <p class="hidden"><input type="hidden" id='id_coll' name="id_coll" value="%(id_coll)s" /></p>
+        <p class="hidden"><input type="hidden" id='id_subcoll' name="id_subcoll" value="%(id_subcoll)s" /></p>
+        <p class="hidden"><input type="hidden" id='next_action' name="next_action" value="%(next_action)s" /></p>
+        <p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+        <p class="hidden"><input type="hidden" id="global_counter_total" name="global_counter_total" value="" /></p>
+        <p class="hidden"><input type="hidden" id="global_lot_strain_values" name="global_lot_strain_values" value="" /></p>
+        <p class="hidden"><input type="hidden" id="previous_lot_number" name="previous_lot_number" value="%(lot_number)s" /></p>
+        <p class="hidden"><input type="hidden" id="old_combination" name="old_combination" value="%(old_combination)s" /></p>
+        <p class="hidden"><input type="hidden" id="new_combination" name="new_combination" value="" /></p>
+        <p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+
+        <table>
+            <tr>
+                <td>
+                    <p>
+                        <label for="preservation_date" id="label_preservation_date">%(label_Preservation_General_Date)s</label><br />
+                        <input onkeyup="checkCharModifier(this,event);" onkeypress="return checkDateSlash(this,event);" onblur="checkValidDate(this,null,'%(date_format)s');" name="preservation_date" id="preservation_date" class="preservation_date" type="text" maxlength="10" value="%(date)s"  style="text-align:center" />
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        <label for="preservation_lot" id="label_preservation_lot">%(label_Preservation_General_Lot_Number)s</label><br />
+                        <input name="preservation_lot" lot_id="%(main_lot_id)s" id="preservation_lot" type="text" maxlength="50" onblur="isEmpty(this,null);" value="%(lot_number)s" />
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p >
+                        <label for="preservation_user" id="label_preservation_user">%(label_Preservation_General_Responsible)s</label><br />
+                        <select name="preservation_user" id="preservation_user" onblur="isEmpty(this,null);">%(preservation_user)s</select>
+                    </p>
+                </td>
+                <td>
+                    <p >
+                        <label for="preservation_method" id="label_preservation_method">%(label_Preservation_General_Used_Method)s</label><br />
+                        <select name="preservation_method" id="preservation_method">%(preservation_method)s</select>
+                    </p>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <label for="preservation_process_data" id="label_preservation_process_data">%(label_Preservation_General_Process_Data)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+            <textarea name="preservation_process_data" id="preservation_process_data" class="mceEditor" cols="" rows="">%(info)s</textarea>
+        </p>
+        
+        <a class="a_pointer" onclick="return newStrain('inline')"><img title='%(label_Preservation_Strain_Add_New_Strain)s' src='../img/new_item.gif' border='0'/></a> <br />
+        <hr />
+
+        <!-- WHERE NEW STRAINS WILL BE AT -->
+        <div id='other_strains'>
+        </div>
+
+        <!-- CLONABLE FORM -->
+        <div id='invisible_clonable_fields'>
+            <p>
+                <a class="a_pointer" id='minimize_strain' onclick="return MaximizeMinimize(this,'innerstrain_');" ><img title='%(label_Preservation_Strain_Minimize)s' src='../img/minimize.gif' border='0' /></a>
+                <label for="preservation_strain" id="label_preservation_strain">%(label_Preservation_Strain_Strain)s</label><br />
+                <select class="select_75" onchange="filterLotNumber(this);" name="preservation_strain" id="preservation_strain">%(preservation_strain)s</select>
+                &nbsp; <a class="a_pointer" id='delete_strain' onclick="return removeStrain(this);" ><img title='%(label_Preservation_Strain_Remove_Strain)s' src='../img/delete.png' border='0' /></a>
+            </p> 
+            <div id='innerstrain'>
+                <fieldset class='preserv_fieldset'><legend>%(label_Preservation_Strain_Origin_Fieldset)s</legend>
+                     <div>
+                        <div>
+                            <p class='cols_3'>
+                                <br /> 
+                                %(preservation_origin)s
+                            </p>
+                            <p class='cols_3' id='origin_name' style="display:%(display_origin_name)s">
+                                <label for="preservation_original_name" id="label_preservation_original_name">%(label_Preservation_General_Strain_Code)s</label><br />
+                                <input name="preservation_original_name" id="preservation_original_name" type="text" maxlength="100" value="%(preservation_original_name)s" />
+                            </p>
+                            <p class='cols_3' id='origin_lot' style="display:%(display_origin_lot)s">
+                                <label for="preservation_origin_lot" id="label_preservation_origin_lot">%(label_Preservation_General_Origin_Lot_Number)s</label><br />
+                                <select name="preservation_origin_lot" id="preservation_origin_lot"></select>
+                            </p>
+                            <p class='cols_3' id='origin_lot_ampoules' style="display:%(display_origin_lot_ampoules)s">
+                                <label for="preservation_origin_location" id="label_preservation_origin_location" name="label_preservation_origin_location">%(label_Preservation_Strain_Original_Location)s</label><br/>
+                                <!--
+                                <select name="preservation_origin_location" id="preservation_origin_location"></select>
+                                -->
+                                <input type='hidden' name="preservation_origin_location" id="preservation_origin_location" value="%(preservation_origin_location)s" />
+                                <input name="preservation_origin_location_text" id="preservation_origin_location_text" type="text" maxlength="100" value="%(preservation_origin_location_text)s" disabled='true' style='width:200px;' />
+                            <img src="../img/pick.png" id='img_source' class='source' style="display:%(display_origin_img)s">
+                            </p>
+                        </div>
+                      </div>
+                      <div>
+                        <div>
+                            <p class='cols_3' style='clear:both'>
+                                <input type="hidden" name="preservation_prepared" id="preservation_prepared" />
+                                <input type="hidden" name="current_locations" id="current_locations" class='current_location' value="%(current_locations)s"/>
+                                <input type="hidden" name="preservation_stock_pos" value="" id="preservation_stock_pos">
+                                <label for="preservation_stock_pos_select" id="label_preservation_stock_pos_select">%(label_Preservation_Strain_Stock_Position)s</label><br />
+                                <select name='preservation_stock_pos_select' id='preservation_stock_pos_select' class='location_display' size="5"></select>
+                                <img src="../img/pick.png" class='new'>
+                                <!-- <div id='location'></div> -->
+                            </p>
+                            <p class="cols_3">
+                                <label for="preservation_stock_limit" id="label_preservation_stock_limit">%(label_Preservation_Strain_Stock_Limit)s</label><br />
+                                <input name="preservation_stock_limit" id="preservation_stock_limit" type="text" onkeyup="numberOnly(this)" onblur="isEmpty(this, null);" class="ampoules_input"  value="%(preservation_stock_limit)s" maxlength="9" />
+                            </p>
+                            <p class='cols_3' id='origin_lot_ampoules_stock' style="display:%(display_origin_lot_ampoules)s">
+                                <!-- <br />
+                                <input class="checkbox" style="width: auto; display: inline;" type="checkbox" %(is_decrease_stock)s id="preservation_origin_location_stock" name="preservation_origin_location_stock"/><label class="form_info" for="label_preservation_origin_location_stock" id="label_preservation_origin_location_stock">%(label_Preservation_Strain_Decrease_Stock)s</label> -->
+                            </p>
+                        </div>
+                      </div>
+                </fieldset>
+                <fieldset class='preserv_fieldset'><legend>%(label_Preservation_Strain_Culture_Conditions)s</legend>
+                     <div>
+                        <div>
+                            <p class='cols_3'>
+                                <label for="preservation_culture_medium" id="label_preservation_culture_medium">%(label_Preservation_Strain_Culture_Medium)s</label><br />
+                                <select name="preservation_culture_medium" id="preservation_culture_medium">%(preservation_culture_medium)s</select>
+                            </p>
+                            <p class='cols_3'>
+                                <label for="preservation_temp" id="label_preservation_temp">%(label_Preservation_Strain_Temperature)s</label><br />
+                                <input name="preservation_temp" id="preservation_temp" type="text" maxlength="100" value="%(preservation_temp)s" />
+                            </p>
+                            <p class='cols_3'>
+                                <label for="preservation_incub_time" id="label_preservation_incub_time">%(label_Preservation_Strain_Incubation_Time)s</label><br />
+                                <input name="preservation_incub_time" id="preservation_incub_time" type="text" maxlength="100" value="%(preservation_incub_time)s" />
+                            </p>
+                        </div>
+                      </div>
+                </fieldset>
+                <fieldset class='preserv_fieldset'><legend>%(label_Preservation_General_Preservation_Method_Fieldset)s</legend>
+                     <div>
+                        <div>
+                            <p class='cols_2'>
+                                <label for="preservation_cryo" id="label_preservation_cryo">%(label_Preservation_Strain_Cryoprotector)s</label><br />
+                                <input name="preservation_cryo" id="preservation_cryo" type="text" maxlength="100" value="%(preservation_cryo)s" />
+                            </p>
+                            <p class='cols_2'>
+                                <br />
+                                %(preservation_type)s
+                            </p>
+                        </div>
+                     </div>
+                </fieldset>
+                <fieldset class='preserv_fieldset'><legend>%(label_Preservation_Strain_Purity_Fieldset)s</legend>
+                     <div>
+                        <div>
+                            <p class='cols_3'>
+                                <br />
+                                %(preservation_purity)s
+                            </p>
+                            <p class='cols_3'>
+                                <label for="preservation_counting" id="label_preservation_counting">%(label_Preservation_Strain_Counting)s</label><br />
+                                <input name="preservation_counting" id="preservation_counting" type="text" maxlength="100" value="%(preservation_counting)s" /> <span class='counting_unit'>%(label_Preservation_Strain_Counting_Unity)s</span>
+                            </p>
+                            <p>
+                                <br />
+                                <input class="checkbox" type="checkbox" %(is_ogm_check)s id="preservation_counting_na" name="preservation_counting_na" style="display:inline;" /><label class="form_info" for="preservation_counting_na" id="label_preservation_counting_na">%(label_Preservation_Strain_Not_Apply)s</label>
+                            </p>
+                        </div>
+                     </div>
+                </fieldset>
+                <p>
+                    <label for="preservation_macro_characs" id="label_preservation_macro_characs">%(label_Preservation_Strain_Macro_Characs)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+                    <textarea name="preservation_macro_characs" id="preservation_macro_characs"  cols="" rows="">%(preservation_macro_characs)s</textarea>
+                </p>
+                <p>
+                    <label for="preservation_micro_characs" id="label_preservation_micro_characs">%(label_Preservation_Strain_Micro_Characs)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+                    <textarea name="preservation_micro_characs" id="preservation_micro_characs"  cols="" rows="">%(preservation_micro_characs)s</textarea>
+                </p>
+                <p>
+                    <label for="preservation_result" id="label_preservation_result">%(label_Preservation_Strain_Result)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+                    <textarea name="preservation_result" id="preservation_result"  cols="" rows="">%(preservation_result)s</textarea>
+                </p>
+                <p>
+                    <label for="preservation_obs" id="label_preservation_obs">%(label_Preservation_Strain_Obs)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+                    <textarea name="preservation_obs" id="preservation_obs"  cols="" rows="">%(preservation_obs)s</textarea>
+                </p>
+              </div>
+            <hr />
+            </div>
+    </div>
+    <script type='text/javascript'>
+    %(js_data)s
+    %(js_global_lot_strain)s    
+    </script>
+    <div class="data" id="security">
+        <input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+        <p>
+           <table style="width:0;">
+             <tr>
+                <td>&nbsp;</td>
+                <th>%(label_Permission)s</th>
+             </tr>
+             %(groups_table)s
+           </table>
+        </p>
+    </div>
+    %(js_securitychanged)s
+</form>
+<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+    <p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+    <p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+</form>
+<!-- END preservation.form.html -->

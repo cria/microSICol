@@ -1,0 +1,35 @@
+<!-- login.html --> 
+<body>
+    <div id="main_square">
+        <!-- Floating Squares -->
+        <div id="peach_square">&nbsp;</div>
+        <div id="horizontal_blank_grayborder">&nbsp;</div>
+        <div id="vertical_blank_grayborder">&nbsp;</div>
+        <div id="square_grayborder">&nbsp;</div>
+        <div id="green_square">&nbsp;</div>
+        <!-- Login Area -->
+        <div id="login_square" class="data">
+            <p id="logo"><img src="../img/logo.png" alt="SICol" /></p>
+            <h3 id="login_message">%(label_Login_Type_User_And_Password)s</h3>
+            <form action="./login_check.py" id="login" method="post" target="request">
+                <div id="inner_login_area">
+                    <p>
+                        <label for="user">%(label_Login_User)s:</label>
+                        <input name="user" id="user" type="text" title="%(label_Login_Type_User)s" tabindex="1" autocomplete="off" />
+                    </p>
+                    <p>
+                        <label for="pwd">%(label_Login_Password)s:</label>
+                        <input name="pwd" id="pwd" type="password" title="%(label_Login_Type_Password)s" tabindex="2" />
+                    </p>
+                    <p>
+                        <input type="submit" id="enter" value="%(label_Login_Enter)s" tabindex="3" />
+                    </p>
+                    <p id="result"></p>
+                    <iframe name="request"></iframe> 
+                </div>
+            </form>
+            <form action="%(start_page)s" method="post" id="start"></form>
+        </div>
+    </div>
+</body>
+<!-- END - login.html -->

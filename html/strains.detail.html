@@ -1,0 +1,269 @@
+			<!-- strains.detail.html -->
+			<div id="above_data">
+				<p>
+                    <a href="javascript:show('general');" title="%(menu_Strains_General_Tip)s" id="tab_general" class="on_menu">%(menu_Strains_General)s</a>
+                    <a href="javascript:show('coll_event');" title="%(menu_Strains_Collection_Event_Tip)s" id="tab_coll_event">%(menu_Strains_Collection_event)s</a>
+                    <a href="javascript:show('isolation');" title="%(menu_Strains_Isolation_Tip)s" id="tab_isolation">%(menu_Strains_Isolation)s</a>
+                    <a href="javascript:show('identification');" title="%(menu_Strains_Identification_Tip)s" id="tab_identification">%(menu_Strains_Identification)s</a>
+                    <a href="javascript:show('deposit');" title="%(menu_Strains_Deposit_Tip)s" id="tab_deposit">%(menu_Strains_Deposit)s</a>
+                    <a href="javascript:show('culture');" title="%(menu_Strains_Culture_Tip)s" id="tab_culture">%(menu_Strains_Culture)s</a>
+                    <a href="javascript:show('characs');" title="%(menu_Strains_Characteristics_Tip)s" id="tab_characs">%(menu_Strains_Characteristics)s</a>
+                    <a href="javascript:show('properties');" title="%(menu_Properties_Tip)s" id="tab_properties">%(menu_Strains_Properties)s</a>
+                    <a href="javascript:show('quality');showQuality();" title="%(menu_Quality_Tip)s" id="tab_quality">%(menu_Strains_Quality)s</a>
+                    <a href="javascript:show('stock');showStock();" id="tab_stock">%(menu_Strains_Stock)s</a>
+                    <a href="javascript:show('security');" title="%(menu_Strains_Security_Tip)s" id="tab_security">%(menu_Strains_Security)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+				<div>
+						<div>
+							<p class="cols_5">
+								<label>%(label_Strains_General_Division)s</label><br />
+								%(division)s
+							</p>
+							<p class="cols_5">
+								<label>%(label_Strains_General_Numeric_Code)s</label><br />
+								%(numeric_code)s
+							</p>
+							<p class="cols_5">
+								<label>%(label_Strains_General_Code)s</label><br />
+								<b>%(code)s</b>
+							</p>
+							<p class="cols_5">
+								<label>%(label_Strains_General_Origin_Code)s</label><br />
+								%(internal_code)s
+							</p>
+							<p class="cols_5">
+								<label>%(label_Strains_General_Status)s</label><br />
+								%(status)s
+							</p>
+						</div>
+				</div>
+				<table class="detail">
+					<tr>
+						<td>
+							<p><label>%(label_Strains_General_Species)s</label><br />
+                            <a href="http://names.cria.org.br/index?%(sp_dictionary)s" target="_blank" ><img src="../img/sp.png" /></a><span class='species'> %(species)s</span>
+                            </p>
+						</td>
+						<td>
+							<p><label>%(label_Strains_General_Type)s</label><br />%(type)s</p>
+						</td>
+						<td>
+							<p><label>%(label_Strains_General_Is_OGM)s</label><br />%(is_ogm)s</p>
+						</td>
+					</tr>
+				</table>
+				<p><label>%(label_Strains_General_Taxonomic_Complement)s</label><br />%(infra_complement)s</p>
+				<p><label>%(label_Strains_General_History)s</label><br />%(history)s</p>
+				<p><label>%(label_Strains_General_Codes_In_Other_Collections)s</label><br />%(extra_codes)s</p>
+				<p><label>%(label_Strains_General_Comments)s</label><br />%(general_comments)s</p>
+			</div>
+			<div class="data" id="coll_event">
+				<p><label>%(label_Strains_Origin_Date)s</label><br />%(coll_date)s</p>
+				<fieldset><legend>%(label_Strains_Origin_Collector)s</legend>
+					<div class="detail">
+						<div>
+							<p class="cols_2"><label>%(label_Strains_Origin_Collector_Person)s</label><br />%(coll_person)s</p>
+							<p class="cols_2"><label>%(label_Strains_Origin_Collector_Institution)s</label><br />%(coll_institution)s</p>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset><legend>%(label_Strains_Origin_Origin_Place)s</legend>
+					<div class="detail">
+						<div>
+							<p class="cols_3"><label>%(label_Strains_Origin_Country)s</label><br />%(coll_country)s</p>
+							<p class="cols_3"><label>%(label_Strains_Origin_State)s</label><br />%(coll_state)s</p>
+							<p class="cols_3"><label>%(label_Strains_Origin_City)s</label><br />%(coll_city)s</p>
+						</div>
+						<div>
+							<p class="cols_1"><label>%(label_Strains_Origin_Place)s</label><br />%(coll_place)s</p>
+						</div>
+					</div>
+					<fieldset><legend>%(label_Strains_Origin_GPS)s</legend>
+					<div class="detail">
+					  	<div>
+	  						<p class="cols_4"><label>%(label_Strains_Origin_GPS_Latitude)s</label><br />%(coll_gps_latitude)s</p>
+	  						<p class="cols_4"><label>%(label_Strains_Origin_GPS_Longitude)s</label><br />%(coll_gps_longitude)s</p>
+	  						<p class="cols_4"><label>%(label_Strains_Origin_GPS_Datum)s</label><br />%(coll_gps_datum)s</p>
+	  						<p class="cols_4"><label>%(label_Strains_Origin_GPS_Precision)s %(label_Strains_Origin_Precision_Meters)s</label><br />%(coll_gps_precision)s</p>
+						</div>
+					</div>
+					<p><label>%(label_Strains_Origin_GPS_Comments)s</label><br />%(coll_gps_comments)s</p>
+					</fieldset>
+				</fieldset>
+				<p><label>%(label_Strains_Origin_Substratum)s</label><br />%(coll_substratum_langs)s</p>
+				<fieldset><legend>%(label_Strains_Origin_Host)s</legend>
+				<p><label>%(label_Strains_Origin_Host_Common_Name)s</label><br />%(coll_host_name_langs)s</p>
+				<div class="detail">
+					<div>
+							<p class="cols_2"><label>%(label_Strains_Origin_Host_Genus)s</label><br /><span class='species'>%(coll_host_genus)s</span></p>
+							<p class="cols_2"><label>%(label_Strains_Origin_Specific_Epithet)s</label><br /><span class='species'>%(coll_host_species)s</span></p>
+					</div>
+					<div>
+      				<p class="cols_3"><label>%(label_Strains_Origin_Host_Level)s</label><br />%(coll_host_classification)s</p>
+				      <p class="cols_3"><label>%(label_Strains_Origin_Host_Infraespecific_Name)s</label><br /><span class='species'>%(coll_host_infra_name)s</span></p>
+				      <p class="cols_3"><label>%(label_Strains_Origin_Host_Complement_Infraespecific)s</label><br />%(coll_host_infra_complement)s</p>
+					</div>
+				</div>
+				</fieldset>
+				<div id="specific_for_protozoa">
+					<p><label>%(label_Strains_Origin_International_Code)s</label><br />%(coll_global_code)s</p>
+					<p><label>%(label_Strains_Origin_Clinic_Form)s</label><br />%(coll_clinical_form)s</p>
+					<p><label>%(label_Strains_Origin_HIV)s</label><br />%(coll_hiv)s</p>
+				</div>
+				%(hide_div)s
+				<p><label>%(label_Strains_Origin_Comments)s</label><br />%(coll_comments_langs)s</p>
+			</div>
+			<div class="data" id="isolation">
+				<p><label>%(label_Strains_Isolation_Date)s</label><br />%(iso_date)s</p>
+				<fieldset><legend>%(label_Strains_Isolation_Isolated_By)s</legend>
+					<div class="detail">
+						<div>
+							<p class="cols_2"><label>%(label_Strains_Isolation_Person)s</label><br />%(iso_person)s</p>
+							<p class="cols_2"><label>%(label_Strains_Isolation_Institution)s</label><br />%(iso_institution)s</p>
+						</div>
+					</div>
+				</fieldset>
+				<p><label>%(label_Strains_Isolation_Isolated_From)s</label><br />%(iso_isolation_from_langs)s</p>
+				<p><label>%(label_Strains_Isolation_Method)s</label><br />%(iso_method_langs)s</p>
+				<p><label>%(label_Strains_Isolation_Comments)s</label><br />%(iso_comments)s</p>
+			</div>
+			<div class="data" id="identification">
+				<p><label>%(label_Strains_Identification_Date)s</label><br />%(ident_date)s</p>
+				<fieldset><legend>%(label_Strains_Identification_Identified_By)s</legend>
+					<div class="detail">
+						<div>
+							<p class="cols_2"><label>%(label_Strains_Identification_Person)s</label><br />%(ident_person)s</p>
+							<p class="cols_2"><label>%(label_Strains_Identification_Institution)s</label><br />%(ident_institution)s</p>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset><legend>%(label_Strains_Identification_Identified_As_Species)s</legend>
+				<div class="detail">
+					<div>
+							<p class="cols_2"><label>%(label_Strains_Identification_Identified_Genus)s</label><br /><span class='species'>%(ident_genus)s</span></p>
+							<p class="cols_2"><label>%(label_Strains_Identification_Identified_Specie)s</label><br /><span class='species'>%(ident_species)s</span></p>
+					</div>
+					<div>
+				      <p class="cols_3"><label>%(label_Strains_Identification_Identified_Level)s</label><br />%(ident_classification)s</p>
+				      <p class="cols_3"><label>%(label_Strains_Identification_Identified_Infraespecific_Name)s</label><br /><span class='species'>%(ident_infra_name)s</species></p>
+      				<p class="cols_3"><label>%(label_Strains_Identification_Identified_Complement_Infraespecific)s</label><br />%(ident_infra_complement)s</p>
+					</div>
+				</div>
+				</fieldset>
+				<p><label>%(label_Strains_Identification_Method)s</label><br />%(ident_method_langs)s</p>
+				<p><label>%(label_Strains_Identification_Comments)s</label><br />%(ident_comments)s</p>
+			</div>
+			<div class="data" id="deposit">
+				<p><label>%(label_Strains_Deposit_Date)s</label><br />%(dep_date)s</p>
+				<fieldset><legend>%(label_Strains_Deposit_Deposited_By)s</legend>
+					<div class="detail">
+						<div>
+							<p class="cols_2"><label>%(label_Strains_Deposit_Deposited_By_Person)s</label><br />%(dep_person)s</p>
+							<p class="cols_2"><label>%(label_Strains_Deposit_Deposited_By_Institution)s</label><br />%(dep_institution)s</p>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset><legend>%(label_Strains_Deposit_Deposited_As_Species)s</legend>
+				<div class="detail">
+					<div>
+							<p class="cols_2"><label>%(label_Strains_Deposit_Deposited_Genus)s</label><br /><span class='species'>%(dep_genus)s</span></p>
+							<p class="cols_2"><label>%(label_Strains_Deposit_Specific_Epithet)s</label><br /><span class='species'>%(dep_species)s</span></p>
+					</div>
+					<div>
+				      <p class="cols_3"><label>%(label_Strains_Deposit_Deposited_Level)s</label><br />%(dep_classification)s</p>
+				      <p class="cols_3"><label>%(label_Strains_Deposit_Deposited_Infraespecific_Name)s</label><br /><span class='species'>%(dep_infra_name)s</species></p>
+      				<p class="cols_3"><label>%(label_Strains_Deposit_Deposited_Complement_Infraespecific)s</label><br />%(dep_infra_complement)s</p>
+					</div>
+				</div>
+				</fieldset>
+				<p><label>%(label_Strains_Deposit_Reason)s</label><br />%(dep_reason)s</p>
+				<p><label>%(label_Strains_Deposit_Culture_Was_Sent)s</label><br />%(dep_form)s</p>
+				<p><label>%(label_Strains_Deposit_Recommended_Preservation_Method)s</label><br />%(dep_preserv_method)s</p>
+				<fieldset><legend>%(label_Strains_Deposit_Authentication)s</legend>
+					<div class="detail">
+						<div>
+							<p class="cols_2"><label>%(label_Strains_Deposit_Authentication_Date)s</label><br />%(dep_aut_date)s</p>
+							<p class="cols_2"><label>%(label_Strains_Deposit_Authentication_Person)s</label><br />%(dep_aut_person)s</p>
+							<p class="cols_2"><label>%(label_Strains_Deposit_Authentication_Result)s</label><br />%(dep_aut_result)s</p>
+						</div>
+					</div>
+				</fieldset>
+				<p><label>%(label_Strains_Deposit_Comments)s</label><br />%(dep_comments)s</p>
+			</div>
+			<div class="data" id="culture">
+				<p><label>%(label_Strains_Growth_Recommended_Culture_Medium)s</label><br />%(cul_medium_langs)s</p>
+				<table class="detail">
+					<tr>
+						<td>
+							<p><label>%(label_Strains_Growth_Recommended_Temperature)s</label><br />%(cul_temp)s</p>
+						</td>
+						<td>
+							<p><label>%(label_Strains_Growth_Incubation_Time)s</label><br />%(cul_incub_time_langs)s</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p><label>%(label_Strains_Growth_Ph)s</label><br />%(cul_ph)s</p>
+						</td>
+						<td>
+							<p><label>%(label_Strains_Growth_Oxygen_Requirements)s</label><br />%(cul_oxy_req_langs)s</p>
+						</td>
+					</tr>
+				</table>
+				<p><label>%(label_Strains_Growth_Comments)s</label><br />%(cul_comments_langs)s</p>
+			</div>
+			<div class="data" id="characs">
+				<p><label>%(label_Strains_Characteristics_Morphologic)s</label><br />%(cha_morphologic)s</p>
+				<p><label>%(label_Strains_Characteristics_Molecular)s</label><br />%(cha_molecular)s</p>
+				<p><label>%(label_Strains_Characteristics_Biochemical)s</label><br />%(cha_biochemical)s</p>
+				<p><label>%(label_Strains_Characteristics_Immunologic)s</label><br />%(cha_immunologic)s</p>
+				<p><label>%(label_Strains_Characteristics_Pathogenic)s</label><br />%(cha_pathogenic)s</p>
+				<p><label>%(label_Strains_Characteristics_Genotypic)s</label><br />%(cha_genotypic)s</p>
+				<fieldset><legend>%(label_Strains_Characteristics_OGM)s</legend>
+					<div>
+						<div>
+							<p><label>%(label_Strains_Characteristics_OGM_Group)s</label><br />%(cha_ogm_label)s</p>
+							<p><label>%(label_Strains_Characteristics_OGM_Comments)s</label><br />%(cha_ogm_comments_langs)s</p>
+						</div>
+					</div>
+				</fieldset>
+				<p><label>%(label_Strains_Characteristics_Biological_Risk_Comments)s</label><br />%(cha_biorisk_comments_langs)s</p>
+				<p><label>%(label_Strains_Characteristics_Restrictions)s</label><br />%(cha_restrictions_langs)s</p>
+				<p><label>%(label_Strains_Characteristics_Pictures)s</label><br />%(cha_pictures_langs)s</p>
+				<p><label>%(label_Strains_Characteristics_URL)s</label><br />%(cha_urls_langs)s</p>
+				<p><label>%(label_Strains_Characteristics_Additional_Notes_to_Catalog)s</label><br />%(cha_catalogue_langs)s</p>
+			</div>
+			<div class="data" id="properties">
+				<p><label>%(label_Strains_Properties_Properties)s</label><br />%(pro_properties_langs)s</p>
+				<p><label>%(label_Strains_Properties_Applications)s</label><br />%(pro_applications_langs)s</p>
+				<p><label>%(label_Strains_Properties_URL)s</label><br />%(pro_urls_langs)s</p>
+			</div>
+			<div class="data" id="quality">
+				<iframe id="ifrm_quality" name="ifrm_quality" class="ifrm_quality" scrolling="no" frameborder="no"></iframe>
+			</div>
+			<div class="data" id="stock">
+				<iframe id="ifrm_stock" name="ifrm_stock" class="ifrm_stock" scrolling="no" frameborder="no"></iframe>
+				<!--<div class="total_ampoules"><span class='sicol_green_label'>%(label_Strains_Stock_Total_Ampoules)s : </span> <span class='form_info'>%(total_ampoules)s</span></div>
+				%(ampoules_per_lot)s -->
+			</div>
+			<div class="data" id="security">
+			<p>
+			<label>%(label_go_catalog)s</label>
+			</p>
+			<p>
+			   <table>
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+			</div>
+%(hidden_forms)s
+			<script type="text/javascript">
+				var lot_exist = %(js_data_lot_exist)s;
+			</script>
+			<!-- END - strains.detail.html -->

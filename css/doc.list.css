@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+ 
+table#data_table thead th#qualifier
+{
+ width:150px;
+}
+
+table#data_table thead th#code
+{
+ width:150px;
+}
+
+table#data_table thead th#title
+{
+}

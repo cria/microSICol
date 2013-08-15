@@ -1,0 +1,584 @@
+			<!-- strains.form.html -->
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Strains_General)s</a>
+					<a href="javascript:show('coll_event');" id="tab_coll_event">%(menu_Strains_Collection_event)s</a>
+					<a href="javascript:show('isolation');" id="tab_isolation">%(menu_Strains_Isolation)s</a>
+					<a href="javascript:show('identification');" id="tab_identification">%(menu_Strains_Identification)s</a>
+					<a href="javascript:show('deposit');" id="tab_deposit">%(menu_Strains_Deposit)s</a>
+					<a href="javascript:show('culture');" id="tab_culture">%(menu_Strains_Culture)s</a>
+					<a href="javascript:show('characs');" id="tab_characs">%(menu_Strains_Characteristics)s</a>
+					<a href="javascript:show('properties');" id="tab_properties">%(menu_Strains_Properties)s</a>
+					<a href="javascript:show('quality');showQuality();" id="tab_quality">%(menu_Strains_Quality)s</a>
+					<a href="javascript:show('stock');showStock();" id="tab_stock">%(menu_Strains_Stock)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Strains_Security)s</a>
+				</p>
+			</div>
+			<form action="./%(who)s.save.py" method="post" id="edit">
+				<p class="hidden"><input type="hidden" id="hidden_id" name="id" value="%(id)s" /></p>
+				<p class="hidden"><input type="hidden" name="next_action" value="%(next_action)s" /></p>
+				<p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+				<p class="hidden"><input type="hidden" id="href_save_submit" value="" /></p>
+				<p class="hidden"><input type="hidden" id="href_cancel_submit" value="" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+				<div class="data" id="general">
+					<div>
+							<div>
+								<p class="cols_5">
+									<label for="id_division" id="label_id_division">%(label_Strains_General_Division)s</label><br />
+									<select onchange="format_strain_code();" onblur="isEmpty(this,null);" name="id_division" id="id_division">%(division)s</select>
+								</p>
+								<p class="cols_5">
+									<label for="numeric_code" id="label_numeric_code">%(label_Strains_General_Numeric_Code)s</label><br />
+									<input size="10" onkeyup="numberOnly(this); format_strain_code();" onblur="if (!isEmpty(this,null)) checkCode(this,null);" name="numeric_code" id="numeric_code" type="text" maxlength="12" value="%(numeric_code)s" />
+									<input type="checkbox" class="checkbox" name="autonum" id="autonum" value="AUTONUM" style="width:auto;" /><label for="autonum" id="label_autonum">%(label_Strains_General_Autonum)s</label><br />
+								</p>
+								<p id="p_code" class="cols_5">
+									<label id="label_code">%(label_Strains_General_Code)s</label><br />
+									<b><span id="code">%(code)s</span></b>
+								</p>
+								<p class="cols_5">
+									<label for="internal_code" id="label_internal_code">%(label_Strains_General_Origin_Code)s</label><br />
+									<input size="20" name="internal_code" id="internal_code" type="text" maxlength="30" value="%(internal_code)s" />
+								</p>
+								<p class="cols_5">
+									<label for="status" id="label_status">%(label_Strains_General_Status)s</label><br />
+									<select name="status" id="status">%(status)s</select>
+								</p>
+							</div>
+					</div>
+					<table style="padding-right:224px;">
+						<tr>
+							<td>
+								<p>
+									<label for="id_species" id="label_id_species">%(label_Strains_General_Species)s</label><br />
+									<select onchange="checkTaxonGroup();" onblur="isEmpty(this,null)" name="id_species" id="id_species">%(species)s</select>
+								</p>
+							</td>
+							<td>
+								<p>
+									<label for="id_type" id="label_id_type">%(label_Strains_General_Type)s</label><br />
+									<select name="id_type" id="id_type">%(type)s</select>
+								</p>
+							</td>
+							<td>
+							  <p>
+							    <br />
+                  <input class="checkbox" type="checkbox" %(is_ogm_check)s id="is_ogm" name="is_ogm" style="display:inline;" /><label for="is_ogm" id="label_is_ogm">%(label_Strains_General_Is_OGM)s</label>
+                </p>
+							</td>
+						</tr>
+					</table>
+					<p>
+						<label for="infra_complement" id="label_infra_complement">%(label_Strains_General_Taxonomic_Complement)s</label><br />
+						<input name="infra_complement" id="infra_complement" type="text" maxlength="50" value="%(infra_complement)s" />
+					</p>
+					<p>
+						<label for="history" id="label_history">%(label_Strains_General_History)s</label><br />
+						<textarea name="history" id="history" class="mceEditor" cols="" rows="">%(history)s</textarea>
+					</p>
+					<p>
+						<label for="extra_codes" id="label_extra_codes">%(label_Strains_General_Codes_In_Other_Collections)s</label><br />
+						<textarea name="extra_codes" id="extra_codes" class="mceEditor" cols="" rows="">%(extra_codes)s</textarea>
+					</p>
+					<p>
+						<label for="general_comments" id="label_general_comments">%(label_Strains_General_Comments)s</label><br />
+						<textarea name="general_comments" id="general_comments" class="mceEditor" cols="" rows="">%(general_comments)s</textarea>
+					</p>
+				</div>
+				<div class="data" id="coll_event">
+					<p>
+						<label for="coll_date" id="label_coll_date">%(label_Strains_Origin_Date)s</label><br />
+						<input onkeyup="checkCharModifier(this,event)" onkeypress="return checkDateSlash(this,event)" onblur="checkValidDate(this, null, '%(date_format)s');" name="coll_date" id="coll_date" class="date" type="text" maxlength="10" value="%(coll_date)s" />
+					</p>
+					<fieldset><legend>%(label_Strains_Origin_Collector)s</legend>
+						<div>
+							<div>
+								<p class="cols_2">
+									<label for="coll_person" id="label_coll_person">%(label_Strains_Origin_Collector_Person)s</label><br />
+									<select name="coll_person" id="coll_person">%(coll_person)s</select>
+								</p>
+								<p class="cols_2">
+									<label for="coll_institution" id="label_coll_institution">%(label_Strains_Origin_Collector_Institution)s</label><br />
+									<select name="coll_institution" id="coll_institution">%(coll_institution)s</select>
+								</p>
+							</div>
+						</div>
+					</fieldset>
+					<fieldset><legend>%(label_Strains_Origin_Origin_Place)s</legend>
+						<table>
+							<tr>
+								<td>
+									<p>
+										<label for="coll_country" id="label_coll_country">%(label_Strains_Origin_Country)s</label><br />
+										<select class="coll_country" onchange="changeCountry(this.value)" name="coll_country" id="coll_country">%(coll_country)s</select>
+									</p>
+								</td>
+								<td>
+									<p>
+										<label for="coll_state" id="label_coll_state">%(label_Strains_Origin_State)s</label><br />
+										<input onchange="onChangeState(this);" type='text' maxlength='50' name="coll_state" id="coll_state" value='%(selected_coll_state)s' />
+									</p>
+								</td>
+								<td>
+									<p>
+										<label for="coll_city" id="label_coll_city">%(label_Strains_Origin_City)s</label><br />
+										<input type='text' maxlength='50' name="coll_city" id="coll_city" value='%(selected_coll_city)s' />
+									</p>
+								</td>
+							</tr>
+						</table>
+						<p>
+							<label for="coll_place" id="label_coll_place">%(label_Strains_Origin_Place)s</label><br />
+							<textarea name="coll_place" id="coll_place" class="mceEditor" cols="" rows="">%(coll_place)s</textarea>
+						</p>
+	  				<fieldset><legend>%(label_Strains_Origin_GPS)s</legend>
+						<div>
+							<div>
+									<p class="cols_4">
+										<label for="coll_gps_latitude" id="label_coll_gps_latitude">%(label_Strains_Origin_GPS_Latitude)s</label><br />
+										<input onblur="checkGPS('latitude',this)" name="coll_gps_latitude" id="coll_gps_latitude" class="gps" type="text" maxlength="12" value="%(coll_gps_latitude)s" />
+									</p>
+									<p class="cols_4">
+										<label for="coll_gps_longitude" id="label_coll_gps_longitude">%(label_Strains_Origin_GPS_Longitude)s</label><br />
+										<input onblur="checkGPS('longitude',this)" name="coll_gps_longitude" id="coll_gps_longitude" class="gps" type="text" maxlength="12" value="%(coll_gps_longitude)s" />
+									</p>
+									<p class="cols_4">
+										<label for="coll_gps_datum" id="label_coll_gps_datum">%(label_Strains_Origin_GPS_Datum)s</label><br />
+										<select name="coll_gps_datum" id="coll_gps_datum">%(coll_gps_datum)s</select>
+									</p>
+									<p class="cols_4">
+										<label for="coll_gps_precision" id="label_coll_gps_precision">%(label_Strains_Origin_GPS_Precision)s %(label_Strains_Origin_Precision_Meters)s</label><br />
+										<input onblur="checkPrecision(this,null)" name="coll_gps_precision" id="coll_gps_precision" class="gps" type="text" maxlength="6" value="%(coll_gps_precision)s" />
+									</p>
+							</div>
+						</div>
+						<p>
+							<label for="gps_comments" id="label_gps_comments">%(label_Strains_Origin_GPS_Comments)s</label><br />
+							<textarea name="gps_comments" id="gps_comments" class="mceEditor" cols="" rows="">%(coll_gps_comments)s</textarea>
+						</p>
+						</fieldset>
+					</fieldset>
+					<p>
+						<label id="label_coll_substratum">%(label_Strains_Origin_Substratum)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(coll_substratum_tabs)s<br />
+						%(coll_substratum_langs)s
+					</p>
+  				<fieldset><legend>%(label_Strains_Origin_Host)s</legend>
+					<p>
+						<label id="label_coll_host_name">%(label_Strains_Origin_Host_Common_Name)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(coll_host_name_tabs)s<br />
+						%(coll_host_name_langs)s
+					</p>
+					<div>
+						<div>
+							<p class="cols_2">
+								<label for="coll_host_genus" id="label_coll_host_genus">%(label_Strains_Origin_Host_Genus)s</label><br />
+								<input class='species' name="coll_host_genus" id="coll_host_genus" type="text" maxlength="50" value="%(coll_host_genus)s" />
+							</p>
+							<p class="cols_2">
+								<label for="coll_host_species" id="label_coll_host_species">%(label_Strains_Origin_Specific_Epithet)s</label><br />
+								<input class='species' name="coll_host_species" id="coll_host_species" type="text" maxlength="50" value="%(coll_host_species)s" />
+							</p>
+						</div>
+					</div>
+					<div>
+					 <div>
+    					<p class="cols_3">
+    						<label for="coll_host_classification" id="label_coll_host_classification">%(label_Strains_Origin_Host_Level)s</label><br />
+    						<input name="coll_host_classification" id="coll_host_classification" type="text" maxlength="50" value="%(coll_host_classification)s" />
+    					</p>
+    					<p class="cols_3">
+    						<label for="coll_host_infra_name" id="label_coll_host_infra_name">%(label_Strains_Origin_Host_Infraespecific_Name)s</label><br />
+    						<input class='species' name="coll_host_infra_name" id="coll_host_infra_name" type="text" maxlength="100" value="%(coll_host_infra_name)s" />
+    					</p>
+    					<p class="cols_3">
+    						<label for="coll_host_infra_complement" id="label_coll_host_infra_complement">%(label_Strains_Origin_Host_Complement_Infraespecific)s</label><br />
+    						<input name="coll_host_infra_complement" id="coll_host_infra_complement" type="text" maxlength="100" value="%(coll_host_infra_complement)s" />
+    					</p>
+					 </div>
+					</div>
+					</fieldset>
+					<div id="specific_for_protozoa">
+						<p>
+							<label for="coll_global_code" id="label_coll_global_code">%(label_Strains_Origin_International_Code)s</label><br />
+							<input onblur="checkGlobalCode(this,null,'AAAA/AA/YYYY/*')" name="coll_global_code" id="coll_global_code" type="text" maxlength="50" value="%(coll_global_code)s" />
+						</p>
+						<p>
+							<label for="coll_clinical_form" id="label_coll_clinical_form">%(label_Strains_Origin_Clinic_Form)s</label><br />
+							<select name="coll_clinical_form" id="coll_clinical_form">%(coll_clinical_form)s</select>
+						</p>
+						<p>
+							<label for="coll_hiv" id="label_coll_hiv">%(label_Strains_Origin_HIV)s</label><br />
+							%(coll_hiv)s
+						</p>
+					</div>
+					<div>
+						<p>
+							<label id="label_coll_comments">%(label_Strains_Origin_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(coll_comments_tabs)s<br />
+							%(coll_comments_langs)s
+						</p>
+					</div>
+				</div>
+				<div class="data" id="isolation">
+					<p>
+						<label for="iso_date" id="label_iso_date">%(label_Strains_Isolation_Date)s</label><br />
+						<input onkeyup="checkCharModifier(this,event)" onkeypress="return checkDateSlash(this,event)" onblur="checkOrderedDates('%(date_format)s');" name="iso_date" id="iso_date" class="date" type="text" maxlength="10" value="%(iso_date)s" />
+					</p>
+					<fieldset><legend>%(label_Strains_Isolation_Isolated_By)s</legend>
+						<div>
+							<div>
+								<p class="cols_2">
+									<label for="iso_person" id="label_iso_person">%(label_Strains_Isolation_Person)s</label><br />
+									<select name="iso_person" id="iso_person">%(iso_person)s</select>
+								</p>
+								<p class="cols_2">
+									<label for="iso_institution" id="label_iso_institution">%(label_Strains_Isolation_Institution)s</label><br />
+									<select name="iso_institution" id="iso_institution">%(iso_institution)s</select>
+								</p>
+							</div>
+						</div>
+					</fieldset>
+					<p>
+						<label id="label_iso_isolation_from">%(label_Strains_Isolation_Isolated_From)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(iso_isolation_from_tabs)s<br />
+						%(iso_isolation_from_langs)s
+					</p>
+					<p>
+						<label id="label_iso_method">%(label_Strains_Isolation_Method)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(iso_method_tabs)s<br />
+						%(iso_method_langs)s
+					</p>
+					<p>
+						<label for="iso_comments" id="label_iso_comments">%(label_Strains_Isolation_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="iso_comments" id="iso_comments" class="mceEditor" cols="" rows="">%(iso_comments)s</textarea>
+					</p>
+				</div>
+				<div class="data" id="identification">
+					<p>
+						<label for="ident_date" id="label_ident_date">%(label_Strains_Identification_Date)s</label><br />
+						<input onkeyup="checkCharModifier(this,event)" onkeypress="return checkDateSlash(this,event)" onblur="checkOrderedDates('%(date_format)s');" name="ident_date" id="ident_date" class="date" type="text" maxlength="10" value="%(ident_date)s" />
+					</p>
+					<fieldset><legend>%(label_Strains_Identification_Identified_By)s</legend>
+						<div>
+							<div>
+								<p class="cols_2">
+									<label for="ident_person" id="label_ident_person">%(label_Strains_Identification_Person)s</label><br />
+									<select name="ident_person" id="ident_person">%(ident_person)s</select>
+								</p>
+								<p class="cols_2">
+									<label for="ident_institution" id="label_ident_institution">%(label_Strains_Identification_Institution)s</label><br />
+									<select name="ident_institution" id="ident_institution">%(ident_institution)s</select>
+								</p>
+							</div>
+						</div>
+					</fieldset>
+					<fieldset><legend>%(label_Strains_Identification_Identified_As_Species)s</legend>
+						<div>
+							<div>
+								<p class="cols_2">
+									<label for="ident_genus" id="label_ident_genus">%(label_Strains_Identification_Identified_Genus)s</label><br />
+									<input class='species' name="ident_genus" id="ident_genus" type="text" maxlength="50" value="%(ident_genus)s" />
+								</p>
+								<p class="cols_2">
+									<label for="ident_species" id="label_ident_species">%(label_Strains_Identification_Identified_Specie)s</label><br />
+									<input class='species' name="ident_species" id="ident_species" type="text" maxlength="50" value="%(ident_species)s" />
+								</p>
+							</div>
+							<div>
+		    					<p class="cols_3">
+		    						<label for="ident_classification" id="label_ident_classification">%(label_Strains_Identification_Identified_Level)s</label><br />
+		    						<input name="ident_classification" id="ident_classification" type="text" maxlength="50" value="%(ident_classification)s" />
+		    					</p>
+		    					<p class="cols_3">
+		    						<label for="ident_infra_name" id="label_ident_infra_name">%(label_Strains_Identification_Identified_Infraespecific_Name)s</label><br />
+		    						<input class='species' name="ident_infra_name" id="ident_infra_name" type="text" maxlength="100" value="%(ident_infra_name)s" />
+		    					</p>
+		    					<p class="cols_3">
+		    						<label for="ident_infra_complement" id="label_ident_infra_complement">%(label_Strains_Identification_Identified_Complement_Infraespecific)s</label><br />
+		    						<input name="ident_infra_complement" id="ident_infra_complement" type="text" maxlength="100" value="%(ident_infra_complement)s" />
+		    					</p>
+	    					</div>
+						</div>
+	          		</fieldset>
+					<p>
+						<label id="label_ident_method">%(label_Strains_Identification_Method)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(ident_method_tabs)s<br />
+						%(ident_method_langs)s
+					</p>
+					<p>
+						<label for="ident_comments" id="label_ident_comments">%(label_Strains_Identification_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="ident_comments" id="ident_comments" class="mceEditor" cols="" rows="">%(ident_comments)s</textarea>
+					</p>
+				</div>
+				<div class="data" id="deposit">
+					<p>
+						<label for="dep_date" id="label_dep_date">%(label_Strains_Deposit_Date)s</label><br />
+						<input onkeyup="checkCharModifier(this,event)" onkeypress="return checkDateSlash(this,event)" onblur="checkOrderedDates('%(date_format)s');" name="dep_date" id="dep_date" class="date" type="text" maxlength="10" value="%(dep_date)s" />
+          			</p>
+          			<fieldset><legend>%(label_Strains_Deposit_Deposited_By)s</legend>
+						<div>
+							<div>
+								<p class="cols_2">
+									<label for="dep_person" id="label_dep_person">%(label_Strains_Deposit_Deposited_By_Person)s</label><br />
+									<select name="dep_person" id="dep_person">%(dep_person)s</select>
+								</p>
+								<p class="cols_2">
+									<label for="dep_institution" id="label_dep_institution">%(label_Strains_Deposit_Deposited_By_Institution)s</label><br />
+									<select name="dep_institution" id="dep_institution">%(dep_institution)s</select>
+								</p>
+							</div>
+						</div>
+					</fieldset>
+          <fieldset><legend>%(label_Strains_Deposit_Deposited_As_Species)s</legend>
+					<div>
+						<div>
+							<p class="cols_2">
+								<label for="dep_genus" id="label_dep_genus">%(label_Strains_Deposit_Deposited_Genus)s</label><br />
+								<input class='species' name="dep_genus" id="dep_genus" type="text" maxlength="50" value="%(dep_genus)s" />
+							</p>
+							<p class="cols_2">
+								<label for="dep_species" id="label_dep_species">%(label_Strains_Deposit_Specific_Epithet)s</label><br />
+								<input class='species' name="dep_species" id="dep_species" type="text" maxlength="50" value="%(dep_species)s" />
+							</p>
+						</div>
+						<div>
+    					<p class="cols_3">
+    						<label for="dep_classification" id="label_dep_classification">%(label_Strains_Deposit_Deposited_Level)s</label><br />
+    						<input name="dep_classification" id="dep_classification" type="text" maxlength="50" value="%(dep_classification)s" />
+    					</p>
+    					<p class="cols_3">
+    						<label for="dep_infra_name" id="label_dep_infra_name">%(label_Strains_Deposit_Deposited_Infraespecific_Name)s</label><br />
+    						<input class='species' name="dep_infra_name" id="dep_infra_name" type="text" maxlength="100" value="%(dep_infra_name)s" />
+    					</p>
+    					<p class="cols_3">
+    						<label for="dep_infra_complement" id="label_dep_infra_complement">%(label_Strains_Deposit_Deposited_Complement_Infraespecific)s</label><br />
+    						<input name="dep_infra_complement" id="dep_infra_complement" type="text" maxlength="100" value="%(dep_infra_complement)s" />
+    					</p>
+    				</div>
+					</div>
+          </fieldset>
+					<p>
+						<label for="dep_reason" id="label_dep_reason">%(label_Strains_Deposit_Reason)s</label><br />
+						<select name="dep_reason" id="dep_reason">%(dep_reason)s</select>
+					</p>
+					<p>
+						<label for="dep_form" id="label_dep_form">%(label_Strains_Deposit_Culture_Was_Sent)s</label><br />
+						<input name="dep_form" id="dep_form" type="text" maxlength="50" value="%(dep_form)s" />
+					</p>
+					<p>
+						<label for="dep_preserv_method" id="label_dep_preserv_method">%(label_Strains_Deposit_Recommended_Preservation_Method)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="dep_preserv_method" id="dep_preserv_method" class="mceEditor" cols="" rows="">%(dep_preserv_method)s</textarea>
+					</p>
+					<fieldset>
+						<legend>%(label_Strains_Deposit_Authentication)s</legend>
+						<div>
+							<div>
+								<p class="cols_2">
+									<label for="dep_aut_date" id="label_dep_aut_date">%(label_Strains_Deposit_Authentication_Date)s</label><br />
+									<input onkeyup="checkCharModifier(this,event)" onkeypress="return checkDateSlash(this,event)" onblur="checkValidDate(this,null,'%(date_format)s');" name="dep_aut_date" id="dep_aut_date" class="date" type="text" maxlength="10" value="%(dep_aut_date)s" />
+								</p>
+								<p class="cols_2">
+									<label for="dep_aut_person" id="label_dep_aut_person">%(label_Strains_Deposit_Authentication_Person)s</label><br />
+									<select name="dep_aut_person" id="dep_aut_person">%(dep_aut_person)s</select>
+								</p>
+								<p>
+									<label for="dep_aut_result" id="label_dep_aut_result">%(label_Strains_Deposit_Authentication_Result)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+									<textarea name="dep_aut_result" id="dep_aut_result" class="mceEditor" cols="" rows="">%(dep_aut_result)s</textarea>
+								</p>
+							</div>
+						</div>
+					</fieldset>
+					<p>
+						<label for="dep_comments" id="label_dep_comments">%(label_Strains_Deposit_Comments)s</label><br />
+						<textarea name="dep_comments" id="dep_comments" class="mceEditor" cols="" rows="">%(dep_comments)s</textarea>
+					</p>
+				</div>
+				<div class="data" id="culture">
+					<p>
+						<label id="label_cul_medium">%(label_Strains_Growth_Recommended_Culture_Medium)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cul_medium_tabs)s<br />
+						%(cul_medium_langs)s
+					</p>
+					<table>
+						<tr>
+							<td>
+								<p>
+									<label for="cul_temp" id="label_cul_temp">%(label_Strains_Growth_Recommended_Temperature)s</label><br />
+									<input name="cul_temp" id="cul_temp" type="text" maxlength="50" value="%(cul_temp)s" />
+								</p>
+							</td>
+							<td>
+								<p>
+									<label id="label_cul_incub_time">%(label_Strains_Growth_Incubation_Time)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cul_incub_time_tabs)s<br />
+									%(cul_incub_time_langs)s
+								</p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p>
+									<label for="cul_ph" id="label_cul_ph">%(label_Strains_Growth_Ph)s</label><br />
+									<input name="cul_ph" id="cul_ph" type="text" maxlength="50" value="%(cul_ph)s" />
+								</p>
+							</td>
+							<td>
+								<p>
+									<label id="label_oxy_req">%(label_Strains_Growth_Oxygen_Requirements)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cul_oxy_req_tabs)s<br />
+									%(cul_oxy_req_langs)s
+								</p>
+							</td>
+						</tr>
+					</table>
+					<p>
+						<label id="label_cul_comments">%(label_Strains_Growth_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cul_comments_tabs)s<br />
+						%(cul_comments_langs)s
+					</p>
+				</div>
+				<div class="data" id="characs">
+					<p>
+						<label for="cha_morphologic" id="label_cha_morphologic">%(label_Strains_Characteristics_Morphologic)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_morphologic" id="cha_morphologic" class="mceEditor" cols="" rows="">%(cha_morphologic)s</textarea>
+					</p>
+					<p>
+						<label for="cha_molecular" id="label_cha_molecular">%(label_Strains_Characteristics_Molecular)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_molecular" id="cha_molecular" class="mceEditor" cols="" rows="">%(cha_molecular)s</textarea>
+					</p>
+					<p>
+						<label for="cha_biochemical" id="label_cha_biochemical">%(label_Strains_Characteristics_Biochemical)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_biochemical" id="cha_biochemical" class="mceEditor" cols="" rows="">%(cha_biochemical)s</textarea>
+					</p>
+					<p>
+						<label for="cha_immunologic" id="label_cha_immunologic">%(label_Strains_Characteristics_Immunologic)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_immunologic" id="cha_immunologic" class="mceEditor" cols="" rows="">%(cha_immunologic)s</textarea>
+					</p>
+					<p>
+						<label for="cha_pathogenic" id="label_cha_pathogenic">%(label_Strains_Characteristics_Pathogenic)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_pathogenic" id="cha_pathogenic" class="mceEditor" cols="" rows="">%(cha_pathogenic)s</textarea>
+					</p>
+					<p>
+						<label for="cha_genotypic" id="label_cha_genotypic">%(label_Strains_Characteristics_Genotypic)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_genotypic" id="cha_genotypic" class="mceEditor" cols="" rows="">%(cha_genotypic)s</textarea>
+					</p>
+
+					<fieldset><legend>%(label_Strains_Characteristics_OGM)s</legend>
+						<div>
+							<div>
+								<p>
+									<label for="cha_ogm" id="label_cha_ogm">%(label_Strains_Characteristics_OGM_Group)s</label><br />
+									<select class="select_50" name="cha_ogm" id="cha_ogm">%(cha_ogm)s</select>
+								</p>
+								<p>
+									<label id="label_cha_ogm_comments">%(label_Strains_Characteristics_OGM_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cha_ogm_comments_tabs)s<br />
+									%(cha_ogm_comments_langs)s
+								</p>
+							</div>
+						</div>
+					</fieldset>
+
+					<p>
+						<label id="label_cha_biorisk_comments">%(label_Strains_Characteristics_Biological_Risk_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cha_biorisk_comments_tabs)s<br />
+						%(cha_biorisk_comments_langs)s
+					</p>
+					<p>
+						<label id="label_cha_restrictions">%(label_Strains_Characteristics_Restrictions)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cha_restrictions_tabs)s<br />
+						%(cha_restrictions_langs)s
+					</p>
+					<p>
+						<label id="label_cha_pictures">%(label_Strains_Characteristics_Pictures)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cha_pictures_tabs)s<br />
+						%(cha_pictures_langs)s
+					</p>
+					<p>
+						<label id="label_cha_urls">%(label_Strains_Characteristics_URL)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cha_urls_tabs)s<br />
+						%(cha_urls_langs)s
+					</p>
+					<p>
+						<label id="label_cha_catalogue">%(label_Strains_Characteristics_Additional_Notes_to_Catalog)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(cha_catalogue_tabs)s<br />
+						%(cha_catalogue_langs)s
+					</p>
+				</div>
+				<div class="data" id="properties">
+					<p>
+						<label id="label_pro_properties">%(label_Strains_Properties_Properties)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(pro_properties_tabs)s<br />
+						%(pro_properties_langs)s
+					</p>
+					<p>
+						<label id="label_pro_applications">%(label_Strains_Properties_Applications)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(pro_applications_tabs)s<br />
+						%(pro_applications_langs)s
+					</p>
+					<p>
+						<label id="label_pro_urls">%(label_Strains_Properties_URL)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(pro_urls_tabs)s<br />
+						%(pro_urls_langs)s
+					</p>
+				</div>
+				<div class="data" id="quality">
+					<iframe id="ifrm_quality" name="ifrm_quality" class="ifrm_quality" scrolling="no" frameborder="no"></iframe>
+				</div>
+				<div class="data" id="stock">
+					<input type="hidden" id="stock_minimum_list" name="stock_minimum_list" />
+					<iframe id="ifrm_stock" name="ifrm_stock" class="ifrm_stock" scrolling="no" frameborder="no"></iframe>
+				</div>
+				<div class="data" id="security">
+    				<input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+          			<p>
+          			   <label>%(label_Strains_Security_Checkbox_Go_Catalog)s <input type='checkbox' name='go_catalog' id='go_catalog' %(is_go_catalog_check)s />
+          			</p>
+          			<p>
+          			   <table>
+          			     <tr>
+          			        <td>&nbsp;</td>
+          			        <th>%(label_Permission)s</th>
+          			     </tr>
+          			     %(groups_table)s
+          			   </table>
+          			</p>
+				</div>
+				%(js_securitychanged)s
+			</form>
+			<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+				<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+
+			</form>
+			<div id="autosuggest"><ul></ul></div> <!-- This DIV is required in order to make AutoSuggest work -->
+			<script type="text/javascript">
+			//Auto-complete
+			ac_state = new Array();
+			new AutoSuggest(document.getElementById('coll_state'),ac_state);
+			ac_city = new Array();
+			new AutoSuggest(document.getElementById('coll_city'),ac_city);
+			//Global variables
+			var selected_country = %(js_data_country)s;
+			var selected_state = %(js_data_state)s;
+			var selected_city = %(js_data_city)s;
+			var country_state = new Array();
+			var state_city = new Array();
+			%(js_country_state_city)s
+
+			var lot_exist = %(js_data_lot_exist)s;
+
+			var strain_format = new Array();
+			%(js_strain_format)s
+
+			$(document).ready(function(){
+				if (document.location.href.indexOf('edit') > -1)
+				{
+					$("#label_autonum").hide();
+					$("#autonum").hide();
+				}
+
+				$("#autonum").click(function () {
+					if ($("#autonum").attr('checked'))
+					{
+						resetField($("#numeric_code")[0], $("#label_numeric_code")[0]);
+						$("#p_code").hide("fast");
+						$("#numeric_code").hide("fast", function() {
+							$("#numeric_code").val(0);
+							$("#code").html('');
+						});
+					}
+					else
+					{
+						$("#numeric_code").val('');
+
+						$("#p_code").show("fast");
+						$("#numeric_code").show("fast");
+					}
+				  });
+			});
+
+			</script>

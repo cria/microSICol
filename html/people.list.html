@@ -1,0 +1,19 @@
+%(top)s
+			<!-- people.list.html --> 
+			<div class="data" id="general">
+				<table id="data_table">
+					<thead>
+						<tr>
+							<th id="name"><a href='people.list.py?field_order=name&page=%(current_page)s'>%(label_People_General_Name)s</a>%(img_name)s</th>
+							<th id="institution"><a href='people.list.py?field_order=institution&page=%(current_page)s'>%(label_People_General_Institution)s</a>%(img_institution)s</th>
+						</tr>
+					</thead>
+					<tbody>
+						%(data)s
+					</tbody>
+					<tfoot>
+						%(datafoot)s
+					</tfoot>
+				</table>
+			</div>
+			<!-- END - people.list.html -->

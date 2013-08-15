@@ -1,0 +1,50 @@
+<script language="javascript" type="text/javascript" src="../js/external/tinymce/jscripts/tiny_mce/tiny_mce_popup.js"></script>
+
+<body onload="init();" style="margin: 4px;">
+<form onsubmit="return false;" action="#">
+
+  <table style='width:100%%;'>
+    <tr>
+      <th align='left' id='left_one'>%(label_Rep_fieldlink_Type)s</th>            
+    </tr>
+    <tr>
+      <td>
+      <select id='sel_field' onchange='switch_fields(this.value)'>
+        <option value='system'>%(label_Rep_System_Fields)s</option>        
+        <option value='report'>%(label_Rep_Report_Fields)s</option>        
+      </select>
+      </td>
+      <td>      
+      <span id='report_fields'>
+        <select id='sel_report_fields' name='sel_report_fields'>
+		%(Report_Fields)s
+        </select>
+      </span>	      
+      <span id='system_fields'>
+          <select name='sel_system_fields' id='sel_system_fields'>
+	        <option value="date">%(label_Rep_Date)s</option>
+		<option value="time">%(label_Rep_Time)s</option>
+		<option value="name_coll">%(label_Rep_Name_Coll)s</option>
+		<option value="code_coll">%(label_Rep_Code_Coll)s</option>
+		<option value="name_subcoll">%(label_Rep_Name_Subcoll)s</option>
+		<option value="code_subcoll">%(label_Rep_Code_Subcoll)s</option>
+		<option value="user">%(label_Rep_User)s</option>
+		<option value="description">%(label_Rep_Description)s</option>
+          </select>
+        </span>
+      </td>      
+    </tr>
+  </table>
+
+  <table style='width:100%%;'>
+    <tr>
+      <td align='left'>
+        <input type="button" id="insert" name="insert" value="%(label_Rep_fieldlink_Insert)s" onclick="Insert();" />
+      </td>
+      <td align='right'>
+        <input type="button" id="cancel" name="cancel" value="%(label_Rep_fieldlink_Cancel)s" onclick="window.close();" />
+      </td>
+    </tr>
+  </table>
+
+</form>

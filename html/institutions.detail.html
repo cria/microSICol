@@ -1,0 +1,40 @@
+			<!-- institutions.detail.html -->
+			<div id="above_data"> 
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Institutions_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Institutions_Security)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+			 <div class="detail">  			 
+			 </div>
+				<p><label>%(label_Institutions_General_Locator)s</label><br />%(nickname)s</p>
+				<p><label>%(label_Institutions_General_Name)s</label><br />%(name)s</p>
+				<p><label>%(label_Institutions_General_Complement)s</label><br />%(complement)s</p>
+				<p><label>%(label_Institutions_General_Address)s</label><br />%(address)s</p>
+				<p><label>%(label_Institutions_General_Phone)s</label><br />%(phone)s</p>
+				<p><label>%(label_Institutions_General_Email)s</label><br />%(email)s</p>
+				<p><label>%(label_Institutions_General_Website)s</label><br />%(website)s</p>
+				<div>
+    				<p class="cols_3"><label>%(label_Institutions_General_Code1)s</label><br />%(code1)s</p>
+    				<p class="cols_3"><label>%(label_Institutions_General_Code2)s</label><br />%(code2)s</p>
+    				<p class="cols_3"><label>%(label_Institutions_General_Code3)s</label><br />%(code3)s</p>
+	  			</div>
+				<p><label>%(label_Institutions_General_Comments)s</label><br />%(comments_langs)s</p>
+			</div>
+			<div class="data" id="security">
+			<p>
+			<label>%(label_go_catalog)s</label>
+			</p>
+			<p>
+			   <table>
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+			</div>
+%(hidden_forms)s
+			<!-- END - institutions.detail.html -->

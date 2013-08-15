@@ -1,0 +1,32 @@
+			<!-- people.detail.html -->
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_People_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_People_Security)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+			<p><label>%(label_People_General_Name)s</label><br />%(name)s</p>
+			<p><label>%(label_People_General_Nickname)s</label><br />%(nickname)s</p>
+			<p><label>%(label_People_General_Personal_Address)s</label><br />%(address)s</p>
+			<p><label>%(label_People_General_Phone)s</label><br />%(phone)s</p>
+			<p><label>%(label_People_General_Personal_Email)s</label><br />%(email)s</p>
+			<p><label>%(label_People_General_Comments)s</label><br />%(comments_langs)s</p>
+%(people_contacts)s
+			</div>
+			<div class="data" id="security">
+			<p>
+			<label>%(label_go_catalog)s</label>
+			</p> 
+			<p>
+			   <table>
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+			</div>
+%(hidden_forms)s
+			<!-- END - species.list.html -->

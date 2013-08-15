@@ -1,0 +1,54 @@
+@charset "utf-8";
+/* CSS Document */
+
+div#menu a#active_people
+{ 
+ color:rgb(183,104,62);
+}
+
+#people_contacts input.text 
+{
+ width: 125px;
+}
+
+#people_contacts input.button
+{
+/* We have 100% of the column to be used by all of its buttons*/
+/* Since the maximum amount of buttons showed is 2 then we set 50% for each one */
+/* Better yet, set 48% in order to leave some margin*/
+ width: 48%;
+/* width: 50px; *//* Texts in other languages tend to use different widths! */
+}
+
+#people_contacts input.checkbox
+{
+ width: 20px;
+}
+#people_contacts img.insert_contact
+{
+ margin-bottom: 10px;
+}
+
+#people_contacts td:first-child
+{
+ padding-right: 20px;
+}
+#people_contacts td
+{
+ min-width: 100px;
+}
+
+#people_contacts th
+{
+	text-align: left;
+}
+
+#people_contacts span.click_edit
+{
+	cursor: pointer;
+}
+
+.select_inst
+{
+ width:auto;
+}

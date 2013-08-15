@@ -1,0 +1,96 @@
+			<!-- distribution.form.html -->
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Distribution_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Distribution_Security)s</a>
+				</p>
+			</div>
+			<form action="./%(who)s.save.py" method="post" id="edit">
+				<div class="data" id="general">				
+					<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+					<p class="hidden"><input type="hidden" name="next_action" value="%(next_action)s" /></p>
+					<p class="hidden"><input type="hidden" id="data_langs" name="data_langs" value="%(data_langs)s" /></p>					
+					<p class="hidden"><input type="hidden" id="distribution_lot_old" name="distribution_lot_old" value="%(distribution_id_lot)s" /></p>
+					<p class="hidden"><input type="hidden" id="global_lot_strain_values" name="global_lot_strain_values" value="" /></p>
+					<input type="hidden" name="id_coll" value="%(id_coll)s" id="id_coll">
+					<input type="hidden" name="id_subcoll" value="%(id_subcoll)s" id="id_subcoll">
+					<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+					<!-- 
+					  -- Location data:
+					  -- id_origin_container_hierarchy;row;col|
+					  -->
+					<input type="hidden" name="locations_data" value="" id="locations_data">
+					<div>
+    					<p>
+    						<label for="distribution_date" id="label_distribution_date">%(label_Distribution_General_Date)s</label><br />
+    						<input onkeyup="checkCharModifier(this,event);" onkeypress="return checkDateSlash(this,event);" onblur="checkValidDate(this,null,'%(date_format)s');" name="distribution_date" id="distribution_date" class="distribution_date" type="text" maxlength="10" value="%(distribution_date)s" style="text-align:center" /> 
+						</p>							
+   					</div>
+   					<div>
+   						<p>
+    						<label for="distribution_user" id="label_distribution_user">%(label_Distribution_General_Responsible)s</label><br />
+    						<select name="distribution_user" id="distribution_user" onblur="isEmpty(this, null);">%(distribution_user)s</select>
+						</p>
+   					</div>
+   					<div>
+   						<p>
+   							<label for="distribution_strain" id="label_distribution_strain">%(label_Distribution_General_Strain)s</label><br />
+    						<select name="distribution_strain" id="distribution_strain">%(distribution_strain)s</select>	    						
+    					</p>
+   					</div>
+                    <table>
+                        <tr>
+                            <td class="td_2">
+            					<p >
+            						<label for="distribution_lot" id="label_distribution_lot">%(label_Distribution_General_Lot_Number)s</label><br />
+            						<select name="distribution_lot" id="distribution_lot">%(distribution_lot)s</select>
+            					</p>
+                            </td>
+                            <td class="td_2">
+            					<p>%(location)s</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_2">
+        						<p >
+            						<label for="distribution_institution" id="label_distribution_institution">%(label_Distribution_General_Institution)s</label><br />
+            						<select name="distribution_institution" id="distribution_institution">%(distribution_institution)s</select>
+        						</p>
+                            </td>
+                            <td class="td_2">
+        						<p >
+            						<label for="distribution_person" id="label_distribution_person">%(label_Distribution_General_Person)s</label><br />
+            						<select name="distribution_person" id="distribution_person">%(distribution_person)s</select>
+        						</p>
+                            </td>
+                        </tr>
+                    </table>					
+					<p>
+						<label for="distribution_reason" id="label_distribution_reason">%(label_Distribution_General_Reason)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="distribution_reason" id="distribution_reason" class="mceEditor" cols="" rows="">%(distribution_reason)s</textarea>
+					</p>
+				</div>				
+				<div class="data" id="security">
+			  		<input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+					<p>
+					   <table style="width:0;">
+					     <tr>
+					        <td>&nbsp;</td>
+					        <th>%(label_Permission)s</th>
+					     </tr>
+					     %(groups_table)s
+					   </table>
+					</p>
+				</div>			
+				%(js_securitychanged)s	
+			</form>
+			
+			<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+				<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+			</form>
+			<script type='text/javascript'>
+				%(js_global_lot_strain)s
+				%(js_distribution_data)s
+			</script>
+			<!-- END distribution.form.html -->

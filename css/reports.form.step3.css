@@ -1,0 +1,39 @@
+@charset "utf-8";
+/* CSS Document */
+
+.divWithChild {
+    border: 1px solid #AAAAAA;
+    Padding:3px;
+    margin:3px;
+}
+
+.divWithChildColor2 {
+    border: 1px solid #000000;
+    Padding:3px;
+    margin:3px;
+    background-color:#CCCCCC;
+}
+
+.borderItem {
+    margin-right:2px;
+    margin-left:2px;
+    margin-top:2px;
+    margin-bottom:2px;
+    width: auto;
+}
+
+.button {
+    float:right;
+}
+
+.select_field{
+    width: 200px;
+}
+
+.select_condition{
+    width: 80px;
+}
+
+.select_type{
+    width: 90px;
+}

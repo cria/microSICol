@@ -1,0 +1,22 @@
+@charset "utf-8"; 
+/* Hacks for IE */
+
+body{
+	/*tr:hover for IE  */
+	behavior: url(../css/ie6-csshover.htc);
+
+	/*scroll bar for IE  *//*
+	scrollbar-face-color:#FFFFFF;
+	scrollbar-highlight-color:#F7EFD6;
+	scrollbar-3d-light-color:#F7EFD6;
+	scrollbar-dark-shadow-color:#223A4B;
+	scrollbar-shadow-color:#F7EFD6;
+	scrollbar-arrow-color:#666666;
+	scrollbar-track-color:#EFEBEF;*/
+}
+
+/* IE empty font-size information in tables */
+table#data_table
+{
+ font-size:11px; 
+}

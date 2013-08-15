@@ -1,0 +1,62 @@
+      <!-- preferences.html --> 
+      <div id="above_data">
+        <p>
+          <a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Preferences)s</a>
+          <a href="javascript:show('account');" id="tab_account">%(label_Preferences_Account)s</a>
+        </p>
+      </div>
+      <form action="./preferences.py" method="post" id="edit">
+        <div class="data" id="general">
+          <p>
+            <label>%(label_Preferences_Language)s</label><br />
+            <select name='language'>%(languages)s</select>
+          </p>
+  		  <p>
+            <label>%(label_Preferences_User_Lines_Per_Page)s</label><br />
+   		    <input id="util_user_lines_per_page" name="util_user_lines_per_page" type="text" maxlength="5" size="5" value="%(userlines_per_page)s" onkeyup="numberOnly(this)" />
+  		  </p>
+  		  <p>
+            <label>%(label_Preferences_User_Max_Num_Pages)s</label><br />
+   		    <input id="util_user_max_num_pages" name="util_user_max_num_pages" type="text" maxlength="5" size="5" value="%(usermax_num_pages)s" onkeyup="numberOnly(this)" />
+  		  </p>
+		  <p>
+            <label>%(label_Preferences_User_Show_Strain_Inactives)s</label><br />
+   		    <input id="util_user_show_str_inactives" name="util_user_show_str_inactives" type="checkbox" value="1" %(usershow_str_inactives)s />
+  		  </p>
+        </div>
+        <div class="data" id="account">
+          <input type='hidden' id='util_user_id' name='util_user_id' value='%(iduser)s' />
+          <div id="util_edit_user" style='display:block;'>
+  				<p>
+            <label>%(label_Preferences_User_Name)s</label><br />
+            <span class='form_info'>%(username)s</span>     
+  				</p>
+  				<p>
+            <label>%(label_Preferences_User_Login)s</label><br />
+            <span class='form_info'>%(userlogin)s</span>          
+  				</p>
+  				<p>
+            <label>%(label_Preferences_User_Roles)s</label><br />
+            <span class='form_info'>%(usergroups)s</span>          
+  				</p>
+				<div>
+	  				<p class="cols_2" style="width: 32%%;">
+			           <label for="util_user_pwd" id="label_util_user_pwd">%(label_Preferences_User_Password)s</label><br />
+	  				   <input id="util_user_pwd" name="util_user_pwd" type="password" maxlength="30" size="30" value="" onkeyup="javascript:password_strength('util_user_pwd','progressBar');" />
+	  				</p>
+					<p class="cols_2">
+					   <label>%(label_Password_Quality)s</label><br />
+					   <img id="progressBar" src="../img/pwdbar0.png" />
+					   <span class='form_info' id="pwd_msg">%(label_Preferences_Account_User_Password)s</span>
+					</p>
+				</div>
+				<div>
+					<p class="cols_1">
+			           <label for="util_user_pwd_confirm" id="label_util_user_pwd_confirm">%(label_Preferences_User_Confirm_Password)s</label><br />
+			  		   <input id="util_user_pwd_confirm" name="util_user_pwd_confirm" type="password" maxlength="30" size="30" value="" /> 
+	  				</p>
+				</div>
+          </div>
+        </div>
+      </form>
+      <!-- END - preferences.html -->

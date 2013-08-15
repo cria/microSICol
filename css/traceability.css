@@ -1,0 +1,80 @@
+@charset "utf-8";
+/* CSS Document */
+
+a#active_utilities
+{
+    color: rgb(183,104,62);
+}
+
+.search_input
+{
+    width: 94%;
+}
+
+.search_button
+{
+    width: auto;
+}
+
+.date_time_search_input
+{
+    text-align: center;
+    width: 42%;
+}
+
+.record_search_input
+{
+    padding-right: 2px;
+    text-align: right;
+    width: 90%;
+}
+
+#date_time
+{
+    width: 18%;
+}
+
+#user
+{
+    width: 16%;
+}
+
+#operation
+{
+    width: 17%;
+}
+
+#record
+{
+    width: 5%;
+}
+
+.record
+{
+    padding-right: 4px;
+    text-align: right;
+}
+
+#strain_code
+{
+    width: 8%;
+}
+
+#field
+{
+    width: 18%;
+}
+
+#value
+{
+    width: 18%;
+}
+
+table#data_table tbody tr
+{
+    cursor: auto !important;
+}
+
+table#data_table thead th {
+    text-transform: none !important;
+}

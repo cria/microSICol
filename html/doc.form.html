@@ -1,0 +1,71 @@
+			<!-- doc.form.html -->
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Documents_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Documents_Security)s</a>
+				</p>
+			</div>
+			<form action="./%(who)s.save.py" method="post" id="edit" enctype="multipart/form-data">
+    			<div class="data" id="general">
+					<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+					<p class="hidden"><input type="hidden" name="next_action" value="%(next_action)s" /></p>
+					<p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+					<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+					<p class='cols_2'>
+						<label for="code" id="label_code">%(label_Documents_General_Code)s</label><br />
+						<input onblur="if (!isEmpty(this,null)) checkCode(this,null);" name="code" id="code" type="text" maxlength="20" value="%(code)s" />
+					</p>					
+  					<p class='cols_2'>
+  						<label for="qualifier" id="label_qualifier">%(label_Documents_General_Qualifier)s</label><br />
+  						<select onblur="isEmpty(this,null)" onchange="changedQualifier(this.value)" name="qualifier" id="qualifier">%(qualifier)s</select>
+  					</p>
+  					<p id="p_test_category" style="display:%(display_test_category)s;">
+  						<label for="test_category" id="label_test_category">%(label_Documents_Gereral_Test_Category)s</label><br />
+  						<select name="test_category" id="test_category" class="select_50">%(test_category)s</select>
+  					</p>					
+					<p>
+						<label id="label_title">%(label_Documents_General_Title)s</label>%(title_tabs)s<br />
+						%(title_langs)s
+					</p>
+					<p>
+						<label id="label_description">%(label_Documents_General_Description)s</label>%(description_tabs)s<br />
+						%(description_langs)s
+					</p>
+					<table>
+						<tr>
+							<td> 
+								<label id="label_file_name">%(label_Documents_General_File_Name)s</label>%(file_name_tabs)s
+                                %(file_name_langs)s
+							</td>
+							<td>
+								<label id="label_new_file">%(label_Documents_General_Update_Insert_File)s</label>%(new_file_tabs)s
+                                %(new_file_langs)s
+							</td>
+						</tr>
+					</table>
+    			</div>
+    			<div class="data" id="security">
+    				<input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+				<p>
+          			   <label>%(label_Documents_Security_Checkbox_Go_Catalog)s <input type='checkbox' name='go_catalog' id='go_catalog' %(is_go_catalog_check)s />
+          			</p>
+      				<p>
+      				   <table>
+					<tr>
+      				        <td>&nbsp;</td>
+      				        <th>%(label_Permission)s</th>
+					</tr>
+      				     %(groups_table)s
+      				   </table>
+      				</p>
+    			</div>
+                %(js_securitychanged)s
+				<script type='text/javascript'>
+				%(js_data)s
+				</script>
+			</form>
+			<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+				<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+			</form>
+			<!-- END - doc.form.html -->

@@ -1,0 +1,26 @@
+	<!-- container.list.html -->
+	<div id="above_data"> 
+		<p>
+			<a href="./traceability.py" id="tab_traceability">%(menu_Traceability)s</a>
+			<a href="./container.list.py" id="tab_container" class="on_menu">%(menu_Containers)s</a>
+			<a href="./stockmovement.list.py" id="tab_stock_movement">%(menu_Stockmovement)s</a>
+		</p>
+	</div>
+	<div class="data" id="general">
+		<table id="data_table">
+			<thead>
+				<tr>
+					<th id="abbreviation"><a href="container.list.py?field_order=abbreviation&page=%(current_page)s">%(label_Container_Abbreviation)s</a>%(img_abbreviation)s</th>
+					<th id="description"><a href="container.list.py?field_order=description&page=%(current_page)s">%(label_Container_Description)s</a>%(img_description)s</th>
+					<th id="description">%(label_Container_Preservation_Method)s</th>
+				</tr>
+			</thead>
+			<tbody>
+				  %(data)s
+			</tbody>
+			<tfoot>
+				%(datafoot)s
+			</tfoot>
+		</table>
+	</div>
+	<!-- END - container.list.html -->

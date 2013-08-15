@@ -1,0 +1,62 @@
+<div class="main_location_div"> 
+	<div class="bottom_div">
+		<div class="message_container">
+			<div class="message">
+			</div>
+		</div>
+	</div>
+    <div class="loading">
+        <img id="loading" src="../img/loading.gif" alt="loading..." style='display: none;'>
+    </div>
+    <div class="main">
+        <div id="location0" class="location">
+        	<table class="locationTable">
+            <tr>
+            	<td width="120">
+	            	<label for="container">%(label_Location_Container)s</label>
+					<br>
+					<select name="container" class="container">
+						<option></option>
+					</select>
+				</td>
+				<td class="locationCell">
+	                <label for="location">%(label_Location_Location)s</label>
+	                <br>
+	                <select name="location" class="location">
+	                    <option></option>
+	                </select>
+				</td>
+			</tr>
+			</table>
+			<br/>
+			<table class="locationDetailsTable">
+			<tr>
+				<td>
+					<div class="locationContainer">
+					<table class="locationSummary">
+						<tr><td class="locationSummaryArea">
+						</td></tr>
+					</table>
+					</div>
+				</td>
+				<td class="locationDetailsSeparator">&nbsp;</td>
+                <td>
+                    <table class="locationPicker">
+                    	<tr><td valign="top">
+                    		<div class="containing">
+	                    		<div class="locationPicker">
+	                    			<table class="innerPicker">
+	                    			</table>
+	                    		</div>
+							</div>
+                    	</td></tr>
+                    </table>
+                </td>
+			</tr>
+			</table>
+        </div>
+    </div>
+    <input type="hidden" id="operation" value="%(operation)s">
+	<input type="hidden" id="id_strain" value="%(id_strain)s">
+	<input type="hidden" id="strain" value="%(strain)s">
+</div>

@@ -1,0 +1,36 @@
+       <!-- container.detail.html -->
+			<div id="above_data"> 
+				<p>
+					<a href="./traceability.py" id="tab_traceability">%(menu_Traceability)s</a>
+					<a href="./container.list.py" id="tab_container" class="on_menu">%(menu_Containers)s</a>
+					<a href="./stockmovement.list.py" id="tab_stock_movement">%(menu_Stockmovement)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+				<p><label>%(label_Container_Abbreviation)s</label><br />%(abbreviation)s</p>
+				<p><label>%(label_Container_Description)s</label><br />%(description)s</p>
+				<p><label>%(label_Container_Preservation_Method)s</label><br />%(preservation_methods)s</p>
+
+                <p><label>%(label_Container_Structure)s</label>
+                    <div id="container_structure">
+                        %(container_hierarchy)s
+                    </div>
+                </p>
+			</div>
+			%(hidden_forms)s
+
+            <script type="text/javascript"> 
+                
+                $("#container_structure").bind("loaded.jstree", function (event, data) {
+                    $("#container_structure").jstree("open_all");
+                });
+
+                $(function () {
+                    $("#container_structure").jstree({ 
+                        "plugins" : [ "themes", "html_data" ]
+                    });
+
+
+                });
+            </script> 
+    <!-- END - container.detail.html -->

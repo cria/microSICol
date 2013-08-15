@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+    <!-- index_url, root_dir: necessary "/" in the end -->
+    <config name="index_url">http://localhost/sicol/</config>
+    <config name="root_dir">C:\sicol\</config>
+    <!-- start_page: choose one of (species.list, strains.list, people.list,  institutions.list, doc.list, ref.list) -->
+    <config name="start_page">strains.list</config>
+    <config name="label_lang">ptbr</config>
+    <!-- insert value in bytes, leave blank to disable size limit -->
+    <config name="upload_limit"></config>
+    <!-- data_lang: insert comma separated language codes in desired order -->
+    <config name="data_lang">ptbr,en</config>
+    <config name="date_input_mask">%d/%m/%Y</config>
+    <config name="date_output_mask">%d/%m/%Y</config>
+    <!-- log_file: name of the file to use for logging, fully qualified -->
+    <config name="log_file">./sicol.log</config>
+    <!-- log_level: what is the minimum level to log (debug, info, warn/warning, error) -->
+	<config name="log_level">error</config>
+	<!-- debug_mode: if the software is on production mode or development mode -->
+	<config name="debug_mode">true</config>
+	<config name="report_timeout">180</config>
+</configs>

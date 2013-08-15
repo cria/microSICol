@@ -1,0 +1,34 @@
+@charset "utf-8";
+/* CSS Document */
+
+div#cookie_error 
+{
+	display:none;
+}
+
+div.data
+{
+ margin-top:20px;
+ text-align:left;
+ width:400px;
+ border-color:rgb(155,176,107);
+ border-width:1px;
+ border-style:solid;
+ background-color:#F9F9F9;
+ padding:10px 20px 10px 20px;
+}
+
+div.data p
+{
+ margin-left:3px;
+ padding-top:5px;
+ padding-bottom:5px;
+ cursor:default;
+}
+
+div.data p label
+{
+ font-weight:bold;
+ color:#688E23;
+ text-transform:lowercase;
+}

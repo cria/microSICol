@@ -1,0 +1,53 @@
+@charset "utf-8";
+/* CSS Document */ 
+
+table#data_table thead th#date
+{
+}
+
+table#data_table thead th#id_user
+{
+}
+
+table#data_table thead th#id_lot
+{
+}
+
+table#data_table thead th#id_person
+{
+}
+
+.distribution_date
+{
+    width: 70px;
+}
+
+select#distribution_strain
+{
+	width: 450px;
+}
+
+select#distribution_user
+{
+	width: 200px;
+}
+
+select#distribution_lot
+{
+	width: 170px;
+}
+
+.cols_2 select
+{
+	width: 320px;
+}
+
+#distribution_quantity
+{
+    width: 100px;
+    text-align: right;
+}
+
+#img_source {
+    cursor: pointer;
+}

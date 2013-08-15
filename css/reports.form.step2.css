@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+
+.div_fields
+{
+	width:222px;
+	float:left;
+	margin-right:10px;
+	padding:3px;
+}
+
+.div_fields ul
+{
+	list-style-type:none;
+	padding:0;
+	overflow:auto;
+	height:300px;
+	border:1px solid #9BB06B;
+	background-color:#FFFFFF;
+}
+
+.div_fields ul li
+{
+	border:1px solid #CCCCCC;
+	background-color:#FAFAFA;
+	margin:3px;
+	padding:4px;
+	color:#688E23;
+	font-size:12px;
+}

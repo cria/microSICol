@@ -1,0 +1,71 @@
+@charset "utf-8";
+/* CSS Document */
+
+.uppercase 
+{
+  text-transform: uppercase;
+}
+
+div#menu a#active_reports
+{
+ color:rgb(183,104,62);
+}
+
+#saveas_link
+{
+ word-spacing: 0px;
+}
+#tab_coll_event
+{
+ word-spacing: 2px;
+}
+
+.sicol_green_label
+{
+color: #688E23;
+font-weight: bold;
+font-style: normal;
+}
+
+.form_info,p label
+{
+font-style: normal;
+}
+
+.total_ampoules
+{
+padding: 10px;
+text-align:center;
+font-style: normal;
+}
+
+.ifrm_quality
+{
+	width: 100%;
+}
+
+.ifrm_stock
+{
+	width: 100%;
+}
+
+.ampoules_information
+{
+	padding: 10px;
+}
+
+.image {
+  width: 64px;
+  height: 66px;
+  border: none;
+  cursor: pointer; /* hand-shaped cursor */
+  cursor: hand; /* for IE 5.x */
+}
+
+.report_generate
+{
+  float: left;
+  border-right: 1px dotted;
+  margin-right: 50px;
+  padding-right: 50px;
+}

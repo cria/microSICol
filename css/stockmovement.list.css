@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+
+table#data_table thead th#date 
+{
+ width:100px;
+}
+
+table#data_table thead th#description
+{
+ width:550px;
+}
+
+table#data_table thead th#preservation_method
+{
+}

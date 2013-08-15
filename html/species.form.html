@@ -1,0 +1,95 @@
+			<!-- species.form.html --> 
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Species_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Species_Security)s</a>
+				</p>
+			</div>
+				<form action="./%(who)s.save.py" method="post" id="edit">
+					<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+					<p class="hidden"><input type="hidden" name="next_action" value="%(next_action)s" /></p>
+					<p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+					<p class="hidden"><input type="hidden" id="id_alt_states" name="id_alt_states" value="%(id_alt_states)s" /></p>
+                    <p class="hidden"><input type="hidden" id="id_sciname" name="id_sciname" value="%(id_sciname)s" /></p>
+                    <p class="hidden"><input type="hidden" id="sciname_no_auth" name="sciname_no_auth" value="%(sciname_no_auth)s" /></p>
+		    <input type="hidden" name="row" id="row" value="%(row_number)s" />
+  	   		        <div class="data" id="general">
+  					<p>
+  						<label for="taxon_group" id="label_taxon_group">%(label_Species_General_Taxonomic_Group)s</label><br />
+  						<select onchange="checkTaxonGroup();" onblur="isEmpty(this,null);" id="taxon_group" name="taxon_group">%(taxon_group)s</select>
+  					</p>
+                    <p>
+                        <label for="higher_taxa" id="label_sciname">%(label_Species_General_Higher_Taxa)s</label><br />
+                        <span id="higher_taxa" class="sciname">%(hi_tax)s</span>&nbsp;
+                        <input type="hidden" id="higher_taxa_html" name="higher_taxa_html"> 
+                    </p>
+                    <p>
+                        <label for="sciname" id="label_sciname">%(label_Species_General_Scientific_Name)s</label><br />
+                        <span id="sciname" class="sciname">%(sciname)s</span>&nbsp;
+                        <input type="hidden" id="sciname_html" name="sciname_html"> 
+                    </p>
+					%(sciname_builder)s
+  					<p>
+  						<label for="taxon_ref" id="label_taxon_ref">%(label_Species_General_Taxonomical_References)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+  						<textarea id="taxon_ref" name="taxon_ref" class="mceEditor" cols="" rows="">%(taxon_ref)s</textarea>
+  					</p>
+  					<p>
+  						<label for="synonym" id="label_synonym">%(label_Species_General_Synonym)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+  						<textarea id="synonym" name="synonym" class="mceEditor" cols="" rows="">%(synonym)s</textarea>
+  					</p>
+                    <table style="position:relative"><tr><td>
+					<fieldset><legend>%(label_Species_General_Hazard_Group)s</legend>
+	  					<p>
+	  						<label for="hazard_group" id="label_hazard_group">%(label_Species_General_Classification)s</label><br />
+	  						<select id="hazard_group" name="hazard_group">%(hazard_group)s</select>
+	  					</p>
+	  					<p>
+	  						<label id="label_ambient_risk">%(label_Species_General_Hazard_Group_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(ambient_risk_tabs)s<br />
+	  						%(ambient_risk_langs)s
+	  					</p>
+	  					<p>
+	  						<label for="hazard_group_ref" id="label_hazard_group_ref">%(label_Species_General_Reference)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+	  						<textarea id="hazard_group_ref" name="hazard_group_ref" class="mceEditor" cols="" rows="">%(hazard_group_ref)s</textarea>
+	  					</p>
+					</fieldset>
+                    </tr></td></table>
+  					<fieldset id="alt_state_table">
+						<legend>%(label_Species_General_Alternative_State)s</legend>  						
+						<p class="cols_2">
+							<label for="alt_state" id="label_alt_state">%(label_Species_General_Species)s</label><br />
+							<select onchange="checkAltState()" id="alt_state" name="alt_state"></select>
+						</p>  							
+						<p class="cols_2" id="p_alt_state_type">
+							<label for="alt_state_type" id="label_alt_state_type">%(label_Species_General_Alternative_State_Type)s</label><br />
+							<select id="alt_state_type" name="alt_state_type">%(alt_state_type)s</select>
+						</p>
+  					</fieldset>
+					<br/>
+  					<p>
+  						<label id="label_comments">%(label_Species_General_Comments)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" />%(comments_tabs)s<br />
+                        %(comments_langs)s
+  					</p>
+  				</div>
+				<div class="data" id="security">
+    				<input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+      				<p>
+      				   <table style="width:0;">
+      				     <tr>
+      				        <td>&nbsp;</td>
+      				        <th>%(label_Permission)s</th>
+      				     </tr>
+      				     %(groups_table)s
+      				   </table>
+      				</p>
+      				%(js_securitychanged)s
+				</div>
+					<script language='javascript' type='text/javascript'>
+			        	%(js_alternate_states)s
+			        </script>
+				</form>
+			</div>
+			<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+				<p><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+
+			</form>

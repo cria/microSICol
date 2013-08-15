@@ -1,0 +1,213 @@
+@charset "utf-8";
+/* CSS Document */
+
+label {
+  font-weight:bold;
+  color:#688E23;
+  text-transform:lowercase;
+}
+
+select.container {
+    width: auto;
+    font-size: 10px;
+}
+
+select.location {
+    width: auto;
+    font-size: 10px;
+    margin-right: 12px;
+}
+
+table.locationTable {
+    width: 650px;
+    padding: 8px;
+    border: 1px solid #688E23;
+}
+
+table.locationSummary {
+    padding-top: 1px;
+    padding-left: 1px;
+    font-size: 10px;
+    font-family: monospace;
+}
+
+td.locationDetailsSeparator {
+    width: 10px;
+}
+
+table.locationPicker {
+    width: 480px;
+    height: 330px;
+    border: 1px solid #688E23;
+    font-family: monospace;
+    text-align: left;
+}
+table.innerPicker {
+    width: auto;
+    text-align: center;
+}
+table.innerPicker th {
+    width: 20px;
+    text-align: center;
+    border-width: 0px;
+    padding: 5px;
+    border-style: none;
+    background-color: #E6ECD2;
+}
+table.innerPicker td {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    padding: 0px;
+    vertical-align: middle;
+    background-color: #F0F2E3;
+}
+
+input.location {
+    border: 1px solid green;
+    width: 30px;
+    text-align: center;
+}
+
+input.location_lookup {
+    width: auto;
+    vertical-align: middle; 
+}
+
+input.debug {
+    width: auto;
+}
+
+img.remove {
+    cursor: pointer;
+}
+
+img.new {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+table.location_picker {
+    background-color: white;
+    border: 1px solid #9BB06B;
+}
+
+div#location {
+}
+
+div.message_container { 
+    padding: 0px 10px;
+    height: 35px;
+}
+
+div.message {
+    display: none;
+    border: 1px solid #688E23;
+    background-color: #F0F0F0;
+    color: black;
+    font-size: 12px;
+    left-margin: auto;
+    right-margin: auto;
+    padding: 5px;
+}
+
+div.locationContainer {
+    border: 1px solid #688E23;
+    overflow: auto;
+    width: 150px;
+    height: 330px;
+}
+
+div.loading {
+    display: none;
+    height: 25px;
+    vertical-align: middle;
+}
+
+div.main {
+    height: 410px;
+    width: 650px;
+}
+
+div.containing {
+    overflow: auto;
+    width: 475px;
+    height: 325px;
+}
+
+div.main_location_div {
+    width: 650px;
+    height: 430px;
+}
+
+div.bottom_div {
+    position: absolute;
+    float: top;
+    top: 425px;
+    width: 650px;
+    height: 26px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.add {
+    vertical-align: middle;
+}
+
+div.location {
+    width: 100%;
+    height: 30px;
+}
+
+table.locationTable {
+    width: 100%;
+}
+
+table.locationTable td {
+}
+
+table.location {
+    border-width: 1px;
+    border-style: none;
+    border-color: rgb(230, 236, 210);
+    border-collapse: separate;
+}
+table.location th {
+    width: 20px;
+    text-align: center;
+    border-width: 0px;
+    padding: 5px;
+    border-style: none;
+    background-color: rgb(255, 245, 238);
+}
+table.location td {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    padding: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(255, 245, 238);
+    background-color: rgb(255, 245, 238);
+}
+table td.unav_location {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    border-width: 0px;
+    padding: 0;
+    border-style: none;
+    border-color: gray;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(255, 245, 238);
+}
+table td.selectedCell {
+    border: 1px solid gray;
+    background-color: #E8E8E8;
+}
+table td.containsStrain {
+    border: 1px black solid;
+    background-color: #D0D0D0;
+}

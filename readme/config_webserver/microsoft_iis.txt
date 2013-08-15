@@ -1,0 +1,19 @@
+Configuração do Microsoft IIS
+
+Diretorio base => Configuração => Adicionar
+
+Executavel=> "<diretorio python>\python.exe -u %s %s"
+(ex.: "C:\Python24\python.exe -u %s %s")
+
+Extensão=>".py"
+
+obs.: o parâmetro "-u" (PYTHON UNBUFFERED) é importante para funcionar corretamente o "upload" de arquivos.
+
+Para Windows 2003 Server: http://python.markrowsoft.com/iiswse.asp
+
+- Colocar no IIS para reconhecer tanto: index.html, index.htm
+---
+
+Deve-se dar permissão de escrita para o usuário do IIS* ao diretório /db
+
+*geralmente é IUSR_USUARIO, onde USUARIO é o nome de usuário em uso no Windows.

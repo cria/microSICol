@@ -1,0 +1,61 @@
+			<!-- people.form.html -->
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_People_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_People_Security)s</a>
+				</p>
+			</div>
+			<form action="./%(who)s.save.py" method="post" id="edit" >
+    			<div class="data" id="general">
+					<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+					<p class="hidden"><input type="hidden" name="next_action" value="%(next_action)s" /></p>
+					<p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+					<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+					<p>
+						<label for="name" id="label_name">%(label_People_General_Name)s</label><br />
+						<input onblur="isEmpty(this,null)" name="name" id="name" type="text" maxlength="50" value="%(name)s" />
+					</p>
+					<p>
+						<label for="nickname" id="label_nickname">%(label_People_General_Nickname)s</label><br />
+						<input name="nickname" id="nickname" type="text" maxlength="50" value="%(nickname)s" />
+					</p>
+					<p>
+						<label for="address" id="label_address">%(label_People_General_Personal_Address)s</label><br />
+						<textarea name="address" id="address" class="mceEditor">%(address)s</textarea>
+					</p>
+					<p>
+						<label for="phone" id="label_phone">%(label_People_General_Phone)s</label><br />
+						<textarea name="phone" id="phone" class="mceEditor" cols="" rows="">%(phone)s</textarea>
+					</p>
+					<p>             
+						<label for="email" id="label_email">%(label_People_General_Personal_Email)s</label><br />
+						<input onblur="checkOneEmail(this,null,true)" name="email" id="email" type="text" maxlength="100" value="%(email)s" />
+					</p>
+					<p>
+						<label id="label_comments">%(label_People_General_Comments)s</label>%(comments_tabs)s<br />
+						%(comments_langs)s
+					</p>
+                    %(people_contacts)s
+                </div>
+			    <div class="data" id="security">
+    			    <input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+				<p>
+          			   <label>%(label_People_Security_Checkbox_Go_Catalog)s <input type='checkbox' name='go_catalog' id='go_catalog' %(is_go_catalog_check)s />
+          			</p>
+        			<p>
+        			   <table>
+        			     <tr> 
+        			        <td>&nbsp;</td>
+        			        <th>%(label_permission)s</th>
+        			     </tr>
+        			     %(groups_table)s
+        			   </table>
+        			</p>
+    			</div>
+			    %(js_securitychanged)s
+			</form>
+			<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+				<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+			</form>
+			<!-- END people.form.html -->

@@ -1,0 +1,9 @@
+			<form action="./%(who)s.edit.py" method="post" id="edit">
+				<p><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="saveas" id="saveas" value="" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+			</form>
+			<form action="./%(who)s.del.py" method="post" id="del"> 
+				<p><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+			</form>

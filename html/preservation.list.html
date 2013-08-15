@@ -1,0 +1,23 @@
+%(top)s
+			<!-- preservation.list.html --> 
+			<div class="data" id="general">
+				<table id="data_table">
+					<thead>
+						<tr>
+							<th id="date"><a href="preservation.list.py?field_order=date&page=%(current_page)s">%(label_Preservation_General_Date)s</a>%(img_date)s</th>
+							<th id="lot"><a href="preservation.list.py?field_order=lot_name&page=%(current_page)s">%(label_Preservation_General_Lot)s</a>%(img_lot_name)s</th>
+							<th id="method"><a href="preservation.list.py?field_order=method&page=%(current_page)s">%(label_Preservation_General_Used_Method)s</a>%(img_method)s</th>
+							<th id="strain"><a href="preservation.list.py?field_order=species&page=%(current_page)s">%(label_Preservation_Strain_Strain)s</a>%(img_species)s</th>
+							<th id="stock"><a href="preservation.list.py?field_order=stock_minimum&page=%(current_page)s">%(label_Preservation_Strain_Stock_Minimum_Abreviation)s</a>%(img_stock_minimum)s</th>
+							<th id="instock"><a href="preservation.list.py?field_order=stock&page=%(current_page)s">%(label_Preservation_Strain_In_Stock)s</a>%(img_stock)s</th>
+						</tr>
+					</thead>
+					<tbody>
+						%(data)s
+					</tbody>
+					<tfoot>
+						%(datafoot)s
+					</tfoot>
+				</table>
+			</div>
+			<!-- END - preservation.list.html -->

@@ -1,0 +1,3 @@
+
+function validatePreferences()
+{errors=false;form=document.getElementById('edit');pwd=document.getElementsByName('util_user_pwd')[0];lbl_pwd=getLabel('util_user_pwd');pwd_confirm=document.getElementsByName('util_user_pwd_confirm')[0];lbl_pwd_confirm=getLabel('util_user_pwd_confirm');resetField(pwd,lbl_pwd);resetField(pwd_confirm,lbl_pwd_confirm);if(isSameValue(pwd,lbl_pwd,pwd_confirm,lbl_pwd_confirm,_("Passwords do not match.")))errors=true;return errors;}

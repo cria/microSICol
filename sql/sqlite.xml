@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<sqls>
+	<select>
+
+		<sql name="last_insert_id"><![CDATA[
+			SELECT last_insert_rowid();
+		]]></sql>
+	
+
+		<sql name="get_subcoll_templates"><![CDATA[
+			SELECT header, footer, styles FROM subcoll_report_conf where id_subcoll = '%(id_subcoll)s';
+		]]></sql>
+		
+		<sql name="last_insert_id"><![CDATA[
+			SELECT last_insert_rowid();
+		]]></sql>
+	
+		<sql name="login_test"><![CDATA[
+			SELECT COUNT(login) as count_login, id_user as id_user FROM user WHERE login = '%(login)s' AND pwd = '%(pwd)s';]]></sql>
+			
+		<sql name="get_user_data"><![CDATA[
+			SELECT id_user, name as user_name FROM user WHERE login = '%(login)s';]]></sql>
+
+		<sql name="get_user_name"><![CDATA[
+			SELECT name FROM user WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="get_all_users"><![CDATA[
+			SELECT id_user, login, pwd, name, comments FROM user ORDER BY name;]]></sql>
+
+		<sql name="get_subcoll_data_langs"><![CDATA[
+			SELECT data_lang FROM sys_data_lang WHERE id_subcoll = '%(id_subcoll)s' ORDER BY lang_index ASC;]]></sql>
+
+		<sql name="get_all_dbs"><![CDATA[
+			SELECT base.id_base as base_id,base.host as host,base.port as port,base.dbname as db_name,
+      base.user as user,base.pwd as pwd,dbms.id_dbms as dbms_id, dbms.name as dbms_name, dbms.name as dbms 
+      FROM base LEFT JOIN dbms ON (base.id_dbms=dbms.id_dbms);]]></sql>
+
+		<sql name="get_all_dbs_log"><![CDATA[
+			SELECT
+				base_log.id_base_log as base_id,
+				base_log.host as host,
+				base_log.port as port,
+				base_log.dbname as db_name,
+				base_log.user as user,
+				base_log.pwd as pwd,
+				dbms.id_dbms as dbms_id,
+				dbms.name as dbms_name 
+			FROM
+				base_log
+				LEFT JOIN dbms ON (base_log.id_dbms=dbms.id_dbms)
+			WHERE
+				base_log.id_base = '%(id_base)s';
+		]]></sql>
+
+		<sql name="get_all_dbms"><![CDATA[
+			SELECT id_dbms,name FROM dbms;]]></sql>
+
+		<sql name="get_user_colls"><![CDATA[
+			SELECT coll.id_coll AS id_coll,access.id_subcoll AS id_subcoll FROM access LEFT JOIN subcoll ON (subcoll.id_subcoll=access.id_subcoll)
+      LEFT JOIN coll ON (coll.id_coll=subcoll.id_coll)
+      WHERE id_user = '%(id_user)s';]]></sql>
+
+		<sql name="get_user_preferences"><![CDATA[
+			SELECT label_lang FROM user_pref WHERE id_user = '%(id_user)s';]]></sql>
+
+		<sql name="get_user_lines_per_page"><![CDATA[
+			SELECT lines_per_page FROM user WHERE id_user = '%(id_user)s';]]></sql>
+		
+		<sql name="get_user_max_num_pages"><![CDATA[
+			SELECT max_num_pages FROM user WHERE id_user = '%(id_user)s';]]></sql>
+
+		<sql name="get_user_show_str_inactives"><![CDATA[
+			SELECT show_str_inactives FROM user WHERE id_user = '%(id_user)s';]]></sql>
+
+		<sql name="get_user_label"><![CDATA[
+			SELECT label_lang FROM user_pref WHERE id_user = '%(id_user)s';]]></sql>
+
+		<sql name="get_coll_data"><![CDATA[
+			SELECT c.id_coll as id_coll, c.code as coll_name
+			FROM access a
+			LEFT JOIN subcoll ON (subcoll.id_subcoll=a.id_subcoll) 
+      LEFT JOIN coll c ON (c.id_coll=subcoll.id_coll)
+			WHERE a.id_user = '%(id_user)s';]]></sql>
+			
+		<sql name="get_subcoll_data"><![CDATA[
+			SELECT s.id_subcoll as id_subcoll, s.code as subcoll_code
+			FROM subcoll s INNER JOIN access a ON (a.id_subcoll=s.id_subcoll)
+			WHERE a.id_user = '%(id_user)s';]]></sql>
+
+		<sql name="get_subcoll_preferences"><![CDATA[
+			SELECT date_input_mask, date_output_mask, label_lang
+			FROM sys_config
+			WHERE id_subcoll = '%(id_subcoll)s';]]></sql>
+
+		<sql name="get_coll_name"><![CDATA[
+			SELECT code as coll_name FROM coll WHERE id_coll = '%(id_coll)s';]]></sql>
+			
+		<sql name="get_subcoll_code"><![CDATA[
+			SELECT code as subcoll_code FROM subcoll WHERE id_subcoll = '%(id_subcoll)s' AND id_coll = '%(id_coll)s';]]></sql>
+
+		<sql name="subcoll_count"><![CDATA[
+			SELECT COUNT(id_user) AS subcoll_count FROM access WHERE id_user = '%(id_user)s';]]></sql>
+
+		<sql name="get_colls"><![CDATA[
+			SELECT coll.id_coll as id_coll, coll.code as coll_code
+			FROM access 
+			LEFT JOIN subcoll  USING (id_subcoll)
+			LEFT JOIN coll  USING (id_coll)
+			WHERE access.id_user = '%(id_user)s' GROUP BY coll.code;]]></sql>
+
+		<sql name="get_subcolls"><![CDATA[
+			SELECT access.id_subcoll as id_subcoll FROM access
+			LEFT JOIN subcoll ON (subcoll.id_subcoll=access.id_subcoll)
+			LEFT JOIN coll c ON (c.id_coll=subcoll.id_coll)
+      WHERE access.id_user = '%(id_user)s' AND c.id_coll = '%(id_coll)s';]]></sql>
+
+		<sql name="get_accesses"><![CDATA[
+			SELECT COUNT(id_user) FROM access WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="get_subcolls_from_coll"><![CDATA[
+			SELECT id_subcoll FROM subcoll WHERE id_coll='%(coll_id)s';]]></sql>
+
+		<sql name="get_subcolls_from_user"><![CDATA[
+			SELECT id_subcoll FROM access WHERE id_user='%(user_id)s';]]></sql>
+
+		<sql name="get_db_info"><![CDATA[
+			SELECT b.id_base, b.host as host, b.port as port, b.dbname as dbname, b.user as user, b.pwd as pwd, d.name as dbms
+			FROM base b, coll c
+			LEFT JOIN dbms d ON b.id_dbms = d.id_dbms
+			WHERE c.id_coll = '%(id_coll)s' AND b.id_base = c.id_base;]]></sql>
+		
+		<sql name="get_db_log"><![CDATA[
+			SELECT base_log.host as host, base_log.port as port, base_log.dbname as dbname,
+			base_log.user as user, base_log.pwd as pwd, dbms.name as dbms
+			FROM base_log LEFT JOIN dbms ON (base_log.id_dbms = dbms.id_dbms)
+			WHERE id_base = '%(id_base)s';]]></sql>
+
+		<sql name="get_all_colls"><![CDATA[
+			SELECT coll.id_coll as coll_id,coll.name as coll_name,coll.code as coll_code, subcoll.id_subcoll as subcoll_id,
+			subcoll.code as subcoll_code,dbms.name as dbms_name,coll.id_base as coll_base FROM coll 
+      LEFT JOIN subcoll ON (coll.id_coll=subcoll.id_coll) 
+      LEFT JOIN base ON (coll.id_base=base.id_base) 
+      LEFT JOIN dbms ON (base.id_dbms=dbms.id_dbms)  
+			ORDER BY coll.code;]]></sql>
+
+		<sql name="get_all_colls_only"><![CDATA[
+			SELECT coll.id_coll as coll_id,coll.name as coll_name,coll.code as coll_code,
+			dbms.name as dbms_name,coll.id_base as coll_base,coll.logo as coll_logo FROM coll 
+      LEFT JOIN base ON (coll.id_base=base.id_base) 
+      LEFT JOIN dbms ON (base.id_dbms=dbms.id_dbms)  
+			ORDER BY coll.code;]]></sql>
+
+		<sql name="get_coll_logo"><![CDATA[
+			SELECT coll.logo as coll_logo FROM coll WHERE coll.id_coll='%(id_coll)s';]]></sql>
+
+		<sql name="get_all_subcolls"><![CDATA[
+			SELECT subcoll.id_subcoll as subcoll_id,subcoll.id_coll as coll_id,subcoll.code as subcoll_code,
+			subcoll.name as subcoll_name,coll.code as coll_code, coll.name as coll_name,
+      sys_config.date_input_mask as input,sys_config.date_output_mask as output,
+      sys_config.label_lang as lang FROM subcoll 
+      INNER JOIN coll ON (coll.id_coll=subcoll.id_coll)
+      LEFT JOIN sys_config ON (sys_config.id_subcoll=subcoll.id_subcoll) 
+			ORDER BY subcoll.name;]]></sql>
+
+		<sql name="load_list_order"><![CDATA[
+			SELECT area,field,mode FROM user_list_order WHERE id_user='%(id_user)s' AND id_subcoll='%(id_subcoll)s';]]></sql>
+
+		<sql name="load_area_list_order"><![CDATA[
+			SELECT field,mode FROM user_list_order WHERE id_user='%(id_user)s' AND id_subcoll='%(id_subcoll)s' AND area='%(area)s';]]></sql>
+
+		<sql name="count_subcoll"><![CDATA[SELECT COUNT(id_subcoll) FROM subcoll WHERE code='%(subcoll_code)s' AND id_coll='%(subcoll_coll)s']]></sql>
+		
+		<sql name="count_coll"><![CDATA[SELECT COUNT(id_coll) FROM coll WHERE code='%(coll_code)s']]></sql>
+		
+		<sql name="get_subcoll_log_level"><![CDATA[
+			SELECT log_level FROM subcoll_log_level WHERE id_subcoll='%(id_subcoll)s';]]></sql>
+		
+		<sql name="get_subcolls_level"><![CDATA[
+			SELECT id_subcoll FROM subcoll_log_level WHERE log_level='%(log_level)s';]]></sql>
+	</select>
+  <insert>
+		<sql name="save_list_order"><![CDATA[
+			INSERT INTO user_list_order(id_user,id_subcoll,area,field,mode) VALUES ('%(id_user)s','%(id_subcoll)s','%(area)s','%(field)s','%(mode)s');]]></sql>
+
+		<sql name="set_all_accesses"><![CDATA[
+			INSERT INTO access SELECT %(id_user)s,id_subcoll FROM subcoll;]]></sql>
+
+		<sql name="insert_user_label"><![CDATA[
+			INSERT INTO user_pref(id_user,label_lang) VALUES('%(id_user)s','%(label_lang)s') ;]]></sql>
+
+		<sql name="insert_user"><![CDATA[
+			INSERT INTO user(login, pwd, name, comments, lines_per_page,max_num_pages) VALUES ('%(login)s','%(pwd)s','%(name)s','%(comments)s','50','5');]]></sql>
+
+		<sql name="insert_access"><![CDATA[
+			INSERT INTO access(id_user,id_subcoll) VALUES ('%(id_user)s','%(id_subcoll)s');]]></sql>
+
+		<sql name="insert_base"><![CDATA[
+			INSERT INTO base(host,port,dbname,user,pwd,id_dbms) VALUES ('%(host)s','%(port)s','%(db_name)s','%(base_user)s','%(base_pwd)s','%(dbms_id)s');]]></sql>
+
+		<sql name="insert_base_log"><![CDATA[
+			INSERT INTO base_log(id_base,host,port,dbname,user,pwd,id_dbms) VALUES ('%(id_base)s','%(host)s','%(port)s','%(db_name)s','%(base_user)s','%(base_pwd)s','%(dbms_id)s');]]></sql>
+
+		<sql name="insert_coll"><![CDATA[
+			INSERT INTO coll(id_base,code,name,logo) VALUES ('%(coll_base)s','%(coll_code)s','%(coll_name)s','%(coll_logo)s');]]></sql>
+
+		<sql name="insert_blank_subcoll_template"><![CDATA[
+			INSERT INTO subcoll_report_conf VALUES ( (SELECT MAX(id_subcoll) from subcoll )  , "", "", "");]]></sql>
+			
+		<sql name="insert_subcoll_template"><![CDATA[
+			INSERT INTO subcoll_report_conf (id_subcoll,header,footer,styles) VALUES (%(id_subcoll)s, '%(header)s', '%(footer)s', '%(styles)s');]]></sql>
+			
+		<sql name="insert_subcoll"><![CDATA[
+			INSERT INTO subcoll(id_coll,code,name) VALUES('%(subcoll_coll)s','%(subcoll_code)s','%(subcoll_name)s');]]></sql>
+
+		<sql name="insert_sys_config"><![CDATA[
+			INSERT INTO sys_config(id_subcoll,date_input_mask,date_output_mask,label_lang) VALUES('%(subcoll_id)s','%(date_input_mask)s','%(date_output_mask)s','%(label_lang)s');]]></sql>
+			
+		<sql name="insert_sys_data_lang"><![CDATA[
+			INSERT INTO sys_data_lang (id_subcoll,data_lang,lang_index) VALUES ('%(id_subcoll)s','%(data_lang)s','%(lang_index)s');]]></sql>
+  </insert>
+	<update>
+		<sql name="update_list_order"><![CDATA[
+			UPDATE user_list_order SET field='%(field)s',mode='%(mode)s' WHERE id_user='%(id_user)s' AND id_subcoll='%(id_subcoll)s' AND area='%(area)s' ;]]></sql>
+
+		<sql name="update_user_label"><![CDATA[
+			UPDATE user_pref SET label_lang='%(label_lang)s' WHERE id_user = '%(id_user)s';]]></sql>
+
+ 		<sql name="update_user"><![CDATA[
+			UPDATE user SET login='%(login)s', pwd='%(pwd)s', name='%(name)s',comments='%(comments)s' WHERE id_user='%(id_user)s';]]></sql>
+
+ 		<sql name="update_user_pwd_only"><![CDATA[
+			UPDATE user SET pwd='%(pwd)s' WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="update_user_no_pwd"><![CDATA[
+			UPDATE user SET login='%(login)s', name='%(name)s',comments='%(comments)s' WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="update_base"><![CDATA[
+			UPDATE base SET id_dbms='%(dbms_id)s',host='%(host)s',port='%(port)s',dbname='%(db_name)s',user='%(base_user)s',pwd='%(base_pwd)s' WHERE id_base='%(base_id)s';]]></sql>
+
+		<sql name="update_base_log"><![CDATA[
+			UPDATE base_log SET id_dbms='%(dbms_id)s',host='%(host)s',port='%(port)s',dbname='%(db_name)s',user='%(base_user)s',pwd='%(base_pwd)s' WHERE id_base_log='%(base_id_log)s';]]></sql>
+  
+		<sql name="update_coll"><![CDATA[
+			UPDATE coll SET id_base='%(coll_base)s',code='%(coll_code)s',name='%(coll_name)s',logo='%(coll_logo)s' WHERE id_coll='%(coll_id)s';]]></sql>
+
+		<sql name="update_subcoll"><![CDATA[
+			UPDATE subcoll SET id_coll='%(subcoll_coll)s',code='%(subcoll_code)s',name='%(subcoll_name)s' WHERE id_subcoll='%(subcoll_id)s';]]></sql>
+		
+		<sql name="update_subcoll_template"><![CDATA[UPDATE subcoll_report_conf set header = '%(header)s',footer = '%(footer)s', styles = '%(styles)s' WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+		<sql name="update_sys_config"><![CDATA[
+			UPDATE sys_config SET date_input_mask='%(date_input_mask)s',date_output_mask='%(date_output_mask)s',label_lang='%(label_lang)s' WHERE id_subcoll='%(subcoll_id)s';]]></sql>
+			
+ 		<sql name="update_user_lines_per_page"><![CDATA[
+			UPDATE user SET lines_per_page='%(lines_per_page)s' WHERE id_user='%(id_user)s';]]></sql>
+		
+		<sql name="update_user_max_num_pages"><![CDATA[
+			UPDATE user SET max_num_pages='%(max_num_pages)s' WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="update_user_show_str_inactives"><![CDATA[
+			UPDATE user SET show_str_inactives='%(show_str_inactives)s' WHERE id_user='%(id_user)s';]]></sql>
+  </update>
+	<delete>
+		<sql name="delete_user_label"><![CDATA[
+			DELETE FROM user_pref WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="delete_user_access"><![CDATA[
+			DELETE FROM access WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="delete_subcoll_access"><![CDATA[
+			DELETE FROM access WHERE id_subcoll='%(subcoll_id)s';]]></sql>
+
+		<sql name="delete_user_pref"><![CDATA[
+			DELETE FROM user_pref WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="delete_user"><![CDATA[
+			DELETE FROM user WHERE id_user='%(id_user)s';]]></sql>
+
+		<sql name="delete_base"><![CDATA[
+			DELETE FROM base WHERE id_base='%(base_id)s';]]></sql>
+
+		<sql name="delete_base_log"><![CDATA[
+			DELETE FROM base_log WHERE id_base='%(base_id)s';]]></sql>
+
+		<sql name="delete_coll"><![CDATA[
+			DELETE FROM coll WHERE id_coll='%(coll_id)s';]]></sql>
+
+		<sql name="delete_subcoll"><![CDATA[
+			DELETE FROM subcoll WHERE id_subcoll='%(subcoll_id)s';]]></sql>
+
+		<sql name="delete_subcoll_template"><![CDATA[
+			DELETE FROM subcoll_report_conf WHERE id_subcoll='%(subcoll_id)s';]]></sql>
+			
+		<sql name="delete_sys_config"><![CDATA[
+			DELETE FROM sys_config WHERE id_subcoll='%(subcoll_id)s';]]></sql>
+			
+		<sql name="delete_subcoll_data_lang"><![CDATA[
+			DELETE FROM sys_data_lang WHERE id_subcoll='%(id_subcoll)s';]]></sql>
+  </delete>
+</sqls>

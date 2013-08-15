@@ -1,0 +1,73 @@
+<!-- main.html --> 
+<script type="text/javascript">
+	window.onload = function(){
+		Feedback(%(feedback_value)s);
+		%(position_focus)s
+	};
+</script>
+<body>
+	<div id="position">
+		<div id="top">
+			<div id="logo">
+				<img src="./logo.py" alt="SICol" width="130" height="30" />
+				<p id="coll_name">%(subcoll_code)s</p>
+			</div>
+			<div id="top_center">
+				<div id="user_name"><p>%(user_name)s</p></div>
+				<div id="link_pref">
+					<p class="user_menu"><a id="active_preferences" href="./preferences.py" title="%(link_Preferences)s">%(link_Preferences)s</a></p>
+				</div>
+				<div id="user_menu_admin" style="float:left;">
+					<p class="user_menu">
+						<img src="../img/menu_separator.png" alt="" />
+						<a href="./configuration.py" id="active_configuration" title="%(link_Configuration)s">%(link_Configuration)s</a>
+					</p>
+				</div>
+				<div id="user_menu_utilities" style="float:left;">
+					<p class="user_menu">
+						<img src="../img/menu_separator.png" alt="" />
+						<a href="./traceability.py" id="active_utilities" title="%(link_Utilities)s">%(link_Utilities)s</a>
+					</p>
+				</div>
+			</div>
+			<div id="message">%(message)s</div>
+			<div id="link_exit"><a id="action_exit" href="javascript:confirmExit();" title="%(link_Exit_Title)s">%(link_Exit)s</a></div>
+		</div>
+		<div id="middle">
+			<div id="menu">
+				<p>
+					<a href="./species.list.py" id="active_species" title="%(menu_Species)s">%(menu_Species)s</a>
+					<a href="./strains.list.py" id="active_strains" title="%(menu_Strains)s">%(menu_Strains)s</a>
+					<a href="./institutions.list.py" id="active_institutions" title="%(menu_Institutions)s">%(menu_Institutions)s</a>
+					<a href="./people.list.py" id="active_people" title="%(menu_People)s">%(menu_People)s</a>
+					<a href="./doc.list.py" id="active_documents" title="%(menu_Documents)s">%(menu_Documents)s</a>
+					<a href="./ref.list.py" id="active_references" title="%(menu_References)s">%(menu_References)s</a>
+					<a href="./preservation.list.py" id="active_preservation" title="%(menu_Preservation)s">%(menu_Preservation)s</a>
+					<a href="./distribution.list.py" id="active_distribution" title="%(menu_Distribution)s">%(menu_Distribution)s</a>
+					<a href="./reports.list.py" id="active_reports" title="%(menu_Reports)s">%(menu_Reports)s</a>
+				</p>
+			</div>
+			
+			<div id="prev_nav_button">
+				%(url_prev)s %(img_prev)s %(close_link_prev)s
+			</div>
+			<div id="bar_top">				
+				<img src="../img/main_bar_top.png" alt="" />
+			</div>
+			<div id="next_nav_button">
+				%(url_next)s %(img_next)s %(close_link_next)s
+			</div>
+			<div id="submenu">
+				<p>
+%(submenu)s 
+				</p>
+			</div>
+		</div>
+		<div id="thin_bar"></div>
+		<div id="data_container">
+			<div id="feedback" class="feedback_ok"></div>
+%(page)s
+		</div>
+	</div>
+</body>
+<!-- END - main.html -->

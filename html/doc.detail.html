@@ -1,0 +1,40 @@
+			<!-- doc.detail.html -->
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Documents_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Documents_Security)s</a>
+				</p>
+			</div> 
+			<div class="data" id="general">
+				<table border="0" cellspacing="0" class="table_1">
+					<tr>
+						<td  class="cols_2">
+							<p><label>%(label_Documents_General_Code)s</label><br />%(code)s</p>
+						</td>
+						<td  class="cols_2">
+							<p><label>%(label_Documents_General_Qualifier)s</label><br />%(qualifier)s</p>
+						</td>
+					</tr>
+				</table>
+				<br style="clear:left"/>
+				%(content_test_category)s
+				<p><label>%(label_Documents_General_Title)s</label><br />%(title_langs)s</p>
+				<p><label>%(label_Documents_General_Description)s</label><br />%(description_langs)s</p>
+				<p><label>%(label_Documents_General_File_Name)s</label><br />%(file_name_langs)s</p>
+			</div>
+			<div class="data" id="security">
+			<p>
+			<label>%(label_go_catalog)s</label>
+			</p>
+			<p>
+			   <table>
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+			</div>
+%(hidden_forms)s
+			<!-- END - doc.detail.html -->

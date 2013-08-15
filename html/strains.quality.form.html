@@ -1,0 +1,103 @@
+<!-- strains.quality.form.html --> 
+<div class="data" id="general">
+	<div id="feedback" class="feedback_ok"></div>
+	<form action="./%(who)s.save.py" method="post" id="edit" >
+		<input type="hidden" name="id_coll" value="%(id_coll)s" id="id_coll">
+		<input type="hidden" name="id_subcoll" value="%(id_subcoll)s" id="id_subcoll">
+		<input type="hidden" name="id_strain" id="id_strain" value="%(id_strain)s" />
+		<input type="hidden" name="id_quality" id="id_quality" value="%(id_quality)s" />
+		<input type="hidden" name="next_action" id="action" value="%(action)s" />
+		<input type="hidden" id="global_counter_total" name="global_counter_total" value="" />
+		<input type="hidden" id="global_lot_strain_values" name="global_lot_strain_values" value="" />
+		<input type="hidden" id="id_lot_old" name="id_lot_old" value="%(quality_id_lot)s" />
+		<input type="hidden" name="locations_data" value="" id="locations_data">
+		<div class="quality_buttons">
+			<p>
+	          <a class='quality_link' id='save_submit' href="javascript: validateStrainQuality('%(date_format)s')" title="%(label_Save)s"><img src="../img/record_save.png" title="%(label_Save)s" alt="%(label_Save)s"></a>&nbsp;&nbsp;
+	          <a class='quality_link' href="javascript: cancelEdit();" title="%(label_Cancel)s"><img src="../img/record_cancel.png" title="%(label_Cancel)s" alt="%(label_Cancel)s"></a>
+	        </p>
+      	</div>
+      	<table>
+      		<tr>
+      			<td>
+      				<p>
+						<label for="date" id="label_date">%(label_Strains_QC_Date)s</label><br />
+						<input onkeyup="checkCharModifier(this,event)" onkeypress="return checkDateSlash(this,event)" onblur="if (!isEmpty(this, document.getElementById('label_date')))checkValidDate(this,null,'%(date_format)s');" name="date" id="date" class="date" type="text" maxlength="10" value="%(date)s" />
+					</p>
+      			</td>
+      			<td>
+      				<p>
+						<label for="tec_resp" id="label_tec_resp">%(label_Strains_QC_Responsible)s</label><br />
+						<select name="tec_resp" id="tec_resp" onblur="isEmptySelect(this);">%(tec_resp)s</select>
+					</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td>
+      				<p>
+						<label for="lot" id="label_lot">%(label_Strains_QC_Lot)s</label><br />
+						<select name="lot" id="lot" onchange='resetAmpoules();applyTextUnitMeasure();' onblur="isEmptySelect(this);">%(lots)s</select>
+					</p>
+      			</td>
+      			<td>
+      				<p>
+						%(location)s
+					</p>
+      			</td>
+      		</tr>
+      	</table>
+		
+		<a class="a_pointer" onclick='return newQualityTest()'><img title='%(label_Strains_QC_New_Test)s' src='../img/new_item.gif' border='0'/></a> <br />
+		<hr />
+  		
+  		<!-- WHERE NEW TEST WILL BE AT -->
+		<div id='other_quality_tests'>
+		</div>
+
+        <!-- CLONABLE FORM -->					
+		<div id='invisible_clonable_fields'>
+			<p>
+				<a class="a_pointer" id='minimize_test' onclick="maximizeMinimize(this, 'inner_quality_test_');" ><img title='%(label_Strains_QC_Minimize)s' src='../img/minimize.gif' border='0' /></a>
+				<label for="test" id="label_test">%(label_Strains_QC_Used_Test)s</label><br />
+				<select name="test" id="test" class="select_50">%(quality_tests)s</select>
+				&nbsp; <a class="a_pointer" id='delete_strain' onclick="return removeTest(this);" ><img title='%(label_Strains_QC_Remove_Test)s' src='../img/delete.png' border='0' /></a>
+			</p>
+			<div id='inner_quality_test'>
+				<p>
+					<label for="purity" id="label_purity">%(label_Strains_QC_Purity)s</label><br />
+					%(purity)s
+				</p>
+				<p>
+					<label for="counting" id="label_counting">%(label_Strains_QC_Counting)s</label><br />
+					<input name="counting" id="counting" type="text" maxlength="100" value="%(counting)s" /> %(label_Strains_QC_Counting_Unity)s
+	                <input class="checkbox" type="checkbox" %(is_ogm_check)s id="counting_not_apply" name="counting_not_apply" style="display:inline;" /><label class="form_info" for="counting_not_apply" id="label_counting_not_apply">%(label_Strains_QC_Not_Apply)s</label>
+				</p>
+				<p>
+					<label for="result" id="label_result">%(label_Strains_QC_Result)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+					<textarea name="result" id="result"  cols="80" rows="5">%(result)s</textarea>
+				</p>
+				<p>
+					<label for="comments" id="label_comments">%(label_Strains_QC_Observations)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+					<textarea name="comments" id="comments" cols="80" rows="5">%(comments)s</textarea>
+				</p>
+		  	</div>
+  			<hr />
+  		</div>
+  		<script type='text/javascript'>
+  			var test_info = new Array();
+        	%(js_data)s
+        	%(js_global_lot_strain)s
+			%(js_quality_data)s
+        </script>
+  	</form>
+</div>
+<script type="text/javascript">
+	//Add event for window.onload
+	addEvent(window, 'load', loadHiddenForm);
+	addEvent(window, 'load', loadExtraForms);
+	addEvent(window, 'load', resizeIframe);
+	addEvent(window, 'load', filterLotNumber);
+	addEvent(window, 'load', applyTextUnitMeasure);
+	addEvent(window, 'load', disableLinks);
+</script>
+<!-- END strains.quality.form.html -->

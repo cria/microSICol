@@ -1,0 +1,77 @@
+	<!-- reports.detail.html -->
+	<div id="above_data">
+		<p>
+			<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Reports_General)s</a>
+			<a href="javascript:show('security');" id="tab_security">%(menu_Reports_Security)s</a>
+		</p>
+	</div>			
+	<form action="./%(who)s.show.py" method="post" id="detail" target="_blank">
+		<div class="data" id="general">
+            
+			<h3><i>%(description)s</i></h3>
+
+			<table class="report_generate">
+                <tbody>
+			    <tr>
+                    <td>
+                        %(filter)s
+                        <br />
+                        <p><label>%(label_Rep_General_Report_Format)s</label><br />%(report_format)s</p>
+                        <br />
+                        <p><label>%(label_Rep_Language_Values)s</label><br /><select name='language'>%(languages)s</select></p>
+                        <br />
+                        <br />
+                        <input type="image" src="../img/report_generate.png" onclick="return validateReports(3);" title="Gerar Relatório" class="image" />
+                        <br />
+                        <br />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            
+            <br />
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <p><label>%(label_Rep_General_Type)s</label><br />%(type_name)s</p>
+                        <br />
+                        %(select)s
+                        %(group)s
+                        %(order)s
+                        %(total)s
+                    </td>
+                </tr>
+                </tbody>
+			</table>
+		</div>
+		
+		<div class="data" id="security">
+			<p>
+			   <table>
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+		</div>
+		
+		<script language='javascript'>
+			var arrayFields = %(arrayFields)s;
+			var arrayFieldsValues = %(arrayFieldsValues)s;
+			var arrayFieldsDef = %(arrayFieldsDef)s;
+			var arrayTypes = %(arrayTypes)s;
+			var lang_code = '%(lang_code)s';
+			var enum_values = %(enum_values)s;
+			var enum_label_values = %(enum_label_values)s;
+
+			%(scripts_report)s
+		</script>
+		<input name="xml_dict" type="hidden" value="%(xml_dict)s">
+		<input name="id_report" type="hidden" value="%(id_report)s">
+		<input name="notnulls" type="hidden" value="%(notnulls)s">
+	</form>
+%(hidden_forms)s
+	<!-- END - reports.detail.html -->

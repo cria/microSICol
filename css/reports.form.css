@@ -1,0 +1,84 @@
+@charset "utf-8";
+/* CSS Document */
+
+form input	
+{
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(155,176,107);
+}
+
+/* form input[type="text"]  */
+input
+{
+  width:100px;
+}
+
+a.ativo
+{
+	color:#000000 !important;
+}
+
+a.selecionado
+{
+	color:#B7683E !important;
+}
+
+a.inativo
+{
+	color:#CCCCC0 !important;
+}
+
+div.content
+{
+	background-color:#F9F9F9;
+	border:solid 1px #9BB06B;
+	overflow:auto;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+div.content p
+{
+  margin-left:3px;
+  padding-top:5px;
+  padding-bottom:5px;
+  cursor:default;
+}
+
+div.content table tbody tr td
+{
+  color: black;
+  font-weight: normal;
+}
+
+div.content table tbody tr th
+{
+  color: black;
+  font-weight: bold;
+  text-transform:uppercase;
+}
+
+div.content table#data_table
+{
+  color: black;
+  font-weight: normal;
+  text-transform: none;
+}
+
+
+div.content table thead tr th
+{
+  color: black;
+  font-weight: bold;
+}
+
+div.content p label,
+div.content label
+{
+  font-weight:bold;
+  color:#688E23;
+  text-transform:lowercase;
+}
+
+

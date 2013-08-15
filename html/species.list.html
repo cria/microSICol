@@ -1,0 +1,20 @@
+%(top)s
+			<!-- species.list.html --> 
+			<div class="data" id="general">
+				<table id="data_table">
+					<thead>
+						<tr>
+							<th id="taxon_group"><a href="species.list.py?field_order=taxongroup&page=%(current_page)s">%(label_Species_General_Taxonomic_Group)s</a>%(img_taxongroup)s</th>
+							<th id="species"><a href="species.list.py?field_order=species&page=%(current_page)s">%(label_Species_General_Species)s</a>%(img_species)s</th>
+							<th id="hazard_group"><a href="species.list.py?field_order=hazard_group&page=%(current_page)s">%(label_Species_General_Classification)s</a>%(img_hazard_group)s</th>
+						</tr>
+					</thead>
+					<tbody>
+						%(data)s
+					</tbody>
+					<tfoot>
+						%(datafoot)s
+					</tfoot>
+				</table>
+			</div>
+			<!-- END - species.list.html -->

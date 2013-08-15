@@ -1,0 +1,52 @@
+@charset "utf-8";
+/* CSS Document */
+
+div.sciname_builder 
+{
+	display:none;
+}
+
+div.sciname_builder_current
+{
+    display:block;
+}
+
+input.sci_name
+{
+    width:120px;
+    border:1px solid green;
+}
+
+input.sci_author
+{
+    width:120px;
+    border:1px solid green;
+}
+
+div#menu a#active_species
+{
+	color:rgb(183,104,62);
+}
+
+.td_3
+{
+width: 33%;
+}
+
+.td_3 input
+{
+width: 87%;
+}
+
+div table
+{
+width: 100%;
+}
+select#taxon_group
+{
+	width: 170px;
+}
+select#hazard_group
+{
+	width: 35px;
+}

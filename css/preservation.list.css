@@ -1,0 +1,55 @@
+@charset "utf-8";
+/* CSS Document */
+
+table#data_table thead th#date 
+{
+width: 70px;
+}
+
+table#data_table thead th#id_user
+{
+}
+
+table#data_table thead th#id_lot
+{
+}
+
+table#data_table thead th#id_stock_minimum
+{
+}
+
+table#data_table thead th#id_used_method
+{
+}
+
+td.stock
+{
+	text-align: right;
+}
+
+td.instock
+{
+	text-align: right;
+}
+
+span.red
+{
+	color: red;
+}
+
+table td
+{
+vertical-align: top;
+}
+td.date
+{
+	vertical-align:top;
+}
+td.lot
+{
+	vertical-align:top;
+}
+td.method
+{
+	vertical-align:top;
+}

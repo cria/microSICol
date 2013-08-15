@@ -1,0 +1,40 @@
+<!-- reports.form.step5.html -->
+<div id="above_data">
+	<p>
+		<a href="#" class="ativo" onclick="$('#step_next').val('1'); $('#formReports')[0].submit();">%(menu_Rep_General)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="$('#step_next').val('2'); $('#formReports')[0].submit();">%(menu_Rep_Fields)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="$('#step_next').val('3'); $('#formReports')[0].submit();">%(menu_Rep_Filters)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="$('#step_next').val('4'); $('#formReports')[0].submit();">%(menu_Rep_Format)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="selecionado">%(menu_Rep_Security)s</a>
+	</p>
+</div>
+<form action="./reports.new.py" method="post" id="formReports" name="formReports">
+	<div class="content">
+		<input type="hidden" id="step" name="step" value="5" />
+		<input type="hidden" id="step_next" name="step_next" value="" />
+		
+		<div id="security">
+			<input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+			<p>
+			  <table>
+			     <tr>
+				<td>&nbsp;</td>
+				<th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			  </table>
+			</p>
+			%(js_securitychanged)s
+		</div>
+	</div>
+</form>
+
+<form action="./reports.list.py" method="post" id="cancel">
+	<p><input type="hidden" name="id" value="%(id)s" /></p>
+	<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+</form>
+<!-- END - reports.form.step5.html -->

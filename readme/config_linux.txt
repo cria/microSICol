@@ -1,0 +1,5 @@
+Dar permissão de escrita (chmod 777) para os seguintes diretórios:
+/session
+/doc_file
+/csv_import
+/js/js_i18n

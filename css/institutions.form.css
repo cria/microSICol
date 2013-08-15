@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+
+div#menu a#active_institutions
+{
+	color:rgb(183,104,62);
+}
+
+form input#code1,form input#code2,form input#code3
+{
+  width: 140px;
+  _width: 148px; /* IE hack */
+}
+form input#name, form input#complement
+{
+	width: 425px;
+}

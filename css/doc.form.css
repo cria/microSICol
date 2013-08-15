@@ -1,0 +1,17 @@
+@charset "utf-8"; 
+/* CSS Document */
+
+form input#code
+{
+  width: 140px;
+  _width: 148px; /* IE hack */
+}
+
+form input.doctitle
+{
+	width: 525px;
+}
+form select#qualifier
+{
+	width: 75px;
+}

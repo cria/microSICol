@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+
+div#menu a#active_institutions
+{
+	color:rgb(183,104,62);
+}
+
+div.detail div
+{
+  margin: 0px;
+  width:100%;
+  height: 35px;
+  position: relative;
+  display:block;
+}

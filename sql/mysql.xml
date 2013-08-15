@@ -1,0 +1,4194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sqls dbms="mysql" version="5.0">
+    <select>
+        <sql name="log_log_list"><![CDATA[
+            SELECT
+                log.id_log,
+                log.date_time,
+                log.user,
+                log_operations.label as operation_label,
+                log.id_subcoll,
+                log_entities.label as entity_label,
+                log.id_entity,
+                log.code_entity,
+                log.lot,
+                log_fields.label as field_label,
+                log.lang,
+                log.value,
+                log_fields.mlang_value,
+                log_fields.mlang_table,
+                log_fields.mlang_key,
+                log_fields.mlang_field,
+                log_fields.label_value_lookup
+            FROM log
+            INNER JOIN log_operations USING (id_log_operation)
+            INNER JOIN log_entities USING (id_log_entity)
+            INNER JOIN log_fields USING (id_log_field)
+            WHERE 1
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;
+        ]]></sql>
+
+        <sql name="log_log_list_users"><![CDATA[
+            SELECT DISTINCT user FROM log ORDER BY user ASC;
+        ]]></sql>
+
+        <sql name="log_log_list_operations"><![CDATA[
+            SELECT DISTINCT id_log_operation, label
+            FROM log
+            INNER JOIN log_operations USING (id_log_operation)
+            ORDER BY label ASC
+        ]]></sql>
+
+        <sql name="log_log_list_fields"><![CDATA[
+            SELECT DISTINCT id_log_field, label
+            FROM log
+            INNER JOIN log_fields USING (id_log_field)
+            ORDER BY label ASC
+        ]]></sql>
+
+        <sql name="log_log_mlang"><![CDATA[
+            SELECT %(field)s
+            FROM %(table)s
+            WHERE %(key)s = '%(value)s' AND id_lang = '%(id_lang)s'
+        ]]></sql>
+
+        <sql name="get_admins"><![CDATA[
+          SELECT id_user FROM roles_users WHERE id_role=2;]]></sql>
+
+        <sql name="last_insert_id"><![CDATA[
+            SELECT LAST_INSERT_ID();]]></sql>
+
+        <sql name="get_area_id"><![CDATA[
+          SELECT id_area FROM system_areas WHERE name=%(name)s;]]></sql>
+
+        <sql name="get_all_from_table"><![CDATA[
+            SELECT *
+            FROM %(table)s;]]></sql>
+
+        <sql name="get_all_from_table_lang"><![CDATA[
+            SELECT *
+            FROM %(table)s
+            WHERE id_lang = %(id_lang)s;]]></sql>
+
+        <sql name="get_language"><![CDATA[
+            SELECT description
+            FROM lang
+            WHERE id_lang = %(id_lang)s;]]></sql>
+
+        <sql name="get_preservation_date"><![CDATA[
+            SELECT date FROM preservation WHERE id_lot = %(id_lot)s;]]></sql>
+
+        <sql name="get_preservation_strain_descendants"><![CDATA[
+            SELECT p.id_lot as `p_id_lot`,ps.id_strain as `id_strain`
+            FROM preservation_strain ps INNER JOIN preservation p ON (p.id_preservation=ps.id_preservation)
+            WHERE ps.id_strain=%(id_strain)s AND ps.id_lot=%(id_lot)s;]]></sql>
+
+        <sql name="get_preservation_strain_info"><![CDATA[
+            SELECT ps.id_preserv_str,ps.origin_type,ps.id_lot,ls.stock
+            FROM preservation_strain ps INNER JOIN preservation p ON (p.id_preservation=ps.id_preservation)
+            LEFT JOIN lot_strain_stock ls ON (ls.id_lot=ps.id_lot AND ls.id_strain=%(id_strain)s)
+            WHERE p.id_lot=%(id_lot)s AND ps.id_strain=%(id_strain)s;]]></sql>
+
+        <sql name="exists_lot_strain_ampoules_combo"><![CDATA[
+            SELECT COUNT(id_lot) FROM lot_strain
+            WHERE id_lot=%(id_lot)s AND id_strain=%(id_strain)s;]]></sql>
+
+        <sql name="get_lot_strain_ampoules_combo"><![CDATA[
+            SELECT lot.id_lot AS id_lot,name,id_strain,stock,preservation_method_lang.unit_measure FROM lot_strain_stock lot_strain
+            INNER JOIN lot ON (lot.id_lot=lot_strain.id_lot)
+            INNER JOIN preservation ON (lot.id_lot = preservation.id_lot)
+            INNER JOIN preservation_method_lang ON (preservation.id_preservation_method = preservation_method_lang.id_preservation_method)
+            WHERE (stock > 0 OR lot.id_lot = %(id_lot)s)
+            AND preservation_method_lang.id_lang = %(id_lang)s
+            ORDER BY id_strain, lot.name;]]></sql>
+
+        <sql name="get_ampoules_lot_strain"><![CDATA[
+            SELECT stock FROM lot_strain_stock
+            WHERE id_lot=%(id_lot)s AND id_strain=%(id_strain)s;]]></sql>
+
+        <sql name="get_preservation_methods_for_stock"><![CDATA[
+            SELECT
+                pml.id_preservation_method, pml.method, pml.unit_measure
+            FROM preservation_method_lang pml
+            INNER JOIN preservation_method_subcoll pms ON
+                (pms.id_preservation_method = pml.id_preservation_method)
+            WHERE
+                id_lang = %(id_lang)s AND id_subcoll = %(id_subcoll)s
+                AND pml.id_preservation_method IN
+                    (SELECT
+                        preservation.id_preservation_method
+                     FROM preservation
+                     INNER JOIN lot ON
+                        (preservation.id_lot = lot.id_lot)
+                     INNER JOIN lot_strain ON
+                        (lot.id_lot = lot_strain.id_lot)
+                     WHERE
+                        lot_strain.id_strain = %(id_strain)s)
+            ORDER BY method;
+        ]]></sql>
+
+        <sql name="get_strain_stock_minimum"><![CDATA[
+            SELECT
+                pml.id_preservation_method, pml.method, pml.unit_measure, ifnull(ssm.quantity,0) as quantity,
+                ifnull((SELECT
+                    CAST(SUM(lot_strain_stock.stock) AS UNSIGNED INTEGER)
+                 FROM preservation
+                 INNER JOIN preservation_strain ON
+                   (preservation.id_preservation = preservation_strain.id_preservation)
+                 INNER JOIN lot ON (preservation.id_lot = lot.id_lot)
+                 INNER JOIN lot_strain_stock ON
+                   (lot.id_lot = lot_strain_stock.id_lot and
+                   preservation_strain.id_strain = lot_strain_stock.id_strain)
+                 WHERE
+                    preservation.id_preservation_method = pml.id_preservation_method
+                    AND preservation_strain.id_strain = %(id_strain)s),0) as in_stock
+            FROM preservation_method_lang pml
+            INNER JOIN preservation_method_subcoll pms ON
+                (pms.id_preservation_method = pml.id_preservation_method)
+            LEFT JOIN str_stock_minimum ssm ON
+                (ssm.id_preservation_method = pml.id_preservation_method
+                and ssm.id_strain = %(id_strain)s)
+            WHERE
+                pml.id_lang = %(id_lang)s and pms.id_subcoll = %(id_subcoll)s
+            ORDER BY method;
+        ]]></sql>
+
+        <sql name="get_strain_critical_stock_preservation_method"><![CDATA[
+            SELECT
+                pml.method, ssm.quantity,
+                IFNULL((SELECT
+                    CAST(SUM(lss.stock) AS UNSIGNED INTEGER)
+                 FROM preservation
+                 INNER JOIN preservation_strain ON
+                   (preservation.id_preservation = preservation_strain.id_preservation)
+                 INNER JOIN lot ON (preservation.id_lot = lot.id_lot)
+                 INNER JOIN (select
+			`lslm`.`id_lot` AS `id_lot`,
+			`lslm`.`id_strain` AS `id_strain`,
+			cast((((sum(`lslm`.`quantity`) - sum(ifnull(`lslm`.`used_qt_pres`,0))) - sum(ifnull(`lslm`.`used_qt_dist`,0))) - sum(ifnull(`lslm`.`used_qt_qual`,0))) as unsigned) AS `stock`
+		      from
+			(select
+			`lsl`.`id_lot` AS `id_lot`,
+			`lsl`.`id_strain` AS `id_strain`,
+			`lsl`.`id_container_hierarchy` AS `id_container_hierarchy`,
+			`lsl`.`row` AS `row`,
+			`lsl`.`col` AS `col`,
+			`lsl`.`quantity` AS `quantity`,
+			cast((
+		      select
+			sum(`ps`.`quantity`) AS `sum(quantity)`
+		      from
+			`preservation_strain` `ps`
+		      where
+			((`ps`.`id_lot` = `lsl`.`id_lot`) and (`ps`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`ps`.`origin_row` = `lsl`.`row`) and (`ps`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_pres`,cast((
+		      select
+			sum(`dol`.`quantity`) AS `sum(quantity)`
+		      from
+			`distribution_origin_location` `dol`
+		      where
+			((`dol`.`id_origin_lot` = `lsl`.`id_lot`) and (`dol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`dol`.`origin_row` = `lsl`.`row`) and (`dol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_dist`,cast((
+		      select
+			sum(`qol`.`quantity`) AS `sum(quantity)`
+		      from
+			`str_quality_origin_location` `qol`
+		      where
+			((`qol`.`id_origin_lot` = `lsl`.`id_lot`) and (`qol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`qol`.`origin_row` = `lsl`.`row`) and (`qol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_qual`
+		      from
+			`lot_strain_location` `lsl`
+		      where `lsl`.`id_strain` = %(id_strain)s) `lslm`
+		      group by
+			`lslm`.`id_lot`,`lslm`.`id_strain`) lss ON
+				       (lot.id_lot = lss.id_lot and
+				       preservation_strain.id_strain = lss.id_strain)
+                 WHERE
+                    preservation.id_preservation_method = pml.id_preservation_method
+                    AND preservation_strain.id_strain = %(id_strain)s), 0) as in_stock
+            FROM preservation_method_lang pml
+            INNER JOIN preservation_method_subcoll pms ON
+                (pms.id_preservation_method = pml.id_preservation_method)
+            LEFT JOIN str_stock_minimum ssm ON
+                (ssm.id_preservation_method = pml.id_preservation_method
+                and ssm.id_strain = %(id_strain)s)
+            WHERE
+                pml.id_lang = %(id_lang)s and pms.id_subcoll = %(id_subcoll)s
+                and quantity IS NOT NULL
+            HAVING
+                in_stock <= quantity
+            ORDER BY method;
+        ]]></sql>
+
+        <sql name="get_stock_lot"><![CDATA[
+            SELECT
+                lot.id_lot, lot.name, ifnull(lot_strain_stock.stock, 0) as stock,
+                preservation_strain.stock_position, preservation_strain.stock_minimum
+            FROM preservation
+            INNER JOIN preservation_strain ON (preservation.id_preservation = preservation_strain.id_preservation)
+            INNER JOIN lot ON (preservation.id_lot = lot.id_lot)
+            LEFT JOIN lot_strain_stock ON (lot.id_lot = lot_strain_stock.id_lot)
+            WHERE preservation.id_preservation_method = %(id_preservation_method)s
+            AND (lot_strain_stock.id_strain = %(id_strain)s OR lot_strain_stock.id_strain IS NULL) AND preservation_strain.id_strain = %(id_strain)s
+            ORDER BY lot.name;]]></sql>
+
+        <sql name="get_ampoules_lot"><![CDATA[
+            SELECT id_strain,stock FROM lot_strain
+            WHERE id_lot=%(id_lot)s;]]></sql>
+
+        <sql name="get_next_strain_code"><![CDATA[
+            SELECT IFNULL(MAX(numeric_code)+1, 1) FROM strain
+            WHERE id_coll=%(id_coll)s;]]></sql>
+
+        <sql name="get_lot_name_exists"><![CDATA[
+            SELECT id_lot FROM lot WHERE name=%(lot_name)s AND id_subcoll=%(id_subcoll)s;]]></sql>
+
+        <sql name="get_lang_by_code"><![CDATA[
+          SELECT id_lang
+        FROM lang
+        WHERE code = %(code)s;]]></sql>
+
+        <sql name="get_lang_id_and_code"><![CDATA[
+          SELECT id_lang,code
+        FROM lang
+      ORDER BY code ASC;]]></sql>
+
+        <sql name="get_species_genus"><![CDATA[
+            SELECT DISTINCT genus FROM species;]]></sql>
+
+        <sql name="get_possible_taxon_groups"><![CDATA[
+            SELECT tg.id_taxon_group, tgl.taxon_group FROM taxon_group tg
+                   INNER JOIN taxon_group_subcoll tgs ON (tg.id_taxon_group = tgs.id_taxon_group)
+                   INNER JOIN taxon_group_lang tgl ON (tgs.id_taxon_group = tgl.id_taxon_group)
+            WHERE tgs.id_subcoll = %(id_subcoll)s
+            AND tgl.id_lang = %(id_lang)s
+            ORDER BY tgl.taxon_group;]]></sql>
+
+        <sql name="get_taxon_groups"><![CDATA[
+            SELECT
+                tg.id_taxon_group,
+                tgl.taxon_group,
+                (SELECT COUNT(*) FROM hierarchy_group WHERE hierarchy_group.id_taxon_group = tg.id_taxon_group) as has_hierarchy
+            FROM taxon_group tg
+            INNER JOIN taxon_group_lang tgl ON (tg.id_taxon_group = tgl.id_taxon_group)
+            WHERE tgl.id_lang = %(id_lang)s
+            ORDER BY tgl.taxon_group;]]></sql>
+
+        <sql name="get_species_list"><![CDATA[
+            SELECT sp.id_species as id_species, tg.id_taxon_group as id_taxon_group, tgl.taxon_group as taxongroup,
+            sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, sp.hazard_group as hazard_group
+            FROM species sp
+            INNER JOIN scientific_names sc USING (id_sciname)
+            INNER JOIN taxon_group tg ON (sp.id_taxon_group = tg.id_taxon_group)
+            INNER JOIN taxon_group_lang tgl ON (tg.id_taxon_group = tgl.id_taxon_group)
+            WHERE id_coll = %(id_coll)s AND id_subcoll = %(id_subcoll)s
+            AND tgl.id_lang = %(id_lang)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_species_ids"><![CDATA[
+            SELECT sp.id_species as id_species
+            FROM species sp
+            INNER JOIN scientific_names sc USING (id_sciname)
+            INNER JOIN taxon_group tg ON (sp.id_taxon_group = tg.id_taxon_group)
+            INNER JOIN taxon_group_lang tgl ON (tg.id_taxon_group = tgl.id_taxon_group)
+            WHERE id_coll = %(id_coll)s AND id_subcoll = %(id_subcoll)s
+            AND tgl.id_lang = %(id_lang)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_species_list_restrict"><![CDATA[
+            SELECT sp.id_species as id_species, tg.id_taxon_group as id_taxon_group, tgl.taxon_group as taxongroup,
+            sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, sp.hazard_group as hazard_group
+            FROM species sp
+            INNER JOIN scientific_names sc USING (id_sciname)
+            INNER JOIN taxon_group tg ON (sp.id_taxon_group = tg.id_taxon_group)
+            INNER JOIN taxon_group_lang tgl ON (tg.id_taxon_group = tgl.id_taxon_group)
+            WHERE id_coll = %(id_coll)s AND id_subcoll = %(id_subcoll)s AND sp.id_species = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=sp.id_species AND id_area=1)
+            AND tgl.id_lang = %(id_lang)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_species_ids_restrict"><![CDATA[
+            SELECT sp.id_species as id_species
+            FROM species sp
+            INNER JOIN scientific_names sc USING (id_sciname)
+            INNER JOIN taxon_group tg ON (sp.id_taxon_group = tg.id_taxon_group)
+            INNER JOIN taxon_group_lang tgl ON (tg.id_taxon_group = tgl.id_taxon_group)
+            WHERE id_coll = %(id_coll)s AND id_subcoll = %(id_subcoll)s AND sp.id_species = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=sp.id_species AND id_area=1)
+            AND tgl.id_lang = %(id_lang)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_possible_alternate_states"><![CDATA[
+            SELECT sp.id_species as id_species, sp.id_taxon_group as taxongroup,
+            sp.id_sciname as id_sciname, sc.sciname as sciname, sc.sciname_no_auth, sc.hi_tax, sp.hazard_group as hazard_group
+            FROM species sp
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE id_coll = %(id_coll)s AND id_subcoll = %(id_subcoll)s
+            AND sp.id_taxon_group IN (2, 3);]]></sql>
+
+        <sql name="get_alternate_state"><![CDATA[
+            SELECT sp.id_species as id_species, sp.id_taxon_group as taxongroup,
+                   sc.sciname, sc.sciname_no_auth, sc.hi_tax, sp.hazard_group as hazard_group
+            FROM species sp
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE id_alt_states = %(id)s;]]></sql>
+
+        <sql name="get_species_data"><![CDATA[
+            SELECT tg.id_taxon_group, tgl.taxon_group as taxon_group, sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax,
+            sp.taxon_ref as taxon_ref, sp.synonym as synonym, sp.hazard_group as hazard_group,
+            amb.ambient_risk as ambient_risk, sp.hazard_group_ref as hazard_group_ref, sp.id_alt_states as id_alt_states,
+            sp.alt_states_type as alt_state_type, c.comments as comments
+            FROM species sp
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN spe_ambient_risk amb
+                ON amb.id_species = sp.id_species
+                AND amb.id_lang = %(data_lang)s
+            LEFT JOIN spe_comments c
+                ON c.id_species = sp.id_species
+                AND c.id_lang = %(data_lang)s
+            INNER JOIN taxon_group tg ON (sp.id_taxon_group = tg.id_taxon_group)
+            INNER JOIN taxon_group_lang tgl ON (tg.id_taxon_group = tgl.id_taxon_group AND tgl.id_lang = %(data_lang)s)
+            WHERE sp.id_species = %(id)s;]]></sql>
+
+        <sql name="count_species_parts_multilanguage"><![CDATA[
+            SELECT COUNT(s.id_species) as count_species, COUNT(ar.id_species) as count_ambient_risk, COUNT(c.id_species) as count_comments
+            FROM species s
+            LEFT JOIN spe_ambient_risk ar
+                ON ar.id_species = s.id_species
+                AND ar.id_lang = %(data_lang)s
+            LEFT JOIN spe_comments c
+                ON c.id_species = s.id_species
+                AND c.id_lang = %(data_lang)s
+            WHERE s.id_species = %(id)s;]]></sql>
+
+        <sql name="get_strain_list"><![CDATA[
+            SELECT st.id_strain as id_strain, st.code as code, st.internal_code as internal_code,
+            sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, ty.type as type, st.status as status,
+            st.infra_complement as infra_complement
+            FROM strain st
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN str_type_lang ty ON st.id_type = ty.id_type AND ty.id_lang = %(id_lang)s
+            WHERE st.id_coll = %(id_coll)s AND st.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            ORDER BY %(field_order)s, id_strain
+            %(paging)s;]]></sql>
+
+        <sql name="get_strain_code"><![CDATA[
+            SELECT
+                st.code as code
+            FROM
+                strain st
+            WHERE
+                id_strain = %(id_strain)s;]]></sql>
+
+        <sql name="get_strain_list_order_code"><![CDATA[
+            SELECT st.id_strain as id_strain, st.code as code, st.internal_code as internal_code,
+            sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, ty.type as type, st.status as status,
+            st.infra_complement as infra_complement
+            FROM strain st
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN str_type_lang ty ON st.id_type = ty.id_type AND ty.id_lang = %(id_lang)s
+            WHERE st.id_coll = %(id_coll)s AND st.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            ORDER BY st.code
+            %(paging)s;]]></sql>
+
+        <sql name="get_strain_list_restrict"><![CDATA[
+            SELECT st.id_strain as id_strain, st.code as code, st.internal_code as internal_code,
+            sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, sc.hi_tax, ty.type as type, st.status as status,
+            st.infra_complement as infra_complement
+            FROM strain st
+            INNER JOIN species sp USING (id_species) LEFT JOIN str_type_lang ty ON st.id_type = ty.id_type AND ty.id_lang = '%(id_lang)s'
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE st.id_coll = '%(id_coll)s' AND st.id_subcoll = '%(id_subcoll)s' AND st.id_strain = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=st.id_strain AND id_area=2)
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_strain_ids"><![CDATA[
+            SELECT st.id_strain as id_strain
+            FROM strain st #teste
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN str_type_lang ty ON st.id_type = ty.id_type AND ty.id_lang = %(id_lang)s
+            WHERE st.id_coll = %(id_coll)s AND st.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            ORDER BY %(field_order)s, id_strain
+            %(paging)s;]]></sql>
+
+        <sql name="get_strain_ids_restrict"><![CDATA[
+            SELECT st.id_strain as id_strain
+            FROM strain st
+                INNER JOIN species sp USING (id_species) LEFT JOIN str_type_lang ty ON st.id_type = ty.id_type AND ty.id_lang = '%(id_lang)s'
+                INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE st.id_coll = '%(id_coll)s' AND st.id_subcoll = '%(id_subcoll)s' AND st.id_strain = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=st.id_strain AND id_area=2)
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_str_general_data"><![CDATA[
+            SELECT st.code as code, st.numeric_code as numeric_code, st.id_division as id_division, dl.division as division, st.internal_code as internal_code, st.id_species as id_species,
+            sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, sty.id_type as id_type, sp.id_taxon_group as taxon_group,
+            st.status as status, st.is_ogm as is_ogm, st.infra_complement as infra_complement, st.go_catalog as go_catalog, sty.type as type,
+            st.history as history, st.extra_codes as extra_codes, st.comments as comments
+            FROM strain st
+            INNER JOIN species sp USING(id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            INNER JOIN division dl USING(id_division)
+            LEFT JOIN str_type_lang sty
+                ON st.id_type = sty.id_type
+                AND sty.id_lang = %(id_lang)s
+            WHERE st.id_strain = %(id)s AND st.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_test_group_subcoll"><![CDATA[
+            SELECT test_group_lang.id_test_group as id_test_group, category
+            FROM test_group_lang INNER JOIN test_group_subcoll
+            ON (test_group_subcoll.id_test_group=test_group_lang.id_test_group)
+            WHERE id_lang = %(id_lang)s AND id_subcoll = %(id_subcoll)s
+            ORDER BY category;]]></sql>
+
+        <sql name="get_preservation_method_subcoll"><![CDATA[
+            SELECT preservation_method_lang.id_preservation_method as id_preservation_method, method, preservation_method_lang.unit_measure
+            FROM preservation_method_lang INNER JOIN preservation_method_subcoll
+            ON (preservation_method_subcoll.id_preservation_method=preservation_method_lang.id_preservation_method)
+            WHERE id_lang = %(id_lang)s AND id_subcoll = %(id_subcoll)s;]]></sql>
+
+        <sql name="get_preservation_strain_count"><![CDATA[
+            SELECT COUNT(id_preserv_str) FROM preservation_strain
+            WHERE id_preservation = %(id)s;]]></sql>
+
+        <sql name="get_preservation_strains"><![CDATA[
+            SELECT id_strain FROM preservation_strain
+            WHERE id_preservation = %(id)s;]]></sql>
+
+        <sql name="get_preservation_data"><![CDATA[
+            SELECT id_user as id_user,l.id_lot AS id_lot,l.name as lot_name, pm.id_preservation_method as id_method,
+            pml.method as used_method,p.date as date,p.info as info, pml.unit_measure
+            FROM preservation p
+            INNER JOIN preservation_method pm ON (pm.id_preservation_method=p.id_preservation_method)
+            INNER JOIN preservation_method_lang pml ON (pml.id_preservation_method=pm.id_preservation_method)
+            INNER JOIN lot l ON (l.id_lot=p.id_lot)
+            WHERE id_preservation = %(id)s AND id_lang=%(id_lang)s AND l.id_subcoll=%(id_subcoll)s;]]></sql>
+        
+        <sql name="get_stock_movement_data"><![CDATA[
+            SELECT sm.id_preservation_method, date, description, pml.method
+            FROM stock_movement sm
+                INNER JOIN preservation_method_lang pml ON (sm.id_preservation_method = pml.id_preservation_method)
+            WHERE id_stock_movement = %(id)s
+                AND id_subcoll = %(id_subcoll)s AND id_lang = %(id_lang)s;]]></sql>
+        
+        <sql name="get_container_data"><![CDATA[
+            SELECT 
+                id_container, abbreviation, description
+            FROM
+                container
+            WHERE
+                id_container = %(id)s;]]></sql>
+
+        <sql name="get_container_by_abbreviation"><![CDATA[
+            SELECT 
+                count(*) AS Qtd
+            FROM
+                container
+            WHERE
+                abbreviation = '%(abbreviation)s' %(id)s]]></sql>
+
+        <sql name="get_stock_movement_location_data"><![CDATA[
+            SELECT sml.id_stock_movement,
+                   lslf.id_container_hierarchy AS id_container_hierarchy_from,
+                   lslf.row AS row_from,
+                   lslf.col AS col_from,
+                   lslf.quantity as qtd_from,
+                   lslf.id_lot,
+                   lslf.id_strain,
+                   lslt.id_container_hierarchy AS id_container_hierarchy_to,
+                   lslt.row AS row_to,
+                   lslt.col AS col_to,
+                   lslt.quantity as qtd_to
+            FROM stock_movement_location sml
+                 INNER JOIN lot_strain_location lslf ON (sml.id_lot_strain_location_from = lslf.id_lot_strain_location)
+                 LEFT JOIN lot_strain_location lslt ON (sml.id_lot_strain_location_to = lslt.id_lot_strain_location)
+            WHERE id_stock_movement = %(id)s;]]></sql>
+
+        <sql name="get_preservation_strain_data"><![CDATA[
+            SELECT ps.id_strain as id_strain,origin_type,origin as origin,1 as used,stock.stock as prepared,
+            dt.id_doc as id_doc, dt.title as culture_medium,stock_position as stock_pos,
+            stock_minimum,dt.id_doc AS id_doc,temperature as temp,incub_time as incub_time,cryoprotector as cryo,
+            preservation_type as preservation_type,purity as purity,l.id_lot as id_lot,l.name as lot_name,
+            counting as counting,CASE WHEN counting_not_apply IS NULL THEN 'n' ELSE counting_not_apply END AS counting_na,
+            macro_charac as macro,micro_charac as micro,result as result,obs as obs,
+            sc.sciname, sc.sciname_no_auth, str.code as code, str.infra_complement as infra_complement,
+            pml.unit_measure, c.id_container, ps.id_origin_container_hierarchy, ps.origin_row, ps.origin_col,
+            ps.quantity as origin_quantity, ps.not_identified
+            FROM preservation_strain ps
+            INNER JOIN strain str ON (str.id_strain=ps.id_strain)
+            INNER JOIN species s ON (str.id_species=s.id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN doc_title dt ON (dt.id_doc=ps.id_doc AND dt.id_lang = %(id_lang)s)
+            LEFT JOIN str_type_lang ty ON (str.id_type=ty.id_type AND ty.id_lang = %(id_lang)s)
+            LEFT JOIN lot l ON (l.id_lot=ps.id_lot)
+            LEFT JOIN lot_strain_stock stock ON (stock.id_lot=l.id_lot AND stock.id_strain=str.id_strain)
+            LEFT JOIN preservation p ON (l.id_lot = p.id_lot)
+            LEFT JOIN preservation_method_lang pml ON (p.id_preservation_method = pml.id_preservation_method AND pml.id_lang = %(id_lang)s)
+            LEFT JOIN container_hierarchy ci ON (ci.id_container_hierarchy = ps.id_origin_container_hierarchy)
+            LEFT JOIN container c ON (c.id_container = ci.id_container)
+            WHERE ps.id_preservation = %(id)s
+            ORDER BY ps.id_preserv_str;]]></sql>
+
+        <sql name="get_preservation_strain_origin_data"><![CDATA[
+            SELECT
+                preservation_strain.origin_col,
+                preservation_strain.origin_row,
+                preservation_strain.id_origin_container_hierarchy,
+                origin_type,
+                id_lot
+            FROM
+                preservation_strain
+            WHERE
+                id_preservation = %(id)s AND id_strain = %(id_strain)s;]]></sql>
+
+        <sql name="get_lot_usage_information"><![CDATA[
+            SELECT
+                id_lot, id_strain, id_container_hierarchy, row, col
+            FROM
+                lot_strain_location lsl
+                INNER JOIN (
+                    SELECT
+                        id_lot AS id_origin_lot, id_origin_container_hierarchy,
+                        origin_row, origin_col
+                    FROM
+                        preservation_strain
+                    UNION
+                        (SELECT
+                            id_origin_lot, id_origin_container_hierarchy,
+                            origin_row, origin_col
+                        FROM
+                            used_origin_all)
+                ) used ON (
+                    used.id_origin_lot = lsl.id_lot
+                    AND used.id_origin_container_hierarchy = lsl.id_container_hierarchy
+                    AND used.origin_row = lsl.row
+                    AND used.origin_col = lsl.col)
+            WHERE
+                id_lot = %(id_lot)s;
+            ]]></sql>
+
+	<sql name="get_lot_count_usage_information_no_myself"><![CDATA[
+            SELECT
+                count(*) as qtd
+            FROM
+                lot_strain_location lsl
+                INNER JOIN (
+                    SELECT
+                        ps.id_lot AS id_origin_lot, id_origin_container_hierarchy,
+                        origin_row, origin_col
+                    FROM
+                        preservation_strain ps
+                          INNER JOIN preservation p ON (ps.id_preservation = p.id_preservation)
+                          WHERE p.id_lot <> 14
+                    UNION
+                        (SELECT
+                            id_origin_lot, id_origin_container_hierarchy,
+                            origin_row, origin_col
+                        FROM
+                            used_origin_all
+                        WHERE origin <> 'preservation')
+                ) used ON (
+                    used.id_origin_lot = lsl.id_lot
+                    AND used.id_origin_container_hierarchy = lsl.id_container_hierarchy
+                    AND used.origin_row = lsl.row
+                    AND used.origin_col = lsl.col)
+            WHERE
+                id_lot = %(id_lot)s;
+            ]]></sql>
+        
+        <sql name="get_lot_count_usage_information_stock_movement_no_myself"><![CDATA[
+            SELECT SUM(qtd) AS qtd FROM
+            (
+                SELECT COUNT(*) AS qtd FROM 
+                    used_origin_all AS uoa    
+                    INNER JOIN
+                    (SELECT sml.id_stock_movement, lslt.id_lot, lslt.id_container_hierarchy, lslt.row, lslt.col 
+                        FROM stock_movement_location sml
+                        INNER JOIN lot_strain_location lslt ON (sml.id_lot_strain_location_to = lslt.id_lot_strain_location)) smlt        
+                    ON (uoa.id_origin_lot = smlt.id_lot
+                        AND uoa.id_origin_container_hierarchy = smlt.id_container_hierarchy
+                        AND uoa.origin_row = smlt.row
+                        AND uoa.origin_col = smlt.col)
+                WHERE smlt.id_stock_movement = %(id)s    
+                UNION ALL    
+                    SELECT COUNT(*) AS qtd
+                    FROM stock_movement_location sml
+                    WHERE sml.id_lot_strain_location_from IN
+                            (SELECT smln.id_lot_strain_location_to FROM stock_movement_location smln
+                                    WHERE smln.id_stock_movement = %(id)s)
+            ) AS total;]]></sql>
+        
+        <sql name="get_stock_movement_usage_information"><![CDATA[
+            SELECT COUNT(*) AS qtd
+            FROM stock_movement_location sml
+                    INNER JOIN lot_strain_location lslf ON (sml.id_lot_strain_location_from = lslf.id_lot_strain_location)        
+                    INNER JOIN lot_strain_location lsl ON (lslf.id_container_hierarchy = lsl.id_container_hierarchy
+                                                            and lslf.row = lsl.row
+                                                            and lslf.col = lsl.col)
+            WHERE sml.id_stock_movement = %(id)s
+                    AND lsl.id_lot_strain_location > lslf.id_lot_strain_location;
+            ]]></sql>
+
+        <sql name="get_preservation_lot_usage_information_identified"><![CDATA[
+            SELECT
+                p.id_lot as id_lot,
+                ps.id_lot as origin_id_lot,
+                ps.id_strain
+            FROM preservation p
+            INNER JOIN preservation_strain ps USING (id_preservation)
+            WHERE ps.not_identified = 0
+            HAVING origin_id_lot = %(id_lot)s;
+        ]]></sql>
+
+        <sql name="get_preservation_lot_usage_information_all"><![CDATA[
+            SELECT
+                p.id_lot as id_lot,
+                ps.id_lot as origin_id_lot,
+                ps.id_strain
+            FROM preservation p
+            INNER JOIN preservation_strain ps USING (id_preservation)
+            HAVING origin_id_lot = %(id_lot)s;
+        ]]></sql>
+
+        <sql name="count_strains_using_division"><![CDATA[
+            SELECT
+                COUNT(*)
+            FROM strain
+            WHERE
+                id_division = %(id_division)s
+        ;]]></sql>
+
+        <sql name="get_division_list"><![CDATA[
+            SELECT
+                division.id_division,
+                division.pattern,
+                division.division
+            FROM division
+            WHERE
+                division.id_subcoll = %(id_subcoll)s
+            ORDER BY
+                division.division
+        ;]]></sql>
+
+        <sql name="get_division_pattern"><![CDATA[
+            SELECT
+                division.pattern
+            FROM division
+            WHERE
+                division.id_division = %(id_division)s
+        ;]]></sql>
+
+        <sql name="get_strain_by_division"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.numeric_code
+            FROM strain
+            WHERE
+                strain.id_division = %(id_division)s
+        ;]]></sql>
+
+        <sql name="get_distribution_lot_usage_information_all"><![CDATA[
+            SELECT
+                p.id_lot as id_lot,
+                dis.id_lot as origin_id_lot,
+                dis.id_strain
+            FROM preservation p
+            INNER JOIN distribution dis USING (id_lot)
+            HAVING origin_id_lot = %(id_lot)s;
+        ]]></sql>
+
+        <sql name="get_quality_lot_usage_information_all"><![CDATA[
+            SELECT
+                p.id_lot as id_lot,
+                qua.id_lot as origin_id_lot,
+                qua.id_strain
+            FROM preservation p
+            INNER JOIN str_quality qua USING (id_lot)
+            HAVING origin_id_lot = %(id_lot)s;
+        ]]></sql>
+
+        <sql name="get_movement_lot_usage_information_all"><![CDATA[
+            SELECT
+                p.id_lot as id_lot,
+                lsl.id_strain as id_strain
+            FROM preservation p
+            INNER JOIN lot_strain_location lsl USING (id_lot)
+            INNER JOIN stock_movement_location sml ON
+                (id_lot_strain_location_from = id_lot_strain_location)
+            HAVING id_lot = %(id_lot)s;
+        ]]></sql>
+        
+        <sql name="get_movement_lot_strain_usage_information_all"><![CDATA[
+            SELECT
+                p.id_lot as id_lot,
+                lsl.id_strain as id_strain
+            FROM preservation p
+            INNER JOIN lot_strain_location lsl USING (id_lot)
+            INNER JOIN stock_movement_location sml ON
+                (id_lot_strain_location_from = id_lot_strain_location)
+            HAVING id_lot = %(id_lot)s AND id_strain = %(id_strain)s;
+        ]]></sql>
+
+        <sql name="get_distribution_usage_information"><![CDATA[
+            select count(*) from distribution_origin_location dol
+            inner join lot_strain_location lsl on (dol.id_origin_container_hierarchy = lsl.id_container_hierarchy
+                                                   and dol.origin_row = lsl.row
+                                                   and dol.origin_col = lsl.col)
+            where dol.id_distribution = %(id_distribution)s
+                  and lsl.id_lot > dol.id_origin_lot
+        ]]></sql>
+
+        <sql name="get_quality_usage_information"><![CDATA[
+            select count(*) from str_quality_origin_location sqol
+            inner join lot_strain_location lsl on (sqol.id_origin_container_hierarchy = lsl.id_container_hierarchy
+                                                   and sqol.origin_row = lsl.row
+                                                   and sqol.origin_col = lsl.col)
+            where sqol.id_quality = %(id_quality)s
+                 and lsl.id_lot > sqol.id_origin_lot
+        ]]></sql>
+
+        <sql name="get_numeric_code_and_id_coll_usage_insert"><![CDATA[
+            SELECT
+                COUNT(*)
+            FROM
+                strain
+            WHERE
+                numeric_code = %(numeric_code)s AND
+                id_coll = %(id_coll)s
+        ]]></sql>
+
+        <sql name="get_numeric_code_and_id_coll_usage_update"><![CDATA[
+            SELECT
+                COUNT(*)
+            FROM
+                strain
+            WHERE
+                numeric_code = %(numeric_code)s AND
+                id_coll = %(id_coll)s AND
+                id_strain <> %(id_strain)s
+        ]]></sql>
+
+        <sql name="get_preservation_strain_prepared_ampoules"><![CDATA[
+            SELECT SUM(quantity) FROM lot_strain_location WHERE id_lot=%(id_lot)s AND id_strain=%(id_strain)s]]></sql>
+
+        <sql name="get_preservation_strain_date"><![CDATA[
+            SELECT p.date, l.name
+            FROM preservation_strain ps
+            INNER JOIN strain str USING (id_strain)
+            INNER JOIN preservation p USING (id_preservation)
+            INNER JOIN lot l ON (l.id_lot=p.id_lot)
+            WHERE str.id_strain = %(id)s ;]]></sql>
+
+        <sql name="get_str_type"><![CDATA[
+            SELECT id_type, type
+            FROM str_type_lang
+            WHERE id_lang = %(id_lang)s;]]></sql>
+
+        <sql name="get_str_type_subcoll"><![CDATA[
+            SELECT str_type_lang.id_type AS `id_type`, type
+            FROM str_type_lang INNER JOIN str_type_subcoll
+            ON (str_type_subcoll.id_type = str_type_lang.id_type)
+            WHERE id_lang = %(id_lang)s AND id_subcoll = %(id_subcoll)s
+            ORDER BY str_type_lang.type;]]></sql>
+
+        <sql name="get_str_deposit_data"><![CDATA[
+			SELECT peo.id_person as id_person, peo.name as name, peo.nickname as nickname, inst.id_institution as id_institution, inst.name as name_institution,
+			    inst.nickname as inst_nickname, dep.genus as genus,dep.species as species,dep.classification as classification,
+			    dep.infra_name as infra_name,dep.infra_complement as infra_complement, dep.date as date, sre.id_dep_reason as id_dep_reason,
+			    sre.dep_reason as dep_reason, dep.preserv_method as preserve_method, dep.form as form, dep.aut_date as aut_date, dep.aut_person as aut_id_person,
+			    autpeo.name as aut_person, dep.aut_result as aut_result, dep.comments as comments
+			FROM str_deposit dep
+			LEFT JOIN person peo USING (id_person)
+			LEFT JOIN person autpeo ON autpeo.id_person = dep.aut_person
+			LEFT JOIN institution inst
+			    ON dep.id_institution = inst.id_institution
+			LEFT JOIN str_dep_reason_lang sre
+			    ON dep.id_dep_reason = sre.id_dep_reason
+			    AND sre.id_lang = %(id_lang)s
+			WHERE dep.id_strain = %(id)s AND dep.id_coll = %(id_coll)s
+			ORDER BY peo.name;]]></sql>
+
+	<sql name="get_strain_critical_stock"><![CDATA[
+		SELECT pr.id_preservation, lot.name as lot_name, ps.stock_minimum, ifnull(ls.stock,0) as stock FROM lot
+		INNER JOIN preservation pr ON lot.id_lot = pr.id_lot
+		INNER JOIN preservation_strain ps ON ps.id_preservation = pr.id_preservation
+		LEFT JOIN (select
+			`lslm`.`id_lot` AS `id_lot`,
+			`lslm`.`id_strain` AS `id_strain`,
+			cast((((sum(`lslm`.`quantity`) - sum(ifnull(`lslm`.`used_qt_pres`,0))) - sum(ifnull(`lslm`.`used_qt_dist`,0))) - sum(ifnull(`lslm`.`used_qt_qual`,0))) as unsigned) AS `stock`
+		      from
+		       (select
+			`lsl`.`id_lot` AS `id_lot`,
+			`lsl`.`id_strain` AS `id_strain`,
+			`lsl`.`id_container_hierarchy` AS `id_container_hierarchy`,
+			`lsl`.`row` AS `row`,
+			`lsl`.`col` AS `col`,
+			`lsl`.`quantity` AS `quantity`,
+			cast((
+		      select
+			sum(`ps`.`quantity`) AS `sum(quantity)`
+		      from
+			`preservation_strain` `ps`
+		      where
+			((`ps`.`id_lot` = `lsl`.`id_lot`) and (`ps`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`ps`.`origin_row` = `lsl`.`row`) and (`ps`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_pres`,cast((
+		      select
+			sum(`dol`.`quantity`) AS `sum(quantity)`
+		      from
+			`distribution_origin_location` `dol`
+		      where
+			((`dol`.`id_origin_lot` = `lsl`.`id_lot`) and (`dol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`dol`.`origin_row` = `lsl`.`row`) and (`dol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_dist`,cast((
+		      select
+			sum(`qol`.`quantity`) AS `sum(quantity)`
+		      from
+			`str_quality_origin_location` `qol`
+		      where
+			((`qol`.`id_origin_lot` = `lsl`.`id_lot`) and (`qol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`qol`.`origin_row` = `lsl`.`row`) and (`qol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_qual`
+		      from
+			`lot_strain_location` `lsl`
+			where `lsl`.`id_strain` = %(id)s) `lslm`
+		      group by
+			`lslm`.`id_lot`,`lslm`.`id_strain`) ls ON lot.id_lot = ls.id_lot
+		    WHERE ps.id_strain = %(id)s AND ls.id_strain = %(id)s AND ifnull(ls.stock,0) <= ps.stock_minimum AND ps.stock_minimum <> 0;
+        ]]></sql>
+
+        <sql name="get_last_id_dep_reason"><![CDATA[
+            SELECT id_dep_reason
+            FROM str_dep_reason
+            ORDER BY id_dep_reason DESC;]]></sql>
+
+        <sql name="get_id_dep_reason"><![CDATA[
+            SELECT id_dep_reason
+            FROM str_dep_reason_lang
+            WHERE dep_reason = %(dep_reason)s;]]></sql>
+
+        <sql name="get_preservation_method"><![CDATA[
+            SELECT id_preservation_method, method
+            FROM preservation_method_lang
+            WHERE id_lang = %(id_lang)s
+            ORDER BY method;]]></sql>
+
+        <sql name="get_test_group"><![CDATA[
+            SELECT id_test_group, category
+            FROM test_group_lang
+            WHERE id_lang = %(id_lang)s
+            ORDER BY category;]]></sql>
+
+        <sql name="get_str_dep_reason"><![CDATA[
+            SELECT id_dep_reason, dep_reason
+            FROM str_dep_reason_lang
+            WHERE id_lang = %(id_lang)s
+            ORDER BY dep_reason;]]></sql>
+
+        <sql name="get_str_dep_reason_subcoll"><![CDATA[
+            SELECT str_dep_reason_lang.id_dep_reason AS `id_dep_reason`, dep_reason
+            FROM str_dep_reason_lang INNER JOIN str_dep_reason_subcoll
+      ON (str_dep_reason_subcoll.id_dep_reason = str_dep_reason_lang.id_dep_reason)
+            WHERE id_lang = %(id_lang)s AND id_subcoll = %(id_subcoll)s
+            ORDER BY dep_reason;]]></sql>
+
+        <sql name="get_str_coll_event_data"><![CDATA[
+                SELECT peo.id_person as id_person, peo.name as name, inst.id_institution as id_institution, inst.name as name_institution, coll.date as date, cou.id_country as id_country, cou.country as country, loc_country.code as country_code, sta.id_state as id_state, sta.state as state, sta.code as state_code, cit.id_city as id_city, cit.city, coll.place as place, coll.gps_latitude as gps_latitude, coll.gps_latitude_dms as gps_latitude_dms, coll.gps_latitude_mode as gps_latitude_mode, coll.gps_longitude as gps_longitude, coll.gps_longitude_dms as gps_longitude_dms, coll.gps_longitude_mode as gps_longitude_mode, coll.gps_precision as gps_precision, dat.id_gps_datum as id_gps_datum, dat.gps_datum as gps_datum, coll.gps_comments as gps_comments, hos.host_name as host_name, coll.host_genus as host_genus, coll.host_species as host_species, coll.host_classification as host_classification, coll.host_infra_name as host_infra_name, coll.host_infra_complement as host_infra_complement, coll.global_code as global_code, subs.substratum as  substratum, cli.id_clinical_form as id_clinical_form, cli.code as code, cli.clinical_form as clinical_form, coll.hiv as hiv, com.comments as comments
+                FROM str_coll_event coll
+                LEFT JOIN person peo USING (id_person)
+                LEFT JOIN institution inst
+                    ON coll.id_institution = inst.id_institution
+                LEFT JOIN loc_country_lang cou
+                    ON (cou.id_country=coll.id_country AND cou.id_lang=%(id_lang)s )
+                LEFT JOIN loc_country
+                  ON (loc_country.id_country=coll.id_country)
+                LEFT JOIN loc_state sta
+                    ON (sta.id_country=coll.id_country AND sta.id_state=coll.id_state)
+                LEFT JOIN loc_city cit
+                    ON (cit.id_country=coll.id_country AND cit.id_state=coll.id_state AND cit.id_city=coll.id_city)
+                LEFT JOIN str_gps_datum dat USING (id_gps_datum)
+                LEFT JOIN str_host_name hos
+                    ON coll.id_strain = hos.id_strain
+                    AND coll.id_coll = hos.id_coll
+                    AND hos.id_lang = %(data_lang)s
+                LEFT JOIN str_substratum subs
+                    ON coll.id_strain = subs.id_strain
+                    AND coll.id_coll = subs.id_coll
+                    AND subs.id_lang = %(data_lang)s
+                LEFT JOIN str_clinical_form_lang cli 
+				ON (cli.id_clinical_form = coll.id_clinical_form AND cli.id_lang=%(id_lang)s )
+                LEFT JOIN str_coll_comments com
+                    ON coll.id_strain = com.id_strain
+                    AND coll.id_coll = com.id_coll
+                    AND com.id_lang = %(data_lang)s
+                WHERE coll.id_strain = %(id)s AND coll.id_coll = %(id_coll)s]]></sql>
+
+        <sql name="get_str_coll_event_date"><![CDATA[
+            SELECT date
+            FROM str_coll_event coll
+            WHERE coll.id_strain = %(id_strain)s AND coll.id_coll = %(id_coll)s]]></sql>
+
+        <sql name="get_str_gps_datum"><![CDATA[
+            SELECT id_gps_datum, gps_datum
+            FROM str_gps_datum
+            ORDER BY gps_datum;]]></sql>
+
+        <sql name="get_str_clinical_form"><![CDATA[
+            SELECT id_clinical_form, clinical_form
+            FROM str_clinical_form_lang
+            WHERE id_lang = %(id_lang)s
+            ORDER BY clinical_form;]]></sql>
+
+        <sql name="get_str_isolation_data"><![CDATA[
+                SELECT peo.id_person as id_person, peo.name as name, inst.id_institution as id_institution, inst.name as name_institution,
+                iso.date as date, isofrom.isolation_from as iso_isolation_from, met.iso_method as iso_method, iso.comments as comments
+                FROM str_isolation iso
+                LEFT JOIN person peo USING (id_person)
+                LEFT JOIN institution inst
+                    ON iso.id_institution = inst.id_institution
+                LEFT JOIN str_iso_method met
+                    ON iso.id_strain = met.id_strain
+                    AND iso.id_coll = met.id_coll
+                    AND met.id_lang = %(data_lang)s
+                LEFT JOIN str_isolation_from isofrom
+                    ON isofrom.id_strain = iso.id_strain
+                    AND isofrom.id_coll = iso.id_coll
+                    AND isofrom.id_lang = %(data_lang)s
+                WHERE iso.id_strain = %(id)s AND iso.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_str_isolation_date"><![CDATA[
+            SELECT iso.date
+            FROM str_isolation iso
+            WHERE iso.id_strain = %(id_strain)s AND iso.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_str_identification_data"><![CDATA[
+                SELECT ident.date as date, peo.id_person as id_person, peo.name as name, inst.id_institution as id_institution, inst.name as name_institution,
+                  ident.genus as genus, ident.species as species, ident.classification as classification,
+                ident.infra_name as infra_name, ident.infra_complement as infra_complement,
+                met.ident_method as ident_method, ident.comments as comments
+                FROM str_identification ident
+                LEFT JOIN person peo USING (id_person)
+                LEFT JOIN institution inst
+                    ON ident.id_institution = inst.id_institution
+                LEFT JOIN str_ident_method met
+                    ON ident.id_strain = met.id_strain
+                    AND ident.id_coll = met.id_coll
+                    AND met.id_lang = %(data_lang)s
+                WHERE ident.id_strain = %(id)s AND ident.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_str_identification_date"><![CDATA[
+            SELECT ident.date
+            FROM str_identification ident
+            WHERE ident.id_strain = %(id_strain)s AND ident.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_str_culture_data"><![CDATA[
+                SELECT w.medium as medium, cult.temp as temp,cult.ph as ph, inc.incub_time as incub_time,oxy.oxy_req as oxy_req, com.comments as comments
+                FROM str_culture cult
+                LEFT JOIN str_cult_medium w
+                    ON cult.id_strain = w.id_strain
+                    AND cult.id_coll = w.id_coll
+                    AND w.id_lang = %(data_lang)s
+                LEFT JOIN str_incub_time inc
+                    ON cult.id_strain = inc.id_strain
+                    AND cult.id_coll = inc.id_coll
+                    AND inc.id_lang=%(data_lang)s
+                LEFT JOIN str_oxy_req oxy
+                    ON cult.id_strain = oxy.id_strain
+                    AND cult.id_coll = oxy.id_coll
+                    AND oxy.id_lang=%(data_lang)s
+                LEFT JOIN str_cult_comments com
+                    ON cult.id_strain = com.id_strain
+                    AND cult.id_coll = com.id_coll
+                    AND com.id_lang = %(data_lang)s
+                WHERE cult.id_strain = %(id)s AND cult.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_str_characs_data"><![CDATA[
+            SELECT cha.biochemical as biochemical, cha.immunologic as immunologic, cha.morphologic as morphologic, cha.molecular as molecular, cha.pathogenic as pathogenic,cha.genotypic as genotypic, cha.ogm as ogm, oco.ogm_comments as ogm_comments, bio.biorisk_comments as biorisk_comments, res.restrictions as restrictions, pic.pictures as pictures, u.urls as urls, cat.catalogue_notes as catalogue_notes
+            FROM str_characs cha
+            LEFT JOIN str_cha_restrictions res
+                ON cha.id_strain = res.id_strain
+                AND cha.id_coll = res.id_coll
+                AND res.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_ogm_comments oco
+                ON cha.id_strain = oco.id_strain
+                AND cha.id_coll = oco.id_coll
+                AND oco.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_biorisk_comments bio
+                ON cha.id_strain = bio.id_strain
+                AND cha.id_coll = bio.id_coll
+                AND bio.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_pictures pic
+                ON cha.id_strain = pic.id_strain
+                AND cha.id_coll = pic.id_coll
+                AND pic.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_urls u
+                ON cha.id_strain = u.id_strain
+                AND cha.id_coll = u.id_coll
+                AND u.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_catalogue cat
+                ON cha.id_strain = cat.id_strain
+                AND cha.id_coll = cat.id_coll
+                AND cat.id_lang=%(data_lang)s
+            WHERE cha.id_strain = %(id)s AND cha.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_str_properties_data"><![CDATA[
+            SELECT properties, applications, urls
+      FROM str_properties pro
+            LEFT JOIN str_pro_properties p
+                ON pro.id_strain = p.id_strain
+                AND pro.id_coll = p.id_coll
+                AND p.id_lang = %(data_lang)s
+            LEFT JOIN str_pro_applications a
+                ON pro.id_strain = a.id_strain
+                AND pro.id_coll = a.id_coll
+                AND a.id_lang = %(data_lang)s
+            LEFT JOIN str_pro_urls u
+                ON pro.id_strain = u.id_strain
+                AND pro.id_coll = u.id_coll
+                AND u.id_lang = %(data_lang)s
+            WHERE pro.id_strain = %(id)s AND pro.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_str_quality"><![CDATA[
+            SELECT str_quality.id_quality, str_quality.id_user, str_quality.id_lot,
+                str_quality.id_strain, str_quality.date,
+                str_quality.last_update, preservation_method_lang.unit_measure,
+                SUM(ifnull(sqol.quantity,0)) AS quantity, str_quality.not_identified,
+                lot.name AS lot_name
+            FROM str_quality
+            LEFT JOIN str_quality_origin_location sqol USING (id_quality)
+            INNER JOIN lot ON (str_quality.id_lot = lot.id_lot)
+            INNER JOIN preservation ON (str_quality.id_lot = preservation.id_lot)
+            INNER JOIN preservation_method_lang ON (preservation.id_preservation_method = preservation_method_lang.id_preservation_method)
+            WHERE id_quality = %(id_quality)s
+            AND preservation_method_lang.id_lang = %(id_lang)s
+            GROUP BY id_quality;]]></sql>
+
+        <sql name="get_str_quality_data"><![CDATA[
+            SELECT str_quality.id_quality, str_quality.id_user, lot.name AS lot,
+                str_quality.date, SUM(ifnull(sqol.quantity,0)) AS quantity,
+                preservation_method_lang.unit_measure, str_quality.not_identified
+            FROM str_quality
+            LEFT JOIN str_quality_origin_location sqol USING (id_quality)
+            INNER JOIN lot ON (str_quality.id_lot = lot.id_lot)
+            INNER JOIN preservation ON (lot.id_lot = preservation.id_lot)
+            INNER JOIN preservation_method_lang ON (preservation.id_preservation_method = preservation_method_lang.id_preservation_method)
+            WHERE str_quality.id_strain = %(id_strain)s
+            AND preservation_method_lang.id_lang = %(id_lang)s
+            GROUP BY id_quality
+            ORDER BY str_quality.date DESC;]]></sql>
+
+        <sql name="get_str_quality_tests_count"><![CDATA[
+            SELECT COUNT(id_test) FROM str_quality_test
+            WHERE id_quality = %(id_quality)s;]]></sql>
+
+        <sql name="get_str_quality_test_by_id_quality"><![CDATA[
+            SELECT
+                str_quality_test.id_test,
+                str_quality_test.id_quality,
+                str_quality_test.id_doc as id_doc_qc,
+                str_quality_test.result,
+                str_quality_test.comments,
+                str_quality_test.purity,
+                str_quality_test.counting,
+                str_quality_test.counting_not_apply
+            FROM
+                str_quality_test
+            WHERE
+                str_quality_test.id_quality = %(id_quality)s
+            ORDER
+                BY str_quality_test.id_test;]]></sql>
+
+        <sql name="get_str_quality_tests"><![CDATA[
+            SELECT doc.id_doc, doc_title.title, str_quality_test.purity, str_quality_test.counting, str_quality_test.counting_not_apply, str_quality_test.result, str_quality_test.comments
+            FROM str_quality_test
+                 INNER JOIN doc ON (str_quality_test.id_doc = doc.id_doc)
+                 LEFT JOIN doc_title
+                    ON doc.id_doc = doc_title.id_doc
+                    AND doc.id_coll = doc_title.id_coll
+                    AND doc_title.id_lang = %(id_lang)s
+            WHERE str_quality_test.id_quality = %(id_quality)s
+            ORDER BY str_quality_test.id_test;]]></sql>
+
+        <sql name="get_strain_lots"><![CDATA[
+            SELECT lot.id_lot, lot.name, preservation_method_lang.unit_measure FROM lot
+                   INNER JOIN preservation ON (lot.id_lot = preservation.id_lot)
+                   INNER JOIN preservation_strain ON (preservation.id_preservation = preservation_strain.id_preservation)
+                   INNER JOIN preservation_method_lang ON (preservation.id_preservation_method = preservation_method_lang.id_preservation_method)
+            WHERE preservation_strain.id_strain = %(id_strain)s
+            AND preservation_method_lang.id_lang = %(id_lang)s
+            ORDER BY lot.name;]]></sql>
+
+        <sql name="get_institution"><![CDATA[
+            SELECT id_institution, complement, nickname, name
+            FROM institution
+            ORDER BY nickname, name;]]></sql>
+
+        <sql name="get_country"><![CDATA[
+            SELECT lcl.id_country AS id_country, lcl.country AS country, lc.code AS code
+            FROM loc_country_lang AS lcl
+            LEFT JOIN loc_country AS lc ON (lc.id_country=lcl.id_country)
+            WHERE id_lang = %(id_lang)s
+            ORDER BY country;]]></sql>
+
+        <sql name="get_country_states"><![CDATA[
+            SELECT id_state, state, code
+            FROM loc_state
+            WHERE id_country = %(id_country)s
+            ORDER BY state;]]></sql>
+
+        <sql name="get_state_id"><![CDATA[
+            SELECT id_state
+            FROM loc_state
+            WHERE state = %(coll_state)s;]]></sql>
+
+        <sql name="get_state_name"><![CDATA[
+            SELECT state,code
+            FROM loc_state
+            WHERE id_state = %(coll_id_state)s;]]></sql>
+
+        <sql name="get_city_id"><![CDATA[
+            SELECT id_city
+            FROM loc_city
+            WHERE city = %(coll_city)s;]]></sql>
+
+        <sql name="get_city_name"><![CDATA[
+            SELECT city
+            FROM loc_city
+            WHERE id_city = %(coll_id_city)s;]]></sql>
+
+        <sql name="get_state_cities"><![CDATA[
+            SELECT id_city,city
+            FROM loc_city
+            WHERE id_state = %(id_state)s
+            ORDER BY city;]]></sql>
+
+    <sql name="count_strain_parts_multilanguage"><![CDATA[
+            SELECT COUNT(str.id_strain) as count_strain, COUNT(dep.id_strain) as count_deposit, COUNT(coll.id_strain) as count_coll, COUNT(hn.id_strain) as count_host_name, COUNT(subs.id_strain) as count_substratum,
+            COUNT(com.id_strain) as count_comments, COUNT(iso.id_strain) as count_isolation, COUNT(isofrom.id_strain) as count_isolations_from, COUNT(met.id_strain) as count_methods,
+            COUNT(ident.id_strain) as count_identification, COUNT(ident_met.id_strain) as count_ident_methods, COUNT(cul.id_strain) as count_culture, COUNT(cmedium.id_strain) as count_cultmedium,
+            COUNT(inc.id_strain) as count_incubtime, COUNT(oxy.id_strain) AS count_oxy_req,COUNT(ccom.id_strain) as count_cultcomment, COUNT(cha.id_strain) as count_characs, COUNT(pro.id_strain) as count_pro,
+            COUNT(prop.id_strain) as count_properties, COUNT(appl.id_strain) as count_applications, COUNT(p_urls.id_strain) as count_p_urls, COUNT(ogmc.id_strain) as count_ogm, COUNT(risc.id_strain) as count_biorisks,
+            COUNT(rest.id_strain) as count_restrictions, COUNT(pic.id_strain) as count_pictures, COUNT(url.id_strain) as count_urls, COUNT(cat.id_strain) as count_catalogue
+            FROM strain str
+            LEFT JOIN str_deposit dep
+                ON dep.id_strain = %(id)s
+                AND dep.id_coll = %(id_coll)s
+            LEFT JOIN str_coll_event coll
+                ON coll.id_strain = %(id)s
+                AND coll.id_coll = %(id_coll)s
+            LEFT JOIN str_host_name hn
+                ON hn.id_strain = %(id)s
+                AND hn.id_coll = %(id_coll)s
+                AND hn.id_lang = %(data_lang)s
+            LEFT JOIN str_substratum subs
+                ON subs.id_strain = %(id)s
+                AND subs.id_coll = %(id_coll)s
+                AND subs.id_lang = %(data_lang)s
+            LEFT JOIN str_coll_comments com
+                ON com.id_strain = %(id)s
+                AND com.id_coll = %(id_coll)s
+                AND com.id_lang = %(data_lang)s
+            LEFT JOIN str_isolation iso
+                ON iso.id_strain = %(id)s
+                AND iso.id_coll = %(id_coll)s
+            LEFT JOIN str_isolation_from isofrom
+                ON isofrom.id_strain = %(id)s
+                AND isofrom.id_coll = %(id_coll)s
+                AND isofrom.id_lang = %(data_lang)s
+            LEFT JOIN str_iso_method met
+                ON met.id_strain = %(id)s
+                AND met.id_coll = %(id_coll)s
+                AND met.id_lang = %(data_lang)s
+            LEFT JOIN str_identification ident
+                ON ident.id_strain = %(id)s
+                AND ident.id_coll = %(id_coll)s
+            LEFT JOIN str_ident_method ident_met
+                ON ident_met.id_strain = %(id)s
+                AND ident_met.id_coll = %(id_coll)s
+                AND ident_met.id_lang = %(data_lang)s
+            LEFT JOIN str_culture cul
+                ON cul.id_strain = %(id)s
+                AND cul.id_coll = %(id_coll)s
+            LEFT JOIN str_cult_medium cmedium
+                ON cmedium.id_strain = %(id)s
+                AND cmedium.id_coll = %(id_coll)s
+                AND cmedium.id_lang = %(data_lang)s
+            LEFT JOIN str_incub_time inc
+                ON inc.id_strain = %(id)s
+                AND inc.id_coll = %(id_coll)s
+                AND inc.id_lang = %(data_lang)s
+            LEFT JOIN str_oxy_req oxy
+                ON oxy.id_strain = %(id)s
+                AND oxy.id_coll = %(id_coll)s
+                AND oxy.id_lang = %(data_lang)s
+            LEFT JOIN str_cult_comments ccom
+                ON ccom.id_strain = %(id)s
+                AND ccom.id_coll = %(id_coll)s
+                AND ccom.id_lang = %(data_lang)s
+            LEFT JOIN str_characs cha
+                ON cha.id_strain = %(id)s
+                AND cha.id_coll = %(id_coll)s
+            LEFT JOIN str_cha_ogm_comments ogmc
+                ON ogmc.id_strain = %(id)s
+                AND ogmc.id_coll = %(id_coll)s
+                AND ogmc.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_biorisk_comments risc
+                ON risc.id_strain = %(id)s
+                AND risc.id_coll = %(id_coll)s
+                AND risc.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_restrictions rest
+                ON rest.id_strain = %(id)s
+                AND rest.id_coll = %(id_coll)s
+                AND rest.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_pictures pic
+                ON pic.id_strain = %(id)s
+                AND pic.id_coll = %(id_coll)s
+                AND pic.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_urls url
+                ON url.id_strain = %(id)s
+                AND url.id_coll = %(id_coll)s
+                AND url.id_lang = %(data_lang)s
+            LEFT JOIN str_cha_catalogue cat
+                ON cat.id_strain = %(id)s
+                AND cat.id_coll = %(id_coll)s
+                AND cat.id_lang = %(data_lang)s
+            LEFT JOIN str_properties pro
+                ON pro.id_strain = %(id)s
+                AND pro.id_coll = %(id_coll)s
+            LEFT JOIN str_pro_properties prop
+                ON prop.id_strain = %(id)s
+                AND prop.id_coll = %(id_coll)s
+                AND prop.id_lang = %(data_lang)s
+            LEFT JOIN str_pro_applications appl
+                ON appl.id_strain = %(id)s
+                AND appl.id_coll = %(id_coll)s
+                AND appl.id_lang = %(data_lang)s
+            LEFT JOIN str_pro_urls p_urls
+                ON p_urls.id_strain = %(id)s
+                AND p_urls.id_coll = %(id_coll)s
+                AND p_urls.id_lang = %(data_lang)s
+            WHERE str.id_strain = %(id)s AND str.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_doc_by_qualifier"><![CDATA[
+            SELECT doc.id_doc as id_doc, t.title as title
+            FROM doc
+            LEFT JOIN doc_qualifier q USING (id_qualifier)
+            LEFT JOIN doc_title t
+                ON t.id_doc = doc.id_doc
+                AND t.id_coll = doc.id_coll
+                AND t.id_lang = %(id_lang)s
+            WHERE doc.id_coll = %(id_coll)s AND q.id_qualifier=%(id_qualifier)s;]]></sql>
+
+        <sql name="get_doc_list"><![CDATA[
+            SELECT doc.id_doc as id_doc, q.qualifier as qualifier, doc.code as code, t.title as title
+            FROM doc
+            LEFT JOIN doc_qualifier q USING (id_qualifier)
+            LEFT JOIN doc_title t
+                ON t.id_doc = doc.id_doc
+                AND t.id_coll = doc.id_coll
+                AND t.id_lang = %(id_lang)s
+            WHERE doc.id_coll = %(id_coll)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_doc_ids"><![CDATA[
+            SELECT doc.id_doc as id_doc
+            FROM doc
+            LEFT JOIN doc_qualifier q USING (id_qualifier)
+            LEFT JOIN doc_title t
+                ON t.id_doc = doc.id_doc
+                AND t.id_coll = doc.id_coll
+                AND t.id_lang = %(id_lang)s
+            WHERE doc.id_coll = %(id_coll)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_doc_list_restrict"><![CDATA[
+            SELECT doc.id_doc as id_doc, q.qualifier as qualifier, doc.code as code, t.title as title
+            FROM doc
+            LEFT JOIN doc_qualifier q USING (id_qualifier)
+            LEFT JOIN doc_title t
+                ON t.id_doc = doc.id_doc
+                AND t.id_coll = doc.id_coll
+                AND t.id_lang = '%(id_lang)s'
+            WHERE doc.id_coll = '%(id_coll)s' AND doc.id_doc = (SELECT DISTINCT id_item FROM roles_permissions
+                                        WHERE id_role IN %(roles_list)s AND id_item=doc.id_doc AND id_area=5)
+            %(condition)s
+                  ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_doc_ids_restrict"><![CDATA[
+            SELECT doc.id_doc as id_doc
+            FROM doc
+            LEFT JOIN doc_qualifier q USING (id_qualifier)
+            LEFT JOIN doc_title t
+                ON t.id_doc = doc.id_doc
+                AND t.id_coll = doc.id_coll
+                AND t.id_lang = '%(id_lang)s'
+            WHERE doc.id_coll = '%(id_coll)s' AND doc.id_doc = (SELECT DISTINCT id_item FROM roles_permissions
+                                        WHERE id_role IN %(roles_list)s AND id_item=doc.id_doc AND id_area=5)
+            %(condition)s
+                  ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_doc_qualifiers"><![CDATA[
+            SELECT qualifier
+            FROM doc_qualifier
+            ORDER BY qualifier;]]></sql>
+
+        <sql name="get_doc_data"><![CDATA[
+            SELECT doc.id_test_group as id_category, doc.go_catalog as go_catalog, tgl.category as category,doc.code as code, q.id_qualifier as id_qualifier, q.qualifier as qualifier, t.title as title, d.description as description, df.file_name as file_name
+            FROM doc
+            LEFT JOIN doc_qualifier q USING (id_qualifier)
+            LEFT JOIN doc_title t
+                ON t.id_doc = doc.id_doc
+                AND t.id_coll = doc.id_coll
+                AND t.id_lang = %(data_lang)s
+            LEFT JOIN doc_description d
+                ON d.id_doc = doc.id_doc
+                AND d.id_coll = doc.id_coll
+                AND d.id_lang = %(data_lang)s
+            LEFT JOIN doc_file df
+                ON df.id_doc = doc.id_doc
+                AND df.id_coll = doc.id_coll
+                AND df.id_lang = %(data_lang)s
+            LEFT JOIN test_group_subcoll tgs
+              ON tgs.id_test_group = doc.id_test_group
+              AND tgs.id_subcoll = %(id_subcoll)s
+            LEFT JOIN test_group_lang tgl
+              ON tgl.id_test_group = doc.id_test_group
+              AND tgl.id_lang = %(id_lang)s
+            WHERE doc.id_doc = %(id)s AND doc.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_doc_dependency_with_preservation"><![CDATA[
+            SELECT id_doc FROM doc
+            INNER JOIN preservation_strain ps USING(id_doc)
+            WHERE doc.id_qualifier = 4 and id_doc = %(id)s
+        ]]></sql>
+
+        <sql name="get_doc_dependency_with_quality_control"><![CDATA[
+            SELECT id_doc FROM doc
+            INNER JOIN str_quality_test ps USING(id_doc)
+            WHERE doc.id_qualifier = 5 and id_doc = %(id)s
+        ]]></sql>
+
+        <sql name="get_languages_by_doc"><![CDATA[
+            SELECT id_lang FROM doc_file as doc
+            WHERE doc.id_doc = %(id)s AND doc.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_doc_file_name_multilanguage"><![CDATA[
+        SELECT COUNT(id_doc) FROM doc_file WHERE id_doc=%(id)s AND id_lang=%(data_lang)s;]]></sql>
+
+        <sql name="count_doc_parts_multilanguage"><![CDATA[
+            SELECT COUNT(doc.id_doc) as count_doc, COUNT(t.id_doc) as count_title, COUNT(d.id_doc) as count_description, COUNT(f.id_doc) as count_file
+            FROM doc
+            LEFT JOIN doc_title t
+                ON t.id_doc = doc.id_doc
+                AND t.id_coll = doc.id_coll
+                AND t.id_lang = %(data_lang)s
+            LEFT JOIN doc_description d
+                ON d.id_doc = doc.id_doc
+                AND d.id_coll = doc.id_coll
+                AND d.id_lang = %(data_lang)s
+            LEFT JOIN doc_file f
+                ON f.id_doc = doc.id_doc
+                AND f.id_coll = doc.id_coll
+                AND f.id_lang = %(data_lang)s
+            WHERE doc.id_doc = %(id)s AND doc.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_ref_list"><![CDATA[
+            SELECT ref.id_ref as id_ref, ref.author as author, ref.title as title, ref.year as year
+            FROM ref
+            WHERE ref.id_coll = %(id_coll)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_ref_ids"><![CDATA[
+            SELECT ref.id_ref as id_ref
+            FROM ref
+            WHERE ref.id_coll = %(id_coll)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_preservation_lot"><![CDATA[
+            SELECT id_lot FROM preservation WHERE id_preservation = %(id)s;]]></sql>
+
+        <sql name="get_all_lot"><![CDATA[
+            SELECT id_lot, name
+            FROM lot;]]></sql>
+
+        <sql name="get_lot"><![CDATA[
+            SELECT id_lot, name
+            FROM lot WHERE id_lot=%(id_lot)s;]]></sql>
+
+        <sql name="get_all_lot_gt_zero"><![CDATA[
+            SELECT id_lot, name
+            FROM lot
+            INNER JOIN lot_strain_stock USING (id_lot)
+            WHERE stock > 0 and lot.id_subcoll = %(id_subcoll)s
+            ORDER BY trim(lot.name);]]></sql>
+
+        <sql name="get_ref_list_restrict"><![CDATA[
+            SELECT ref.id_ref as id_ref, ref.author as author, ref.title as title, ref.year as year
+            FROM ref
+            WHERE ref.id_coll = '%(id_coll)s' AND ref.id_ref = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=ref.id_ref AND id_area=6)
+                  %(condition)s
+                  ORDER BY %(field_order)s
+                  %(paging)s;]]></sql>
+
+        <sql name="get_ref_ids_restrict"><![CDATA[
+            SELECT ref.id_ref as id_ref
+            FROM ref
+            WHERE ref.id_coll = '%(id_coll)s' AND ref.id_ref = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=ref.id_ref AND id_area=6)
+                  %(condition)s
+                  ORDER BY %(field_order)s
+                  %(paging)s;]]></sql>
+
+        <sql name="get_ref_data"><![CDATA[
+            SELECT ref.author as author, ref.title as title, ref.year as year, ref.url as url, ref.go_catalog as go_catalog , c.comments as comments
+            FROM ref
+            LEFT JOIN ref_comments c
+                ON c.id_ref = ref.id_ref
+                AND c.id_coll = ref.id_coll
+                AND c.id_lang = %(data_lang)s
+            WHERE ref.id_ref = %(id)s AND ref.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="count_ref_parts_multilanguage"><![CDATA[
+            SELECT COUNT(ref.id_ref) as count_ref, COUNT(c.id_ref) as count_comments
+            FROM ref
+            LEFT JOIN ref_comments c
+                ON c.id_ref = ref.id_ref
+                AND c.id_coll = ref.id_coll
+                AND c.id_lang = %(data_lang)s
+            WHERE ref.id_ref = %(id)s AND ref.id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="get_person"><![CDATA[
+            SELECT id_person, name, nickname
+            FROM person ORDER BY name;]]></sql>
+
+        <sql name="get_person_list"><![CDATA[
+            SELECT id_person, name, nickname
+            FROM person p
+            WHERE 1
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_person_ids"><![CDATA[
+            SELECT id_person
+            FROM person p
+            WHERE 1
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_person_list_restrict"><![CDATA[
+            SELECT p.id_person, p.name, p.nickname
+            FROM person AS p
+            WHERE p.id_person = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=p.id_person AND id_area=3)
+            %(condition)s
+            ORDER BY %(field_order)s
+                  %(paging)s;]]></sql>
+
+        <sql name="get_person_ids_restrict"><![CDATA[
+            SELECT p.id_person
+            FROM person AS p
+            WHERE p.id_person = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=p.id_person AND id_area=3)
+            %(condition)s
+            ORDER BY %(field_order)s
+                  %(paging)s;]]></sql>
+
+        <sql name="get_person_data"><![CDATA[
+        SELECT p.name as name, p.nickname as nickname, p.address as address,p.phone as phone, p.email as email, p.go_catalog as go_catalog, c.comments as comments
+        FROM person p
+                LEFT JOIN per_comments c
+                    ON c.id_person = p.id_person
+                    AND c.id_lang = %(data_lang)s
+        WHERE p.id_person = %(id)s
+        ORDER BY p.name;]]></sql>
+
+        <sql name="get_one_person"><![CDATA[
+        SELECT name FROM person WHERE id_person = %(id)s;]]></sql>
+
+        <sql name="get_person_contact_relations"><![CDATA[
+        SELECT id_institution as institution, i.complement as complement, i.nickname as nickname, cr.contact as contact, cr.department as department, cr.email as email
+        FROM institution i
+        LEFT JOIN contact_relations cr USING(id_institution)
+        WHERE cr.id_person = %(id)s
+        ORDER BY i.complement, cr.department;]]></sql>
+
+        <sql name="count_person_parts_multilanguage"><![CDATA[
+            SELECT COUNT(p.id_person) as count_person, COUNT(c.id_person) count_comments
+            FROM person p
+            LEFT JOIN per_comments c
+                ON c.id_person = p.id_person
+                AND c.id_lang = %(data_lang)s
+            WHERE p.id_person = %(id)s;]]></sql>
+
+        <sql name="get_inst"><![CDATA[
+            SELECT id_institution, complement, nickname, name
+            FROM institution
+            ORDER BY name;]]></sql>
+
+        <sql name="get_inst_list"><![CDATA[
+            SELECT id_institution, complement, nickname, name
+            FROM institution
+            WHERE 1
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_inst_ids"><![CDATA[
+            SELECT id_institution
+            FROM institution
+            WHERE 1
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_inst_list_restrict"><![CDATA[
+            SELECT i.id_institution, i.complement, i.nickname, i.name
+            FROM institution AS i
+            WHERE i.id_institution = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=i.id_institution AND id_area=4)
+                  %(condition)s
+                  ORDER BY %(field_order)s
+                  %(paging)s;]]></sql>
+
+        <sql name="get_inst_ids_restrict"><![CDATA[
+            SELECT i.id_institution
+            FROM institution AS i
+            WHERE i.id_institution = (SELECT DISTINCT id_item FROM roles_permissions
+            WHERE id_role IN %(roles_list)s AND id_item=i.id_institution AND id_area=4)
+                  %(condition)s
+                  ORDER BY %(field_order)s
+                  %(paging)s;]]></sql>
+
+        <sql name="get_inst_data"><![CDATA[
+            SELECT i.code1 as code1, i.code2 as code2, i.code3 as code3, i.complement as complement, i.nickname as nickname, i.name as name, i.address as address, i.phone as phone, i.email as email, i.website as website, i.go_catalog as go_catalog, c.comments as comments
+            FROM institution i
+            LEFT JOIN inst_comments c
+                ON c.id_institution = i.id_institution
+                AND c.id_lang = %(data_lang)s
+            WHERE i.id_institution = %(id)s;]]></sql>
+
+        <sql name="count_inst_parts_multilanguage"><![CDATA[
+            SELECT COUNT(i.id_institution) as count_institution, COUNT(c.id_institution) as count_comments
+            FROM institution i
+            LEFT JOIN inst_comments c
+                ON c.id_institution = i.id_institution
+                AND c.id_lang = %(data_lang)s
+            WHERE i.id_institution = %(id)s;]]></sql>
+
+        <sql name="get_ref_title">
+            <![CDATA[
+                SELECT id_ref, title
+                FROM ref
+                WHERE id_ref =  %(id_ref)s
+                AND id_coll = %(id_coll)s;
+            ]]>
+        </sql>
+
+        <sql name="get_first_ref_title_found"><![CDATA[
+                SELECT title FROM ref_title    WHERE id_ref = %(id_ref)s ORDER BY id_lang ASC;]]></sql>
+
+        <sql name="get_first_doc_title_found"><![CDATA[
+                SELECT title FROM doc_title    WHERE id_doc = %(id_doc)s ORDER BY id_lang ASC;]]></sql>
+
+        <sql name="get_doc_title_by_id"><![CDATA[
+                SELECT title FROM doc_title WHERE id_doc = %(id_doc)s ORDER BY id_lang ASC;]]></sql>
+
+        <sql name="get_doc_code"><![CDATA[
+            SELECT COUNT(code) FROM doc WHERE code=%(code)s AND id_coll=%(id_coll)s;]]></sql>
+
+        <sql name="get_doc_title">
+            <![CDATA[
+                SELECT d.id_doc as id_doc, dt.title as title
+                FROM doc d, doc_title dt
+                WHERE dt.id_doc = d.id_doc
+                AND d.code = %(code)s
+                AND dt.id_lang = %(id_lang)s
+                AND d.id_coll = %(id_coll)s;
+            ]]>
+        </sql>
+
+        <sql name="get_distribution"><![CDATA[
+            SELECT id_distribution, date, id_strain, id_lot, id_user, id_institution, id_person, reason
+            FROM distribution
+            ORDER BY date;]]></sql>
+
+        <sql name="get_one_distribution"><![CDATA[
+            SELECT id_distribution, date, id_strain, id_lot, id_user, id_institution, id_person, reason, id_lot as id_lot_qc
+            FROM distribution
+            WHERE id_distribution = %(id)s
+            ORDER BY date;]]></sql>
+
+        <sql name="get_preservation_list"><![CDATA[
+            SELECT p.id_preservation, p.date as date, l.name AS lot_name , pml.method as method,
+            sc.sciname, sc.sciname_no_auth, sc.hi_tax,
+            st.id_strain as id_strain, st.code as code, st.internal_code as internal_code, ps.stock_minimum, ps.id_preserv_str,
+            st.infra_complement as infra_complement, ifnull(ls.stock,0) as in_stock
+            FROM preservation p
+            INNER JOIN preservation_strain ps ON (ps.id_preservation=p.id_preservation)
+            INNER JOIN lot l ON (l.id_lot=p.id_lot)
+            INNER JOIN preservation_method pm ON (pm.id_preservation_method=p.id_preservation_method)
+            INNER JOIN preservation_method_lang pml ON (pml.id_preservation_method=pm.id_preservation_method)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN lot_strain_stock ls ON (ls.id_lot = l.id_lot AND ls.id_strain = st.id_strain)
+            WHERE id_lang = %(id_lang)s AND l.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_preservation_ids"><![CDATA[
+            SELECT p.id_preservation
+            FROM preservation p
+            INNER JOIN preservation_strain ps ON (ps.id_preservation=p.id_preservation)
+            INNER JOIN lot l ON (l.id_lot=p.id_lot)
+            INNER JOIN preservation_method pm ON (pm.id_preservation_method=p.id_preservation_method)
+            INNER JOIN preservation_method_lang pml ON (pml.id_preservation_method=pm.id_preservation_method)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN lot_strain_stock ls ON (ls.id_lot = l.id_lot AND ls.id_strain = st.id_strain)
+            WHERE id_lang = %(id_lang)s AND l.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            GROUP BY id_preservation
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_preservation_list_restrict"><![CDATA[
+            SELECT p.id_preservation, p.date as date, l.name AS lot_name , pml.method as method,
+            sc.sciname, sc.sciname_no_auth, sc.hi_tax,
+            st.id_strain as id_strain, st.code as code, st.internal_code as internal_code, ps.stock_minimum, ps.id_preserv_str,
+            ifnull(ls.stock,0) as in_stock, st.infra_complement as infra_complement
+            FROM preservation p
+            INNER JOIN preservation_strain ps ON (ps.id_preservation=p.id_preservation)
+            INNER JOIN lot l ON (l.id_lot=p.id_lot)
+            INNER JOIN preservation_method pm ON (pm.id_preservation_method=p.id_preservation_method)
+            INNER JOIN preservation_method_lang pml ON (pml.id_preservation_method=pm.id_preservation_method)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN lot_strain_stock ls ON (ls.id_lot = l.id_lot AND ls.id_strain = st.id_strain)
+            WHERE id_lang = %(id_lang)s AND p.id_preservation = (SELECT DISTINCT id_item FROM roles_permissions
+                                         WHERE id_role IN %(roles_list)s AND id_item=p.id_preservation AND id_area=7) AND l.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_preservation_ids_restrict"><![CDATA[
+           SELECT p.id_preservation
+            FROM preservation p
+            INNER JOIN preservation_strain ps ON (ps.id_preservation=p.id_preservation)
+            INNER JOIN lot l ON (l.id_lot=p.id_lot)
+            INNER JOIN preservation_method pm ON (pm.id_preservation_method=p.id_preservation_method)
+            INNER JOIN preservation_method_lang pml ON (pml.id_preservation_method=pm.id_preservation_method)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            LEFT JOIN lot_strain_stock ls ON (ls.id_lot = l.id_lot AND ls.id_strain = st.id_strain)
+            WHERE id_lang = %(id_lang)s AND p.id_preservation = (SELECT DISTINCT id_item FROM roles_permissions
+                                         WHERE id_role IN %(roles_list)s AND id_item=p.id_preservation AND id_area=7) AND l.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            GROUP BY id_preservation
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_distribution_list"><![CDATA[
+            SELECT d.id_distribution, d.date, SUM(ifnull(dol.quantity,0)) as sum_quantity, l.name AS lot_name , i.name AS inst_name, p.name person_name,
+              sc.sciname, st.code, sc.sciname_no_auth, sc.hi_tax, st.infra_complement as infra_complement
+            FROM distribution d
+            LEFT JOIN distribution_origin_location dol USING (id_distribution)
+            INNER JOIN lot l USING(id_lot)
+            INNER JOIN institution i USING(id_institution)
+            LEFT JOIN person p USING(id_person)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE l.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            GROUP BY id_distribution
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_distribution_ids"><![CDATA[
+            SELECT d.id_distribution, SUM(ifnull(dol.quantity,0)) as sum_quantity
+            FROM distribution d
+            LEFT JOIN distribution_origin_location dol USING (id_distribution)
+            INNER JOIN lot l USING(id_lot)
+            INNER JOIN institution i USING(id_institution)
+            LEFT JOIN person p USING(id_person)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE l.id_subcoll = %(id_subcoll)s
+            %(condition)s
+            GROUP BY id_distribution
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+        <sql name="get_distribution_ids_restrict"><![CDATA[
+            SELECT d.id_distribution, SUM(ifnull(dol.quantity,0)) as sum_quantity
+            FROM distribution d
+            LEFT JOIN distribution_origin_location dol USING (id_distribution)
+            INNER JOIN lot l USING(id_lot)
+            INNER JOIN institution i USING(id_institution)
+            LEFT JOIN person p USING(id_person)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE d.id_distribution = (SELECT DISTINCT id_item FROM roles_permissions
+              WHERE id_role IN %(roles_list)s AND id_item=d.id_distribution AND id_area=8)
+            AND l.id_subcoll = %(id_subcoll)s
+              %(condition)s
+            GROUP BY id_distribution
+              ORDER BY %(field_order)s
+              %(paging)s;]]></sql>
+
+        <sql name="get_distribution_list_restrict"><![CDATA[
+            SELECT d.id_distribution, d.date, SUM(ifnull(dol.quantity,0)) as sum_quantity, l.name AS lot_name , i.name AS inst_name, p.name person_name,
+              sc.sciname, st.code, sc.sciname_no_auth, sc.hi_tax, st.infra_complement as infra_complement
+            FROM distribution d
+            LEFT JOIN distribution_origin_location dol USING (id_distribution)
+            INNER JOIN lot l USING(id_lot)
+            INNER JOIN institution i USING(id_institution)
+            LEFT JOIN person p USING(id_person)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE d.id_distribution = (SELECT DISTINCT id_item FROM roles_permissions
+              WHERE id_role IN %(roles_list)s AND id_item=d.id_distribution AND id_area=8)
+            AND l.id_subcoll = %(id_subcoll)s
+              %(condition)s
+            GROUP BY id_distribution
+              ORDER BY %(field_order)s
+              %(paging)s;]]></sql>
+
+        <sql name="get_distribution_data"><![CDATA[
+            SELECT d.date, d.id_user, d.reason, d.id_lot, l.name AS lot_name , d.id_institution, i.name AS inst_name,
+              CASE WHEN d.id_person IS NULL THEN 0 ELSE d.id_person END AS id_person,
+              CASE WHEN p.name IS NULL THEN '---' ELSE p.name END AS person_name,
+              st.id_strain, st.code, st.infra_complement as infra_complement, sc.sciname, sc.sciname_no_auth, sc.hi_tax,
+              d.not_identified
+            FROM distribution d
+            INNER JOIN lot l USING(id_lot)
+            INNER JOIN institution i USING(id_institution)
+            LEFT JOIN person p USING(id_person)
+            INNER JOIN strain st USING (id_strain)
+            INNER JOIN species sp USING (id_species)
+            INNER JOIN scientific_names sc USING (id_sciname)
+            WHERE d.id_distribution = %(id)s;]]></sql>
+
+        <sql name="get_distribution_origin_location"><![CDATA[
+            SELECT
+                id_distribution_location, id_distribution,
+                id_origin_container_hierarchy, origin_row, origin_col, quantity
+            FROM
+                distribution_origin_location
+            WHERE
+                id_distribution = %(id)s
+            ORDER BY
+                id_origin_container_hierarchy, origin_row, origin_col;]]></sql>
+
+        <sql name="get_quality_origin_location"><![CDATA[
+            SELECT
+                id_quality_origin_location, id_quality,
+                id_origin_container_hierarchy, origin_row, origin_col, quantity, id_origin_lot
+            FROM
+                str_quality_origin_location
+            WHERE
+                id_quality = %(id)s
+            ORDER BY
+                id_origin_container_hierarchy, origin_row, origin_col;]]></sql>
+
+        <sql name="get_all_roles"><![CDATA[
+            SELECT id_role,name,description,type FROM roles ORDER BY type DESC,name;]]></sql>
+
+        <sql name="get_all_common_roles"><![CDATA[
+            SELECT id_role,name,description,type FROM roles WHERE type IN ('group','level') ORDER BY type DESC,name;]]></sql>
+
+        <sql name="get_all_areas"><![CDATA[
+            SELECT id_area,name,description FROM system_areas ORDER BY id_area;]]></sql>
+
+        <sql name="get_area_access"><![CDATA[
+            SELECT id_area,allow_delete,allow_create FROM areas_permissions WHERE id_role=%(id_role)s;]]></sql>
+
+        <sql name="get_user_group"><![CDATA[
+            SELECT roles_users.id_role FROM roles INNER JOIN roles_users ON (roles_users.id_role=roles.id_role)
+      WHERE roles_users.id_user=%(id_user)s AND roles.type='user';]]></sql>
+
+        <sql name="get_user_roles"><![CDATA[
+            SELECT roles_users.id_role AS role_id FROM roles INNER JOIN roles_users ON (roles_users.id_role=roles.id_role)
+      WHERE roles_users.id_user=%(id_user)s AND roles.type IN ('group','level');]]></sql>
+
+        <sql name="get_user_roles_names"><![CDATA[
+            SELECT roles.name AS role_name FROM roles INNER JOIN roles_users ON (roles_users.id_role=roles.id_role)
+      WHERE roles_users.id_user=%(id_user)s AND roles.type IN ('group','level');]]></sql>
+
+        <sql name="get_group_members"><![CDATA[
+            SELECT roles_users.id_user FROM roles_users
+      WHERE roles_users.id_role=%(id_role)s;]]></sql>
+
+        <sql name="get_all_user_roles"><![CDATA[
+            SELECT id_role FROM roles_users WHERE id_user=%(id_user)s;]]></sql>
+
+        <sql name="get_security"><![CDATA[
+            SELECT id_role,permission FROM roles_permissions WHERE id_item=%(id_item)s AND id_area=%(id_area)s;]]></sql>
+
+        <sql name="allow_area"><![CDATA[
+            SELECT %(allow)s FROM areas_permissions
+      INNER JOIN system_areas ON (areas_permissions.id_area=system_areas.id_area)
+      WHERE system_areas.name = %(areaname)s AND areas_permissions.id_role IN %(roles_list)s
+      ORDER BY areas_permissions.%(allow)s ASC;]]></sql>
+
+        <sql name="allow_item"><![CDATA[
+            SELECT permission FROM roles_permissions
+      INNER JOIN system_areas ON (roles_permissions.id_area=system_areas.id_area)
+      WHERE system_areas.name = %(areaname)s AND roles_permissions.id_role IN %(roles_list)s
+      AND roles_permissions.id_item = %(id_item)s
+      ORDER BY roles_permissions.permission DESC;]]></sql>
+
+      <sql name="get_possible_data_langs"><![CDATA[
+            SELECT DISTINCT code FROM lang ORDER BY id_lang;]]></sql>
+
+      <sql name="get_possible_start_pages"><![CDATA[
+            SELECT id_area,name,description FROM system_areas ORDER BY id_area ASC;]]></sql>
+
+      <sql name="get_subcoll_combo_dep_reason"><![CDATA[
+            SELECT id_dep_reason FROM str_dep_reason_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+      <sql name="get_subcoll_combo_taxon_group"><![CDATA[
+            SELECT id_taxon_group FROM taxon_group_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+      <sql name="get_subcoll_combo_str_type"><![CDATA[
+            SELECT id_type FROM str_type_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+      <sql name="get_subcoll_combo_test_group"><![CDATA[
+            SELECT id_test_group FROM test_group_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+      <sql name="get_subcoll_combo_preservation_method"><![CDATA[
+            SELECT id_preservation_method FROM preservation_method_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+      <sql name="get_any_subcoll_in_critical_stock"><![CDATA[
+            SELECT ls.id_strain FROM lot_strain ls
+            INNER JOIN strain st USING (id_strain)
+            WHERE id_subcoll IN (%(subcoll_id_list)s)
+            GROUP BY ls.id_strain
+            HAVING SUM(ls.stock) <= %(critical_stock_limit)s;]]></sql>
+
+      <sql name="verify_lot_exist"><![CDATA[
+              SELECT COUNT(id_strain) FROM lot_strain
+              WHERE id_strain = %(id_strain)s;]]></sql>
+
+       <sql name="get_sciname_builder_fields"><![CDATA[
+           SELECT
+          id_hierarchy, seq, hi_tax, rank, has_author, use_author, in_sciname, required,
+          important, string_format, string_case, prefix, suffix, default_value, id_taxon_group
+        FROM
+          view_hierarchy
+        WHERE
+          id_subcoll = %(id_subcoll)s
+          AND id_lang = %(id_lang)s
+          %(taxon_group)s
+        ORDER BY id_taxon_group, seq;]]></sql>
+
+       <sql name="get_sciname_hierarchy"><![CDATA[
+        SELECT
+          id_hierarchy, value, author
+        FROM
+          scientific_names_hierarchy
+        WHERE
+          id_sciname = %(id_sciname)s
+        ORDER BY id_hierarchy;]]></sql>
+
+       <sql name="check_sciname"><![CDATA[
+       SELECT id_sciname FROM scientific_names WHERE CONCAT(COALESCE(hi_tax, ''),'|',sciname)=%(compound_hitax_sciname)s;]]></sql>
+
+        <sql name="get_sciname_for_species"><![CDATA[
+          SELECT id_sciname FROM species WHERE id_species=%(id)s;]]></sql>
+
+       <sql name="get_sciname_parts_data"><![CDATA[
+        SELECT
+          v.rank, s.value, s.author
+        FROM
+          scientific_names_hierarchy s
+          INNER JOIN view_hierarchy v USING (id_hierarchy)
+        WHERE
+          v.id_lang=%(id_lang)s
+          AND s.id_sciname=%(id_sciname)s
+          AND v.id_taxon_group=%(id_taxon_group)s;]]></sql>
+
+       <sql name="get_containers"><![CDATA[
+       SELECT
+           id_container, abbreviation, description
+       FROM
+           container
+           INNER JOIN container_preservation_method cpm USING (id_container)
+           INNER JOIN container_subcoll csub USING (id_container)
+       WHERE cpm.id_preservation_method=%(id_preservation_method)s
+           AND csub.id_subcoll = %(id_subcoll)s
+        ORDER BY description;
+       ]]></sql>
+
+        <sql name="get_used_container"><![CDATA[
+        SELECT
+            id_lot_strain_location
+        FROM
+            lot_strain_location
+        WHERE
+            id_container_hierarchy IN (
+                SELECT id_container_hierarchy
+                FROM container_hierarchy
+                WHERE id_container = %(id)s
+            );
+        ]]></sql>
+
+       <sql name="get_containers_for_lot_strain"><![CDATA[
+        SELECT
+            DISTINCT c.id_container, c.abbreviation, c.description
+        FROM
+            container c
+            INNER JOIN container_hierarchy ch USING (id_container)
+            INNER JOIN lot_strain_available_locations lsl USING (id_container_hierarchy)
+            INNER JOIN container_subcoll cs ON (c.id_container = cs.id_container)
+            INNER JOIN container_preservation_method cpm ON (c.id_container = cpm.id_container)
+        WHERE
+            ((id_strain = %(id_strain)s OR %(id_strain)s = '0')
+            AND (id_lot = %(id_lot)s OR %(id_lot)s = '0'))
+            AND (cpm.id_preservation_method = %(id_preservation_method)s OR %(id_preservation_method)s = '0')
+            AND cs.id_subcoll = %(id_subcoll)s
+        ORDER BY c.description;
+       ]]></sql>
+
+       <sql name="get_container"><![CDATA[
+       SELECT
+           id_container, abbreviation, description
+       FROM
+           container
+           INNER JOIN container_preservation_method cpm USING (id_container)
+       WHERE
+           id_container = %(id_container)s;
+       ]]></sql>
+
+       <sql name="get_container_hierarchy_data"><![CDATA[
+       SELECT
+           id_container, id_container_hierarchy, abbreviation, description
+       FROM
+           container_hierarchy
+       WHERE
+           id_container_hierarchy = %(id_container_hierarchy)s;
+       ]]></sql>
+
+       <sql name="get_container_list"><![CDATA[
+       SELECT
+           container.id_container, abbreviation, description
+       FROM
+           container, container_subcoll
+       WHERE
+           container_subcoll.id_subcoll = %(id_subcoll)s
+           AND container.id_container = container_subcoll.id_container
+       ORDER BY %(field_order)s
+            %(paging)s;
+        ]]></sql>
+
+       <sql name="get_container_by_hierarchy"><![CDATA[
+       SELECT
+           id_container, c.abbreviation, c.description
+       FROM
+           container c
+           INNER JOIN container_hierarchy ch USING (id_container)
+       WHERE
+           id_container_hierarchy = %(id_container_hierarchy)s;
+       ]]></sql>
+
+       <sql name="get_container_top_hierarchy"><![CDATA[
+       SELECT
+           id_container_hierarchy, id_container, id_parent, abbreviation, description
+       FROM
+           container_hierarchy
+       WHERE
+           id_container = %(id_container)s
+           AND id_parent IS NULL;
+       ]]></sql>
+
+       <sql name="get_complete_container_hierarchy"><![CDATA[
+       SELECT
+           id_container_hierarchy, id_container, id_parent, abbreviation, description
+       FROM
+           container_hierarchy
+       ORDER BY
+           id_container, id_parent;
+       ]]></sql>
+
+       <sql name="get_container_hierarchy"><![CDATA[
+       SELECT
+           id_container_hierarchy, id_container, id_parent, abbreviation, description
+       FROM
+           container_hierarchy
+       WHERE
+           id_parent = %(id_parent)s;
+       ]]></sql>
+
+       <sql name="get_all_containers"><![CDATA[
+       SELECT
+           id_container, abbreviation, description, cpm.id_preservation_method
+       FROM
+           container
+           INNER JOIN container_preservation_method cpm USING (id_container);
+       ]]></sql>
+
+       <sql name="get_all_containers_hierarchy"><![CDATA[
+       SELECT
+           id_container_hierarchy, id_container, id_parent, abbreviation, description
+       FROM
+           container_hierarchy;
+       ]]></sql>
+
+       <sql name="get_location_data"><![CDATA[
+       SELECT
+           id_location, id_container_hierarchy, rows, cols, ini_row, ini_col, pattern
+       FROM
+           location
+       WHERE
+           id_container_hierarchy = %(id_container_hierarchy)s;
+       ]]></sql>
+
+       <sql name="get_all_location_data"><![CDATA[
+       SELECT
+           c.id_container, c.abbreviation, c.description,
+           l.id_location, l.rows, l.cols, l.ini_row, l.ini_col, l.pattern
+       FROM
+           location l
+           INNER JOIN container c USING (id_container)
+       ORDER BY
+           id_container;
+       ]]></sql>
+
+       <sql name="get_filtered_location_data"><![CDATA[
+       SELECT
+           id_location, id_container_hierarchy, rows, cols, ini_row, ini_col, pattern
+       FROM
+           location l
+           INNER JOIN container_hierarchy ch USING (id_container_hierarchy)
+           INNER JOIN container c USING (id_container)
+           INNER JOIN container_subcoll cs USING (id_container)
+           INNER JOIN container_preservation_method cpm USING (id_container)
+       WHERE
+            cs.id_subcoll = %(id_subcoll)s
+            AND cpm.id_preservation_method = %(id_preservation_method)s
+       ORDER BY
+           id_container, rows, cols;
+       ]]></sql>
+
+       <sql name="get_location_data_for_lot_strain"><![CDATA[
+       SELECT
+           id_location, id_container_hierarchy, rows, cols, ini_row, ini_col, pattern
+       FROM
+           location l
+           INNER JOIN container_hierarchy ch USING (id_container_hierarchy)
+           INNER JOIN container c USING (id_container)
+           INNER JOIN container_subcoll cs USING (id_container)
+           INNER JOIN lot_strain_available_locations lsl USING (id_container_hierarchy)
+       WHERE
+           ((lsl.id_strain = %(id_strain)s OR %(id_strain)s = '0')
+           AND (lsl.id_lot = %(id_lot)s OR %(id_lot)s = '0')) AND cs.id_subcoll = %(id_subcoll)s
+       ORDER BY
+           id_container, rows, cols;
+       ]]></sql>
+       
+       <sql name="get_location_data_for_stock_movement"><![CDATA[
+       SELECT lsl.id_lot_strain_location, lsal.id_lot, lsal.id_strain,
+		lsal.id_container_hierarchy, lsal.row, lsal.col, lsal.available_qt AS quantity
+        FROM lot_strain_available_locations lsal
+        INNER JOIN lot_strain_location lsl ON (lsal.id_lot = lsl.id_lot AND lsal.id_strain = lsl.id_strain
+                AND lsal.id_container_hierarchy = lsl.id_container_hierarchy AND lsal.row = lsl.row AND lsal.col = lsl.col)
+        WHERE lsal.id_container_hierarchy = %(id_container_hierarchy)s
+            AND lsal.row = %(row)s AND lsal.col = %(col)s
+       ]]></sql>
+
+        <sql name="get_available_locations"><![CDATA[
+            SELECT
+                id_strain, id_lot, id_container_hierarchy, row, col, available_qt
+            FROM
+                lot_strain_available_locations
+            WHERE
+                id_strain = %(id_strain)s AND id_lot = %(id_lot)s;
+        ]]></sql>
+
+       <sql name="get_used_location_data"><![CDATA[
+       SELECT
+           ch.id_container, id_container_hierarchy, row, col,
+           id_lot, id_strain, lot.name, strain.code, sciname.sciname_no_auth,
+           available_qt
+       FROM
+           lot_strain_available_locations lsl
+           INNER JOIN lot USING (id_lot)
+           INNER JOIN strain USING (id_strain)
+           INNER JOIN species USING (id_species)
+           INNER JOIN scientific_names sciname USING (id_sciname)
+           INNER JOIN container_hierarchy ch USING (id_container_hierarchy)
+           INNER JOIN container c USING (id_container)
+           INNER JOIN container_subcoll cs USING (id_container)
+           INNER JOIN container_preservation_method cpm USING (id_container)
+       WHERE
+           cs.id_subcoll = %(id_subcoll)s
+           AND cpm.id_preservation_method = %(id_preservation_method)s
+           %(extra)s
+       ORDER BY
+           ch.id_container, id_container_hierarchy, row, col;
+       ]]></sql>
+
+       <sql name="get_strain_locations"><![CDATA[
+       SELECT
+           ch.id_container, id_container_hierarchy, row, col,
+           id_lot, id_strain, lot.name, strain.code, sciname.sciname_no_auth,
+           available_qt
+       FROM
+           lot_strain_available_locations lsl
+           INNER JOIN lot USING (id_lot)
+           INNER JOIN strain USING (id_strain)
+           INNER JOIN species USING (id_species)
+           INNER JOIN scientific_names sciname USING (id_sciname)
+           INNER JOIN container_hierarchy ch USING (id_container_hierarchy)
+           INNER JOIN container c USING (id_container)
+           INNER JOIN container_subcoll cs USING (id_container)
+           INNER JOIN container_preservation_method cpm USING (id_container)
+       WHERE
+           ((strain.id_strain = %(id_strain)s OR %(id_strain)s = '0') AND
+           (lsl.id_lot = %(id_lot)s OR %(id_lot)s = '0')) AND cs.id_subcoll = %(id_subcoll)s
+       ORDER BY
+           ch.id_container, id_container_hierarchy, row, col;
+       ]]></sql>
+
+       <sql name="get_lot_strain_location_data"><![CDATA[
+       SELECT
+           id_lot_strain_location, id_lot, id_strain, id_container_hierarchy, row, col,
+           lot.name, strain.code, sciname.sciname_no_auth
+       FROM
+           lot_strain_location
+           INNER JOIN lot USING (id_lot)
+           INNER JOIN strain USING (id_strain)
+           INNER JOIN species USING (id_species)
+           INNER JOIN scientific_names sciname USING (id_sciname)
+       WHERE
+           id_container_hierarchy = %(id_container_hierarchy)s;
+       ]]></sql>
+
+       <sql name="get_lot_strain_location"><![CDATA[
+       SELECT
+           id_lot_strain_location, id_lot, id_strain, id_container, id_container_hierarchy, row, col,
+           strain.code, sciname.sciname_no_auth, ini_row, ini_col, pattern, quantity, '0' as used
+       FROM
+           lot_strain_location
+           INNER JOIN strain USING (id_strain)
+           INNER JOIN species USING (id_species)
+           INNER JOIN scientific_names sciname USING (id_sciname)
+           INNER JOIN container_hierarchy USING (id_container_hierarchy)
+           INNER JOIN container USING (id_container)
+           INNER JOIN location USING (id_container_hierarchy)
+       WHERE
+           id_lot = %(id_lot)s AND
+           id_strain = %(id_strain)s
+       ]]></sql>
+
+       <sql name="get_container_hierarchy_tree_for_lot_strain"><![CDATA[
+       SELECT
+            ch.id_container_hierarchy, id_container,
+            id_parent, abbreviation, description,
+            COUNT(lsl.id_strain) AS loc_count
+       FROM
+            container_hierarchy ch
+            LEFT JOIN lot_strain_available_locations lsl ON (
+                ch.id_container_hierarchy = lsl.id_container_hierarchy
+                AND ((lsl.id_strain = %(id_strain)s OR %(id_strain)s = '0')
+                AND (lsl.id_lot = %(id_lot)s OR %(id_lot)s = '0'))
+            )
+       WHERE
+           id_container = %(id_container)s
+       GROUP BY
+            id_container_hierarchy, id_container,
+            id_parent, abbreviation, description;
+       ]]></sql>
+
+       <sql name="get_container_hierarchy_tree"><![CDATA[
+       SELECT
+           id_container_hierarchy, id_container, id_parent, abbreviation, description
+       FROM
+           container_hierarchy
+       WHERE
+           id_container = %(id_container)s;
+       ]]></sql>
+
+        <sql name="get_container_preservation_methods"><![CDATA[
+        SELECT
+            pml.method, pml.id_preservation_method 
+        FROM
+            container_preservation_method cpm
+                INNER JOIN preservation_method_lang pml ON (cpm.id_preservation_method = pml.id_preservation_method)
+        WHERE
+            cpm.id_container = %(id_container)s AND pml.id_lang = %(id_lang)s
+        ORDER BY
+            pml.method;]]></sql>
+
+       <sql name="get_stock_movement_list"><![CDATA[
+            SELECT sm.id_stock_movement, sm.date, sm.description, pml.method
+            FROM stock_movement sm
+                INNER JOIN preservation_method_lang pml ON (sm.id_preservation_method = pml.id_preservation_method)
+            WHERE sm.id_subcoll = %(id_subcoll)s AND pml.id_lang = %(id_lang)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+       
+       <sql name="get_stock_movement_ids"><![CDATA[
+            SELECT id_stock_movement
+            FROM stock_movement
+            WHERE id_subcoll = %(id_subcoll)s
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+       <sql name="get_container_ids"><![CDATA[
+            SELECT container.id_container
+            FROM container, container_subcoll
+            WHERE container_subcoll.id_subcoll = %(id_subcoll)s
+            AND container.id_container = container_subcoll.id_container
+            ORDER BY %(field_order)s
+            %(paging)s;]]></sql>
+
+
+        <sql name="get_str_deposit_log"><![CDATA[
+            SELECT
+                dep.id_strain AS id,
+                dep.id_person AS dep_id_person,
+                dep.id_institution AS dep_id_institution,
+                dep.genus AS dep_genus,
+                dep.species AS dep_species,
+                dep.classification AS dep_classification,
+                dep.infra_name AS dep_infra_name,
+                dep.infra_complement AS dep_infra_complement,
+                dep.date AS dep_date,
+                dep.id_dep_reason AS dep_id_reason,
+                dep.preserv_method AS dep_preserv_method,
+                dep.form AS dep_form,
+                cast(dep.aut_date as date) AS dep_aut_date,
+                dep.aut_person AS dep_aut_id_person,
+                dep.aut_result AS dep_aut_result,
+                dep.comments AS dep_comments
+            FROM
+                str_deposit dep
+            WHERE
+                dep.id_strain = %(id)s;]]></sql>
+
+        <sql name="lookup_species_log"><![CDATA[
+            SELECT
+                scientific_names.sciname
+            FROM
+                scientific_names
+                INNER JOIN species ON (species.id_sciname = scientific_names.id_sciname)
+            WHERE
+                species.id_species = %(id)s;
+        ]]></sql>
+
+        <sql name="lookup_institution_log"><![CDATA[
+            SELECT
+                name
+            FROM
+                institution
+            WHERE
+                id_institution = %(id)s;
+        ]]></sql>
+
+        <sql name="lookup_person_log"><![CDATA[
+            SELECT
+                name
+            FROM
+                person
+            WHERE
+                id_person = %(id)s;
+        ]]></sql>
+
+        <sql name="get_str_coll_host_name_log"><![CDATA[
+            SELECT
+                str_host_name.host_name as coll_host_name
+            FROM
+                lang INNER JOIN str_host_name ON (lang.id_lang = str_host_name.id_lang)
+            WHERE str_host_name.id_strain = %(id)s AND lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_substratum_log"><![CDATA[
+            SELECT
+                str_substratum.substratum as coll_substratum
+            FROM
+                lang INNER JOIN str_substratum ON (lang.id_lang = str_substratum.id_lang)
+            WHERE str_substratum.id_strain = %(id)s AND lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_coll_comments_log"><![CDATA[
+            SELECT
+                str_coll_comments.comments as coll_comments
+            FROM
+                str_coll_comments INNER JOIN lang ON (str_coll_comments.id_lang = lang.id_lang)
+            WHERE str_coll_comments.id_strain = %(id)s AND lang.code = %(lang)s;]]></sql>
+
+        <sql name="exists_sciname_usage_in_strain_general"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+            WHERE
+                strain.id_species = %(id)s;
+        ]]></sql>
+
+        <sql name="exists_division_usage_in_strain_general"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+            WHERE
+                strain.id_division = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="get_str_quality_log"><![CDATA[
+            SELECT
+                str_quality.id_quality,
+                str_quality.id_user as tec_resp,
+                str_quality.id_lot AS id_lot_qc,
+                str_quality.`date`
+            FROM
+                str_quality
+            WHERE
+                str_quality.id_quality = %(id)s;]]></sql>
+
+        <sql name="get_preservation_data_log"><![CDATA[
+            SELECT
+                id_user as id_user_preservation,
+                p.id_lot,
+                l.name as lot_name,
+                id_preservation_method as id_method,
+                DATE as date_preservation,
+                info
+            FROM
+                preservation p inner join lot l on (p.id_lot = l.id_lot)
+            WHERE
+                id_preservation = %(id)s;]]></sql>
+
+        <sql name="get_preservation_strain_log"><![CDATA[
+            SELECT
+                id_strain,
+                origin_type as origin,
+                origin as original_name,
+                stock_minimum,
+                id_doc as id_culture_medium,
+                id_lot as origin_lot,
+                temperature as temp,
+                incub_time,
+                cryoprotector as cryo,
+                preservation_type as type,
+                purity,
+                counting,
+                counting_not_apply as counting_na,
+                macro_charac as macro,
+                micro_charac as micro,
+                result,
+                obs
+            FROM
+                preservation_strain
+            WHERE
+                id_preserv_str = %(id)s;]]></sql>
+
+        <sql name="get_id_preservation_strain_log"><![CDATA[
+            SELECT
+                id_preserv_str
+            FROM
+                preservation_strain
+            WHERE
+                id_preservation = %(id_preservation)s AND
+                id_strain = %(id_strain)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_strain_origin"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_coll_event ON (str_coll_event.id_strain = strain.id_strain)
+            WHERE
+                str_coll_event.id_institution = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_institution_usage_in_strain_isolation"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_isolation ON (str_isolation.id_strain = strain.id_strain)
+            WHERE
+                str_isolation.id_institution = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_institution_usage_in_strain_identification"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_identification ON (str_identification.id_strain = strain.id_strain)
+            WHERE
+                str_identification.id_institution = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_institution_usage_in_strain_deposit"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_deposit ON (str_deposit.id_strain = strain.id_strain)
+            WHERE
+                str_deposit.id_institution = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_strain_origin"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_coll_event ON (str_coll_event.id_strain = strain.id_strain)
+            WHERE
+                str_coll_event.id_person = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_strain_isolation"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_isolation ON (str_isolation.id_strain = strain.id_strain)
+            WHERE
+                str_isolation.id_person = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_strain_identification"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_identification ON (str_identification.id_strain = strain.id_strain)
+            WHERE
+                str_identification.id_person = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_strain_deposit"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_deposit ON (str_deposit.id_strain = strain.id_strain)
+            WHERE
+                str_deposit.id_person = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_responsible_usage_in_strain_deposit"><![CDATA[
+            SELECT
+                strain.id_strain,
+                strain.code
+            FROM
+                strain
+                INNER JOIN str_deposit ON (str_deposit.id_strain = strain.id_strain)
+            WHERE
+                str_deposit.aut_person = %(id)s AND
+                strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="get_str_coll_event_log"><![CDATA[
+                SELECT
+                    coll.id_person AS coll_id_person,
+                    coll.id_institution AS coll_id_institution,
+                    coll.date AS coll_date,
+                    coll.id_country AS coll_id_country,
+                    coll.id_state AS coll_id_state,
+                    coll.id_city AS coll_id_city,
+                    coll.place AS coll_place,
+                    coll.gps_latitude AS coll_gps_latitude,
+                    coll.gps_latitude_dms AS coll_gps_latitude_dms,
+                    coll.gps_latitude_mode AS coll_gps_latitude_mode,
+                    coll.gps_longitude AS coll_gps_longitude,
+                    coll.gps_longitude_dms AS coll_gps_longitude_dms,
+                    coll.gps_longitude_mode AS coll_gps_longitude_mode,
+                    coll.gps_precision AS coll_gps_precision,
+                    coll.id_gps_datum AS coll_id_gps_datum,
+                    coll.gps_comments AS coll_gps_comments,
+                    coll.host_genus AS coll_host_genus,
+                    coll.host_species AS coll_host_species,
+                    coll.host_classification AS coll_host_classification,
+                    coll.host_infra_name AS coll_host_infra_name,
+                    coll.host_infra_complement AS coll_host_infra_complement,
+                    coll.global_code AS coll_global_code,
+                    coll.id_clinical_form AS coll_id_clinical_form,
+                    coll.hiv AS coll_hiv
+                FROM
+                    str_coll_event coll
+                WHERE coll.id_strain = %(id)s;]]></sql>
+
+        <sql name="get_str_isolation_log"><![CDATA[
+                SELECT
+                    iso.id_person AS iso_id_person,
+                    iso.id_institution AS iso_id_institution,
+                    iso.date AS iso_date,
+                    iso.comments AS iso_comments
+                FROM
+                    str_isolation iso
+                WHERE iso.id_strain = %(id)s;]]></sql>
+
+        <sql name="get_iso_isolation_from_log"><![CDATA[
+                SELECT
+                  str_isolation_from.isolation_from as iso_isolation_from
+                FROM
+                  str_isolation_from
+                  INNER JOIN lang ON (str_isolation_from.id_lang = lang.id_lang)
+                WHERE
+                  str_isolation_from.id_strain = %(id)s AND
+                  lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_iso_isolation_method_log"><![CDATA[
+                SELECT
+                    str_iso_method.iso_method AS iso_method
+                FROM
+                    str_iso_method
+                    INNER JOIN lang ON (str_iso_method.id_lang = lang.id_lang)
+                WHERE
+                  str_iso_method.id_strain = %(id)s AND
+                  lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_general_log"><![CDATA[
+            SELECT
+                st.code AS code,
+                st.id_division AS id_division,
+                st.numeric_code AS numeric_code,
+                st.internal_code AS internal_code,
+                st.status AS status,
+                st.id_species AS id_species,
+                st.infra_complement AS infra_complement,
+                st.id_type AS id_type,
+                st.history AS history,
+                st.extra_codes AS extra_codes,
+                st.comments AS general_comments,
+                st.is_ogm AS is_ogm,
+                st.go_catalog AS go_catalog
+            FROM
+                strain st
+            WHERE
+                st.id_strain = %(id)s;]]></sql>
+
+        <sql name="get_str_identification_log"><![CDATA[
+            SELECT
+                ident.date AS ident_date,
+                ident.id_person AS ident_id_person,
+                ident.id_institution AS ident_id_institution,
+                ident.genus AS ident_genus,
+                ident.species AS ident_species,
+                ident.classification AS ident_classification,
+                ident.infra_name AS ident_infra_name,
+                ident.infra_complement AS ident_infra_complement,
+                ident.comments AS ident_comments
+            FROM
+                str_identification ident
+            WHERE
+                ident.id_strain = %(id)s;]]></sql>
+
+        <sql name="get_ident_method_log"><![CDATA[
+            SELECT
+                str_ident_method.ident_method
+            FROM
+                str_ident_method
+                INNER JOIN lang ON (str_ident_method.id_lang = lang.id_lang)
+            WHERE
+                  str_ident_method.id_strain = %(id)s AND
+                  lang.code = %(lang)s;]]></sql>
+
+        <sql name="lookup_gps_datum_log"><![CDATA[
+            SELECT
+                gps_datum
+            FROM
+                str_gps_datum
+            WHERE
+                id_gps_datum = %(id)s;]]></sql>
+
+        <sql name="lookup_division_log"><![CDATA[
+            SELECT
+                division.division
+            FROM
+                division
+            WHERE
+                id_division = %(id)s;]]></sql>
+
+        <sql name="lookup_pattern_log"><![CDATA[
+            SELECT
+                code
+            FROM
+                strain
+            WHERE
+                id_strain = %(id)s;]]></sql>
+
+        <sql name="lookup_coll_state_log"><![CDATA[
+            SELECT
+                loc_state.state
+            FROM
+                loc_state
+            WHERE
+                id_state = %(id)s;]]></sql>
+
+        <sql name="lookup_coll_city_log"><![CDATA[
+            SELECT
+                loc_city.city
+            FROM
+                loc_city
+            WHERE
+                id_city = %(id)s;]]></sql>
+
+        <sql name="lookup_lot_log"><![CDATA[
+            SELECT name
+            FROM lot WHERE id_lot=%(id)s;]]></sql>
+
+        <sql name="get_str_cul_log"><![CDATA[
+            SELECT
+                cul.ph AS cul_ph,
+                cul.temp AS cul_temp
+            FROM
+                str_culture cul
+            WHERE
+                cul.id_strain = %(id)s;]]></sql>
+
+        <sql name="get_str_cul_medium_log"><![CDATA[
+            SELECT
+                str_cult_medium.medium AS cul_medium
+            FROM
+                str_cult_medium
+                INNER JOIN lang ON (lang.id_lang = str_cult_medium.id_lang)
+            WHERE
+                str_cult_medium.id_strain = %(id)s and
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cul_incub_time_log"><![CDATA[
+            SELECT
+                str_incub_time.incub_time AS cul_incub_time
+            FROM
+                str_incub_time
+                INNER JOIN lang ON (str_incub_time.id_lang = lang.id_lang)
+            WHERE
+                str_incub_time.id_strain = %(id)s and
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cul_oxy_req_log"><![CDATA[
+            SELECT
+                str_oxy_req.oxy_req AS cul_oxy_req
+            FROM
+                str_oxy_req
+                INNER JOIN lang ON (str_oxy_req.id_lang = lang.id_lang)
+            WHERE
+                str_oxy_req.id_strain = %(id)s and
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cul_comments_log"><![CDATA[
+            SELECT
+                str_cult_comments.comments AS cul_comments
+            FROM
+                str_cult_comments
+                INNER JOIN lang ON (str_cult_comments.id_lang = lang.id_lang)
+            WHERE
+                str_cult_comments.id_strain = %(id)s and
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cha_log"><![CDATA[
+            SELECT
+                str_characs.ogm AS cha_ogm,
+                str_characs.genotypic AS cha_genotypic,
+                str_characs.pathogenic AS cha_pathogenic,
+                str_characs.morphologic AS cha_morphologic,
+                str_characs.immunologic AS cha_immunologic,
+                str_characs.molecular AS cha_molecular,
+                str_characs.biochemical AS cha_biochemical
+            FROM
+                str_characs
+            WHERE
+                str_characs.id_strain = %(id)s;]]></sql>
+
+        <sql name="get_str_cha_ogm_comments_log"><![CDATA[
+            SELECT
+                str_cha_ogm_comments.ogm_comments as cha_ogm_comments
+            FROM
+                str_cha_ogm_comments
+                INNER JOIN lang ON (str_cha_ogm_comments.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cha_biorisk_comments_log"><![CDATA[
+            SELECT
+                str_cha_biorisk_comments.biorisk_comments as cha_biorisk_comments
+            FROM
+                str_cha_biorisk_comments
+                INNER JOIN lang ON (str_cha_biorisk_comments.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cha_restrictions_log"><![CDATA[
+            SELECT
+                str_cha_restrictions.restrictions as cha_restrictions
+            FROM
+                str_cha_restrictions
+                INNER JOIN lang ON (str_cha_restrictions.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cha_pictures_log"><![CDATA[
+            SELECT
+                str_cha_pictures.pictures as cha_pictures
+            FROM
+                str_cha_pictures
+                INNER JOIN lang ON (str_cha_pictures.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cha_urls_log"><![CDATA[
+            SELECT
+                str_cha_urls.urls as cha_urls
+            FROM
+                str_cha_urls
+                INNER JOIN lang ON (str_cha_urls.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_cha_catalogue_log"><![CDATA[
+            SELECT
+                str_cha_catalogue.catalogue_notes as cha_catalogue
+            FROM
+                str_cha_catalogue
+                INNER JOIN lang ON (str_cha_catalogue.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_pro_properties_log"><![CDATA[
+            SELECT
+                str_pro_properties.properties as pro_properties
+            FROM
+                str_pro_properties
+                INNER JOIN lang ON (str_pro_properties.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_pro_applications_log"><![CDATA[
+            SELECT
+                str_pro_applications.applications as pro_applications
+            FROM
+                str_pro_applications
+                INNER JOIN lang ON (str_pro_applications.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_str_pro_urls_log"><![CDATA[
+            SELECT
+                str_pro_urls.urls as pro_urls
+            FROM
+                str_pro_urls
+                INNER JOIN lang ON (str_pro_urls.id_lang = lang.id_lang)
+            WHERE
+                id_strain = %(id)s AND
+                lang.code = %(lang)s;]]></sql>
+
+        <sql name="get_location_qt_log"><![CDATA[
+            SELECT
+                id_lot AS id_lot,
+                id_strain AS id_strain,
+                id_container_hierarchy AS id_container_hierarchy,
+                row as row,
+                col AS col,
+                cast((((lslm.quantity - ifnull(lslm.used_qt_pres, 0)) - ifnull(lslm.used_qt_dist, 0)) - ifnull(lslm.used_qt_qual, 0)) AS UNSIGNED) AS available_qt
+            FROM
+                lot_strain_stock_data lslm
+            WHERE
+                id_strain = %(id_strain)s AND
+                id_container_hierarchy = %(id_container_hierarchy)s AND
+                row = %(row)s AND
+                col = %(col)s;]]></sql>
+
+        <sql name="get_location_by_strain_log"><![CDATA[
+            SELECT
+                id_lot AS id_lot,
+                id_strain AS id_strain,
+                id_container_hierarchy AS id_container_hierarchy,
+                row as row,
+                col AS col,
+                cast((((lslm.quantity - ifnull(lslm.used_qt_pres, 0)) - ifnull(lslm.used_qt_dist, 0)) - ifnull(lslm.used_qt_qual, 0)) AS UNSIGNED) AS available_qt
+            FROM
+                lot_strain_stock_data lslm
+            WHERE
+                id_strain = %(id_strain)s AND
+                id_lot = %(id_lot)s;]]></sql>
+		
+		<sql name="get_report_list"><![CDATA[
+            SELECT
+                rep.id_report,
+                rep.id_report_type,
+                replang.type as type,
+                rep.description as description,
+                rep.definition
+            FROM
+                reports rep
+                LEFT JOIN report_types_lang replang ON (replang.id_report_type = rep.id_report_type AND replang.id_lang = %(id_lang)s)
+            WHERE
+                rep.id_subcoll = %(id_subcoll)s
+                %(condition)s
+            ORDER BY %(field_order)s
+                %(paging)s
+        ;]]></sql>
+
+        <sql name="get_report_data"><![CDATA[
+            SELECT
+                rep.id_report,
+                rep.id_report_type,
+                replang.type as type,
+                rep.description as description,
+                rep.definition
+            FROM
+                reports rep
+                LEFT JOIN report_types_lang replang ON (replang.id_report_type = rep.id_report_type AND replang.id_lang = %(id_lang)s)
+            WHERE
+                rep.id_subcoll = %(id_subcoll)s AND
+                id_report = %(id_report)s
+                %(condition)s
+        ;]]></sql>
+
+        <sql name="get_report_list_restrict"><![CDATA[
+            SELECT
+                rep.id_report,
+                replang.type as type,
+                rep.description as description,
+                rep.definition
+            FROM
+                reports rep
+                INNER JOIN report_types_lang replang ON (replang.id_report_type = rep.id_report_type AND replang.id_lang = %(id_lang)s)
+            WHERE
+                rep.id_subcoll = %(id_subcoll)s
+                AND rep.id_report = (SELECT DISTINCT id_item FROM roles_permissions WHERE id_role IN %(roles_list)s AND id_item=rep.id_report AND id_area=9)
+                %(condition)s
+            ORDER BY %(field_order)s
+                %(paging)s
+        ;]]></sql>
+        
+        <sql name="get_report_ids"><![CDATA[
+            SELECT                
+                rep.id_report
+            FROM
+                reports rep
+                INNER JOIN report_types_lang replang ON (replang.id_report_type = rep.id_report_type AND replang.id_lang = %(id_lang)s)
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s
+        ]]></sql>
+        
+        <sql name="get_reports_ids_restrict"><![CDATA[
+            SELECT                
+                rep.id_report
+            FROM
+                reports rep
+                INNER JOIN report_types_lang replang ON (replang.id_report_type = rep.id_report_type AND replang.id_lang = %(id_lang)s)
+            WHERE
+                rep.id_subcoll = %(id_subcoll)s
+                AND rep.id_report = (SELECT DISTINCT id_item FROM roles_permissions WHERE id_role IN %(roles_list)s AND id_item=rep.id_report AND id_area=9)
+            %(condition)s
+            ORDER BY %(field_order)s
+            %(paging)s]]></sql>
+        
+        <sql name="get_reports_types"><![CDATA[
+            SELECT
+                rt.id_report_type,
+                rtl.type
+            FROM
+                report_types rt
+                INNER JOIN report_types_lang rtl ON (rt.id_report_type = rtl.id_report_type AND rtl.id_lang = %(id_lang)s)
+            ORDER BY
+                rtl.type
+        ]]></sql>
+        
+        <sql name="get_report_type"><![CDATA[
+            SELECT
+                type
+            FROM
+                report_types_lang
+            WHERE
+                id_report_type = %(id_report_type)s AND
+                id_lang = %(id_lang)s
+        ]]></sql>
+
+    </select>
+
+    <update>
+        <sql name="update_species"><![CDATA[
+                UPDATE
+                    species
+                SET
+                    id_taxon_group = %(id_taxon_group)s,
+                        id_sciname = %(id_sciname)s,
+                        taxon_ref = %(taxon_ref)s,
+                        synonym = %(synonym)s,
+                        hazard_group = %(hazard_group)s,
+                        hazard_group_ref = %(hazard_group_ref)s,
+                        id_alt_states = %(alt_state)s,
+                        alt_states_type = %(alt_state_type)s,
+                        last_update = NOW()
+                WHERE
+                    id_species = %(id)s;]]></sql>
+
+        <sql name="update_alt_state"><![CDATA[
+                UPDATE species SET id_alt_states = %(id_alt_states)s,
+                alt_states_type = %(alt_states_type)s
+                WHERE id_species = %(id_species)s;]]></sql>
+
+        <sql name="update_remove_alt_state"><![CDATA[
+                UPDATE species SET id_alt_states = NULL,
+                        alt_states_type = NULL
+                WHERE id_alt_states = %(id_alt_states)s
+                AND id_species <> %(id_species)s;]]></sql>
+
+        <sql name="update_spe_ambient_risk_multilanguage"><![CDATA[
+                UPDATE spe_ambient_risk
+                SET ambient_risk = %(ambient_risk)s
+                WHERE id_species = %(id)s AND id_lang=%(data_lang)s;]]></sql>
+
+        <sql name="update_spe_comments_multilanguage"><![CDATA[
+            UPDATE spe_comments
+            SET comments = %(comments)s
+            WHERE id_species = %(id)s AND id_lang=%(data_lang)s;]]></sql>
+
+        <sql name="update_num_ampoules"><![CDATA[
+         UPDATE lot_strain SET num_ampoules = num_ampoules + (%(diff_value)s)
+              WHERE id_lot=%(id_lot)s AND id_strain = %(id_strain)s;]]></sql>
+
+        <sql name="update_strain"><![CDATA[
+                UPDATE strain
+                SET
+                        code = %(code)s,
+                        numeric_code = %(numeric_code)s,
+                        id_division = %(id_division)s,
+                        internal_code = %(internal_code)s,
+                        status = %(status)s,
+                        id_species = %(id_species)s,
+                        infra_complement = %(infra_complement)s,
+                        id_type = %(id_type)s,
+                        history = %(history)s,
+                        extra_codes = %(extra_codes)s,
+                        comments = %(general_comments)s,
+                        last_update = NOW(),
+                        is_ogm = %(is_ogm)s,
+                        go_catalog = %(go_catalog)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_str_deposit"><![CDATA[
+                UPDATE str_deposit
+                SET id_strain = %(id)s,
+                        id_person = %(dep_id_person)s,
+                        id_institution = %(dep_id_institution)s,
+                        genus = %(dep_genus)s,
+                        species = %(dep_species)s,
+                        classification = %(dep_classification)s,
+                        infra_name = %(dep_infra_name)s,
+                        infra_complement = %(dep_infra_complement)s,
+                        date = %(dep_date)s,
+                        id_dep_reason = %(dep_id_reason)s,
+                        preserv_method = %(dep_preserv_method)s,
+                        form = %(dep_form)s,
+                        aut_date = %(dep_aut_date)s,
+                        aut_person = %(dep_aut_id_person)s,
+                        aut_result = %(dep_aut_result)s,
+                        comments = %(dep_comments)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_str_coll_event"><![CDATA[
+                UPDATE str_coll_event
+                SET id_strain = %(id)s,
+                        id_person = %(coll_id_person)s,
+                        id_institution = %(coll_id_institution)s,
+                        date = %(coll_date)s,
+                        id_country = %(coll_id_country)s,
+                        id_state = %(coll_id_state)s,
+                        id_city = %(coll_id_city)s,
+                        place = %(coll_place)s,
+                        gps_latitude = %(coll_gps_latitude)s,
+                        gps_latitude_dms = %(coll_gps_latitude_dms)s,
+                        gps_latitude_mode = %(coll_gps_latitude_mode)s,
+                        gps_longitude = %(coll_gps_longitude)s,
+                        gps_longitude_dms = %(coll_gps_longitude_dms)s,
+                        gps_longitude_mode = %(coll_gps_longitude_mode)s,
+                        gps_precision = %(coll_gps_precision)s,
+                        id_gps_datum = %(coll_id_gps_datum)s,
+                        gps_comments = %(coll_gps_comments)s,
+                        host_genus = %(coll_host_genus)s,
+                        host_species = %(coll_host_species)s,
+                        host_classification = %(coll_host_classification)s,
+                        host_infra_name = %(coll_host_infra_name)s,
+                        host_infra_complement = %(coll_host_infra_complement)s,
+                        global_code = %(coll_global_code)s,
+                        id_clinical_form = %(coll_id_clinical_form)s,
+                        hiv = %(coll_hiv)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_str_host_name_multilanguage"><![CDATA[
+                UPDATE str_host_name
+                SET host_name = %(coll_host_name)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_substratum_multilanguage"><![CDATA[
+                UPDATE str_substratum
+                SET substratum = %(coll_substratum)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_coll_comments_multilanguage"><![CDATA[
+                UPDATE str_coll_comments
+                SET comments = %(coll_comments)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_iso_isolation_from_multilanguage"><![CDATA[
+                UPDATE str_isolation_from
+                SET isolation_from = %(iso_isolation_from)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_iso_method_multilanguage"><![CDATA[
+                UPDATE str_iso_method
+                SET iso_method = %(iso_method)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_ident_method_multilanguage"><![CDATA[
+                UPDATE str_ident_method
+                SET ident_method = %(ident_method)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_isolation"><![CDATA[
+                UPDATE str_isolation
+                SET id_strain = %(id)s,
+                        id_person = %(iso_id_person)s,
+                        id_institution = %(iso_id_institution)s,
+                        date = %(iso_date)s,
+                        comments = %(iso_comments)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_str_identification"><![CDATA[
+                UPDATE str_identification
+                SET id_strain = %(id)s,
+                        date = %(ident_date)s,
+                        id_person = %(ident_id_person)s,
+                        id_institution = %(ident_id_institution)s,
+                        genus = %(ident_genus)s,
+                        species = %(ident_species)s,
+                        classification = %(ident_classification)s,
+                        infra_name = %(ident_infra_name)s,
+                        infra_complement = %(ident_infra_complement)s,
+                        comments = %(ident_comments)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_str_culture"><![CDATA[
+                UPDATE str_culture
+                SET id_strain = %(id)s,
+                        temp = %(cul_temp)s,
+                        ph = %(cul_ph)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_str_cult_medium_multilanguage"><![CDATA[
+                UPDATE str_cult_medium
+                SET medium = %(cul_medium)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_incub_time_multilanguage"><![CDATA[
+                UPDATE str_incub_time
+                SET incub_time = %(cul_incub_time)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_oxy_req_multilanguage"><![CDATA[
+                UPDATE str_oxy_req
+                SET oxy_req = %(cul_oxy_req)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_cult_comments_multilanguage"><![CDATA[
+                UPDATE str_cult_comments
+                SET comments = %(cul_comments)s
+                WHERE id_strain = %(id)s
+                    AND id_coll = %(id_coll)s
+                    AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_str_characs"><![CDATA[
+                UPDATE str_characs
+                SET id_strain = %(id)s,
+                        biochemical = %(cha_biochemical)s,
+                        immunologic = %(cha_immunologic)s,
+                        morphologic = %(cha_morphologic)s,
+                        molecular = %(cha_molecular)s,
+                        pathogenic = %(cha_pathogenic)s,
+                        genotypic = %(cha_genotypic)s,
+                        ogm = %(cha_ogm)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_str_properties"><![CDATA[
+                UPDATE str_properties
+                SET id_strain = %(id)s
+                WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+    <sql name="update_str_pro_properties_multilanguage"><![CDATA[
+        UPDATE str_pro_properties
+        SET properties = %(pro_properties)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_quality"><![CDATA[
+        UPDATE str_quality SET id_user = %(tec_resp)s, id_lot = %(id_lot)s, date = %(date)s
+            WHERE id_quality = %(id_quality)s;]]></sql>
+
+    <sql name="update_str_pro_applications_multilanguage"><![CDATA[
+        UPDATE str_pro_applications
+        SET applications = %(pro_applications)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_pro_urls_multilanguage"><![CDATA[
+        UPDATE str_pro_urls
+        SET urls = %(pro_urls)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_cha_ogm_comments_multilanguage"><![CDATA[
+        UPDATE str_cha_ogm_comments
+        SET ogm_comments = %(cha_ogm_comments)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_cha_biorisk_comments_multilanguage"><![CDATA[
+        UPDATE str_cha_biorisk_comments
+        SET biorisk_comments = %(cha_biorisk_comments)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_cha_restrictions_multilanguage"><![CDATA[
+        UPDATE str_cha_restrictions
+        SET restrictions = %(cha_restrictions)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_cha_pictures_multilanguage"><![CDATA[
+        UPDATE str_cha_pictures
+        SET pictures = %(cha_pictures)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_cha_urls_multilanguage"><![CDATA[
+        UPDATE str_cha_urls
+        SET urls = %(cha_urls)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="update_str_cha_catalogue_multilanguage"><![CDATA[
+        UPDATE str_cha_catalogue
+        SET catalogue_notes = %(cha_catalogue)s
+        WHERE id_strain = %(id)s
+            AND id_coll = %(id_coll)s
+            AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_doc"><![CDATA[
+            UPDATE doc
+            SET code = %(code)s,
+                    id_qualifier = %(id_qualifier)s,
+                    id_test_group = %(id_category)s,
+                    go_catalog = %(go_catalog)s,
+                    last_update = NOW()
+            WHERE id_doc = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_doc_title_multilanguage"><![CDATA[
+            UPDATE doc_title
+            SET title = %(title)s
+            WHERE id_doc = %(id)s
+                AND id_coll = %(id_coll)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_doc_description_multilanguage"><![CDATA[
+            UPDATE doc_description
+            SET description = %(description)s
+            WHERE id_doc = %(id)s
+                AND id_coll = %(id_coll)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_doc_file_name_multilanguage"><![CDATA[
+            UPDATE doc_file
+            SET file_name = %(file_name)s
+            WHERE id_doc = %(id)s
+                AND id_coll = %(id_coll)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_ref"><![CDATA[
+            UPDATE ref
+            SET title = %(title)s,
+                    author = %(author)s,
+                    year = %(year)s,
+                    url = %(url)s,
+                    last_update = NOW(),
+                    go_catalog = %(go_catalog)s
+            WHERE id_ref = %(id)s AND id_coll = %(id_coll)s;]]></sql>
+
+        <sql name="update_ref_comments_multilanguage"><![CDATA[
+            UPDATE ref_comments
+            SET comments = %(comments)s
+            WHERE id_ref = %(id)s
+                AND id_coll = %(id_coll)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_person"><![CDATA[
+        UPDATE person
+      SET name = %(name)s,
+          nickname = %(nickname)s,
+          address = %(address)s,
+          phone  = %(phone)s,
+          email = %(email)s,
+      go_catalog = %(go_catalog)s,
+          last_update = NOW()
+      WHERE id_person = %(id)s;]]></sql>
+
+        <sql name="update_person_comments_multilanguage"><![CDATA[
+        UPDATE per_comments
+      SET comments = %(comments)s
+      WHERE id_person = %(id)s AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_institution"><![CDATA[
+            UPDATE institution
+            SET code1 = %(code1)s,
+                    code2 = %(code2)s,
+                    code3 = %(code3)s,
+                    complement = %(complement)s,
+                    nickname = %(nickname)s,
+                    name = %(name)s,
+                    address = %(address)s,
+                    phone = %(phone)s,
+                    email = %(email)s,
+                    website = %(website)s,
+                    go_catalog = %(go_catalog)s,
+                    last_update = NOW()
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="update_lot_name"><![CDATA[
+            UPDATE lot SET name=%(new_name)s WHERE name=%(old_name)s;]]></sql>
+
+        <sql name="update_lot_strain"><![CDATA[
+            UPDATE lot_strain SET num_ampoules=%(new_num)s
+            WHERE id_lot=%(id_lot)s AND id_strain=%(id_strain)s AND num_ampoules=%(old_num)s;]]></sql>
+
+        <sql name="update_lot_strain_adding_ampoules"><![CDATA[
+            UPDATE lot_strain SET num_ampoules = num_ampoules + %(num_ampoules)s
+            WHERE id_lot=%(id_lot)s AND id_strain=%(id_strain)s;]]></sql>
+
+        <sql name="update_preservation_strain"><![CDATA[
+            UPDATE preservation_strain
+              SET id_strain = %(id_strain)s,
+                  origin_type = %(origin)s,
+                  origin = %(original_name)s,
+                  id_lot = %(origin_lot)s,
+                  num_ampoules_used = %(used)s,
+                  num_ampoules_prepared = %(prepared)s,
+                  stock_position = %(stock_pos)s,
+                  id_doc = %(macro)s,
+                  temperature = %(temp)s,
+                  incub_time = %(incub_time)s,
+                  cryoprotector = %(cryo)s,
+                  preservation_type = %(type)s,
+                  purity = %(purity)s,
+                  counting = %(counting)s,
+                  counting_not_apply = %(counting_na)s,
+                  macro_charac  = %(macro)s,
+                  micro_charac  = %(micro)s,
+                  result  = %(result)s,
+                  obs = %(obs)s
+              WHERE id_preserv_str = %(id_preserv_str)s;]]></sql>
+
+            <sql name="update_preservation"><![CDATA[
+                UPDATE preservation
+                  SET date = %(date)s,
+                      id_user  = %(id_user)s,
+                      id_preservation_method = %(id_method)s,
+                      info = %(info)s,
+                      last_update = NOW()
+                  WHERE id_preservation = %(id)s;]]></sql>
+
+            <sql name="update_distribution"><![CDATA[
+                UPDATE distribution
+                  SET date = %(date)s,
+                      id_user  = %(id_user)s,
+                      id_institution = %(id_institution)s,
+                      id_person = %(id_person)s,
+                      reason = %(reason)s,
+                      last_update = NOW()
+                  WHERE id_distribution = %(id)s;]]></sql>
+
+        <sql name="update_inst_comments_multilanguage"><![CDATA[
+            UPDATE inst_comments
+            SET comments = %(comments)s
+            WHERE id_institution = %(id)s AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="update_role"><![CDATA[
+                UPDATE roles SET name=%(role_name)s,description=%(role_descr)s,type=%(role_type)s WHERE id_role=%(id_role)s;]]></sql>
+
+        <sql name="update_user_group_name"><![CDATA[
+                UPDATE roles SET name=%(name)s WHERE id_role=%(id_role)s;]]></sql>
+
+        <sql name="update_sciname"><![CDATA[
+                UPDATE scientific_names SET hi_tax=%(hi_tax)s, sciname=%(sciname)s, sciname_no_auth=%(sciname_no_auth)s WHERE id_sciname=%(id_sciname)s;]]></sql>
+
+        <sql name="update_strain_code"><![CDATA[
+            UPDATE
+                strain
+            SET
+                code = %(code)s
+            WHERE
+                id_strain = %(id_strain)s
+        ;]]></sql>
+
+        <sql name="update_division_pattern"><![CDATA[
+            UPDATE
+                division
+            SET
+                division = %(division)s,
+                pattern = %(pattern)s
+            WHERE
+                id_division = %(id_division)s
+        ;]]></sql>
+        
+        <sql name="update_stock_movement"><![CDATA[
+                UPDATE stock_movement SET date = %(date)s,
+                description = %(description)s
+                WHERE id_stock_movement = %(id)s;]]></sql>
+
+        <sql name="update_container"><![CDATA[
+                UPDATE container SET abbreviation = %(abbreviation)s,
+                description = %(description)s
+                WHERE id_container = %(id_container)s;]]></sql>
+
+        <sql name="update_container_partial"><![CDATA[
+                UPDATE container SET description = %(description)s
+                WHERE id_container = %(id_container)s;]]></sql>
+
+        <sql name="update_report_xml"><![CDATA[
+            UPDATE
+                reports
+            SET
+                id_subcoll = %(id_subcoll)s,
+                id_report_type = %(id_report_type)s,
+                description = %(description)s,
+                definition = %(definition)s
+            WHERE
+                id_report = %(id)s
+        ;]]></sql>
+    </update>
+    <insert>
+        <sql name="insert_report_xml"><![CDATA[
+            INSERT INTO
+                reports
+                (id_subcoll, id_report_type, description, definition)
+            VALUES
+                (%(id_subcoll)s, %(id_report_type)s, %(description)s, %(definition)s)
+        ;]]></sql>
+        
+        <sql name="insert_division"><![CDATA[
+            INSERT INTO
+                division
+                (id_subcoll, pattern, division)
+            VALUES
+                (%(id_subcoll)s, %(pattern)s, %(division)s)
+        ;]]></sql>
+
+        <sql name="set_security_read"><![CDATA[
+                INSERT INTO roles_permissions (id_item,id_role,id_area,permission)
+                VALUES (%(id_item)s, %(id_role)s, %(id_area)s,'r');]]></sql>
+
+        <sql name="set_security_write"><![CDATA[
+                INSERT INTO roles_permissions (id_item,id_role,id_area,permission)
+                VALUES (%(id_item)s, %(id_role)s, %(id_area)s,'w');]]></sql>
+
+        <sql name="insert_role"><![CDATA[
+                INSERT INTO roles (name,description,type)
+                VALUES (%(role_name)s, %(role_descr)s, %(role_type)s);]]></sql>
+
+        <sql name="grant_role_create_all_areas"><![CDATA[
+                INSERT INTO areas_permissions (id_role,id_area,allow_create)
+                SELECT roles.id_role,system_areas.id_area,'y' FROM roles
+        CROSS JOIN system_areas WHERE id_role=%(id_role)s;]]></sql>
+
+        <sql name="insert_lot_strain_ampoules_combo"><![CDATA[
+            INSERT INTO lot_strain (id_lot,id_strain)
+            VALUES (%(inserted_lot_id)s,%(id_strain)s);]]></sql>
+
+        <sql name="insert_lot_strain_location"><![CDATA[
+            INSERT INTO lot_strain_location (id_lot, id_strain, id_container_hierarchy, row, col, quantity)
+            VALUES (%(id_lot)s, %(id_strain)s, %(id_container_hierarchy)s, %(row)s, %(col)s, %(quantity)s);]]></sql>
+
+        <sql name="insert_preservation"><![CDATA[
+            INSERT INTO preservation (id_lot, id_user, id_preservation_method, date, info, last_update)
+            VALUES (%(inserted_lot_id)s, %(id_user)s, %(id_method)s, %(date)s, %(info)s, NOW());]]></sql>
+
+        <sql name="insert_user_role"><![CDATA[
+                INSERT INTO roles_users (id_user,id_role)
+                VALUES (%(id_user)s, %(id_role)s);]]></sql>
+
+        <sql name="insert_area_access"><![CDATA[
+                INSERT INTO areas_permissions (id_role,id_area,allow_delete,allow_create)
+                VALUES (%(id_role)s, %(id_area)s, %(allow_delete)s,%(allow_create)s);]]></sql>
+
+        <sql name="insert_species"><![CDATA[
+                INSERT INTO species (id_coll,id_subcoll,id_taxon_group, id_sciname, taxon_ref, synonym, hazard_group, hazard_group_ref, id_alt_states, alt_states_type, last_update)
+                VALUES (%(id_coll)s,%(id_subcoll)s,%(id_taxon_group)s, %(id_sciname)s, %(taxon_ref)s, %(synonym)s, %(hazard_group)s, %(hazard_group_ref)s, %(alt_state)s, %(alt_state_type)s, NOW());]]></sql>
+
+        <sql name="insert_spe_ambient_risk_multilanguage"><![CDATA[
+            INSERT INTO spe_ambient_risk (id_species, id_lang, ambient_risk)
+            VALUES (%(id)s, %(data_lang)s, %(ambient_risk)s);]]></sql>
+
+        <sql name="insert_spe_comments_multilanguage"><![CDATA[
+            INSERT INTO spe_comments (id_species, id_lang, comments)
+            VALUES (%(id)s, %(data_lang)s, %(comments)s);]]></sql>
+
+        <sql name="insert_strain"><![CDATA[
+             INSERT INTO strain (code, numeric_code, id_division, internal_code, status, id_coll, id_species, id_subcoll, infra_complement, id_type, history, extra_codes, comments, last_update,is_ogm,go_catalog)
+            VALUES (%(code)s, %(numeric_code)s, %(id_division)s, %(internal_code)s, %(status)s, %(id_coll)s, %(id_species)s, %(id_subcoll)s, %(infra_complement)s, %(id_type)s, %(history)s, %(extra_codes)s, %(general_comments)s, NOW(),%(is_ogm)s,%(go_catalog)s);]]></sql>
+
+        <sql name="insert_str_deposit"><![CDATA[
+            INSERT INTO str_deposit (id_strain, id_coll, id_person, id_institution, genus,species,classification,infra_name,infra_complement, date, id_dep_reason, preserv_method, form, aut_date, aut_person, aut_result, comments)
+            VALUES (%(id)s, %(id_coll)s, %(dep_id_person)s, %(dep_id_institution)s, %(dep_genus)s,%(dep_species)s,%(dep_classification)s,%(dep_infra_name)s,%(dep_infra_complement)s, %(dep_date)s, %(dep_id_reason)s, %(dep_preserv_method)s, %(dep_form)s, %(dep_aut_date)s, %(dep_aut_id_person)s, %(dep_aut_result)s, %(dep_comments)s);]]></sql>
+
+        <sql name="insert_dep_reason_lang"><![CDATA[
+            INSERT INTO str_dep_reason_lang (id_dep_reason,id_lang, dep_reason)
+            VALUES (%(dep_id_reason)s,%(id_lang)s, %(dep_reason)s);]]></sql>
+
+        <sql name="insert_dep_reason"><![CDATA[
+            INSERT INTO str_dep_reason (id_dep_reason)
+            VALUES (%(dep_id_reason)s);]]></sql>
+
+        <sql name="insert_str_coll_event"><![CDATA[
+            INSERT INTO str_coll_event (id_strain, id_coll, id_person, id_institution, date, id_country, id_state, id_city, place, gps_latitude, gps_latitude_dms, gps_latitude_mode, gps_longitude, gps_longitude_dms, gps_longitude_mode, gps_precision, id_gps_datum, gps_comments, host_genus, host_species, host_classification, host_infra_name, host_infra_complement, global_code, id_clinical_form, hiv)
+            VALUES (%(id)s, %(id_coll)s, %(coll_id_person)s, %(coll_id_institution)s, %(coll_date)s, %(coll_id_country)s, %(coll_id_state)s, %(coll_id_city)s, %(coll_place)s, %(coll_gps_latitude)s, %(coll_gps_latitude_dms)s, %(coll_gps_latitude_mode)s, %(coll_gps_longitude)s, %(coll_gps_longitude_dms)s, %(coll_gps_longitude_mode)s, %(coll_gps_precision)s, %(coll_id_gps_datum)s, %(coll_gps_comments)s, %(coll_host_genus)s, %(coll_host_species)s, %(coll_host_classification)s, %(coll_host_infra_name)s, %(coll_host_infra_complement)s, %(coll_global_code)s, %(coll_id_clinical_form)s, %(coll_hiv)s);]]></sql>
+
+        <sql name="insert_str_host_name_multilanguage"><![CDATA[
+            INSERT INTO str_host_name (id_strain, id_coll, id_lang, host_name)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(coll_host_name)s);]]></sql>
+
+        <sql name="insert_str_substratum_multilanguage"><![CDATA[
+            INSERT INTO str_substratum (id_strain, id_coll, id_lang, substratum)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(coll_substratum)s);]]></sql>
+
+        <sql name="insert_str_coll_comments_multilanguage"><![CDATA[
+            INSERT INTO str_coll_comments (id_strain, id_coll, id_lang, comments)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(coll_comments)s);]]></sql>
+
+        <sql name="insert_str_iso_isolation_from_multilanguage"><![CDATA[
+            INSERT INTO str_isolation_from (id_strain, id_coll, id_lang, isolation_from)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(iso_isolation_from)s);]]></sql>
+
+        <sql name="insert_str_iso_method_multilanguage"><![CDATA[
+            INSERT INTO str_iso_method (id_strain, id_coll, id_lang, iso_method)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(iso_method)s);]]></sql>
+
+        <sql name="insert_str_ident_method_multilanguage"><![CDATA[
+            INSERT INTO str_ident_method (id_strain, id_coll, id_lang, ident_method)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(ident_method)s);]]></sql>
+
+        <sql name="insert_str_isolation"><![CDATA[
+            INSERT INTO str_isolation (id_strain, id_coll, id_person, id_institution, date, comments)
+            VALUES (%(id)s, %(id_coll)s, %(iso_id_person)s, %(iso_id_institution)s, %(iso_date)s, %(iso_comments)s);]]></sql>
+
+        <sql name="insert_str_identification"><![CDATA[
+            INSERT INTO str_identification (id_strain, id_coll, date, id_person, id_institution, genus, species, classification, infra_name, infra_complement, comments)
+            VALUES (%(id)s, %(id_coll)s, %(ident_date)s, %(ident_id_person)s, %(ident_id_institution)s, %(ident_genus)s, %(ident_species)s, %(ident_classification)s, %(ident_infra_name)s, %(ident_infra_complement)s, %(ident_comments)s);]]></sql>
+
+        <sql name="insert_str_iso_method"><![CDATA[
+            INSERT INTO str_iso_method (iso_method)
+            VALUES (%(iso_method)s);]]></sql>
+
+        <sql name="insert_str_culture"><![CDATA[
+            INSERT INTO str_culture (id_strain, id_coll, temp,ph)
+            VALUES (%(id)s, %(id_coll)s, %(cul_temp)s,%(cul_ph)s);]]></sql>
+
+        <sql name="insert_str_cult_medium_multilanguage"><![CDATA[
+            INSERT INTO str_cult_medium (id_strain, id_coll, id_lang, medium)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cul_medium)s);]]></sql>
+
+        <sql name="insert_str_incub_time_multilanguage"><![CDATA[
+            INSERT INTO str_incub_time (id_strain, id_coll, id_lang, incub_time)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cul_incub_time)s);]]></sql>
+
+        <sql name="insert_str_oxy_req_multilanguage"><![CDATA[
+            INSERT INTO str_oxy_req (id_strain, id_coll, id_lang, oxy_req)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cul_oxy_req)s);]]></sql>
+
+        <sql name="insert_str_cult_comments_multilanguage"><![CDATA[
+            INSERT INTO str_cult_comments (id_strain, id_coll, id_lang, comments)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cul_comments)s);]]></sql>
+
+        <sql name="insert_str_characs"><![CDATA[
+            INSERT INTO str_characs (id_strain, id_coll, biochemical, immunologic, morphologic, molecular, pathogenic, genotypic, ogm)
+            VALUES (%(id)s, %(id_coll)s, %(cha_biochemical)s, %(cha_immunologic)s, %(cha_morphologic)s, %(cha_molecular)s, %(cha_pathogenic)s, %(cha_genotypic)s,%(cha_ogm)s);]]></sql>
+
+        <sql name="insert_str_properties"><![CDATA[
+            INSERT INTO str_properties (id_strain, id_coll)
+            VALUES (%(id)s, %(id_coll)s);]]></sql>
+
+        <sql name="insert_str_pro_properties_multilanguage"><![CDATA[
+            INSERT INTO str_pro_properties (id_strain, id_coll, id_lang, properties)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(pro_properties)s);]]></sql>
+
+        <sql name="insert_str_pro_applications_multilanguage"><![CDATA[
+            INSERT INTO str_pro_applications (id_strain, id_coll, id_lang, applications)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(pro_applications)s);]]></sql>
+
+        <sql name="insert_str_pro_urls_multilanguage"><![CDATA[
+            INSERT INTO str_pro_urls (id_strain, id_coll, id_lang, urls)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(pro_urls)s);]]></sql>
+
+        <sql name="insert_str_cha_ogm_comments_multilanguage"><![CDATA[
+            INSERT INTO str_cha_ogm_comments (id_strain, id_coll, id_lang, ogm_comments)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cha_ogm_comments)s);]]></sql>
+
+        <sql name="insert_str_cha_biorisk_comments_multilanguage"><![CDATA[
+            INSERT INTO str_cha_biorisk_comments (id_strain, id_coll, id_lang, biorisk_comments)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cha_biorisk_comments)s);]]></sql>
+
+        <sql name="insert_str_cha_restrictions_multilanguage"><![CDATA[
+            INSERT INTO str_cha_restrictions (id_strain, id_coll, id_lang, restrictions)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cha_restrictions)s);]]></sql>
+
+        <sql name="insert_str_cha_pictures_multilanguage"><![CDATA[
+            INSERT INTO str_cha_pictures (id_strain, id_coll, id_lang, pictures)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cha_pictures)s);]]></sql>
+
+        <sql name="insert_str_cha_urls_multilanguage"><![CDATA[
+            INSERT INTO str_cha_urls (id_strain, id_coll, id_lang, urls)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cha_urls)s);]]></sql>
+
+        <sql name="insert_str_cha_catalogue_multilanguage"><![CDATA[
+            INSERT INTO str_cha_catalogue (id_strain, id_coll, id_lang, catalogue_notes)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cha_catalogue)s);]]></sql>
+
+        <sql name="insert_str_quality"><![CDATA[
+            INSERT INTO str_quality (id_user, id_lot, id_strain, date, last_update)
+               VALUES (%(tec_resp)s, %(id_lot)s, %(id_strain)s, %(date)s, NOW());]]></sql>
+
+        <sql name="insert_str_quality_test"><![CDATA[
+            INSERT INTO str_quality_test (id_quality, id_doc, result, purity, counting, counting_not_apply, comments)
+               VALUES (%(id_quality)s, %(id_doc)s, %(result)s, %(purity)s, %(counting)s, %(counting_not_apply)s, %(comments)s);]]></sql>
+
+        <sql name="insert_str_stock_minimum"><![CDATA[
+            INSERT INTO str_stock_minimum (id_strain, id_preservation_method, quantity)
+               VALUES (%(id_strain)s, %(id_preservation_method)s, %(quantity)s);
+        ]]></sql>
+
+        <sql name="insert_doc"><![CDATA[
+            INSERT INTO doc (code, id_coll, id_subcoll, id_qualifier, id_test_group, last_update, go_catalog)
+            VALUES (%(code)s, %(id_coll)s, %(id_subcoll)s, %(id_qualifier)s, %(id_category)s, NOW(), %(go_catalog)s);]]></sql>
+
+        <sql name="insert_doc_title_multilanguage"><![CDATA[
+                INSERT INTO doc_title (id_doc, id_coll, id_lang, title)
+                VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(title)s);]]></sql>
+
+        <sql name="insert_doc_description_multilanguage"><![CDATA[
+            INSERT INTO doc_description (id_doc, id_coll, id_lang, description)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(description)s);]]></sql>
+
+        <sql name="insert_doc_file_name_multilanguage"><![CDATA[
+            INSERT INTO doc_file (id_doc, id_coll, id_lang, file_name)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(file_name)s);]]></sql>
+
+        <sql name="insert_ref"><![CDATA[
+            INSERT INTO ref (id_coll, id_subcoll, title, author, year, url, last_update, go_catalog)
+            VALUES (%(id_coll)s, %(id_subcoll)s, %(title)s, %(author)s, %(year)s, %(url)s, NOW(), %(go_catalog)s);]]></sql>
+
+        <sql name="insert_ref_comments_multilanguage"><![CDATA[
+            INSERT INTO ref_comments (id_ref, id_coll, id_lang, comments)
+            VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(comments)s);]]></sql>
+
+        <sql name="insert_person"><![CDATA[
+        INSERT INTO person (name, nickname, address, phone, email, last_update, go_catalog)
+      VALUES (%(name)s, %(nickname)s,  %(address)s, %(phone)s, %(email)s, NOW(), %(go_catalog)s);]]></sql>
+
+        <sql name="insert_person_comments_multilanguage"><![CDATA[
+          INSERT INTO per_comments (id_person, id_lang, comments)
+        VALUES (%(id)s, %(data_lang)s, %(comments)s);]]></sql>
+
+        <sql name="insert_contact_relations"><![CDATA[
+        INSERT INTO contact_relations (id_person, id_institution,  contact, department, email, last_update)
+      VALUES (%(id)s, %(id_institution)s, %(contact)s, %(department)s, %(email)s, NOW());]]></sql>
+
+        <sql name="insert_institution"><![CDATA[
+            INSERT INTO institution (code1, code2, code3, complement, nickname, name, address, phone, email, website,  last_update, go_catalog)
+            VALUES (%(code1)s, %(code2)s, %(code3)s, %(complement)s, %(nickname)s, %(name)s, %(address)s, %(phone)s, %(email)s, %(website)s, NOW(), %(go_catalog)s);]]></sql>
+
+        <sql name="insert_inst_comments_multilanguage"><![CDATA[
+            INSERT INTO inst_comments (id_institution, id_lang, comments)
+            VALUES (%(id)s, %(data_lang)s, %(comments)s);]]></sql>
+
+        <sql name="insert_distribution"><![CDATA[
+            INSERT INTO distribution (date, id_lot, id_user, id_institution, id_person, id_strain, reason, last_update)
+            VALUES (%(date)s, %(id_lot)s, %(id_user)s, %(id_institution)s, %(id_person)s, %(id_strain)s, %(reason)s, NOW());]]></sql>
+
+        <sql name="insert_distribution_origin_location"><![CDATA[
+            INSERT INTO distribution_origin_location
+                (id_distribution, id_origin_lot, id_origin_container_hierarchy, origin_row, origin_col, quantity)
+            VALUES
+                (%(id_distribution)s, %(id_origin_lot)s, %(id_origin_container_hierarchy)s, %(origin_row)s, %(origin_col)s, %(quantity)s);
+            ]]></sql>
+
+        <sql name="insert_str_quality_origin_location"><![CDATA[
+            INSERT INTO str_quality_origin_location
+                (id_quality, id_origin_lot, id_origin_container_hierarchy, origin_row, origin_col, quantity)
+            VALUES
+                (%(id_quality)s, %(id_origin_lot)s, %(id_origin_container_hierarchy)s, %(origin_row)s, %(origin_col)s, %(quantity)s);
+            ]]></sql>
+
+        <sql name="insert_lot"><![CDATA[
+            INSERT INTO lot (id_subcoll, name)
+            VALUES (%(id_subcoll)s, %(lot_name)s);]]></sql>
+
+        <sql name="insert_preservation_strain"><![CDATA[
+            INSERT INTO preservation_strain
+            (id_preservation, id_strain, origin_type, origin, id_lot,
+            stock_position, stock_minimum, id_doc, temperature, incub_time, cryoprotector, preservation_type, purity,
+            counting, counting_not_apply, macro_charac, micro_charac, result, obs,
+            id_origin_container_hierarchy, origin_row, origin_col, quantity, not_identified)
+            VALUES
+            (%(id)s, %(id_strain)s, %(origin)s,  %(original_name)s,  %(origin_lot)s,
+            %(stock_pos)s,  %(stock_minimum)s,  %(id_culture_medium)s, %(temp)s, %(incub_time)s, %(cryo)s, %(type)s, %(purity)s,
+            %(counting)s, %(counting_na)s, %(macro)s, %(micro)s, %(result)s, %(obs)s,
+            %(id_origin_container_hierarchy)s, %(origin_row)s, %(origin_col)s, %(origin_quantity)s, %(not_identified)s);
+        ]]></sql>
+
+        <sql name="insert_state">
+            <![CDATA[
+                INSERT INTO loc_state (id_country,state,code)
+                VALUES(%(coll_id_country)s,%(coll_state)s,%(coll_code)s)
+            ]]>
+        </sql>
+        <sql name="insert_city">
+            <![CDATA[
+                INSERT INTO loc_city (id_country,id_state,city)
+                VALUES(%(coll_id_country)s,%(coll_id_state)s,%(coll_city)s)
+            ]]>
+        </sql>
+
+        <sql name="insert_subcoll_taxon_group"><![CDATA[
+                INSERT INTO taxon_group_subcoll (id_taxon_group,id_subcoll)
+                VALUES(%(id_taxon_group)s,%(id_subcoll)s)]]></sql>
+
+        <sql name="insert_subcoll_str_type"><![CDATA[
+                INSERT INTO str_type_subcoll (id_type,id_subcoll)
+                VALUES(%(id_type)s,%(id_subcoll)s)]]></sql>
+
+        <sql name="insert_subcoll_str_type_lang"><![CDATA[
+                INSERT INTO str_type_lang (id_type,id_lang,type)
+                SELECT %(id_type)s,id_lang,%(type)s FROM lang WHERE code=%(code)s]]></sql>
+
+        <sql name="insert_new_str_type"><![CDATA[
+                INSERT INTO str_type(id_type) VALUES (0);]]></sql>
+
+        <sql name="insert_subcoll_dep_reason"><![CDATA[
+                INSERT INTO str_dep_reason_subcoll (id_dep_reason,id_subcoll)
+                VALUES(%(id_dep_reason)s,%(id_subcoll)s)]]></sql>
+
+        <sql name="insert_subcoll_dep_reason_lang"><![CDATA[
+                INSERT INTO str_dep_reason_lang (id_dep_reason,id_lang,dep_reason)
+                SELECT %(id_dep_reason)s,id_lang,%(dep_reason)s FROM lang WHERE code=%(code)s]]></sql>
+
+        <sql name="insert_new_dep_reason"><![CDATA[
+                INSERT INTO str_dep_reason(id_dep_reason) VALUES (0);]]></sql>
+
+        <sql name="insert_subcoll_test_group"><![CDATA[
+                INSERT INTO test_group_subcoll (id_test_group,id_subcoll)
+                VALUES(%(id_test_group)s,%(id_subcoll)s)]]></sql>
+
+        <sql name="insert_subcoll_test_group_lang"><![CDATA[
+                INSERT INTO test_group_lang (id_test_group,id_lang,category)
+                SELECT %(id_test_group)s,id_lang,%(category)s FROM lang WHERE code=%(code)s]]></sql>
+
+        <sql name="insert_new_test_group"><![CDATA[
+                INSERT INTO test_group(id_test_group) VALUES (0);]]></sql>
+
+        <sql name="insert_subcoll_preservation_method"><![CDATA[
+                INSERT INTO preservation_method_subcoll (id_preservation_method,id_subcoll)
+                VALUES(%(id_preservation_method)s,%(id_subcoll)s)]]></sql>
+
+        <sql name="insert_subcoll_preservation_method_lang"><![CDATA[
+                INSERT INTO preservation_method_lang (id_preservation_method,id_lang,method,unit_measure)
+                SELECT %(id_preservation_method)s,id_lang,%(method)s,%(unit_measure)s FROM lang WHERE code=%(code)s]]></sql>
+
+        <sql name="insert_new_preservation_method"><![CDATA[
+                INSERT INTO preservation_method(id_preservation_method) VALUES (0);]]></sql>
+
+        <sql name="insert_sciname"><![CDATA[
+                INSERT INTO scientific_names (hi_tax, sciname, sciname_no_auth) VALUES (%(hi_tax)s, %(sciname)s, %(sciname_no_auth)s);]]></sql>
+
+        <sql name="insert_sciname_hierarchy"><![CDATA[
+                INSERT INTO scientific_names_hierarchy (id_sciname, id_hierarchy, value, author)
+                VALUES (%(id_sciname)s, %(id_hierarchy)s, %(value)s, %(author)s);]]></sql>
+        
+        <sql name="insert_stock_movement"><![CDATA[
+            INSERT INTO stock_movement (id_subcoll, id_preservation_method, description, date)
+            VALUES (%(id_subcoll)s, %(id_preservation_method)s, %(description)s, %(date)s);]]></sql>
+
+        <sql name="insert_stock_movement_location"><![CDATA[
+            INSERT INTO stock_movement_location (id_stock_movement, id_lot_strain_location_from, id_lot_strain_location_to)
+            VALUES (%(id_stock_movement)s, %(id_lot_strain_location_from)s, %(id_lot_strain_location_to)s);]]></sql>
+
+        <sql name="insert_container"><![CDATA[
+            INSERT INTO container (abbreviation, description)
+            VALUES (%(abbreviation)s, %(description)s);]]></sql>
+
+        <sql name="insert_container_subcoll"><![CDATA[
+            INSERT INTO container_subcoll (id_container, id_subcoll)
+            VALUES (%(id_container)s, %(id_subcoll)s);]]></sql>
+
+        <sql name="insert_container_preservation_method"><![CDATA[
+            INSERT INTO container_preservation_method (id_container, id_preservation_method)
+            VALUES (%(id_container)s, %(id_preservation_method)s);]]></sql>
+
+        <sql name="insert_container_hierarchy"><![CDATA[
+            INSERT INTO container_hierarchy (id_container, id_parent, abbreviation, description)
+            VALUES (%(id_container)s, %(id_parent)s, %(abbreviation)s, %(description)s);]]></sql>
+
+        <sql name="insert_location"><![CDATA[
+            INSERT INTO location (id_container_hierarchy, rows, cols, ini_row, ini_col, pattern)
+            VALUES (%(id_container_hierarchy)s, %(rows)s, %(cols)s, %(ini_row)s, %(ini_col)s, %(pattern)s);]]></sql>
+
+        <sql name="insert_log"><![CDATA[
+                INSERT INTO `log` (date_time, `user`, id_log_operation, id_subcoll, id_log_entity, id_entity, code_entity, lot, id_log_field, lang, `value`)
+                VALUES %(insert_values_log)s;]]></sql>
+
+    </insert>
+    <delete>
+        <sql name="delete_division"><![CDATA[
+            DELETE FROM division
+            WHERE id_division = %(id_division)s;]]></sql>
+
+        <sql name="delete_species"><![CDATA[
+            DELETE FROM species
+            WHERE id_species = %(id)s;]]></sql>
+
+        <sql name="delete_species_by_subcoll"><![CDATA[
+            DELETE FROM species
+            WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+        <sql name="delete_species_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=1 AND id_item=%(id)s;]]></sql>
+
+        <sql name="delete_spe_comments_multilanguage"><![CDATA[
+            DELETE FROM spe_comments
+            WHERE id_species = %(id)s AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="delete_spe_ambient_risk_multilanguage"><![CDATA[
+            DELETE FROM spe_ambient_risk
+            WHERE id_species = %(id)s AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="delete_strain"><![CDATA[
+            DELETE FROM strain
+            WHERE id_strain = %(id)s;]]></sql>
+
+        <sql name="delete_strain_by_subcoll"><![CDATA[
+            DELETE FROM strain
+            WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+        <sql name="delete_strain_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=2 AND id_item=%(id)s;]]></sql>
+
+    <sql name="delete_str_cult_medium_multilanguage"><![CDATA[
+            DELETE FROM str_cult_medium
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_incub_time_multilanguage"><![CDATA[
+            DELETE FROM str_incub_time
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_cult_comments_multilanguage"><![CDATA[
+            DELETE FROM str_cult_comments
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_host_name_multilanguage"><![CDATA[
+            DELETE FROM str_host_name
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_substratum_multilanguage"><![CDATA[
+            DELETE FROM str_substratum
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_coll_comments_multilanguage"><![CDATA[
+            DELETE FROM str_coll_comments
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_iso_isolation_from_multilanguage"><![CDATA[
+            DELETE FROM str_isolation_from
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_iso_method_multilanguage"><![CDATA[
+            DELETE FROM str_iso_method
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_ident_method_multilanguage"><![CDATA[
+            DELETE FROM str_ident_method
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_pro_properties_multilanguage"><![CDATA[
+            DELETE FROM str_pro_properties
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_pro_applications_multilanguage"><![CDATA[
+            DELETE FROM str_pro_applications
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_pro_urls_multilanguage"><![CDATA[
+            DELETE FROM str_pro_urls
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_quality_origin"><![CDATA[
+            DELETE FROM str_quality_origin_location
+            WHERE id_quality = %(id_quality)s;]]></sql>
+
+    <sql name="delete_str_quality"><![CDATA[
+            DELETE FROM str_quality
+            WHERE id_quality = %(id_quality)s;]]></sql>
+
+    <sql name="delete_str_quality_tests"><![CDATA[
+            DELETE FROM str_quality_test
+            WHERE id_quality = %(id_quality)s;]]></sql>
+
+    <sql name="delete_str_cha_ogm_comments_multilanguage"><![CDATA[
+            DELETE FROM str_cha_ogm_comments
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_cha_biorisk_comments_multilanguage"><![CDATA[
+            DELETE FROM str_cha_biorisk_comments
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_cha_restrictions_multilanguage"><![CDATA[
+            DELETE FROM str_cha_restrictions
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_cha_pictures_multilanguage"><![CDATA[
+            DELETE FROM str_cha_pictures
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_cha_urls_multilanguage"><![CDATA[
+            DELETE FROM str_cha_urls
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_cha_catalogue_multilanguage"><![CDATA[
+            DELETE FROM str_cha_catalogue
+            WHERE id_strain = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_str_stock_minimum"><![CDATA[
+        DELETE FROM str_stock_minimum
+        WHERE
+            str_stock_minimum.id_strain = %(id)s AND
+            str_stock_minimum.id_preservation_method IN (
+                SELECT
+                    pms.id_preservation_method
+                FROM preservation_method_subcoll pms
+                WHERE
+                    pms.id_subcoll = %(id_subcoll)s
+            );
+    ]]></sql>
+
+    <sql name="delete_subcoll_combo_taxon_group"><![CDATA[
+            DELETE FROM taxon_group_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+    <sql name="delete_subcoll_combo_str_type"><![CDATA[
+            DELETE FROM str_type_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+    <sql name="delete_subcoll_combo_dep_reason"><![CDATA[
+            DELETE FROM str_dep_reason_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+    <sql name="delete_subcoll_combo_test_group"><![CDATA[
+            DELETE FROM test_group_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+    <sql name="delete_subcoll_combo_preservation_method"><![CDATA[
+            DELETE FROM preservation_method_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+    <sql name="delete_doc"><![CDATA[
+            DELETE FROM doc
+            WHERE id_doc = %(id)s;]]></sql>
+
+    <sql name="delete_doc_by_subcoll"><![CDATA[
+            DELETE FROM doc
+            WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+        <sql name="delete_doc_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=5 AND id_item=%(id)s;]]></sql>
+
+        <sql name="delete_doc_description"><![CDATA[
+            DELETE FROM doc_description
+            WHERE id_doc = %(id)s;]]></sql>
+
+        <sql name="delete_ref"><![CDATA[
+            DELETE FROM ref
+            WHERE id_ref = %(id)s;]]></sql>
+
+        <sql name="delete_ref_by_subcoll"><![CDATA[
+            DELETE FROM ref
+            WHERE id_subcoll = %(id_subcoll)s;]]></sql>
+
+        <sql name="delete_ref_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=6 AND id_item=%(id)s;]]></sql>
+
+    <sql name="delete_ref_comments_multilanguage"><![CDATA[
+            DELETE FROM ref_comments
+            WHERE id_ref = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+    <sql name="delete_person"><![CDATA[
+            DELETE FROM person
+      WHERE id_person = %(id)s;]]></sql>
+
+        <sql name="delete_person_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=3 AND id_item=%(id)s;]]></sql>
+
+      <sql name="delete_person_comments_multilanguage"><![CDATA[
+            DELETE FROM per_comments
+            WHERE id_person = %(id)s
+                AND id_lang = %(id_lang)s;]]></sql>
+
+    <sql name="delete_contact_relation"><![CDATA[
+        DELETE FROM contact_relations
+      WHERE id_person = %(id)s AND id_institution = %(id_institution)s;]]></sql>
+
+        <sql name="delete_all_contact_relations"><![CDATA[
+          DELETE FROM contact_relations
+        WHERE id_person = %(id)s;]]></sql>
+
+        <sql name="delete_institution"><![CDATA[
+            DELETE FROM institution
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="delete_institution_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=4 AND id_item=%(id)s;]]></sql>
+
+        <sql name="delete_reports"><![CDATA[
+            DELETE FROM reports
+            WHERE id_report = %(id)s;]]></sql>
+
+        <sql name="delete_reports_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=9 AND id_item=%(id)s;]]></sql>
+
+        <sql name="delete_preservation"><![CDATA[
+            DELETE FROM preservation
+            WHERE id_preservation = %(id)s;]]></sql>
+
+        <sql name="delete_preservation_strain"><![CDATA[
+            DELETE FROM preservation_strain
+            WHERE id_preservation = %(id)s;]]></sql>
+
+        <sql name="delete_preservation_strain_by_lot"><![CDATA[
+            DELETE FROM preservation_strain
+            WHERE id_preservation = %(id)s;]]></sql>
+
+        <sql name="delete_preservation_strain_by_ids"><![CDATA[
+            DELETE FROM preservation_strain
+            WHERE id_lot = %(id_lot)s AND id_strain = %(id_strain)s;]]></sql>
+
+        <sql name="delete_preservation_strain_by_id"><![CDATA[
+            DELETE FROM preservation_strain
+            WHERE id_preserv_str = %(id_preserv_str)s;]]></sql>
+
+        <sql name="delete_preservation_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=7 AND id_item=%(id)s;]]></sql>
+
+        <sql name="delete_lot"><![CDATA[
+            DELETE FROM lot
+            WHERE id_lot = %(id)s;]]></sql>
+
+        <sql name="delete_lot_strain"><![CDATA[
+            DELETE FROM lot_strain
+            WHERE id_lot = %(id_lot)s AND id_strain=%(id_strain)s;]]></sql>
+
+        <sql name="delete_lot_strain_location"><![CDATA[
+            DELETE FROM lot_strain_location
+            WHERE id_lot = %(id_lot)s AND id_strain=%(id_strain)s;]]></sql>
+
+        <sql name="delete_lot_strain_location_2"><![CDATA[
+            DELETE FROM lot_strain_location
+            WHERE id_lot = %(id_lot)s]]></sql>
+
+        <sql name="delete_distribution"><![CDATA[
+            DELETE FROM distribution
+            WHERE id_distribution = %(id)s;]]></sql>
+
+        <sql name="delete_distribution_origin"><![CDATA[
+            DELETE FROM distribution_origin_location
+            WHERE id_distribution = %(id)s;]]></sql>
+
+        <sql name="delete_distribution_security"><![CDATA[
+            DELETE FROM roles_permissions
+            WHERE id_area=8 AND id_item=%(id)s;]]></sql>
+
+        <sql name="delete_inst_comments_multilanguage"><![CDATA[
+            DELETE FROM inst_comments
+            WHERE id_institution = %(id)s
+                AND id_lang = %(data_lang)s;]]></sql>
+
+        <sql name="delete_role"><![CDATA[
+            DELETE FROM roles
+            WHERE id_role = %(id_role)s;]]></sql>
+
+        <sql name="delete_area_access"><![CDATA[
+            DELETE FROM areas_permissions
+            WHERE id_role = %(role_id)s;]]></sql>
+
+        <sql name="delete_user_roles"><![CDATA[
+            DELETE FROM roles_users
+            WHERE id_user = %(id_user)s;]]></sql>
+
+        <sql name="delete_role_users"><![CDATA[
+            DELETE FROM roles_users
+            WHERE id_role = %(id_role)s;]]></sql>
+
+        <sql name="delete_user_common_roles"><![CDATA[
+            DELETE FROM roles_users WHERE id_user = %(id_user)s AND id_role IN
+      (SELECT id_role FROM roles WHERE roles.type IN ('group','level'));]]></sql>
+
+        <sql name="clear_security"><![CDATA[
+          DELETE FROM roles_permissions WHERE id_item=%(id_item)s AND id_area=%(id_area)s;]]></sql>
+
+        <sql name="delete_sciname"><![CDATA[
+          DELETE FROM scientific_names WHERE id_sciname=%(id_sciname)s;]]></sql>
+
+        <sql name="delete_sciname_hierarchy"><![CDATA[
+          DELETE FROM scientific_names_hierarchy WHERE id_sciname=%(id_sciname)s;]]></sql>
+        
+        <sql name="delete_lot_strain_locations_to"><![CDATA[
+            DELETE FROM lot_strain_location
+                WHERE id_lot_strain_location IN
+                    (SELECT id_lot_strain_location_to FROM stock_movement_location
+                        WHERE id_stock_movement = %(id)s);]]></sql>
+        
+        <sql name="delete_stock_movement"><![CDATA[
+            DELETE FROM stock_movement
+            WHERE id_stock_movement = %(id)s;]]></sql>
+
+        <sql name="delete_container"><![CDATA[
+            DELETE FROM container
+            WHERE id_container = %(id)s;]]></sql>
+
+        <sql name="delete_container_hierarchy"><![CDATA[
+            DELETE FROM container_hierarchy
+            WHERE id_container = %(id)s;]]></sql>
+
+        <sql name="delete_container_subcoll"><![CDATA[
+            DELETE FROM container_subcoll
+            WHERE id_container = %(id)s;]]></sql>
+
+        <sql name="delete_container_preservation_method"><![CDATA[
+            DELETE FROM container_preservation_method
+            WHERE id_container = %(id)s;]]></sql>
+
+        <sql name="delete_container_location"><![CDATA[
+            DELETE FROM location WHERE id_container_hierarchy in
+                (SELECT id_container_hierarchy FROM container_hierarchy WHERE id_container = %(id)s);]]></sql>
+
+    </delete>
+    <show>
+        <!-- Show columns retorna:  Field       | Type             | Null | Key | Default | Extra -->
+
+        <sql name="get_field_type"><![CDATA[
+            SHOW COLUMNS FROM %(table)s
+            LIKE %(field)s;]]></sql>
+
+    </show>
+
+</sqls>

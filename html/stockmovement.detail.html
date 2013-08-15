@@ -1,0 +1,20 @@
+			<!-- stockmovement.detail.html -->
+			<div id="above_data"> 
+				<p>
+					<a href="./traceability.py" id="tab_traceability">%(menu_Traceability)s</a>
+					<a href="./container.list.py" id="tab_container">%(menu_Containers)s</a>
+					<a href="./stockmovement.list.py" id="tab_stock_movement" class="on_menu">%(menu_Stockmovement)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+				<p><label>%(label_Stock_Movement_Date)s</label><br />%(date)s</p>
+				<p><label>%(label_Stock_Movement_Description)s</label><br />%(description)s</p>
+				<p><label>%(label_Stock_Movement_Preservation_Method)s</label><br />%(preservation_method)s</p>
+				<p><label>%(label_Stock_Movement_Positions)s</label><br />
+					<div class="positions">
+						%(positions_data)s
+					</div>
+				</p>
+			</div>
+			%(hidden_forms)s
+		<!-- END - stockmovement.detail.html -->

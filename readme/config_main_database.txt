@@ -1,0 +1,20 @@
+#################################################
+Configuração do Banco de Dados Principal (MySQL):
+=================================================
+
+Após instalar e configurar o MySQL 5.0, é necessário executar dois scripts para funcionamento do sistema:
+
+- mysql_script_empty.sql
+Este script cria a estrutura do banco de dados do sistema.
+Disponível em: /sicol/documentation/database/scripts/v100/
+
+- mysql_start_dump.sql
+Este script carrega dos dados iniciais necessários para execução inicial do sistema.
+Disponível em: /sicol/documentation/database/scripts/v100/dump
+
+============================================================================
+Se precisar de registros reais para teste do sistema, use o seguinte script:
+
+- mysql_testdata_dump.sql
+Este script carrega vários registros de Espécies, Linhagens, Cidades, etc.
+Disponível em: /sicol/documentation/database/scripts/v100/dump

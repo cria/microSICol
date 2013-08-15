@@ -1,0 +1,40 @@
+@charset "utf-8";
+/* CSS Document */
+
+table#data_table thead th#type
+{
+ width:200px;
+}
+
+#data_table tbody tr td
+{
+ height: 16px;
+}
+
+.critical_popup 
+{
+	background-color: #FFFFFF;
+	border: #FFFFFF;
+	display: none;
+	position: absolute;
+	z-index: 100;
+	width: 350px;
+}
+
+.critical_popup_inner 
+{
+	border: 1px solid #9BB06B;
+	cursor: pointer;
+}
+
+.critical_popup_header,.critical_popup_header table tbody tr td 
+{
+	background-color: #E7E7E7;
+	color: black;
+	font-weight: bold;
+}
+
+.critical_popup_inner td
+{
+    padding-left: 3px;
+}

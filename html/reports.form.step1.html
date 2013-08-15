@@ -1,0 +1,36 @@
+<!-- reports.form.step1.html -->
+<div id="above_data">
+	<p>
+		<a href="#" class="selecionado">%(menu_Rep_General)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="validateReports(1);">%(menu_Rep_Fields)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="inativo">%(menu_Rep_Filters)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="inativo">%(menu_Rep_Format)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="inativo">%(menu_Rep_Security)s</a>
+	</p>
+</div>
+<form action="./reports.new.py" method="post" id="formReports" name="formReports">
+	<div class="content">
+		<input type="hidden" id="step" name="step" value="1" />
+		<input type="hidden" id="step_next" name="step_next" value="" />
+
+		<p class='cols_2'>
+			<label for="name_report" id="label_name_report">%(label_Rep_Description)s</label><br />
+			<input onblur="isEmpty(this,null);" name="name_report" id="name_report" type="text" maxlength="255" value="%(name_report)s" />
+		</p>
+		
+		<p class='cols_2'>
+			<label for="type" id="label_type">%(label_Rep_Type)s</label><br />
+			<select name="type" id="type">%(type)s</select>
+		</p>
+	</div>
+</form>
+
+<form action="./reports.list.py" method="post" id="cancel">
+	<p><input type="hidden" name="id" value="%(id)s" /></p>
+	<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+</form>
+<!-- END - reports.form.step1.html -->

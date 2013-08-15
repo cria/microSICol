@@ -1,0 +1,51 @@
+<!-- reports.form.step2.html -->
+<div id="above_data">
+	<p>
+		<a href="#" class="ativo" onclick="generate_data(); $('#step_next').val('1'); $('#formReports')[0].submit();">%(menu_Rep_General)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="selecionado">%(menu_Rep_Fields)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="validateReports(2);">%(menu_Rep_Filters)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="inativo">%(menu_Rep_Format)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="inativo">%(menu_Rep_Security)s</a>
+	</p>
+</div>
+<form action="./reports.new.py" method="post" id="formReports" name="formReports">
+	<div class="content">
+		<input type="hidden" id="step" name="step" value="2" />
+		<input type="hidden" id="step_next" name="step_next" value="" />
+		
+		<input type="hidden" id="hdn_field" name="hdn_field" value="" />
+		<input type="hidden" id="hdn_select" name="hdn_select" value="" />
+		<input type="hidden" id="hdn_group" name="hdn_group" value="" />
+		<input type="hidden" id="hdn_total" name="hdn_total" value="" />
+		
+		<div class='div_fields'>
+			<label for="type" id="label_type">%(label_Rep_Fields)s</label>
+			<ul name="field" id="field" class="droptrue">%(field)s</ul>
+		</div>
+		
+		<div class='div_fields'>
+			<label for="type" id="label_select">%(label_Rep_General_Select)s</label>
+			<ul name="select" id="select" class="droptrue">%(select)s</ul>
+		</div>
+		
+		<div class='div_fields'>
+			<label for="type" id="label_group">%(label_Rep_General_Group)s</label>
+			<ul name="group" id="group" class="droptrue">%(group)s</ul>
+		</div>
+		
+		<div class='div_fields'>
+			<label for="type" id="label_total">%(label_Rep_General_Totalizer)s</label>
+			<ul name="total" id="total" class="droptrue">%(total)s</ul>
+		</div>
+	</div>
+</form>
+
+<form action="./reports.list.py" method="post" id="cancel">
+	<p><input type="hidden" name="id" value="%(id)s" /></p>
+	<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+</form>
+<!-- END - reports.form.step2.html -->

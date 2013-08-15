@@ -1,0 +1,69 @@
+@charset "utf-8";
+/* CSS Document */
+
+table#data_table thead th#date 
+{
+}
+
+table#data_table thead th#id_user
+{
+}
+
+table#data_table thead th#id_lot
+{
+}
+
+table#data_table thead th#id_used_method
+{
+}
+
+select.location_display {
+    width: 85%;
+}
+
+.cols_3 .preservation_date
+{
+width: 70px;
+}
+
+/*
+#preservation_prepared,#preservation_used_ampoules
+{
+width: 80px;
+}
+*/
+
+.cols_2 .ampoules_input,.cols_3 .ampoules_input
+{
+width: 80px;
+}
+
+.ampoules_input
+{
+text-align: right;
+}
+
+#preservation_stock_pos
+{
+}
+
+#preservation_date 
+{
+width: 70px;
+}
+
+select#preservation_method
+{
+	width: 200px;
+}
+
+div.data .form_info
+{
+color:black;
+text-transform: none;
+font-weight: bold;
+}
+
+img.source {
+    cursor: pointer;
+}

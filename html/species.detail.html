@@ -1,0 +1,44 @@
+			<!-- species.detail.html --> 
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Species_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Species_Security)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+				<p><label>%(label_Species_General_Taxonomic_Group)s</label><br />%(taxon_group)s</p>
+                <p><label>%(label_Species_General_Higher_Taxa)s</label><br/><span class="species">%(hi_tax)s</span></p>
+                <p><label>%(label_Species_General_Scientific_Name)s</label><br/><span class="species">%(sciname)s</span></p>
+				<p class="separator"></p>
+				<p><label>%(label_Species_General_Taxonomical_References)s</label><br />%(taxon_ref)s</p>
+				<p><label>%(label_Species_General_Synonym)s</label><br />%(synonym)s</p>
+				<fieldset><legend>%(label_Species_General_Hazard_Group)s</legend>
+						<p class="cols_3"><label>%(label_Species_General_Classification)s</label><br />%(hazard_group)s</p>
+						<p class="cols_3"><label>%(label_Species_General_Comments)s</label><br />%(ambient_risk_langs)s</p>
+						<p class="cols_3"><label>%(label_Species_General_Reference)s</label><br />%(hazard_group_ref)s</p>
+				</fieldset>
+				<table id="tb_alt_state">
+					<tr >
+						<td class="no_width" colspan="2">
+							<p><label>%(label_Species_General_Alternative_State)s</label><br /><span class="species">%(alt_state)s</span></p>
+						</td>
+						<td colspan="1">
+							<p><label>%(label_Species_General_Alternative_State_Type)s</label><br />%(alt_state_type)s</p>
+						</td>
+					</tr>
+				</table>
+				<p><label>%(label_Species_General_Comments)s</label><br />%(comments_langs)s</p>
+			</div>
+			<div class="data" id="security">
+			<p>
+			   <table style="width:0;">
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+			</div>
+%(hidden_forms)s
+			<!-- END - species.list.html -->

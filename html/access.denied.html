@@ -1,0 +1,18 @@
+      <!-- access.denied.html -->
+      <div id='access_denied'> 
+      %(label_Access_Denied)s
+      </div>
+      <!-- Hide submenu from user, its options won't work anyway. Hide message as well -->
+      <script language='javascript'>
+      _submenu_obj = document.getElementById('submenu');
+      if (_submenu_obj)
+      { 
+        _submenu_obj.style.display = 'none';
+      } 
+      _msg_obj = document.getElementById('message');
+      if (_msg_obj)
+      { 
+        _msg_obj.innerHTML = '';
+      } 
+      </script>
+      <!-- END - access.denied.html -->

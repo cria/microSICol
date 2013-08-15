@@ -1,0 +1,116 @@
+@charset "utf-8";
+/* CSS Document */
+
+form input.date 
+{
+ width:80px;
+ text-align:center;
+}
+
+form input.year
+{
+ width:40px;
+ text-align:center;
+}
+
+form input.gps
+{
+ width:100px;
+ text-align:center;
+}
+
+#coll_host_classification,#dep_classification
+{
+ width: 70px;
+ _width: 74px; /* IE hack */
+}
+
+form input#code,form input#internal_code
+{
+	width: 120px;
+	_width: 124px; /* IE hack */
+}
+
+form input#coll_state, form input#coll_city
+{
+ width:auto;
+}
+
+/* Autosuggest CSS*/
+.suggestion_list
+{
+ background: #eee;
+ border: 1px solid black;
+ padding: 5px;
+}
+
+.suggestion_list ul
+{
+ padding: 0;
+ margin: 0;
+ list-style-type: none;
+}
+
+.suggestion_list a
+{
+ padding-left: 2px;
+ text-decoration: none;
+ color: black;
+}
+
+.suggestion_list .selected
+{
+ background: rgb(175,196,127);
+}
+
+.suggestion_list .selected a
+{
+ color: black;
+}
+
+.coll_country
+{
+ width:auto;
+}
+
+select#dep_reason
+{
+	width: 120px;
+}
+#autosuggest
+{
+ display: none;
+}
+
+/* Make this textarea to occupy one line only just like a TextField would*/
+/*#dep_species
+{
+ height: 25px;
+ _height: 36px; *//* IE hack - only IE understands this property */
+/*}*/
+
+table.data label
+{
+  font-weight:bold;
+  color:#688E23;
+  text-transform:lowercase;
+}
+
+table.data
+{
+  width: 100%;
+}
+
+select#status
+{
+	width: 120px;
+}
+select#id_species
+{
+	width: 320px;
+}
+select#id_type
+{
+	width: 180px;
+}
+

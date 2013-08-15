@@ -1,0 +1,20 @@
+%(top)s
+			<!-- reports.list.html --> 
+			<div class="data" id="general">
+				<input type="hidden" id="currentPopup" value="">
+				<table id="data_table">
+					<thead>
+						<tr>
+							<th id="type"><a href='reports.list.py?field_order=type&page=%(current_page)s'>%(label_Rep_General_Type)s</a>%(img_type)s</th>
+							<th id="description"><a href='reports.list.py?field_order=description&page=%(current_page)s'>%(label_Rep_General_Description)s</a>%(img_description)s</th>
+						</tr>
+					</thead>
+					<tbody>
+						%(data)s
+					</tbody>
+					<tfoot>
+						%(datafoot)s
+					</tfoot>
+				</table>
+			</div>
+			<!-- END - reports.list.html -->

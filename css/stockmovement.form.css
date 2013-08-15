@@ -1,0 +1,57 @@
+@charset "utf-8";
+/* CSS Document */ 
+
+.date
+{
+    width: 70px;
+}
+
+.description
+{
+    width: 600px;
+}
+
+img.source
+{
+    cursor: pointer;
+}
+
+img.source_disabled
+{
+    cursor: default;
+}
+
+img.new_disabled
+{
+    cursor: default;
+}
+
+select#preservation_method
+{
+	width: 200px;
+}
+
+.img_insert
+{
+    cursor: pointer;
+}
+
+.img_delete
+{
+    cursor: pointer;
+}
+
+.img_insert_disabled
+{
+    cursor: default;
+}
+
+.img_delete_disabled
+{
+    cursor: default;
+}
+
+.text_position
+{
+    background-color: #FFFFFF;
+}

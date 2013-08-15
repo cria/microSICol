@@ -1,0 +1,99 @@
+@charset "utf-8";
+/* CSS Document */
+
+#container 
+{
+	width: 100%;
+}
+
+.stock_main_table
+{
+	width: 98%;
+	margin: auto;
+	border: none;
+}
+
+.stock_method
+{
+	height: 30px;
+	font-weight: bold;
+	vertical-align: middle;
+	color: #688E23;
+}
+
+.stock_method_less_than_minimum
+{
+	height: 30px;
+	font-weight: bold;
+	vertical-align: middle;
+	color: #FF0000;
+}
+
+.stock_data_table
+{
+	width:98%;
+	margin: auto;
+	border: 1px solid #9BB06B;
+	border-collapse: collapse;
+}
+
+.stock_data_table td, th
+{
+	padding: 5px;
+	border-left: 1px solid #9BB06B;
+	border-bottom: 1px solid #9BB06B;
+}
+
+.stock_data_table th
+{
+	text-transform: lowercase;
+}
+
+.stock_header_lot
+{
+	width: 20%;
+	background-color: #e8e8e8;
+	text-align: left;
+}
+
+.stock_header_stock
+{
+	width: 10%;
+	background-color: #e8e8e8;
+	text-align: left;
+}
+
+.stock_header_unit
+{
+	width: 20%;
+	background-color: #e8e8e8;
+	text-align: left;
+}
+
+.stock_header_location
+{
+	width: 30%;
+	background-color: #e8e8e8;
+	text-align: left;
+}
+
+.stock_header_minimum_stock
+{
+	width: 20%;
+	background-color: #e8e8e8;
+	text-align: left;
+}
+
+.stock_less_than_minimum
+{
+	color: #FF0000;
+	font-weight: bold;
+	text-align: left;
+}
+
+.stock_minimum
+{
+	text-align: right;
+	border:1px solid #9BB06B;
+	width:30px;
+}

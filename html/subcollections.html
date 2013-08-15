@@ -1,0 +1,25 @@
+<!-- subcollections.html -->
+<body> 
+    <div id="top">
+        <div id="top_center">
+            <div id="user_name"><p>%(user_name)s</p></div>
+        </div>
+        <div id="link_exit"><a id="action_exit" href="./logout.py" title="%(link_Logout)s">%(link_Logout)s</a></div>
+    </div>
+
+    <div id="main_square">
+        <!-- Floating Squares -->
+        <div id="peach_square">&nbsp;</div>
+        <div id="horizontal_blank_grayborder">&nbsp;</div>
+        <div id="vertical_blank_grayborder">&nbsp;</div>
+        <div id="square_grayborder" style="height:auto;">%(page)s</div>
+        <div id="green_square">&nbsp;</div>
+        <!-- Login Area -->
+        <div id="login_square" class="data">
+            <p id="logo"><img src="../img/logo.png" alt="SICol" /></p>
+            <h3>%(label_Subcollection_Choose_Subcollection)s</h3>
+            <form action="%(start_page)s" method="post" id="start"></form>
+        </div>
+    </div>
+</body>
+<!-- END - subcollections.html -->

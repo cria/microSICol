@@ -1,0 +1,58 @@
+	<!-- container.form.html --> 
+	<div id="above_data"> 
+		<p>
+			<a href="./traceability.py" id="tab_traceability">%(menu_Traceability)s</a>
+			<a href="./container.list.py" id="tab_container" class="on_menu">%(menu_Containers)s</a>
+			<a href="./stockmovement.list.py" id="tab_stock_movement">%(menu_Stockmovement)s</a>
+		</p>
+	</div>
+
+	<form action="./%(who)s.save.py" method="post" id="edit">
+		<div class="data" id="general">
+			<input type="hidden" name="id" value="%(id)s" />
+			<input type="hidden" name="next_action" value="%(next_action)s" />
+			<input type="hidden" name="id_subcoll" value="%(id_subcoll)s" id="id_subcoll">
+			<input type="hidden" id="global_counter_total" name="global_counter_total" value="" />
+			<div>
+			<p>
+				%(form_action)s
+				<label for="abbreviation" id="label_abbreviation">%(label_Container_Abbreviation)s</label><br />
+				<input name="abbreviation" id="abbreviation" class="abbreviation" %(abbreviation_disabled)s type="text" maxlength="40" value="%(abbreviation)s" onblur="isEmpty(this, getLabel(this.name));" /> 
+			</p>
+			</div>
+			<div>
+				<p>
+				<label for="description" id="label_description">%(label_Container_Description)s</label><br />
+				<input class="description" name="description" id="description" type="text" maxlength="255" value="%(description)s" onblur="isEmpty(this, getLabel(this.name));" />
+				</p>
+			</div>
+			<div>
+				<p>
+					<label for="preservation_method" id="label_preservation_method">%(label_Container_Preservation_Method)s</label><br />
+					<select multiple name="preservation_method" id="preservation_method" onblur="isEmpty(this, getLabel(this.name));" %(method_disabled)s>%(preservation_method)s</select>
+				    </p>
+			</div>
+            <div>
+                <p><label>%(label_Container_Structure)s</label><br/>
+                <div id="mmenu" style="height:30px; overflow:auto;">
+		    <input type="button" id="add_folder" title="%(label_Container_New)s" class="button image container_add" />	
+                    <input type="button" id="remove" title="%(label_Container_Del)s" class="button image container_remove" />
+                    <input type="button" id="copy" title="%(label_Container_Copy)s" class="button image container_copy" />
+                    <input type="button" id="paste" title="%(label_Container_Paste)s" class="button image container_paste" />
+                </div>
+                <input type="hidden" name="complete_structure" value="vazio" />
+                <div id="demo" class="demo" style="height:auto;">
+                    %(container_hierarchy)s
+                </div>
+                <div id="container_structure"></div>
+            </div>
+	</div>		
+	</form>
+	%(container_hierarchy_edit)s
+	<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+		<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+		<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+	</form>
+	<script src="../js/%(javascript_include)s" language="javascript"> </script>
+
+	<!-- END container.form.html -->

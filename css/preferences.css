@@ -1,0 +1,14 @@
+@charset "utf-8";
+/* CSS Document */
+
+a#active_preferences
+{
+	color:rgb(183,104,62); 
+}
+
+.form_info
+{
+ color: black;
+ text-transform: none;
+ font-weight: bold;
+}

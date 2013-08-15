@@ -1,0 +1,132 @@
+@charset "utf-8";
+/* CSS Document */
+
+form#edit p 
+{
+  padding-left:5px;
+  padding-top:5px;
+  padding-bottom:5px;
+  cursor:default;
+}
+
+.counting_unit
+{
+ text-transform: none;
+}
+
+form#edit fieldset.preserv_fieldset p
+{
+    padding-top: 0px;
+}
+
+form#edit p.hidden
+{
+  display:none;
+}
+
+textarea#dep_species
+{
+  width: 50%;
+  _width: 99%; /* IE hack */
+}
+
+#deposit_dep_date
+{
+  float:right;
+  padding-right: 35%;
+}
+
+textarea
+{
+  width:94%;
+  height:80px;
+  padding:4px;
+  text-indent:0px;
+  overflow:scroll;
+}
+
+form input, select, textarea
+{
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(155,176,107);
+}
+
+/* form input[type="text"]  */
+input
+{
+  width:325px;
+}
+
+/* form input[type="submit"]  */
+input[type="submit"]
+{
+  width:100px;
+  float:right;
+}
+
+#checkbox
+{
+  width:0%;
+}
+
+select
+{
+  width: 94%;
+}
+
+.select_25
+{
+  width: 25%;
+}
+
+.select_50
+{
+  width: 50%;
+}
+
+.select_75
+{
+  width: 75%;
+}
+
+.select_100
+{
+  width: 94%;
+}
+
+.cols_2 input
+{
+  /*width: 290px;
+  _width: 284px; /* IE Hack*/
+}
+
+fieldset table input,.cols_3 input
+{
+  width: 170px;
+}
+
+.cols_4 input
+{
+  width: 120px;
+}
+
+form input.radio
+{
+  width:auto;
+  border: none;
+}
+
+.active
+{
+  color:rgb(183,104,62);
+}
+
+.inactive
+{
+  color:rgb(0,0,0);
+}
+.fieldstab
+{
+  font-weight:bold;
+}

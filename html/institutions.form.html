@@ -1,0 +1,85 @@
+			<!-- institutions.form.html -->
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Institutions_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Institutions_Security)s</a>
+				</p>
+			</div>
+			<form action="./%(who)s.save.py" method="post" id="edit">
+				<div class="data" id="general">			
+					<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+					<p class="hidden"><input type="hidden" name="next_action" value="%(next_action)s" /></p>
+					<p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+					<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+					<p>
+						<label for="nickname" id="label_nickname">%(label_Institutions_General_Locator)s</label><br />
+						<input name="nickname" id="nickname" type="text" maxlength="50" value="%(nickname)s" />
+					</p>
+					<p>
+						<label for="name" id="label_name">%(label_Institutions_General_Name)s</label><br />
+						<input onblur="isEmpty(this,null)" name="name" id="name" type="text" maxlength="80" value="%(name)s" />
+					</p>
+					<p>
+						<label for="complement" id="label_complement">%(label_Institutions_General_Complement)s</label><br />
+						<input name="complement" id="complement" type="text" maxlength="100" value="%(complement)s" />
+					</p>
+					<p>
+						<label for="address" id="label_address">%(label_Institutions_General_Address)s</label><br />
+						<textarea name="address" id="address" class="mceEditor" cols="" rows="">%(address)s</textarea>
+					</p>
+					<p>
+						<label for="phone" id="label_phone">%(label_Institutions_General_Phone)s</label><br />
+						<textarea name="phone" id="phone" class="mceEditor" cols="" rows="">%(phone)s</textarea>
+					</p>
+					<p>
+						<label for="email" id="label_email">%(label_Institutions_General_Email)s</label><br />
+						<input onblur="checkOneEmail(this,null,true)" name="email" id="email" type="text" maxlength="100" value="%(email)s" />
+					</p>
+					<p>
+						<label for="website" id="label_website">%(label_Institutions_General_Website)s</label><br />
+						<input onblur="checkOneURL(this,null,true)" name="website" id="website" type="text" maxlength="100" value="%(website)s"/>
+					</p>
+					<div class="detail">
+					 <div>
+    					<p class="cols_3">
+    						<label for="code1" id="label_code1">%(label_Institutions_General_Code1)s</label><br />
+    						<input name="code1" id="code1" type="text" maxlength="20" value="%(code1)s" />
+    					</p>
+    					<p class="cols_3">
+    						<label for="code2" id="label_code2">%(label_Institutions_General_Code2)s</label><br />
+    						<input name="code2" id="code2" type="text" maxlength="20" value="%(code2)s" />
+    					</p>
+    					<p class="cols_3">
+    						<label for="code3" id="label_code3">%(label_Institutions_General_Code3)s</label><br />
+    						<input name="code3" id="code3" type="text" maxlength="20" value="%(code3)s" />
+    					</p>
+					 </div>
+					</div>
+					<p>
+						<label id="label_comments">%(label_Institutions_General_Comments)s</label>%(comments_tabs)s<br />
+						%(comments_langs)s
+					</p>
+				</div>
+				<div class="data" id="security">
+					<input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+					<p>
+					   <label>%(label_Institutions_Security_Checkbox_Go_Catalog)s <input type='checkbox' name='go_catalog' id='go_catalog' %(is_go_catalog_check)s />
+					</p>
+  					<p>
+	  				   	<table>
+	  				    	<tr>
+	  				        	<td>&nbsp;</td>
+		  				        <th>%(label_Permission)s</th>
+	  				 		</tr>
+	  				     	%(groups_table)s
+	  				   	</table>
+  					</p>
+				</div>
+				%(js_securitychanged)s
+			</form>
+			<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+				<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+
+			</form>
+			<!-- END - institutions.form.html -->

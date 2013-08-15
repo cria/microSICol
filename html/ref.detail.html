@@ -1,0 +1,43 @@
+			<!-- ref.detail.html -->
+			<div id="above_data"> 
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_References_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_References_Security)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+				<p><label>%(label_References_General_Code)s</label> %(id)s</p>
+				<p><label>%(label_References_General_Title)s</label><br />%(title)s</p>
+
+				<div class="detail">
+					<table border="0" cellspacing="0" class="table_1">
+						<tr>
+							<td  class="cols_3">
+								<p><label>%(label_References_General_Author)s</label><br />%(author)s</p>
+							</td>
+							<td class="cols_3"></td>
+							<td  class="cols_3">
+								<p><label>%(label_References_General_Year)s</label><br />%(year)s</p>	
+							</td>
+						</tr>
+					</table>
+				</div>
+				<p><label>%(label_References_General_URL)s</label><br />%(url)s</p>
+				<p><label>%(label_References_General_Comments)s</label><br />%(comments_langs)s</p>
+			</div>
+			<div class="data" id="security">
+			<p>
+			<label>%(label_go_catalog)s</label>
+			</p>
+			<p>
+			   <table>
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+			</div>
+%(hidden_forms)s
+		<!-- END - ref.detail.html -->

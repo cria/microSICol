@@ -1,0 +1,15 @@
+@charset "utf-8";
+/* CSS Document */
+
+table#data_table thead th#name 
+{
+ width:50%;
+}
+
+table#data_table thead th#institution
+{
+}
+td.name
+{
+	vertical-align:top;
+}

@@ -1,0 +1,232 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* Tableless fieldset*/
+/* Avoid using table inside fieldset due IE 6 bug (renders fieldset border twice!) */
+.table_1
+{
+  width: 96%;
+  height: 10px;
+}
+
+.cols_1
+{
+  float: left;
+  width: 96%;
+  margin: 0px;
+}
+
+.cols_2
+{
+  float: left;
+  width: 48%;
+  margin: 0px;
+}
+
+.cols_3
+{
+  float: left;
+  width: 32%;
+  margin: 0px;
+}
+
+.cols_4
+{
+  float: left;
+  width: 23%;
+  margin: 0px;
+}
+
+.cols_5
+{
+  float: left;
+  width: 18%;
+  margin: 0px;
+}
+
+.cols_5 input
+{
+  width: 98%;
+}
+
+.csv_textbox
+{
+  width: 20px;
+}
+
+.cols_5_checkbox
+{
+  width: 13px !important;
+}
+
+.separator
+{
+  height: 38px;
+}
+
+.separator_small
+{
+  height: 18px;
+}
+
+fieldset div div
+{
+  margin: 0px;
+  width: 100%;
+  position: relative;
+  display:block;
+}
+/* End of Tableless fieldset*/
+
+fieldset
+{
+  border: 1px solid #688E23;
+  padding: 3px;
+}
+
+fieldset.preserv_fieldset
+{
+  padding-top: 0px;
+}
+
+fieldset legend
+{
+  border: none;
+  font-weight: bold;
+  color: #688E23;
+  text-transform:lowercase;
+}
+
+.combo_fieldset
+{
+  width: 1%;
+}
+
+fieldset table
+{
+  border: none;
+  width: 100%;
+  padding: 0px;
+  margin: -2px;
+  margin-bottom: -5px;
+  margin-top: -5px;
+}
+
+fieldset fieldset
+{
+  float: left;
+  width: 98%;
+}
+
+#above_data
+{
+  padding:4px 5px 4px 5px;
+  word-spacing:4px;
+  text-transform:uppercase;
+  font-weight:bolder;
+  color:rgb(183,104,62);
+  cursor:default;
+  height: 16px;
+}
+
+#above_data a
+{
+  color:#222222;
+  font-size: 90%;
+}
+
+#above_data a.on_menu
+{
+  color:rgb(183,104,62);
+}
+
+#above_data img
+{
+  position: relative;
+  top: -2px;
+  margin-left: 1px;
+}
+
+.label_color
+{
+  color:#688E23;
+}
+
+div.data p
+{
+  margin-left:3px;
+  padding-top:5px;
+  padding-bottom:5px;
+  cursor:default;
+}
+
+div.data table tbody tr td
+{
+  color: black;
+  font-weight: normal;
+}
+
+div.data table tbody tr th
+{
+  color: black;
+  font-weight: bold;
+  text-transform:uppercase;
+}
+
+div.data table#data_table
+{
+  color: black;
+  font-weight: normal;
+  text-transform: none;
+}
+
+
+div.data table thead tr th
+{
+  color: black;
+  font-weight: bold;
+}
+
+div.data p label
+{
+  font-weight:bold;
+  color:#688E23;
+  text-transform:lowercase;
+}
+
+table tr td
+{
+  vertical-align:top;
+}
+
+table.detail tr td
+{
+  width:325px;
+}
+
+table.detail tr td.no_width
+{
+  width:auto;
+}
+
+table.detail tr td.w150
+{
+  width:150px;
+}
+
+.checkbox
+{
+  border: none;
+  width: 17px;
+  margin-right: 2px;
+  margin-bottom: 0px;
+}
+
+/*Vandeir Code Insert #############################*/
+.tlink{text-decoration: underline;}
+/*END - Vandeir Code Insert #############################*/
+
+.taxaformat{font-style:oblique;}
+.notaxaformat{font-style:normal;}
+i .taxaformat{text-decoration:underline;}
+i .notaxaformat{font-style:oblique;text-decoration: none;}

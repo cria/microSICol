@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+
+table#data_table thead th#taxon_group 
+{
+ width:150px;
+}
+
+table#data_table thead th#species
+{
+font-style:normal;
+}
+
+table#data_table thead th#hazard_group
+{
+ width:100px;
+}

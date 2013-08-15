@@ -1,0 +1,162 @@
+@charset "utf-8";
+/* CSS Document */
+
+body 
+{
+ font-family:Arial, Helvetica, sans-serif !important;
+ text-align:left;
+ background-color:white;
+ color:black;
+ font-size:10pt;
+ border:none;
+ top:0px;
+ left:0px;
+ margin:0px;
+ padding:0px;
+ width: 100% !important;
+}
+
+/* Hack for IE 6 or less */
+table
+{
+ font-size:11px;
+} /* end hack */
+
+table tr td
+{
+ padding:0px;
+ margin:0px;
+ border-width:0px;
+}
+
+img
+{
+ border:none;
+ vertical-align:middle;
+ padding:0px;
+ margin:0px;
+}
+
+p
+{
+ margin:0px;
+ padding:0px;
+}
+
+a
+{
+ color:#000000;
+ text-decoration:none;
+ padding:0px;
+}
+
+h3
+{
+ font-size:13px;
+}
+
+form
+{
+ display:block;
+}
+
+		 
+div#position
+{
+  width:100%;
+}
+
+/* Joao Code Insert ##############################*/
+div.error{
+    text-align: left;
+    color:#ff0000;
+    font-size: 0.8em;
+    background: #ffd0d0;
+    }
+
+div.warning{
+    text-align: left;
+    color:#8000ff;
+    font-size: 0.8em;
+    background: #d8c0ff;
+    }
+
+div.error p{
+    margin-left: 1.5cm;
+    color:black;
+}
+div.warning p{
+    margin-left: 1.5cm;
+    color:black;
+}
+/* END - Joao Code Insert */
+
+a{font-size: 9pt;}
+#message{background: white;}
+#data_container
+{
+  position: static;
+  margin-bottom: 0;
+  width:80%;
+  display: block;
+}
+#data_table
+{
+  background: white;
+  position: static;
+  font-size: 10pt;
+  border: none;
+  width: 100%;
+}
+div.data{border: none;}
+.data
+{
+  display:block;
+  padding-left: 0;
+  margin-left: 35px !important;
+  background: white;
+  border: none;
+  width: 100% !important;
+}
+table
+{
+  width: 100% !important;
+}
+
+#top {display:none;}
+#footer {display:none;}
+#thin_bar {display:none;}
+
+#prev_nav_button img {display:none;}
+#next_nav_button img {display:none;}
+#menu {display:none;}
+#submenu {display:none;}
+#above_data {display:none;}
+#filter {display: none;}
+#feedback {display: none;}
+#link_exit {display: none;}
+#link_pref {display: none;}
+#user_menu_admin {display: none;}
+#bar_top {display: none;}
+div#above_data label {display: none;}
+
+div{float:none;}
+div#logo{float:none;}
+div#top_center{float:none;}
+div#link_pref{float:none;}
+div#link_exit{float:none;}
+div#message{float:none;}
+div#menu{float:none;}
+div#submenu{float:none;}
+div#bar_top{float:none;}
+
+div#general.data {border: 1px solid black;display: block;width:86%;}
+div#deposit.data {border: 1px solid black;display: block;width:86%;}
+div#coll_event.data {border: 1px solid black;display: block;width:86%;}
+div#isolation.data {border: 1px solid black;display: block;width:86%;}
+div#culture.data {border: 1px solid black;display: block;width:86%;}
+div#characs.data {border: 1px solid black;display: block;width:86%;}
+div#properties.data {border: 1px solid black;display: block;width:86%;}
+div#quality.data {display:none;}
+div#stock.data {display:none;}
+div#security.data {border: 1px solid black;display: block;width:86%;}

@@ -1,0 +1,32 @@
+@charset "utf-8";
+/* CSS Document */ 
+
+div#menu a#active_distribution
+{
+	color:rgb(183,104,62);
+}
+
+div table
+{
+width:100%;
+}
+
+.td_3
+{
+width:32%;
+}
+
+.td_3 input,.td_2 input
+{
+width: 0%;
+}
+
+#checkbox
+{
+    width: 0%;
+}
+
+.td_2
+{
+width:49%;
+}

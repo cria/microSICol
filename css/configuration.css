@@ -1,0 +1,179 @@
+a#active_configuration 
+{
+	color:rgb(183,104,62);
+}
+table#data_table
+{
+ width:100%;
+ margin-top: 3px;
+ margin-bottom: 3px;
+}
+
+table#data_table thead
+{
+ background-color:#E0E0E0;
+ font-weight:bold;
+}
+
+table#data_table thead th
+{
+ cursor:default;
+ text-transform:lowercase;
+}
+
+table#data_table tbody tr
+{
+ cursor:pointer;
+}
+
+table#data_table tbody tr:hover
+{
+ background-color:rgb(230,236,210);
+}
+
+.form_info
+{
+ color: black;
+ text-transform: none;
+ font-weight: bold;
+}
+
+.form_label
+{
+ font-weight:bold;
+ color:#688E23;
+ text-transform:lowercase;
+}
+
+.non_editable
+{
+ background-color:#CCCCCC;
+}
+
+.non_editable:hover
+{
+ background-color:#CCCCCC !important;
+ cursor:default !important;
+}
+
+.div_left
+{
+width: 35%;
+line-height:21px;
+}
+.div_right
+{
+left:35%; 
+width:150px;
+position: absolute;
+top: 0px;
+}
+.div_col1
+{
+width: 25px;
+}
+.div_col2
+{
+left: 25px; 
+width:100px;
+position: absolute;
+top: 0px;
+text-align: center;
+}
+.div_col3
+{
+left: 130px; 
+width: 25px;
+position: absolute;
+top: 0px;
+}
+.div_col4
+{
+left: 155px; 
+width: 100px;
+position: absolute;
+top: 0px;
+text-align:center;
+}
+.div_table
+{
+margin-left: 5px;
+_margin-top: 30px;
+}
+div#combos fieldset
+{
+	width: 98%;
+}
+div#combos ul
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+div#combos li
+{
+	margin-bottom: 10px;
+}
+div#combos fieldset li
+{
+	margin-bottom: 3px;
+}
+div.new_item
+{
+	float: left;
+	padding-right: 5%;
+	width: 45%;
+	border-right: 1px solid #9BB06B;
+}
+div.association
+{
+	float: left;
+	padding-left: 4.5%;
+	width: 45%;
+}
+div.association div
+{
+	float: left;
+	height: 95px;
+	padding: 3px;
+}
+div.association select
+{
+	width: 100px;
+	height: 80px;
+}
+div.association div.image
+{
+	width: 25px;
+}
+div.association div.image img
+{
+	cursor: pointer;
+}
+div.association div.image img.top
+{
+	position: relative;
+	top: 15px;
+}
+div.association div.image img.bottom
+{
+	position: relative;
+	top: 50px;
+}
+div.association div.list
+{
+	width: 100px;
+	text-align: center;
+}
+#util_config_upload
+{
+	text-align: right;
+}
+#util_config_stock_limit
+{
+	text-align:right;
+}
+#util_modules
+{
+	clear: both;
+}

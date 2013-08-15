@@ -1,0 +1,51 @@
+      <!-- utilites.html -->
+      <div id="above_data"> 
+		<p>
+			<a href="./traceability.py" id="tab_traceability" class="on_menu">%(menu_Traceability)s</a>
+			<a href="./container.list.py" id="tab_container">%(menu_Containers)s</a>
+			<a href="./stockmovement.list.py" id="tab_stock_movement">%(menu_Stockmovement)s</a>
+		</p>
+	</div>
+      <div class="data" id="general">
+      <form id="form_filter" method="post" action="./traceability.py?page=1">
+        <div id="above_data" style="margin-bottom: 5px;">
+	  <img src="../img/search.png" style="cursor: pointer; margin: 2px;" onclick="validateTraceability('%(date_format)s');" title="%(label_Traceability_Search)s" />
+	  <img src="../img/undo.png" style="cursor: pointer; margin: 2px;" onclick="clearForm();" title="%(label_Traceability_Reset_Search)s">
+        </div>
+      <table id="data_table">
+        <thead>
+          <tr>
+            <th id="date_time">	  <a href='traceability.py?field_order=date_time'>%(label_Traceability_Datetime)s	   </a>%(img_date_time)s</th>
+            <th id="user">	  <a href='traceability.py?field_order=user'>%(label_Traceability_User)s		   </a>%(img_user)s</th>
+            <th id="operation">	  <a href='traceability.py?field_order=operation_label'>%(label_Traceability_Operation)s </a>%(img_operation_label)s</th>
+            <th id="record">	  <a href='traceability.py?field_order=id_entity'>%(label_Traceability_Record)s	   </a>%(img_id_entity)s</th>
+            <th id="strain_code"> <a href='traceability.py?field_order=code_entity'>%(label_Traceability_Strain_Code)s   </a>%(img_code_entity)s</th>
+	    <th id="lot">	  <a href='traceability.py?field_order=lot'>%(label_Traceability_Lot)s		   </a>%(img_lot)s</th>
+            <th id="field">	  <a href='traceability.py?field_order=field_label'>%(label_Traceability_Field)s	   </a>%(img_field_label)s</th>
+            <th id="value">	  <a href='traceability.py?field_order=value'>%(label_Traceability_Value)s		   </a>%(img_value)s</th>
+          </tr>
+          <tr>
+            <th>
+              <input id="txt_datetime_from" name="datetime_from" class="date_time_search_input" type="text" value="%(datetime_from)s" onkeyup="checkCharModifier(this,event);" onkeydown="return filterChar(event);" onkeypress="return checkDateSlash(this,event);" onblur="checkValidDate(this,null,'%(date_format)s');" />
+              %(label_Traceability_Datetime_To)s
+              <input id="txt_datetime_to" name="datetime_to" class="date_time_search_input" type="text" value="%(datetime_to)s" onkeyup="checkCharModifier(this,event);" onkeydown="return filterChar(event);" onkeypress="return checkDateSlash(this,event);" onblur="checkValidDate(this,null,'%(date_format)s');" />
+            </th>
+            <th><select id="cmb_user"  name="user" class="search_input" >%(users_list_as_options)s</select></th>
+            <th><select id="cmb_operation" name="operation" class="search_input" >%(operations_list_as_options)s</select></th>
+            <th style="text-align: right"><input id="txt_record" name="record" class="record_search_input" type="text" value="%(record)s" onkeyup="numberOnly(this);" /></th>
+            <th><input  id="txt_strain_code" name="strain_code" class="search_input" type="text" value="%(strain_code)s" /></th>
+	    <th><input  id="txt_lot"   name="lot"  class="search_input" type="text" value="%(lot)s" /></th>
+            <th><select id="cmb_field" name="field" class="search_input" >%(fields_list_as_options)s</select></th>
+            <th><input  id="txt_value" name="value" class="search_input" type="text" value="%(value)s" /></th>
+          </tr>
+        </thead>
+        <tbody>
+          %(log_rows)s
+        </tbody>
+        <tfoot>
+          %(log_pagination)s
+        </tfoot>
+      </table>
+      </div>
+      </form>
+      <!-- END - utilites.html -->

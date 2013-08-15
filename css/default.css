@@ -1,0 +1,187 @@
+@charset "utf-8";
+/* CSS Document */
+
+body 
+{
+ font-family:Arial, Helvetica, sans-serif !important;
+ text-align:left;
+ background-color:#FFFFFF;
+ color:#000000;
+ font-size:11px;
+ border:none;
+ top:0px;
+ left:0px;
+ margin:0px;
+ padding:0px;
+}
+
+.block
+{
+    display:block;
+}
+
+.none
+{
+    display:none;
+}
+
+/* Hack for IE 6 or less */
+table
+{
+ font-size:11px;
+} /* end hack */
+
+table tr td
+{
+ padding:0px;
+ margin:0px;
+ border-width:0px;
+}
+
+img
+{
+ border:none;
+ vertical-align:middle;
+ padding:0px;
+ margin:0px;
+}
+
+p
+{
+ margin:0px;
+ padding:0px;
+}
+
+a
+{
+ color:#000000;
+ text-decoration:none;
+ padding:0px;
+}
+
+h3
+{
+ font-size:13px;
+}
+
+form
+{
+ display:inline;
+}
+
+div
+{
+ position:relative;
+ background:none;
+}
+		 
+div#position
+{
+ width:984px; /*old value: 760px */
+}
+
+/* Joao Code Insert ##############################*/
+div.error{
+    text-align: left;
+    color:#ff0000;
+    font-size: 1em;
+    background: #ffd0d0;
+    padding-left: 3px;
+    }
+
+div.warning{
+    text-align: left;
+    color:#8000ff;
+    font-size: 1em;
+    background: #d8c0ff;
+    }
+
+div.error p{
+    margin-left: 1.5cm;
+    color:black;
+}
+div.warning p{
+    margin-left: 1.5cm;
+    color:black;
+}
+/* END - Joao Code Insert */
+
+#security
+{
+  text-align: left;
+}
+
+#security select
+{
+	width: 150px;
+}
+
+#security input
+{
+  width: 13px;
+}
+
+#security table td
+{
+  vertical-align: middle;
+  padding-right: 5px;
+  margin-right: 5px;
+}
+
+#access_denied
+{
+  margin: 20px;
+  padding: 10px;
+  text-align: center;
+  background-color: #ccc;
+  font-weight: bold;
+  font-size: 16px;
+  color: black;
+  border: thin dashed black;
+}
+
+disabled
+{
+	color: #CCCCC0;
+}
+
+/* User viewable error */
+div.user_error
+{
+text-align: left;
+font-family: monospace;
+}
+
+textarea.HtmlTemplate{  
+  resize:none ;
+  overflow: auto ;
+  width: 880px ;
+  height: 90px;
+  position: relative;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 11px;  
+  font-style: normal;
+  font-size-adjust: none;
+  border: 1px solid #9BB06B;
+  display:block;
+}
+
+div.FieldLinkTab{
+  border: 1px solid #999999 ;
+  padding-left:10px ;  
+  height: 20px ;
+  position: relative;
+  width: 878px ;
+  <!--[if IE]> width: 878px ;  <![endif]-->
+ 
+}
+div.DivHtmlTemplate{
+  margin-left: 5px ;
+  margin-right: 15px ;
+  width: 880px ;
+  }
+
+div.DivTextAreaTemplate{
+    margin-top: -2px;
+    width: 880px ;
+}

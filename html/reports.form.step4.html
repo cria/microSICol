@@ -1,0 +1,114 @@
+	<!-- reports.form.step4.html -->
+<div id="above_data">
+	<p>
+		<a href="#" class="ativo" onclick="$('#step_next').val('1'); $('#formReports')[0].submit();">%(menu_Rep_General)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="$('#step_next').val('2'); $('#formReports')[0].submit();">%(menu_Rep_Fields)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="$('#step_next').val('3'); $('#formReports')[0].submit();">%(menu_Rep_Filters)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="selecionado">%(menu_Rep_Format)s</a>
+		<img src="../img/right_report.gif" />
+		<a href="#" class="ativo" onclick="validateReports(4)">%(menu_Rep_Security)s</a>
+	</p>
+</div>
+<form action="./reports.new.py" method="post" id="formReports" name="formReports">
+	<div class="content">
+		<input type="hidden" id="allow_chart" name="allow_chart" value="%(allow_chart)s" />
+		<input type="hidden" id="step" name="step" value="4" />
+		<input type="hidden" id="step_next" name="step_next" value="" />
+		
+		<div>
+	<p class="cols_5">
+		<label for="id_format" id="label_id_format">%(label_format)s</label><br />								
+		<select name="format" id="format" onchange="showDivs()">%(format)s</select>			
+	</p>
+	</div>
+	
+	
+	<p class="cols_5" id="default_html_options" style="display:%(display_default_html)s">
+		<label for="id_header" id="label_id_header">%(label_header)s</label><br />								
+		<select name="options_header" id="options_header">%(options_header)s</select>			
+	</p>
+	
+	
+	
+	<p id="csv_options" style="display:%(display_csv)s">
+		<label for="id_with_header" id="label_with_header">%(label_with_header)s</label>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<label for="id_label_separator" id="label_separator">%(label_separator)s</label><br />
+		<input type="checkbox" id="with_header" name="with_header" %(with_header)s class="cols_5_checkbox">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="text" id="separator" name="separator" value="%(value_separator)s" class="csv_textbox" onblur="isEmpty(this, null);" maxlength=1>
+	</p>
+	
+	
+	
+	<p class="cols_5" id="chart_options" style="display:%(display_chart)s">
+		<label for="id_chart_type" id="label_chart_type">%(label_chart_type)s</label><br />			
+		<select name="options_chart_type" id="options_chart_type">%(options_chart_type)s</select>
+	</p>
+	
+	<div class="data" id="custom_html_options" style="display:%(display_custom_html)s">
+		
+		<p>
+			<label for="id_with_subcoll_template" id="label_with_subcoll_template">%(label_with_subcoll_template)s</label><br />
+			<input type="checkbox" id="with_subcoll_template" name="with_subcoll_template" %(with_subcoll_template)s class="cols_5_checkbox"><br />
+		</p>
+	
+		<p>
+			<label for="id_label_report_header" id="label_report_header">%(label_header_template)s</label><img src="../img/icon_fieldlink.png" title="%(label_Fieldlink_Support)s" alt="%(label_Fieldlink_Support)s" /><br /><br />			
+			<div class="DivHtmlTemplate">
+				<div class="FieldLinkTab"><img style="cursor:pointer" onclick="return openFieldLinkPopUp('header_template');" src="../img/fieldlink.gif" /></div>
+				<div class="DivTextAreaTemplate">
+					<textarea class="HtmlTemplate" rows="5" cols="600"  id="header_template" name="header_template">%(value_header_template)s</textarea>
+				</div>
+			</div>		
+		</p>
+		
+		<p>
+			<label for="id_label_report_css" id="label_report_css">%(label_css_template)s</label><br />
+			<div class="DivHtmlTemplate">
+				<div class="FieldLinkTab"></div>
+				<div class="DivTextAreaTemplate">
+					<textarea class="HtmlTemplate" rows="5" cols="600"  id="css_template" name="css_template">%(value_css_template)s</textarea>
+				</div>
+			</div>
+		</p>
+		
+		%(group_header)s		
+		
+		<p>
+			<label for="id_label_report_data" id="label_report_data">%(label_data_template)s</label><img src="../img/icon_fieldlink.png" title="%(label_Fieldlink_Support)s" alt="%(label_Fieldlink_Support)s" /><br /><br />			
+			<div class="DivHtmlTemplate">
+				<div class="FieldLinkTab"><img style="cursor:pointer" onclick="return openFieldLinkPopUp('data_template');" src="../img/fieldlink.gif" /></div>
+				<div class="DivTextAreaTemplate">
+					<textarea class="HtmlTemplate" rows="5" cols="600"  id="data_template" name="data_template">%(value_data_template)s</textarea>
+				</div>
+			</div>	
+		</p>
+		
+		%(group_footer)s
+		
+		<p>
+			<label for="id_label_report_footer" id="label_report_footer">%(label_footer_template)s</label><img src="../img/icon_fieldlink.png" title="%(label_Fieldlink_Support)s" alt="%(label_Fieldlink_Support)s" /><br /><br />			
+			<div class="DivHtmlTemplate">
+				<div class="FieldLinkTab"><img style="cursor:pointer" onclick="return openFieldLinkPopUp('footer_template');" src="../img/fieldlink.gif" /></div>
+				<div class="DivTextAreaTemplate">
+					<textarea class="HtmlTemplate" rows="5" cols="600"  id="footer_template" name="footer_template">%(value_footer_template)s</textarea>
+				</div>
+			</div>	
+		</p>
+		
+	
+	%(javascript_fill_templates)s
+	
+	</div>
+	</div>
+</form>
+
+<form action="./reports.list.py" method="post" id="cancel">
+	<p><input type="hidden" name="id" value="%(id)s" /></p>
+	<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+</form>
+<!-- END - reports.form.step2.html -->

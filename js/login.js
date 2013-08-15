@@ -1,0 +1,5 @@
+
+var count=0;function login_test(code,is_admin)
+{var target=document.getElementById('result');var frame_msg=document.getElementsByName('request').item(0);var msg=_("Login Success");var color='#009900';switch(code)
+{case(2):document.location='./subcollections.py';break;case(1):document.forms['start'].submit();break;case(0):msg=_("Unknown error on Login");color="#FF0000";break;case(-1):msg=_("Empty field(s).");color="#0033CC";break;case(-2):msg=_("Incorrect user or password.");color="#FF0000";break;case(-3):msg=_("Access denied on main database.");color="#FF0000";break;case(-4):msg=_("Unable to connect to database.");color="#FF0000";break;case(-5):msg=_("Invalid label_lang entry in config.xml.");color="#FF0000";break;case(-6):msg=_("Login Failed: User does not have access to this database.");color="#FF0000";break;default:msg=_("Unknown error on Login");color="#FF0000";break;}
+target.style.color=color;target.innerHTML=msg+"<br />";if((code<-2)||!code)frame_msg.className='frame';else frame_msg.className='';}

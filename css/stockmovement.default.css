@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+
+a#active_utilities 
+{
+	color:rgb(183,104,62);
+}
+
+.table_locations
+{
+    margin-left: 8px;
+    border: solid 1px #9BB06B;
+    border-collapse: collapse;
+}
+
+.table_locations th
+{
+    background-color: #E8E8E8;
+    border: solid 1px #9BB06B;
+    padding: 5px;
+}
+
+.table_locations td
+{
+    border: solid 1px #9BB06B;
+    padding: 5px;
+}

@@ -1,0 +1,26 @@
+﻿Configuração do SICOL.
+
+- É necessário configurar as seguintes chaves no arquivo config.xml:
+- index_url (Exemplo: http://localhost/sicol/)
+- root_dir (Exemplo: c:\sicol\)
+
+-------------------------------------------------------------------
+
+Para alterar as informações de conexão com o MySQL no Sqlite.
+
+Prompt:
+X:\> cd sicol\db\sqlite3-32.exe sqlite.db
+x:> UPDATE base SET host=h, port=p, user=u, pwd=pw WHERE id_bases=1;
+
+Substituindo os parâmetros "h", "p", "u" e "pw" pelos devidos valores.
+
+Em caso de Linux, fazer download do SQlite CommandLine[1] e executar a mesma instrução acessando a base ./sicol/db/sqlite.db
+
+Usuário padrão do SICOL: sicol (senha: sicol)
+
+[1] http://www.sqlite.org/sqlite3-3.3.6.bin.gz
+
+Uma opção gráfica, tanto para Windows quanto para Linux, para acessar o banco Sqlite é o "Sqlite Administrator":
+http://sqliteadmin.orbmu2k.de/
+
+-------------------------------------------------------------------

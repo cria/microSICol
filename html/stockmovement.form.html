@@ -1,0 +1,67 @@
+	<!-- stockmovement.form.html --> 
+	<div id="above_data"> 
+		<p>
+			<a href="./traceability.py" id="tab_traceability">%(menu_Traceability)s</a>
+			<a href="./container.list.py" id="tab_container">%(menu_Containers)s</a>
+			<a href="./stockmovement.list.py" id="tab_stock_movement" class="on_menu">%(menu_Stockmovement)s</a>
+		</p>
+	</div>
+	<form action="./%(who)s.save.py" method="post" id="edit">
+		<div class="data" id="general">
+			<input type="hidden" name="id" value="%(id)s" />
+			<input type="hidden" name="next_action" value="%(next_action)s" />
+			<input type="hidden" name="id_subcoll" value="%(id_subcoll)s" id="id_subcoll">
+			<input type="hidden" id="global_counter_total" name="global_counter_total" value="" />
+			<div>
+			<p>
+				<label for="date" id="label_date">%(label_Stock_Movement_Date)s</label><br />
+				<input onkeyup="checkCharModifier(this,event);" onkeypress="return checkDateSlash(this,event);" onblur="checkValidDate(this,null,'%(date_format)s');" name="date" id="date" class="date" type="text" maxlength="10" value="%(date)s" style="text-align:center" /> 
+				</p>							
+			</div>
+			<div>
+				<p>
+				<label for="description" id="label_description">%(label_Stock_Movement_Description)s</label><br />
+				<input class="description" name="description" id="description" type="text" maxlength="256" value="%(description)s" onblur="resetField(this, getLabel(this.name));" />
+				</p>
+			</div>
+			<div>
+				<p >
+					<label for="preservation_method" id="label_preservation_method">%(label_Stock_Movement_Preservation_Method)s</label><br />
+					<select name="preservation_method" id="preservation_method" %(method_disabled)s>%(preservation_method)s</select>
+				    </p>
+			</div>
+			<div>
+				<p>
+					<label for="date" id="label_date">%(label_Stock_Movement_Positions)s</label><br />
+					<table id="table_locations" class="table_locations">
+						<thead>
+						    <th><img id="img_insert" class="img_insert%(disabled)s" alt="%(link_Include_New)s" title="%(link_Include_New)s" src="../img/new_item%(disabled)s.gif" %(onclick_new)s></th>
+						    <th colspan="2">%(label_Stock_Movement_From)s</th>
+						    <th colspan="2">%(label_Stock_Movement_To)s</th>
+						</thead>
+						<tbody>
+						    <tr id="invisible_clonable_fields" style="display: none;">
+							<td><img class="img_delete%(disabled)s" alt="%(label_Delete)s" title="%(label_Delete)s" id='img_delete' src="../img/record_delete%(disabled)s.png" %(onclick_remove)s></td>
+							<td><img src="../img/pick%(disabled)s.png" id='img_from' class='source%(disabled)s'></td>
+							<td>
+							    <input type='hidden' name="stockmovement_origin_location" id="stockmovement_origin_location" />
+							    <input type='text' disabled="disabled" class="text_position" name="stockmovement_origin_location_text" id="stockmovement_origin_location_text" onblur="resetField(this, null);"/>
+							</td>
+							<td><img src="../img/pick%(disabled)s.png" id='img_to' class='new%(disabled)s'></td>
+							<td>
+							    <input type='hidden' name="stockmovement_destination_location" id="stockmovement_destination_location" />
+							    <input type='text' disabled="disabled" class="text_position" name="stockmovement_destination_location_text" id="stockmovement_destination_location_text" />
+							</td>
+						    </tr>
+						</tbody>
+					</table>
+				</p>
+			</div>
+		</div>
+		%(positions_data)s
+	</form>
+	<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+		<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+		<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+	</form>
+	<!-- END stockmovement.form.html -->

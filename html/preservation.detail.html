@@ -1,0 +1,57 @@
+			<!-- preservation.detail.html -->
+			<div id="above_data"> 
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_Preservation_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_Preservation_Security)s</a>
+				</p>
+			</div>
+			<div class="data" id="general">
+			    <table>
+			     <tr>
+			         <td class="td_3">
+      				        <p ><label>%(label_Preservation_General_Date)s</label><br />%(date)s</p>
+			         </td>
+			         <td class="td_3">
+			         		<p ><label>%(label_Preservation_General_Lot_Number)s</label><br />%(lot_number)s</p>
+							
+			         </td>
+			         <td class="td_3">
+							<p >&nbsp;</p>
+			         </td>
+			     </tr>
+			    </table>
+			    <table>
+			     <tr>
+			         <td class="td_3">
+      				        <p ><label>%(label_Preservation_General_Responsible)s</label><br />%(username)s</p>
+			         </td>
+			         <td  class="td_3">
+							<p ><label>%(label_Preservation_General_Used_Method)s</label><br />%(used_method)s</p>
+			         </td>
+			         <td class="td_3">
+							<p >&nbsp;</p>
+			         </td>
+			     </tr>
+			    </table>
+				<p>
+					<label>%(label_Preservation_General_Process_Data)s</label><br />%(info)s</p>
+				</p>
+				<br />
+				<hr />
+                <!-- [START] Strains -->				
+				%(preservation_strains_data)s
+                <!-- [END] Strains -->
+			</div>
+			<div class="data" id="security">
+			<p>
+			   <table style="width:0;">
+			     <tr>
+			        <td>&nbsp;</td>
+			        <th>%(label_Permission)s</th>
+			     </tr>
+			     %(groups_table)s
+			   </table>
+			</p>
+			</div>
+            %(hidden_forms)s
+		<!-- END - preservation.detail.html -->

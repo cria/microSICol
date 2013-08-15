@@ -1,0 +1,89 @@
+@charset "utf-8";
+/* CSS Document */
+
+.a_pointer 
+{
+cursor:pointer;
+}
+
+#img_source {
+    cursor: pointer;
+}
+
+div.data .form_info
+{
+color:black;
+text-transform: none;
+font-weight: bold;
+}
+
+div#feedback
+{
+ width:100%;
+ vertical-align:middle;
+ font-weight:bold;
+ margin-top:5px;
+ margin-bottom:0px;
+ padding:3px 5px 3px 5px;
+ color:#FFFFFF;
+ display:none;
+}
+
+div.feedback_ok
+{
+ background-color:#688E23;/*#99CC99;#009933*/
+}
+
+div.feedback_ok_blink
+{
+ background-color:#85BA30;
+}
+
+div.feedback_error
+{
+ background-color:rgb(183,104,62);
+}
+
+div.feedback_error_blink
+{
+ background-color:rgb(153,74,32);
+}
+
+td.quality_cell
+{
+	border-bottom: solid 1px #BBB;
+	padding:5px;
+}
+
+a.quality_link
+{
+	font-weight: bold;
+	text-transform: lowercase;
+	cursor: pointer;
+}
+
+div.quality_buttons
+{
+	display: block;
+	text-align: right;
+}
+
+form input, select, textarea
+{
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(155,176,107);
+}
+
+.red_info
+{
+color: red;
+}
+
+#num_amp {
+    display: none;
+}
+
+#quality_locations {
+    width: 330px;
+}

@@ -1,0 +1,58 @@
+			<!-- ref.form.html --> 
+			<div id="above_data">
+				<p>
+					<a href="javascript:show('general');" id="tab_general" class="on_menu">%(menu_References_General)s</a>
+					<a href="javascript:show('security');" id="tab_security">%(menu_References_Security)s</a>
+				</p>
+			</div>
+			<form action="./%(who)s.save.py" method="post" id="edit">
+    			<div class="data" id="general">
+					<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+					<p class="hidden"><input type="hidden" name="next_action" value="%(next_action)s" /></p>
+					<p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+					<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+					<p><label id="label_code">%(label_References_General_Code)s</label><br />%(id)s</p>
+					<p>
+						<label for="title" id="label_title">%(label_References_General_Title)s</label><br />
+						<textarea name="title" id="title" class="mceEditor" cols="" rows="">%(title)s</textarea>
+					</p>
+					<p class="cols_2" style="width:73%%">
+						<label for="author" id="label_author">%(label_References_General_Author)s</label><br />
+						<input style="width:98%%" name="author" id="author" type="text" maxlength="100" value="%(author)s" />
+					</p>
+					<p class="cols_2" style="width:23%%">
+						<label for="year" id="label_year">%(label_References_General_Year)s</label><br />
+						<!-- <input onblur="d = new Date();checkYear(this,null,1901,d.getFullYear())" onkeyup="numberOnly(this)" name="year" class="year" id="year" type="text" maxlength="4" value="%(year)s" /> -->
+						<input name="year" class="year" id="year" type="text" maxlength="100" value="%(year)s" />
+					</p>
+					<p>
+						<label for="url" id="label_url">%(label_References_General_URL)s</label><br />
+						<textarea onblur="validateReference()" name="url" id="url" class="mceEditor" cols="" rows="">%(url)s</textarea>
+					</p>
+					<p>
+						<label id="label_comments">%(label_References_General_Comments)s</label>%(comments_tabs)s<br />
+						%(comments_langs)s
+					</p>
+    			</div>
+    			<div class="data" id="security">
+              		<input type='hidden' name='all_permissions' id='all_permissions' value='%(all_permissions)s' />
+				<p>
+          			   <label>%(label_References_Security_Checkbox_Go_Catalog)s <input type='checkbox' name='go_catalog' id='go_catalog' %(is_go_catalog_check)s />
+          			</p>
+        			<p>
+        			<table>
+        			    <tr>
+        			        <td>&nbsp;</td>
+        			        <th>%(label_Permission)s</th>
+        			       </tr>
+        			     %(groups_table)s
+        			   </table>
+        			</p>
+    			</div>
+                %(js_securitychanged)s
+			</form>
+			<form action="./%(who)s.%(back_where)s.py" method="post" id="cancel">
+				<p class="hidden"><input type="hidden" name="id" value="%(id)s" /></p>
+				<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
+			</form>
+			<!-- END ref.form.html -->

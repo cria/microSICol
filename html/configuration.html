@@ -1,0 +1,716 @@
+      <!-- configuration.html -->
+      <div id="above_data">
+        <p>
+			<a href="javascript:show('configxml');change_submenu('configxml');" id="tab_configxml">%(menu_ConfigXML)s</a>
+			<a href="javascript:show('dbs');change_submenu('dbs');" id="tab_dbs">%(menu_Databases)s</a>
+			<a href="javascript:show('colls');change_submenu('colls');" id="tab_colls">%(menu_Collections)s</a>
+			<a href="javascript:show('subcolls');change_submenu('subcolls');" id="tab_subcolls" class="on_menu">%(menu_Subcollections)s</a>
+			<a href="javascript:show('combos');change_submenu('combos');" id="tab_combos">%(menu_Combos)s</a>
+			<a href="javascript:show('divisions');change_submenu('divisions');" id="tab_divisions">%(menu_Divisions)s</a>
+			<a href="javascript:show('templates');change_submenu('templates');" id="tab_templates">%(menu_Reports)s</a>
+			<a href="javascript:show('groups');change_submenu('groups');" id="tab_groups">%(menu_Groups)s</a>
+			<a href="javascript:show('general');change_submenu('general');" id="tab_general" class="on_menu">%(menu_Users)s</a>
+        </p>
+      </div>
+      <form action="./configuration.py#general" method="post" id="util_form" enctype="multipart/form-data">
+        <p class="hidden"><input type="hidden" id="data_langs" value="%(data_langs)s" /></p>
+        <!-- This hidden input informs which action should be performed on submit -->
+        <input type='hidden' id='util_type' name='util_type' value='' />
+        <!-- javascript global variables -->
+        <script type='text/javascript'>
+        %(global_js)s
+        </script>
+        <!-- Users -->
+        <div class="data" id="general">
+          <input type='hidden' id='util_user_id' name='util_user_id' value='' />
+          <div id="util_edit_user" style='display:none;'>
+  				<p>
+            <label>%(label_Configuration_Users_Name)s</label><br />
+  					<input id="util_user_name" name="util_user_name" type="text" maxlength="100" size="30" value="" />
+  				</p>
+  				<p>
+           <label>%(label_Configuration_Users_Login)s</label><br />
+  				 <input id="util_user_login" name="util_user_login" onkeyup="formatAlphaNumeric(this,true);" type="text" maxlength="30" size="30" value="" />
+  				</p>
+				<div>
+	  				<p class="cols_2" style="width: 32%%;">
+			           <label>%(label_Configuration_Users_Password)s</label><br />
+			  		   <input id="util_user_pwd" name="util_user_pwd" type="password" maxlength="30" size="30" value="" onkeyup="javascript:password_strength('util_user_pwd','progressBar');" />
+	  				</p>
+					<p class="cols_2">
+					   <label>%(label_Configuration_Users_Password_Quality)s</label><br />
+					   <img id="progressBar" src="../img/pwdbar0.png" />
+					   <span class='form_info' id="pwd_msg"></span>
+					</p>
+				</div>
+				<div>
+					<p class="cols_1">
+			           <label>%(label_Configuration_Users_Confirm_Password)s</label><br />
+			  		   <input id="util_user_pwd_confirm" name="util_user_pwd_confirm" type="password" maxlength="30" size="30" value="" />
+	  				</p>
+				</div>
+				<div>
+	  				<p class="cols_1">
+	           			<label>%(label_Configuration_Users_Comments)s</label><br />
+	  				 	<input id="util_user_comments" name="util_user_comments" type="text" maxlength="100" size="30" value="" />
+	  				</p>
+				</div>
+  				<p id="util_modules">
+  				 <span class='form_label'>%(label_Configuration_Role_Modules)s</span><br />
+  				 <table class='form_info'>
+  				 <tr>
+  				    <th>&nbsp;</th>
+  				    <th>%(label_Configuration_Users_Delete_Opt)s</th>
+  				    <th>%(label_Configuration_Users_Create_Opt)s</th>
+  				 </tr>
+  				 %(user_areas)s
+           </table>
+  				</p>
+  				<p>
+  				 <span class='form_label'>%(label_Configuration_Users_Subcollection)s</span><br />
+  				 <span class='form_info'>
+  				 %(user_access)s
+           </span>
+  				</p>
+  				<p>
+  				 <span class='form_label'>%(label_Configuration_Users_Roles)s</span><br />
+  				 <span class='form_info'>
+  				 %(user_roles)s
+           </span>
+  				</p>
+          </div>
+  				<table id="data_table">
+  					<thead>
+  						<tr>
+  							<th id="user_login">%(label_Configuration_Users_Login)s</th>
+  							<th id="user_name">%(label_Configuration_Users_Name)s</th>
+  							<th id="user_comments">%(label_Configuration_Users_Comments)s</th>
+  						</tr>
+  					</thead>
+  					<tbody>
+            %(user_table)s
+  					</tbody>
+  				</table>
+        </div>
+	
+	<div class="data" id="templates">
+	  <div name='util_edit_template'>
+	    <p>
+	    <label for="id_label_subcoll_select" id="id_label_subcoll_select">%(label_subcoll_select)s</label><br />
+	    <span id="division_current_subcoll"></span>
+	    <!--<select id="subcoll_select" name="subcoll_select" onchange="edit_subcoll_template(this);" ><option value='0'>%(select_subcoll)s</option>%(subcoll_select)s</select>-->	      
+	    </p>
+	    <p>			
+			<label for="id_label_report_header" id="label_report_header">%(label_header_template)s</label><img src="../img/icon_fieldlink.png" title="%(label_Fieldlink_Support)s" alt="%(label_Fieldlink_Support)s" /><br />
+			<div class="DivHtmlTemplate">
+				<div class="FieldLinkTab" style="width: 870px;"><img style="cursor:pointer" onclick="return openFieldLinkPopUp('header_template');" src="../img/fieldlink.gif" /></div>
+				<div class="DivTextAreaTemplate">
+				  <textarea class="HtmlTemplate" rows="5" cols="600"  id="header_template" name="header_template">%(value_header_template)s</textarea>
+				</div>
+			</div>
+			
+		</p>
+	    <p>
+			<label for="id_label_report_footer" id="label_report_footer">%(label_footer_template)s</label><img src="../img/icon_fieldlink.png" title="%(label_Fieldlink_Support)s" alt="%(label_Fieldlink_Support)s" /><br />
+			<div class="DivHtmlTemplate">
+				<div class="FieldLinkTab" style="width: 870px;"><img style="cursor:pointer" onclick="return openFieldLinkPopUp('footer_template');" src="../img/fieldlink.gif" /></div>
+				<div class="DivTextAreaTemplate">
+				  <textarea class="HtmlTemplate" id="footer_template" name="footer_template">%(value_footer_template)s</textarea>
+				</div>
+			</div>			
+			
+		</p>
+	    <p>
+			<label for="id_label_css" id="label_css">%(label_css_template)s</label><br />			
+			<div class="DivHtmlTemplate">
+				<div class="FieldLinkTab" style="width: 870px;"></div>
+				<div class="DivTextAreaTemplate">
+				  <textarea class="HtmlTemplate" rows="5" cols="600"  id="css_template" name="css_template">%(value_css_template)s</textarea>
+				</div>
+			</div>			
+		</p>
+	  </div>	  
+	</div>
+	
+        <!-- Groups/Roles -->
+        <div class="data" id="groups">
+          <input type='hidden' id='util_role_id' name='util_role_id' value='' />
+          <div id="util_edit_role" style='display:none;'>
+  				<p>
+           <label>%(label_Configuration_Role_Type)s</label><br />
+            <select name='util_role_type' id='util_role_type'>
+  					<option value='group' id='opt_role_type_group'>%(label_Configuration_Role_Group)s</option>
+  					<option value='level' id='opt_role_type_level'>%(label_Configuration_Role_Level)s</option>
+  					<option value='user'  id='opt_role_type_user' style='display:none'>%(label_Configuration_Group_User)s</option>
+  					</select>
+  				</p>
+  				<p id='p_role_name'>
+            <label>%(label_Configuration_Role_Name)s</label><br />
+  				  <input id="util_role_name" name="util_role_name" type="text" maxlength="100" size="40" value="" />
+  				</p>
+  				<p>
+           <label>%(label_Configuration_Role_Description)s</label><br />
+  				 <input id="util_role_descr" name="util_role_descr" type="text" maxlength="255" size="40" value="" />
+  				</p>
+  				<p>
+  				 <span class='form_label'>%(label_Configuration_Role_Modules)s</span><br />
+  				 <table class='form_info'>
+  				 <tr>
+  				    <th>&nbsp;</th>
+  				    <th>%(label_Configuration_Users_Delete_Opt)s</th>
+  				    <th>%(label_Configuration_Users_Create_Opt)s</th>
+  				 </tr>
+  				 %(role_areas)s
+           </table>
+  				</p>
+  				<p>
+  				    <label>%(label_Configuration_Role_Group_Members)s</label><br />
+		            <table cellspacing="10px">
+		            	<tr>
+		            		<td class='form_label'><label>%(label_Configuration_Config_Data_Lang_Associates)s<label>
+		            		</td>
+		            		<td>&nbsp;</td>
+		            		<td class='form_label'>
+		            			<label>%(label_Configuration_Config_Data_Lang_Not_Associates)s<label>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td rowspan="2">
+		            			<select name='util_group_members' id='util_group_members' multiple="multiple" style="width: 250px; height: 80px;" ondblclick="change_item(this.id,'util_group_possible_members',1)">
+								      </select>
+		            		</td>
+		            		<td>
+		            			<img src="../img/left.gif" title="%(label_Configuration_Config_To_Associate_Data_Lang)s" style="cursor: pointer;" onclick="change_item('util_group_possible_members', 'util_group_members',1)" />
+		            		</td>
+		            		<td rowspan="2">
+		            			<select name='util_group_possible_members' id='util_group_possible_members' multiple="multiple" style="width: 250px; height: 80px;" ondblclick="change_item(this.id,'util_group_members',1)">
+					  			</select>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+		            			<img src="../img/right.gif" title="%(label_Configuration_Config_To_Dissociate_Data_Lang)s" style="cursor: pointer;" onclick="change_item('util_group_members', 'util_group_possible_members',1)" />
+		            		</td>
+		            	</tr>
+		            </table>
+  				</p>
+          </div>
+  				<table id="data_table">
+  					<thead>
+  						<tr>
+  							<th id="role_name">%(label_Configuration_Role_Name)s</th>
+  							<th id="role_descr">%(label_Configuration_Role_Description)s</th>
+  							<th id="role_type">%(label_Configuration_Role_Type)s</th>
+  						</tr>
+  					</thead>
+  					<tbody>
+            %(role_table)s
+  					</tbody>
+  				</table>
+        </div>
+        <!-- Collections -->
+        <div class="data" id="colls">
+          <input type='hidden' id='util_coll_id' name='util_coll_id' value='' />
+          <div id="util_edit_coll" style='display:none;'>
+  				<p>
+            <label>%(label_Configuration_Coll_Base)s</label><br />
+            <select name='util_coll_base' id='util_coll_base'>
+  					%(coll_list)s
+  					</select>
+  				</p>
+  				<p>
+           <label>%(label_Configuration_Coll_Code)s</label><br />
+  				 <input id="util_coll_code" name="util_coll_code" type="text" maxlength="30" size="10" value="" />
+  				</p>
+  				<p>
+           <label>%(label_Configuration_Coll_Name)s</label><br />
+  				 <input id="util_coll_name" name="util_coll_name" type="text" maxlength="150" size="30" value="" />
+  				</p>
+  				<p>
+           <label>%(label_Configuration_Coll_Logo)s %(label_Configuration_Coll_Logo_Size)s</label><br />
+  				 <input id="util_coll_logo" name="util_coll_logo" type="file"  /> <span class='form_info' id='util_logo_msg'></span>
+  				</p>
+          </div>
+  				<table id="data_table">
+  					<thead>
+  						<tr>
+  							<th id="coll_base">%(label_Configuration_Coll_Base)s</th>
+  							<th id="coll_code">%(label_Configuration_Coll_Code)s</th>
+  							<th id="coll_name">%(label_Configuration_Coll_Name)s</th>
+  						</tr>
+  					</thead>
+  					<tbody>
+            %(coll_table)s
+  					</tbody>
+  				</table>
+        </div>
+        <!-- Subcollections -->
+        <div class="data" id="subcolls">
+          <input type='hidden' id='util_subcoll_id' name='util_subcoll_id' value='' />
+          <div id="util_edit_subcoll" style='display:none;'>
+  				<p>
+            <label>%(label_Configuration_Subcoll_Coll)s</label><br />
+            <select name='util_subcoll_coll' id='util_subcoll_coll'>
+  					%(subcoll_list)s
+  					</select>
+   				</p>
+  				<p>
+           <label>%(label_Configuration_Subcoll_Code)s</label><br />
+  				 <input id="util_subcoll_code" name="util_subcoll_code" type="text" maxlength="50" size="30" value="" />
+  				</p>
+  				<p>
+           <label>%(label_Configuration_Subcoll_Name)s</label><br />
+  				 <input id="util_subcoll_name" name="util_subcoll_name" type="text" maxlength="150" size="30" value="" />
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Subcoll_DateInput)s</label><br />
+            <select name='util_subcoll_dateinput' id='util_subcoll_dateinput'>
+  					<option value="%%d/%%m/%%Y">%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%m/%%d/%%Y">%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%Y/%%m/%%d">%(label_Configuration_Subcoll_Year)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s</option>
+  					</select>
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Subcoll_DateOutput)s</label><br />
+            <select name='util_subcoll_dateoutput' id='util_subcoll_dateoutput'>
+  					<option value="%%d/%%m/%%Y">%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%m/%%d/%%Y">%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%Y/%%m/%%d">%(label_Configuration_Subcoll_Year)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s</option>
+  					</select>
+  				</p>
+  				<p>
+  				    <label>%(label_Configuration_Subcoll_Data_Lang)s</label><br />
+		            <table cellspacing="10px">
+		            	<tr>
+		            		<td>
+		            		</td>
+		            		<td class='form_label'><label>%(label_Configuration_Subcoll_Data_Lang_Associates)s</label>
+		            		</td>
+		            		<td>
+		            		</td>
+		            		<td class='form_label'>
+		            			<label>%(label_Configuration_Subcoll_Data_Lang_Not_Associates)s</label>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+		            			<img src="../img/up.gif" title="%(label_Configuration_Subcoll_Move_Up_Data_Lang)s" style="cursor: pointer;" onclick="moveOptionsUp('util_subcoll_data_lang');" />
+		            		</td>
+		            		<td rowspan="2">
+		            			<select name='util_subcoll_data_lang' id='util_subcoll_data_lang' multiple="multiple" style="width: 100px; height: 80px;" ondblclick="change_item(this.id,'util_subcoll_possible_data_lang',1)">
+								</select>
+		            		</td>
+		            		<td>
+		            			<img src="../img/left.gif" title="%(label_Configuration_Subcoll_To_Associate_Data_Lang)s" style="cursor: pointer;" onclick="change_item('util_subcoll_possible_data_lang', 'util_subcoll_data_lang',1)" />
+		            		</td>
+		            		<td rowspan="2">
+		            			<select name='util_subcoll_possible_data_lang' id='util_subcoll_possible_data_lang' multiple="multiple" style="width: 100px; height: 80px;" ondblclick="change_item(this.id,'util_subcoll_data_lang',1)">
+					  			</select>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+			  					<img src="../img/down.gif" title="%(label_Configuration_Subcoll_Move_Down_Data_Lang)s" style="cursor: pointer;" onclick="moveOptionsDown('util_subcoll_data_lang');" />
+			  				</td>
+		            		<td>
+		            			<img src="../img/right.gif" title="%(label_Configuration_Subcoll_To_Dissociate_Data_Lang)s" style="cursor: pointer;" onclick="change_item('util_subcoll_data_lang', 'util_subcoll_possible_data_lang',1)" />
+		            		</td>
+		            	</tr>
+		            </table>
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Subcoll_Lang)s</label><br />
+            <select name='util_subcoll_lang' id='util_subcoll_lang'>
+            %(languages)s
+  					</select>
+  				</p>
+          </div>
+  				<table id="data_table">
+  					<thead>
+  						<tr>
+  							<th id="subcoll_coll">%(label_Configuration_Subcoll_Coll)s</th>
+  							<th id="subcoll_code">%(label_Configuration_Subcoll_Code)s</th>
+  							<th id="subcoll_name">%(label_Configuration_Subcoll_Name)s</th>
+  						</tr>
+  					</thead>
+  					<tbody>
+            %(subcoll_table)s
+  					</tbody>
+  				</table>
+        </div>
+		<!-- Divisions -->
+		<div class="data" id="divisions">
+		  <p>
+			  <label>%(label_Configuration_Division_Subcollection)s</label><br />
+			  <span id="division_current_subcoll"></span>
+		  </p>
+		  <input type='hidden' id='util_division_id' name='util_division_id' value='' />
+		  <div id="util_edit_division" style='display:none;'>
+			  <p>
+				  <label>%(label_Configuration_Division_Division)s</label><br />
+
+				  <input id="util_division_division" name="util_division_division" type="text" maxlength="50" size="30" value="" />
+			  </p>
+			  <p>
+				  <label>%(label_Configuration_Division_Pattern)s</label><br />
+				  <input id="util_division_pattern" name="util_division_pattern" type="text" maxlength="50" size="30" value="" />
+			  </p>
+		  </div>
+		  <table id="data_table">
+			  <thead>
+				  <tr>
+					  <th id="division_division">%(label_Configuration_Division_Division)s</th>
+					  <th id="division_pattern">%(label_Configuration_Division_Pattern)s</th>
+				  </tr>
+			  </thead>
+			  <tbody>
+				  %(division_table)s
+			  </tbody>
+		  </table>
+		</div>
+        <!-- Combos -->
+        <div class="data" id="combos">
+          <input type='hidden' id='util_combo_id' name='util_combo_id' value='' />
+          <input type='hidden' id='util_combo_langs' name='util_combo_langs' value='' />
+          <div id="util_edit_combo" style='display:none;'>
+	        <p>
+	          <label>%(label_Subcoll_Subcollection)s</label><br />
+	          <span id="combo_current_subcoll"></span>
+	        </p>
+			<ul>
+
+			<!-- TAXON GROUP -->
+		    <li>
+            <fieldset><legend style="text-transform: none;" align="center">%(label_Configuration_Combos_Taxon_Group)s</legend>
+		      <div class="new_item">
+				<br /><br /><br /><br /><br /><br /><br />
+              </div>
+			  <div class='association'>
+                <div class="image">
+                  <img src="../img/up.gif" title="%(label_Configuration_Combos_Move_Up_Taxon_Group)s" class="top" onclick="moveOptionsUp('util_combo_taxon_group');" />
+                  <img src="../img/down.gif" title="%(label_Configuration_Combos_Move_Down_Taxon_Group)s" class="bottom" onclick="moveOptionsDown('util_combo_taxon_group');" />
+                </div>
+	            <div class='list'>
+	              <label>%(label_Configuration_Combos_Taxon_Group_Associates)s</label><br />
+                  <select name='util_combo_taxon_group' id='util_combo_taxon_group' multiple="multiple" ondblclick="change_item(this.id,'util_combo_possible_taxon_group',1)"></select>
+	            </div>
+                <div class='image'>
+                  <img src="../img/left.gif" title="%(label_Configuration_Combos_To_Associate_Taxon_Group)s" class="top" onclick="change_item('util_combo_possible_taxon_group', 'util_combo_taxon_group',1)" />
+                  <img src="../img/right.gif" title="%(label_Configuration_Combos_To_Dissociate_Taxon_Group)s" class="bottom" onclick="change_item('util_combo_taxon_group', 'util_combo_possible_taxon_group',1)" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Taxon_Group_Not_Associates)s</label><br />
+                  <select name='util_combo_possible_taxon_group' id='util_combo_possible_taxon_group' multiple="multiple" ondblclick="change_item(this.id,'util_combo_taxon_group',1)"></select>
+                </div>
+  			  </div>
+			</fieldset>
+			</li>
+
+			<!-- STRAIN TYPE -->
+		    <li>
+            <fieldset><legend style="text-transform: none;" align="center">%(label_Configuration_Combos_Str_Type)s</legend>
+		      <div class="new_item">
+		        <label class='form_info'>%(label_Configuration_Combos_New_Item)s</label>
+				<ul>
+		          %(combo_str_type_lang)s
+				</ul>
+              </div>
+			  <div class='association'>
+                <div class="image">
+                  <img src="../img/up.gif" title="%(label_Configuration_Combos_Move_Up_Str_Type)s" class="top" onclick="moveOptionsUp('util_combo_str_type');" />
+                  <img src="../img/down.gif" title="%(label_Configuration_Combos_Move_Down_Str_Type)s" class="bottom" onclick="moveOptionsDown('util_combo_str_type');" />
+                </div>
+	            <div class='list'>
+	              <label>%(label_Configuration_Combos_Str_Type_Associates)s</label><br />
+                  <select name='util_combo_str_type' id='util_combo_str_type' multiple="multiple" ondblclick="change_item(this.id,'util_combo_possible_str_type',1)"></select>
+	            </div>
+                <div class='image'>
+                  <img src="../img/left.gif" title="%(label_Configuration_Combos_To_Associate_Str_Type)s" class="top" onclick="change_item('util_combo_possible_str_type', 'util_combo_str_type',1)" />
+                  <img src="../img/right.gif" title="%(label_Configuration_Combos_To_Dissociate_Str_Type)s" class="bottom" onclick="change_item('util_combo_str_type', 'util_combo_possible_str_type',1)" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Str_Type_Not_Associates)s</label><br />
+                  <select name='util_combo_possible_str_type' id='util_combo_possible_str_type' multiple="multiple" ondblclick="change_item(this.id,'util_combo_str_type',1)"></select>
+                </div>
+  			  </div>
+			</fieldset>
+			</li>
+
+			<!-- DEPOSIT REASON -->
+			<li>
+            <fieldset><legend style="text-transform: none;" align="center">%(label_Configuration_Combos_Dep_Reason)s</legend>
+              <div class="new_item">
+		        <label class='form_info'>%(label_Configuration_Combos_New_Item)s</label>
+				<ul>
+		          %(combo_dep_reason_lang)s
+				</ul>
+              </div>
+              <div class='association'>
+                <div class='image'>
+                  <img src="../img/up.gif" title="%(label_Configuration_Combos_Move_Up_Dep_Reason)s" class="top" onclick="moveOptionsUp('util_combo_dep_reason');" />
+                  <img src="../img/down.gif" title="%(label_Configuration_Combos_Move_Down_Dep_Reason)s" class="bottom" onclick="moveOptionsDown('util_combo_dep_reason');" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Dep_Reason_Associates)s</label><br />
+                  <select name='util_combo_dep_reason' id='util_combo_dep_reason' multiple="multiple" ondblclick="change_item(this.id,'util_combo_possible_dep_reason',1)"></select>
+                </div>
+                <div class='image'>
+                  <img src="../img/left.gif" title="%(label_combo_to_associate_dep_reason)s" class="top" onclick="change_item('util_combo_possible_dep_reason', 'util_combo_dep_reason',1)" />
+                  <img src="../img/right.gif" title="%(label_combo_to_dissociate_dep_reason)s" class="bottom" onclick="change_item('util_combo_dep_reason', 'util_combo_possible_dep_reason',1)" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Dep_Reason_Not_Associates)s</label><br />
+				  <select name='util_combo_possible_dep_reason' id='util_combo_possible_dep_reason' multiple="multiple" ondblclick="change_item(this.id,'util_combo_dep_reason',1)"></select>
+                </div>
+  			  </div>
+			</fieldset>
+			</li>
+
+			<!-- TEST GROUP -->
+			<li>
+            <fieldset><legend style="text-transform: none;" align="center">%(label_Configuration_Combos_Test_Group)s</legend>
+              <div class="new_item">
+		        <label class='form_info'>%(label_Configuration_Combos_New_Item)s</label>
+				<ul>
+		          %(combo_test_group_lang)s
+				</ul>
+              </div>
+              <div class='association'>
+                <div class='image'>
+                  <img src="../img/up.gif" title="%(label_Configuration_Combos_Move_Up_Test_Group)s" class="top" onclick="moveOptionsUp('util_combo_test_group');" />
+                  <img src="../img/down.gif" title="%(label_Configuration_Combos_Move_Down_Test_Group)s" class="bottom" onclick="moveOptionsDown('util_combo_test_group');" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Test_Group_Associates)s</label><br />
+                  <select name='util_combo_test_group' id='util_combo_test_group' multiple="multiple" ondblclick="change_item(this.id,'util_combo_possible_test_group',1)"></select>
+                </div>
+                <div class='image'>
+                  <img src="../img/left.gif" title="%(label_Configuration_Combos_To_Associate_Test_Group)s" class="top" onclick="change_item('util_combo_possible_test_group', 'util_combo_test_group',1)" />
+                  <img src="../img/right.gif" title="%(label_Configuration_Combos_To_Dissociate_Test_Group)s" class="bottom" onclick="change_item('util_combo_test_group', 'util_combo_possible_test_group',1)" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Test_Group_Not_Associates)s</label><br />
+                  <select name='util_combo_possible_test_group' id='util_combo_possible_test_group' multiple="multiple" ondblclick="change_item(this.id,'util_combo_test_group',1)"></select>
+                </div>
+  			  </div>
+			</fieldset>
+			</li>
+
+						<!-- PRESERVATION METHOD -->
+			<li>
+            <fieldset><legend style="text-transform: none;" align="center">%(label_Configuration_Combos_Preservation_Method)s</legend>
+			  <div class="new_item">
+		        <label class='form_info'>%(label_Configuration_Combos_New_Item)s</label>
+				<ul>
+		          %(combo_preservation_method_lang)s
+				</ul>
+              </div>
+              <div class='association'>
+                <div class='image'>
+                  <img src="../img/up.gif" title="%(label_Configuration_Combos_Move_Up_Preservation_Method)s" class="top" onclick="moveOptionsUp('util_combo_preservation_method');" />
+                  <img src="../img/down.gif" title="%(label_Configuration_Combos_Move_Down_Preservation_Method)s" class="bottom" onclick="moveOptionsDown('util_combo_preservation_method');" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Preservation_Method_Associates)s</label><br />
+                  <select name='util_combo_preservation_method' id='util_combo_preservation_method' multiple="multiple" ondblclick="change_item(this.id,'util_combo_possible_preservation_method',1)"></select>
+                </div>
+                <div class='image'>
+                  <img src="../img/left.gif" title="%(label_Configuration_Combos_To_Associate_Preservation_Method)s" class="top" onclick="change_item('util_combo_possible_preservation_method', 'util_combo_preservation_method',1)" />
+                  <img src="../img/right.gif" title="%(label_Configuration_Combos_To_Dissociate_Preservation_Method)s" class="bottom" onclick="change_item('util_combo_preservation_method', 'util_combo_possible_preservation_method',1)" />
+                </div>
+                <div class='list'>
+                  <label>%(label_Configuration_Combos_Preservation_Method_Not_Associates)s</label><br />
+                  <select name='util_combo_possible_preservation_method' id='util_combo_possible_preservation_method' multiple="multiple" ondblclick="change_item(this.id,'util_combo_preservation_method',1)"></select>
+                </div>
+			  </div>
+  			</fieldset>
+			</li>
+
+			</ul>
+          </div>
+		  %(select_subcoll_js)s
+        </div>
+	<!-- Databases -->
+	<div class="data" id="dbs">
+	  <div id="util_edit_base" style='display:none;'>
+	    
+	    <!-- Data -->
+	    <fieldset>
+	      <legend>%(label_Configuration_Databases_Data)s</legend>
+
+	      <input type='hidden' id='util_base_id' name='util_base_id' value='' />
+
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Data_Dbms)s</label><br />
+		<select name='util_base_dbms' id='util_base_dbms'>
+		  %(dbms_list)s
+		</select>
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Data_Host)s</label><br />
+		<input id="util_base_host" name="util_base_host" type="text" maxlength="50" size="30" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Data_Port)s</label><br />
+		<input id="util_base_port" name="util_base_port" type="text" maxlength="10" onkeyup="numberOnly(this)" size="10" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Data_Name)s</label><br />
+		<input id="util_base_name" name="util_base_name" type="text" maxlength="20" size="20" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Data_User)s</label><br />
+		<input id="util_base_user" name="util_base_user" type="text" maxlength="30" size="30" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Data_Pwd)s</label><br />
+		<input id="util_base_pwd" name="util_base_pwd" type="text" maxlength="30" size="30" value="" />
+		<span class='form_info' id="db_pwd_msg"></span>
+	      </p>
+	    </fieldset>
+
+	    <!-- Tracebility -->
+	    <fieldset>
+	      <legend>%(label_Configuration_Databases_Tracebility)s</legend>
+
+	      <input type='hidden' id='util_base_tracebility_id' name='util_base_tracebility_id' value='' />
+	      
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Tracebility_Dbms)s</label><br />
+		<select name='util_base_tracebility_dbms' id='util_base_tracebility_dbms'>
+		  %(dbms_list)s
+		</select>
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Tracebility_Host)s</label><br />
+		<input id="util_base_tracebility_host" name="util_base_tracebility_host" type="text" maxlength="50" size="30" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Tracebility_Port)s</label><br />
+		<input id="util_base_tracebility_port" name="util_base_tracebility_port" type="text" maxlength="10" onkeyup="numberOnly(this)" size="10" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Tracebility_Name)s</label><br />
+		<input id="util_base_tracebility_name" name="util_base_tracebility_name" type="text" maxlength="20" size="20" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Tracebility_User)s</label><br />
+		<input id="util_base_tracebility_user" name="util_base_tracebility_user" type="text" maxlength="30" size="30" value="" />
+	      </p>
+	      <p class="cols_3">
+		<label>%(label_Configuration_Databases_Tracebility_Pwd)s</label><br />
+		<input id="util_base_tracebility_pwd" name="util_base_tracebility_pwd" type="text" maxlength="30" size="30" value="" />
+		<span class='form_info' id="db_pwd_tracebility_msg"></span>
+	      </p>
+	    </fieldset>
+          </div>
+  				<table id="data_table">
+  					<thead>
+  						<tr>
+  							<th id="dbs_dbms">%(label_Configuration_Databases_Data_Dbms)s</th>
+  							<th id="dbs_host">%(label_Configuration_Databases_Data_Host)s</th>
+  							<th id="dbs_port">%(label_Configuration_Databases_Data_Port)s</th>
+  							<th id="dbs_name">%(label_Configuration_Databases_Data_Name)s</th>
+  							<th id="dbs_user">%(label_Configuration_Databases_Data_User)s</th>
+  							<th id="dbs_pwd">%(label_Configuration_Databases_Data_Pwd)s</th>
+  						</tr>
+  					</thead>
+  					<tbody>
+            %(dbs_table)s
+  					</tbody>
+  				</table>
+          %(js_list)s
+        </div>
+        <!-- Config.xml -->
+        <div class="data" id="configxml">
+  				<p>
+           <label>%(label_Configuration_Config_IndexURL)s</label><br />
+  				 <input id="util_config_indexurl" name="util_config_indexurl" type="text" maxlength="50" size="30" value="" />
+  				</p>
+  				<p>
+           <label>%(label_Configuration_Config_RootDir)s</label><br />
+  				 <input id="util_config_rootdir" name="util_config_rootdir" type="text" maxlength="50" size="30" value="" />
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Config_StartPage)s</label><br />
+            <select name='util_config_startpage' id='util_config_startpage'>
+            %(startpage)s
+  					</select>
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Config_DateInput)s</label><br />
+            <select name='util_config_dateinput' id='util_config_dateinput'>
+  					<option value="%%d/%%m/%%Y">%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%m/%%d/%%Y">%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%Y/%%m/%%d">%(label_Configuration_Subcoll_Year)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s</option>
+  					</select>
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Config_DateOutput)s</label><br />
+            <select name='util_config_dateoutput' id='util_config_dateoutput'>
+  					<option value="%%d/%%m/%%Y">%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%m/%%d/%%Y">%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s/%(label_Configuration_Subcoll_Year)s</option>
+  					<option value="%%Y/%%m/%%d">%(label_Configuration_Subcoll_Year)s/%(label_Configuration_Subcoll_Month)s/%(label_Configuration_Subcoll_Day)s</option>
+  					</select>
+  				</p>
+  				<p>
+  				    <label>%(label_Configuration_Config_Data_Lang)s</label><br />
+		            <table cellspacing="10px">
+		            	<tr>
+		            		<td>&nbsp;</td>
+		            		<td class='form_label'><label>%(label_Configuration_Config_Data_Lang_Associates)s<label>
+		            		</td>
+		            		<td>&nbsp;</td>
+		            		<td class='form_label'>
+		            			<label>%(label_Configuration_Config_Data_Lang_Not_Associates)s<label>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+		            			<img src="../img/up.gif" title="%(label_Configuration_Config_Move_Up_Data_Lang)s" style="cursor: pointer;" onclick="moveOptionsUp('util_config_data_lang');" />
+		            		</td>
+		            		<td rowspan="2">
+		            			<select name='util_config_data_lang' id='util_config_data_lang' multiple="multiple" style="width: 100px; height: 80px;" ondblclick="change_item(this.id,'util_config_possible_data_lang',1)">
+								</select>
+		            		</td>
+		            		<td>
+		            			<img src="../img/left.gif" title="%(label_Configuration_Config_To_Associate_Data_Lang)s" style="cursor: pointer;" onclick="change_item('util_config_possible_data_lang', 'util_config_data_lang',1)" />
+		            		</td>
+		            		<td rowspan="2">
+		            			<select name='util_config_possible_data_lang' id='util_config_possible_data_lang' multiple="multiple" style="width: 100px; height: 80px;" ondblclick="change_item(this.id,'util_config_data_lang',1)">
+					  			</select>
+		            		</td>
+		            	</tr>
+		            	<tr>
+		            		<td>
+			  					<img src="../img/down.gif" title="%(label_Configuration_Config_Move_Down_Data_Lang)s" style="cursor: pointer;" onclick="moveOptionsDown('util_config_data_lang');" />
+			  				   </td>
+		            		<td>
+		            			<img src="../img/right.gif" title="%(label_Configuration_Config_To_Dissociate_Data_Lang)s" style="cursor: pointer;" onclick="change_item('util_config_data_lang', 'util_config_possible_data_lang',1)" />
+		            		</td>
+		            	</tr>
+		            </table>
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Config_Lang)s</label><br />
+            <select name='util_config_lang' id='util_config_lang'>
+            %(config_languages)s
+  					</select>
+  				</p>
+  				<p>
+            <label>%(label_Configuration_Config_Max_Upload_Size)s</label><br />
+  				  <input id="util_config_upload" name="util_config_upload" type="text" maxlength="16" onkeyup="numberOnly(this)" size="16" value="" />
+            <span class='form_info'>%(label_Configuration_Config_Upload_Blank)s</span>
+  				</p>
+        </div>
+        %(possible_data_langs)s
+        %(possible_taxon_group)s
+        %(possible_str_type)s
+        %(possible_dep_reason)s
+        %(possible_preservation_method)s
+        %(possible_test_group)s
+        %(config_possible_data_langs)s
+        %(group_possible_members)s
+        %(js_init_config)s
+	   	</form>
+      <!-- END - configuration.html -->
