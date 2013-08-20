@@ -1,0 +1,38 @@
+
+
+
+
+%! target: html
+%! preproc: USC microSICol
+%! encoding: utf-8    
+
+[usicol_logo.png]
+
+== What is USC? ==
+
+USC is a package for the management of biological collections. It's part of a larger project called [SICol http://sicol.cria.org.br], developed by //Centro de Referência em Informação Ambiental// ([CRIA http://cria.org.br]) and funded by Finep.
+
+The goal is to provide tools for the documentation of biological collections and to document the preservation and quality processes of these collections following international standards.
+
+It is developed in Python. It is designed to be compatible with
+different RDBMS, although today only MySQL is supported.
+
+It is **multiuser**, and it has a web interface to interact with the databases. This provides the ability for the system to be accessed by computers that aren't the one which is where microSICol is installed. It is **multilanguage**, which means different languages are supported, for both the system itself and its contents. It supports **multiple collections** and **multiple subcollections** for each installation based on the same database. More than one database can be configured for the same installation.
+
+The databases are based on standards defined by //Common Access to Biological Resources and Information// (CABRI), with little modifications to meet brazilian collections needs.
+
+== Documentation ==
+
+There are two main documents of USC. One of them is the [user guide userguide-1.40-pt-BR.pdf], on how to **use** the system. The current release is versioned as 1.40, from June, 2011. As of now, this version is not in sync with the latest version of USC, but it still can be useful as a reference. It's only available in Brazilian Portuguese.
+
+There is also an [install guide installguide.html], which is a reference on how to install USC.
+
+There is no development guide.
+
+== Further Development ==
+
+There is no intent on further developments or huge modifications on the code base. There are some points which must be addressed (e.g.  simplification of the installation process, documentation of the code, some bug fixes), but these are just minor issues are it won't result in a overall refactor of all the code. In other words, USC is considered //stable// and meets the goals it was proposed on the SICol project.
+
+== Community ==
+
+There is a quiet mailing list for SICol project. You can subscribe to it [here http://homes.cria.org.br/mailman/listinfo/sicol].

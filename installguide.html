@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.org">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<TITLE>microSICol Install Guide</TITLE>
+</HEAD><BODY BGCOLOR="white" TEXT="black">
+<CENTER>
+<H1>microSICol Install Guide</H1>
+<FONT SIZE="4">last update: Tue Aug 20 16:20:12 2013</FONT>
+</CENTER>
+
+
+<H2>Introduction</H2>
+
+<P>
+For a more complete introduction on what is microSICol and the details of its development, please refer to the <A HREF="index.html">main</A> page of the project.
+</P>
+<P>
+microSICol supports multiple operating systems as host, however, this document will only guide you in a Unix-like system, e.g. Linux. It shouldn't be hard to adapt the instructions here to other systems.
+</P>
+<P>
+This document <I>assumes</I> you have some familiarity with system administration techniques. microSICol is <B>not</B> a general package. It's a niche software a regular user wouldn't try to install. There is no way to blindly follow steps to get microSICol running. The discernment of the sysadmin is always required, since there is no system that's equal to another. Some of them change the default path of configuration files (e.g. some systems put <CODE>httpd.conf</CODE> in <CODE>/etc/httpd/conf/</CODE> instead of <CODE>/var/www/conf/</CODE>), some change the contents of the configuration files of packages, and so on.
+</P>
+
+<H2>Requirements</H2>
+
+<UL>
+<LI>Apache 1.3.x ou 2.x
+<LI>Python 2.x (it will not run with Python 3)
+<LI>SQLite 2.x
+<LI>MySQL 5.x
+<LI>mod_python (optional)
+</UL>
+
+<P>
+The detailed instructions on how to add these packages are very system-specific and will depend on what OS and version you're trying to install microSICol. In Unix-likes, this means using the <I>package manager</I> available (e.g. <I>apt</I> on Debian-based systems like Ubuntu or <I>yum</I> on Red Hat-based systems) or manually installing each package. Every system administrator has its own techniques, however, the latter is not recommended. Try to use what's available on the OS you're installing microSICol on.
+</P>
+
+<H2>Getting microSICol</H2>
+
+<P>
+microSICol can be obtaing by downloading a compressed version available here:
+</P>
+<P>
+<A HREF="http://sicol.cria.org.br">http://sicol.cria.org.br</A>
+</P>
+<P>
+Instead, an alternative method is to fetch a up-to-date version directly from the repository. You can do this by running the following command:
+</P>
+
+<PRE>
+  git clone https://github.com/cria/microSICol.git 
+</PRE>
+
+<P>
+Of course, you'll need to have <CODE>git</CODE> installed. How to install Git is beyound the scope of this guide, but usually you can install as a package just like you did to install the requirements.
+</P>
+<P>
+At the moment, only the most up-to-date development version can be fetched. Earlier versions were keep closed in a close development model and weren't release-tagged.
+</P>
+<P>
+This doesn't mean that microSICol is under heavy development. On the contrary, the software is internally considered very stable for CRIA purposes and it is highly probable that it won't change too much from now on. The purpose of versioning is to facilitate distributing changes. Compressing distributions in e-mail exchanges is not productive.
+</P>
+
+<H2>Extracting</H2>
+
+<P>
+Here is assumed that you downloaded the compressed version of microSICol. The first thing to do is to extract the package in a appropriate directory.  microSICol is a web application, so this usually means the <CODE>/var/www/</CODE> or <CODE>/var/www/htdocs/</CODE> directory in Unix-like system.  However, this can greatly vary between different OS. It's also better to create a separate directory to install microSICol, to keep things clearer and not affect what may be eventually using the default directory:
+</P>
+
+<PRE>
+  # mkdir /var/www/htdocs/microsicol
+</PRE>
+
+<P>
+Copy the microSICol package to this directory and extract it:
+</P>
+
+<PRE>
+  # cp microSICol-20130731.zip /var/www/htdocs/microsicol
+</PRE>
+
+<P>
+Enter the directory and extract the file:
+</P>
+
+<PRE>
+  # cd /var/www/htdocs/microsicol
+  # unzip microSICol-latest.zip
+</PRE>
+
+<P>
+Now you're ready to configure Apache.
+</P>
+
+<H2>Configuring Apache</H2>
+
+<P>
+Configuring Apache means you'll have to deal with the <CODE>httpd.conf</CODE> file. This file is usually located at <CODE>/var/www/conf/</CODE> directory, but as already noted in the <I>Introduction</I> section, this can vary.
+</P>
+<P>
+Below is a <CODE>VirtualHost</CODE> container included in a <CODE>httpd.conf</CODE> for a common configuration of microSICol:
+</P>
+
+<PRE>
+  &lt;VirtualHost *:80&gt;
+          ServerName microsicol.cria.org.br
+          ServerAdmin suporte@cria.org.br
+          DocumentRoot /var/www/sicol/sistema/
+          LogFormat combined
+          ErrorLog  /var/log/httpd/microsicol.org.br.error.log
+          CustomLog /var/log/httpd/microsicol.org.br.access.log combined
+          DirectoryIndex index index.html index.php index.py
+          ScriptAlias /py/ /var/www/sicol/sistema/py/
+          &lt;Directory "/var/www/sicol/sistema/"&gt;
+                  AddHandler cgi-script .cgi .py
+                  Options ExecCGI
+                  AllowOverride All
+                  Order allow,deny
+                  Allow from all
+          &lt;/Directory&gt;
+  &lt;/VirtualHost&gt;
+</PRE>
+
+<P>
+There are some important directives you must be aware when configuring Apache to run microSICol. They are:
+</P>
+
+<UL>
+<LI><CODE>VirtualHost</CODE> is a container which isolates the configuration if you want to maintain multiple domains/hostnames on your machine. Even if you'll use just one domain, it's still recommended to use it;
+<LI><CODE>Directory</CODE> is the one where <CODE>microsicol-latest.zip</CODE> was extracted;
+<LI><CODE>ServerName</CODE> is a valid DNS name for your host;
+<LI><CODE>ServerAdmin</CODE> is the e-mail of the administrator and where problems with the server is sent;
+<LI><CODE>ErrorLog</CODE> errors on the context of Apache, and it's not generated by microSICol;
+<LI><CODE>CustomLog</CODE> same as above;
+<LI><CODE>DirectoryIndex</CODE> what kind of files Apache looks when accessed;
+<LI><CODE>ScriptAlias</CODE> this is important, and in this case is the same as the <CODE>DocumentRoot</CODE>. The user Apache is running must have proper permissions to this directory;
+</UL>
+
+<P>
+This snippet is necessary for the catalog:
+</P>
+
+<PRE>
+  ScriptAlias /pycat/ /var/wwwsicol/catalogo/pycat/
+  &lt;Directory /var/www/sicol/catalogo/pycat/&gt;
+          AddHandler cgi-script .cgi .py
+          AllowOverride All
+          Options ExecCGI
+          Order allow,deny
+          Allow from all
+  &lt;/Directory&gt;
+</PRE>
+
+<H2>Setting Up Databases</H2>
+
+<P>
+Before running, you'll have to setup some databases. microSICol uses SQLite to keep track of it's users, but for its collection data, can use a variety of RDBMS, such as MySQL, PostgreSQL, among others. At this moment, only MySQL is activated in the code base, and it's what we'll use here.
+</P>
+<P>
+To set the root password of MySQL:
+</P>
+
+<PRE>
+  # mysqladmin -u root -p mypass
+</PRE>
+
+<P>
+Of course you can choose whatever password you like. And it's better to choose a password with a strong strength, since it lowers overall risk of a security breach.
+</P>
+<P>
+Enter the directory where the init scripts are stored:
+</P>
+
+<PRE>
+  cd /var/www/htdocs/microsicol/db/scripts/v110/
+</PRE>
+
+<P>
+We'll need to initialize the databases.
+</P>
+<P>
+The first of them is the log database, which is where microSICol keeps track of all the changes made in the system:
+</P>
+
+<PRE>
+  # mysql -u root -p mypass &lt; mysql_log_script_empty.sql
+</PRE>
+
+<P>
+To setup the database where the records itself will be stored, you'll need first to create the user <CODE>sicol</CODE> and the password <CODE>sicol</CODE> too:
+</P>
+
+<PRE>
+  # mysql -u root -p mypass
+  mysql&gt; CREATE USER 'sicol'@'localhost' IDENTIFIED BY 'sicol';
+</PRE>
+
+<P>
+Note here that you cannot change the username nor the password, as the scripts following will depend on that. That said, and still inside MySQL client, let's create the database:
+</P>
+
+<PRE>
+  mysql&gt; CREATE DATABASE IF NOT EXISTS sicol_v110 CHARACTER SET utf8;
+</PRE>
+
+<P>
+To set the privileges:
+</P>
+
+<PRE>
+  mysql&gt; GRANT ALL PRIVILEGES ON sicol_v110 . * TO 'sicol'@'localhost'; flush privileges;
+  mysql&gt; GRANT ALL PRIVILEGES ON sicol_v110_log . * TO 'sicol'@'localhost'; flush privileges;
+</PRE>
+
+<P>
+Run the following script:
+</P>
+
+<PRE>
+  # mysql -u root -p mypass &lt; mysql_script_empty.sql
+</PRE>
+
+<P>
+You'll need to customize the script <CODE>mysql_script_start_data.sql</CODE>. The standard version is well-suited for most uses, but the needs of different biological collections may greatly vary.
+</P>
+<P>
+To finish, run the following 3 scripts:
+</P>
+
+<PRE>
+  # mysql -u root -p mypass &lt; mysql_script_start_data.sql
+  # mysql -u root -p mypass &lt; mysql_taxonomy.sql
+  # mysql -u root -p mypass &lt; mysql_countries.sql
+</PRE>
+
+<P>
+If all steps went well, you should be able to start microSICol.
+</P>
+<P>
+If you have questions, there is a mailing list you can subscribe using this <A HREF="http://homes.cria.org.br/mailman/listinfo/sicol">link</A>.
+</P>
+
+<!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
+<!-- cmdline: txt2tags installguide.t2t -->
+</BODY></HTML>

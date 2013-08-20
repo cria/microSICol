@@ -1,0 +1,167 @@
+microSICol Install Guide
+
+last update: %%mtime(%c)
+
+%! target: html
+%! preproc: USC microSICol
+%! encoding: utf-8    
+
+== Introduction ==
+
+For a more complete introduction on what is USC and the details of its development, please refer to the [main index.html] page of the project.
+
+USC supports multiple operating systems as host, however, this document will only guide you in a Unix-like system, e.g. Linux. It shouldn't be hard to adapt the instructions here to other systems.
+
+This document //assumes// you have some familiarity with system administration techniques. USC is **not** a general package. It's a niche software a regular user wouldn't try to install. There is no way to blindly follow steps to get USC running. The discernment of the sysadmin is always required, since there is no system that's equal to another. Some of them change the default path of configuration files (e.g. some systems put ``httpd.conf`` in ``/etc/httpd/conf/`` instead of ``/var/www/conf/``), some change the contents of the configuration files of packages, and so on.
+
+== Requirements ==
+
+- Apache 1.3.x ou 2.x
+- Python 2.x (it will not run with Python 3)
+- SQLite 2.x
+- MySQL 5.x
+- mod_python (optional)
+
+
+The detailed instructions on how to add these packages are very system-specific and will depend on what OS and version you're trying to install USC. In Unix-likes, this means using the //package manager// available (e.g. //apt// on Debian-based systems like Ubuntu or //yum// on Red Hat-based systems) or manually installing each package. Every system administrator has its own techniques, however, the latter is not recommended. Try to use what's available on the OS you're installing USC on.
+
+== Getting USC ==
+
+USC can be obtaing by downloading a compressed version available here:
+
+[http://sicol.cria.org.br http://sicol.cria.org.br]
+
+Instead, an alternative method is to fetch a up-to-date version directly from the repository. You can do this by running the following command:
+```
+git clone https://github.com/cria/microSICol.git 
+```
+
+Of course, you'll need to have ``git`` installed. How to install Git is beyound the scope of this guide, but usually you can install as a package just like you did to install the requirements.
+
+At the moment, only the most up-to-date development version can be fetched. Earlier versions were keep closed in a close development model and weren't release-tagged.
+
+This doesn't mean that USC is under heavy development. On the contrary, the software is internally considered very stable for CRIA purposes and it is highly probable that it won't change too much from now on. The purpose of versioning is to facilitate distributing changes. Compressing distributions in e-mail exchanges is not productive.
+
+== Extracting ==
+
+Here is assumed that you downloaded the compressed version of USC. The first thing to do is to extract the package in a appropriate directory.  USC is a web application, so this usually means the ``/var/www/`` or ``/var/www/htdocs/`` directory in Unix-like system.  However, this can greatly vary between different OS. It's also better to create a separate directory to install USC, to keep things clearer and not affect what may be eventually using the default directory:
+```
+# mkdir /var/www/htdocs/microsicol
+```
+
+Copy the USC package to this directory and extract it:
+```
+# cp microSICol-20130731.zip /var/www/htdocs/microsicol
+```
+Enter the directory and extract the file:
+```
+# cd /var/www/htdocs/microsicol
+# unzip microSICol-latest.zip
+```
+Now you're ready to configure Apache.
+
+== Configuring Apache ==
+
+Configuring Apache means you'll have to deal with the ``httpd.conf`` file. This file is usually located at ``/var/www/conf/`` directory, but as already noted in the //Introduction// section, this can vary.
+
+Below is a ``VirtualHost`` container included in a ``httpd.conf`` for a common configuration of USC:
+```
+<VirtualHost *:80>
+        ServerName microsicol.cria.org.br
+        ServerAdmin suporte@cria.org.br
+        DocumentRoot /var/www/sicol/sistema/
+        LogFormat combined
+        ErrorLog  /var/log/httpd/microsicol.org.br.error.log
+        CustomLog /var/log/httpd/microsicol.org.br.access.log combined
+        DirectoryIndex index index.html index.php index.py
+        ScriptAlias /py/ /var/www/sicol/sistema/py/
+        <Directory "/var/www/sicol/sistema/">
+                AddHandler cgi-script .cgi .py
+                Options ExecCGI
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+        </Directory>
+</VirtualHost>
+```
+
+There are some important directives you must be aware when configuring Apache to run USC. They are:
+
+- ``VirtualHost`` is a container which isolates the configuration if you want to maintain multiple domains/hostnames on your machine. Even if you'll use just one domain, it's still recommended to use it;
+- ``Directory`` is the one where ``microsicol-latest.zip`` was extracted;
+- ``ServerName`` is a valid DNS name for your host;
+- ``ServerAdmin`` is the e-mail of the administrator and where problems with the server is sent;
+- ``ErrorLog`` errors on the context of Apache, and it's not generated by USC;
+- ``CustomLog`` same as above;
+- ``DirectoryIndex`` what kind of files Apache looks when accessed;
+- ``ScriptAlias`` this is important, and in this case is the same as the ``DocumentRoot``. The user Apache is running must have proper permissions to this directory;
+
+
+This snippet is necessary for the catalog:
+
+```
+ScriptAlias /pycat/ /var/wwwsicol/catalogo/pycat/
+<Directory /var/www/sicol/catalogo/pycat/>
+        AddHandler cgi-script .cgi .py
+        AllowOverride All
+        Options ExecCGI
+        Order allow,deny
+        Allow from all
+</Directory>
+```
+
+== Setting Up Databases ==
+
+Before running, you'll have to setup some databases. USC uses SQLite to keep track of it's users, but for its collection data, can use a variety of RDBMS, such as MySQL, PostgreSQL, among others. At this moment, only MySQL is activated in the code base, and it's what we'll use here.
+
+To set the root password of MySQL:
+```
+# mysqladmin -u root -p mypass
+```
+Of course you can choose whatever password you like. And it's better to choose a password with a strong strength, since it lowers overall risk of a security breach.
+
+Enter the directory where the init scripts are stored:
+```
+cd /var/www/htdocs/microsicol/db/scripts/v110/
+```
+
+We'll need to initialize the databases.
+
+The first of them is the log database, which is where USC keeps track of all the changes made in the system:
+```
+# mysql -u root -p mypass < mysql_log_script_empty.sql
+```
+
+To setup the database where the records itself will be stored, you'll need first to create the user ``sicol`` and the password ``sicol`` too:
+```
+# mysql -u root -p mypass
+mysql> CREATE USER 'sicol'@'localhost' IDENTIFIED BY 'sicol';
+```
+
+Note here that you cannot change the username nor the password, as the scripts following will depend on that. That said, and still inside MySQL client, let's create the database:
+```
+mysql> CREATE DATABASE IF NOT EXISTS sicol_v110 CHARACTER SET utf8;
+```
+
+To set the privileges:
+```
+mysql> GRANT ALL PRIVILEGES ON sicol_v110 . * TO 'sicol'@'localhost'; flush privileges;
+mysql> GRANT ALL PRIVILEGES ON sicol_v110_log . * TO 'sicol'@'localhost'; flush privileges;
+```
+
+Run the following script:
+```
+# mysql -u root -p mypass < mysql_script_empty.sql
+```
+
+You'll need to customize the script ``mysql_script_start_data.sql``. The standard version is well-suited for most uses, but the needs of different biological collections may greatly vary.
+
+To finish, run the following 3 scripts:
+```
+# mysql -u root -p mypass < mysql_script_start_data.sql
+# mysql -u root -p mypass < mysql_taxonomy.sql
+# mysql -u root -p mypass < mysql_countries.sql
+```
+If all steps went well, you should be able to start USC.
+
+If you have questions, there is a mailing list you can subscribe using this [link http://homes.cria.org.br/mailman/listinfo/sicol].
