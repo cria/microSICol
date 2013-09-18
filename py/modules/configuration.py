@@ -628,6 +628,7 @@ class Configuration(object):
                 base_descr['user'] = base_user
                 base_descr['pwd'] = base_pwd
                 base_descr['dbms_name'] = 'mysql'
+                base_descr['dbms'] = 'mysql'
 
                 base_conn = dbConnection(base_descr=base_descr)
                 for user in list_users:

@@ -283,7 +283,7 @@ class Reports_Common(object):
             sql ='''        
             (
                 id_subcoll = %s AND
-                (%s OR id_strain = (SELECT id_item FROM roles_permissions
+                (%s OR id_strain IN (SELECT id_item FROM roles_permissions
                     WHERE id_role IN %s AND id_item = id_strain AND id_area = 2))
              )
             '''
@@ -291,7 +291,7 @@ class Reports_Common(object):
         elif (self.code == "institution"):
             sql ='''        
             (
-                (%s OR id_institution = (SELECT id_item FROM roles_permissions
+                (%s OR id_institution IN (SELECT id_item FROM roles_permissions
                     WHERE id_role IN %s AND id_item = id_institution AND id_area = 4))
              )
             '''
@@ -299,7 +299,7 @@ class Reports_Common(object):
         elif (self.code == "person"):
             sql ='''        
             (
-                (%s OR id_person = (SELECT id_item FROM roles_permissions
+                (%s OR id_person IN (SELECT id_item FROM roles_permissions
                     WHERE id_role IN %s AND id_item = id_person AND id_area = 3))
              )
             '''
@@ -307,7 +307,7 @@ class Reports_Common(object):
         elif (self.code == "doc"):
             sql ='''        
             (
-                (%s OR id_doc = (SELECT id_item FROM roles_permissions
+                (%s OR id_doc IN (SELECT id_item FROM roles_permissions
                     WHERE id_role IN %s AND id_item = id_doc AND id_area = 5))
              )
             '''
@@ -315,7 +315,7 @@ class Reports_Common(object):
         elif (self.code == "ref"):
             sql ='''        
             (
-                (%s OR id_ref = (SELECT id_item FROM roles_permissions
+                (%s OR id_ref IN (SELECT id_item FROM roles_permissions
                     WHERE id_role IN %s AND id_item = id_ref AND id_area = 6))
              )
             '''
@@ -324,7 +324,7 @@ class Reports_Common(object):
             sql ='''        
             (
                 id_subcoll = %s AND
-                (%s OR id_species = (SELECT id_item FROM roles_permissions
+                (%s OR id_species IN (SELECT id_item FROM roles_permissions
                     WHERE id_role IN %s AND id_item = id_species AND id_area = 1))
              )
             '''

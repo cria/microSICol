@@ -443,6 +443,8 @@ class General( object ):
           db.execute('save_list_order',{'id_user':id_user,'id_subcoll':id_subcoll,'area':'container','field':'abbreviation','mode':'DESC'})
           list_order['container'] = {'field':'abbreviation','mode':'DESC'}
           db.execute('save_list_order',{'id_user':id_user,'id_subcoll':id_subcoll,'area':'stockmovement','field':'date','mode':'DESC'})
+          list_order['traceability'] = {'field':'date_time','mode':'DESC'}
+          db.execute('save_list_order',{'id_user':id_user,'id_subcoll':id_subcoll,'area':'traceability','field':'date_time','mode':'DESC'})
         return
 
     def gps_dms2dec(self,gps_type,value):
