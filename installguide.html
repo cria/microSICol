@@ -7,7 +7,7 @@
 </HEAD><BODY BGCOLOR="white" TEXT="black">
 <CENTER>
 <H1>microSICol Install Guide</H1>
-<FONT SIZE="4">last update: Tue Aug 20 16:20:12 2013</FONT>
+<FONT SIZE="4">last update: Tue Oct  8 12:33:49 2013</FONT>
 </CENTER>
 
 
@@ -156,14 +156,33 @@ This snippet is necessary for the catalog:
 <H2>Setting Up Databases</H2>
 
 <P>
-Before running, you'll have to setup some databases. microSICol uses SQLite to keep track of it's users, but for its collection data, can use a variety of RDBMS, such as MySQL, PostgreSQL, among others. At this moment, only MySQL is activated in the code base, and it's what we'll use here.
+The first thing to do is to copy two files from the microSICol distribution to the directory where microSICol will be installed. These files are <CODE>config_default.xml</CODE> and <CODE>sqlite_default.db</CODE>. They need to be renamed respectively to <CODE>config.xml</CODE> and <CODE>sqlite.db</CODE>. More specifically, assuming that you're installing microSICol in <CODE>/var/www/sicol/sistema</CODE> directory as before, they'll become <CODE>/var/www/sicol/sistema/config.xml</CODE> and <CODE>/var/www/sicol/sistema/db/sqlite.db</CODE>.
+</P>
+<P>
+In <CODE>config.xml</CODE>, you'll need to change the following line to reflect your current hostname:
+</P>
+
+<PRE>
+  &lt;config name="index_url"&gt;http://localhost/sicol/&lt;/config&gt;
+</PRE>
+
+<P>
+And the following line to reflect the current directory of your current install directory:
+</P>
+
+<PRE>
+  &lt;config name="root_dir"&gt;C:\sicol\&lt;/config&gt;
+</PRE>
+
+<P>
+You'll also need to setup the databases too. microSICol uses SQLite to keep track of it's users, but for its collection data, can use a variety of RDBMS, such as MySQL, PostgreSQL, among others. At this moment, only MySQL is activated in the code base, and it's what we'll use here.
 </P>
 <P>
 To set the root password of MySQL:
 </P>
 
 <PRE>
-  # mysqladmin -u root -p mypass
+  # mysqladmin -u root password "mypass"
 </PRE>
 
 <P>
@@ -185,33 +204,7 @@ The first of them is the log database, which is where microSICol keeps track of 
 </P>
 
 <PRE>
-  # mysql -u root -p mypass &lt; mysql_log_script_empty.sql
-</PRE>
-
-<P>
-To setup the database where the records itself will be stored, you'll need first to create the user <CODE>sicol</CODE> and the password <CODE>sicol</CODE> too:
-</P>
-
-<PRE>
-  # mysql -u root -p mypass
-  mysql&gt; CREATE USER 'sicol'@'localhost' IDENTIFIED BY 'sicol';
-</PRE>
-
-<P>
-Note here that you cannot change the username nor the password, as the scripts following will depend on that. That said, and still inside MySQL client, let's create the database:
-</P>
-
-<PRE>
-  mysql&gt; CREATE DATABASE IF NOT EXISTS sicol_v110 CHARACTER SET utf8;
-</PRE>
-
-<P>
-To set the privileges:
-</P>
-
-<PRE>
-  mysql&gt; GRANT ALL PRIVILEGES ON sicol_v110 . * TO 'sicol'@'localhost'; flush privileges;
-  mysql&gt; GRANT ALL PRIVILEGES ON sicol_v110_log . * TO 'sicol'@'localhost'; flush privileges;
+  # mysql -u root -pmypass &lt; mysql_log_script_empty.sql
 </PRE>
 
 <P>
@@ -219,7 +212,7 @@ Run the following script:
 </P>
 
 <PRE>
-  # mysql -u root -p mypass &lt; mysql_script_empty.sql
+  # mysql -u root -pmypass &lt; mysql_script_empty.sql
 </PRE>
 
 <P>
@@ -230,9 +223,9 @@ To finish, run the following 3 scripts:
 </P>
 
 <PRE>
-  # mysql -u root -p mypass &lt; mysql_script_start_data.sql
-  # mysql -u root -p mypass &lt; mysql_taxonomy.sql
-  # mysql -u root -p mypass &lt; mysql_countries.sql
+  # mysql -u root -pmypass &lt; mysql_script_start_data.sql
+  # mysql -u root -pmypass &lt; mysql_taxonomy.sql
+  # mysql -u root -pmypass &lt; mysql_countries.sql
 </PRE>
 
 <P>

@@ -112,11 +112,22 @@ ScriptAlias /pycat/ /var/wwwsicol/catalogo/pycat/
 
 == Setting Up Databases ==
 
-Before running, you'll have to setup some databases. USC uses SQLite to keep track of it's users, but for its collection data, can use a variety of RDBMS, such as MySQL, PostgreSQL, among others. At this moment, only MySQL is activated in the code base, and it's what we'll use here.
+The first thing to do is to copy two files from the USC distribution to the directory where USC will be installed. These files are ``config_default.xml`` and ``sqlite_default.db``. They need to be renamed respectively to ``config.xml`` and ``sqlite.db``. More specifically, assuming that you're installing USC in ``/var/www/sicol/sistema`` directory as before, they'll become ``/var/www/sicol/sistema/config.xml`` and ``/var/www/sicol/sistema/db/sqlite.db``.
+
+In ``config.xml``, you'll need to change the following line to reflect your current hostname:
+```
+<config name="index_url">http://localhost/sicol/</config>
+```
+And the following line to reflect the current directory of your current install directory:
+```
+<config name="root_dir">C:\sicol\</config>
+```
+
+You'll also need to setup the databases too. USC uses SQLite to keep track of it's users, but for its collection data, can use a variety of RDBMS, such as MySQL, PostgreSQL, among others. At this moment, only MySQL is activated in the code base, and it's what we'll use here.
 
 To set the root password of MySQL:
 ```
-# mysqladmin -u root -p mypass
+# mysqladmin -u root password "mypass"
 ```
 Of course you can choose whatever password you like. And it's better to choose a password with a strong strength, since it lowers overall risk of a security breach.
 
@@ -129,38 +140,21 @@ We'll need to initialize the databases.
 
 The first of them is the log database, which is where USC keeps track of all the changes made in the system:
 ```
-# mysql -u root -p mypass < mysql_log_script_empty.sql
-```
-
-To setup the database where the records itself will be stored, you'll need first to create the user ``sicol`` and the password ``sicol`` too:
-```
-# mysql -u root -p mypass
-mysql> CREATE USER 'sicol'@'localhost' IDENTIFIED BY 'sicol';
-```
-
-Note here that you cannot change the username nor the password, as the scripts following will depend on that. That said, and still inside MySQL client, let's create the database:
-```
-mysql> CREATE DATABASE IF NOT EXISTS sicol_v110 CHARACTER SET utf8;
-```
-
-To set the privileges:
-```
-mysql> GRANT ALL PRIVILEGES ON sicol_v110 . * TO 'sicol'@'localhost'; flush privileges;
-mysql> GRANT ALL PRIVILEGES ON sicol_v110_log . * TO 'sicol'@'localhost'; flush privileges;
+# mysql -u root -pmypass < mysql_log_script_empty.sql
 ```
 
 Run the following script:
 ```
-# mysql -u root -p mypass < mysql_script_empty.sql
+# mysql -u root -pmypass < mysql_script_empty.sql
 ```
 
 You'll need to customize the script ``mysql_script_start_data.sql``. The standard version is well-suited for most uses, but the needs of different biological collections may greatly vary.
 
 To finish, run the following 3 scripts:
 ```
-# mysql -u root -p mypass < mysql_script_start_data.sql
-# mysql -u root -p mypass < mysql_taxonomy.sql
-# mysql -u root -p mypass < mysql_countries.sql
+# mysql -u root -pmypass < mysql_script_start_data.sql
+# mysql -u root -pmypass < mysql_taxonomy.sql
+# mysql -u root -pmypass < mysql_countries.sql
 ```
 If all steps went well, you should be able to start USC.
 
