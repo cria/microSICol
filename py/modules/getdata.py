@@ -3630,6 +3630,7 @@ class Getdata(object):
                 aux_data += ",".join(all_info)
                 aux_data += '}; reused_strains = ' + JsonBuilder.dump(reused_strains) + ';'
                 data['js_data'].append(aux_data)
+                data['hdn_reused_strain'] = JsonBuilder.dump(reused_strains)
 
 
         data['old_combination'] = ",".join(data['old_combination'])

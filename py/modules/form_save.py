@@ -2224,6 +2224,7 @@ class Save(object):
     def preservation(self):
 
         def retrieve_form_data(dic_temp, n):
+            #brk("localhost",9000)
             dic_temp['origin'] = form.getvalue('preservation_origin_'+str(n))
             dic_temp['original_name'] = form.getvalue('preservation_original_name_'+str(n))
             dic_temp['stock_minimum'] = form.getvalue('preservation_stock_limit_'+str(n))
@@ -2233,6 +2234,11 @@ class Save(object):
             dic_temp['cryo'] = form.getvalue('preservation_cryo_'+str(n))
             dic_temp['type'] = form.getvalue('preservation_type_'+str(n))
             dic_temp['purity'] = form.getvalue('preservation_purity_'+str(n))
+            if form.getvalue('hdnReusedStrain') <> "[]":
+                dic_temp['hdnReusedStrain'] = eval(form.getvalue('hdnReusedStrain'))
+            else:
+                dic_temp['hdnReusedStrain'] = []
+                            
             if dic_temp['purity'] != 'ok':
                 dic_temp['purity'] = 'n'
             else:
@@ -2445,7 +2451,9 @@ class Save(object):
 
             #Get Data related to each strain
             for i in xrange(1,global_counter):
-                if not form.has_key('preservation_strain_'+str(i)): continue #Ignore this strain, was removed by user
+                if not form.has_key('preservation_strain_'+str(i)):
+                    continue #Ignore this strain, was removed by user
+                
                 data['id_strain'] = form.getvalue('preservation_strain_'+str(i))
                 data['origin'] = form.getvalue('preservation_origin_'+str(i))
                 data['original_name'] = form.getvalue('preservation_original_name_'+str(i))
@@ -2504,13 +2512,15 @@ class Save(object):
                 self.execute('get_strain_code', {'id_strain': data['id_strain']})
                 strain_code = self.fetch('one')
 
+                #brk("localhost", 9000)
                 if is_first:
                     old_prepared_amps = {}
                     dic_temp_detail = {}
+                    
                     if (self.action == 'update'):
                         id_log_operation = 9
 
-                        #check changed data strain in preservation (used for log)
+                        #check changed data strain in preservation (used in log)
                         for n in xrange(1,global_counter):
                             if not form.has_key('preservation_strain_'+str(n)):
                                     continue
@@ -2609,14 +2619,18 @@ class Save(object):
                     self.execute('insert_lot_strain_ampoules_combo',data)
                     new_strain = True
 
+                found_strain = False;
+                for item in dic_temp_detail["hdnReusedStrain"]:
+                    if str(item) == data['id_strain']:
+                        found_strain = True
+                        
                 if self.action == 'update':
                     lsl_data = {}
                     lsl_data['id_lot'] = form.getvalue('id_lot') #data['inserted_lot_id']
                     lsl_data['id_strain'] = data['id_strain']
                     self.logger.debug('delete lsl: %s' % str(lsl_data))
-
-                    self.execute('get_movement_lot_strain_usage_information_all', {'id_lot': lsl_data['id_lot'],'id_strain': lsl_data['id_strain']}, force_debug=False)
-                    if self.fetch('all') and len(self.fetch('all')) > 0:
+                    
+                    if found_strain:
                         pass
                     else:
                         if save_log:
@@ -2655,53 +2669,54 @@ class Save(object):
                         lista_tmp = self.l.checkModifiedFields('', dict_temp, data['id_strain'], strain_code, '', 'insert', id_log_operation, id_log_entity, lot_origin_name)
                         return_sql.append(lista_tmp[len(lista_tmp) - 1].replace('|%|ID|%|',str(data['id_strain'])))
 
-                for location in locations:
-                    loc_pos += 1
-                    loc_data = {}
-                    loc_data['id_lot'] = data['inserted_lot_id']
-                    loc_data['id_strain'] = data['id_strain']
-                    loc_data['id_container_hierarchy'] = str(location['id_container_hierarchy'])
-                    loc_data['row'] = str(location['row'])
-                    loc_data['col'] = str(location['col'])
-                    loc_data['quantity'] = location['quantity']
-                    self.logger.debug('insert lsl: %s' % str(loc_data))
-                    self.execute('get_movement_lot_strain_usage_information_all', {'id_lot': loc_data['id_lot'],'id_strain': loc_data['id_strain']}, force_debug=False)
-                    if self.fetch('all') and len(self.fetch('all')) > 0:
-                        pass
-                    else:
-                        self.execute('insert_lot_strain_location', loc_data)
-
-                        if save_log:
-                            if (self.action == 'insert'):
-                                id_log_operation = 8
-
-                                lista_tmp = []
-                                dict_temp = {'stock' : data['stock_pos'].splitlines()[loc_pos], 'id' : loc_data['id_lot'], 'lang' : '' }
-                                lista_tmp = self.l.checkModifiedFields('', dict_temp, loc_data['id_strain'], strain_code, '', 'insert', id_log_operation, id_log_entity, self.ConvertStrUnicode(data['lot_name']))
-                                return_sql.append(lista_tmp[len(lista_tmp) - 1].replace('|%|ID|%|',str(data['id_strain'])))
-
-                            elif (self.action == 'update'):
-                                id_log_operation = 9
-
-                                found = False
-                                for data_del in location_data_del:
-                                    #if location has changed quantity
-                                    if str(data_del['id_container_hierarchy']) == str(loc_data['id_container_hierarchy']) and str(data_del['row']) == str(loc_data['row']) and str(data_del['col']) == str(loc_data['col']):
-                                        if str(data_del['quantity']) != str(loc_data['quantity']):
-                                            lista_tmp = []
-                                            dict_temp = {'stock' : data['stock_pos'].splitlines()[loc_pos], 'id' : loc_data['id_lot'], 'lang' : '' }
-                                            lista_tmp = self.l.checkModifiedFields('', dict_temp, data['id_strain'], strain_code, '', 'insert', id_log_operation, id_log_entity, self.ConvertStrUnicode(data['lot_name']))
-                                            return_sql.append(lista_tmp[len(lista_tmp) - 1].replace('|%|ID|%|',str(data['id_strain'])))
-                                        data_del['used'] = True
-                                        found = True
-                                        break
-
-                                #if any item was added
-                                if not found:
+                if not found_strain:
+                    for location in locations:
+                        loc_pos += 1
+                        loc_data = {}
+                        loc_data['id_lot'] = data['inserted_lot_id']
+                        loc_data['id_strain'] = data['id_strain']
+                        loc_data['id_container_hierarchy'] = str(location['id_container_hierarchy'])
+                        loc_data['row'] = str(location['row'])
+                        loc_data['col'] = str(location['col'])
+                        loc_data['quantity'] = location['quantity']
+                        self.logger.debug('insert lsl: %s' % str(loc_data))
+                        self.execute('get_movement_lot_strain_usage_information_all', {'id_lot': loc_data['id_lot'],'id_strain': loc_data['id_strain']}, force_debug=False)
+                        if self.fetch('all') and len(self.fetch('all')) > 0:
+                            pass
+                        else:
+                            self.execute('insert_lot_strain_location', loc_data)
+    
+                            if save_log:
+                                if (self.action == 'insert'):
+                                    id_log_operation = 8
+    
                                     lista_tmp = []
                                     dict_temp = {'stock' : data['stock_pos'].splitlines()[loc_pos], 'id' : loc_data['id_lot'], 'lang' : '' }
-                                    lista_tmp = self.l.checkModifiedFields('', dict_temp, data['id_strain'], strain_code, '', 'insert', id_log_operation, id_log_entity, self.ConvertStrUnicode(data['lot_name']))
+                                    lista_tmp = self.l.checkModifiedFields('', dict_temp, loc_data['id_strain'], strain_code, '', 'insert', id_log_operation, id_log_entity, self.ConvertStrUnicode(data['lot_name']))
                                     return_sql.append(lista_tmp[len(lista_tmp) - 1].replace('|%|ID|%|',str(data['id_strain'])))
+    
+                                elif (self.action == 'update'):
+                                    id_log_operation = 9
+    
+                                    found = False
+                                    for data_del in location_data_del:
+                                        #if location has changed quantity
+                                        if str(data_del['id_container_hierarchy']) == str(loc_data['id_container_hierarchy']) and str(data_del['row']) == str(loc_data['row']) and str(data_del['col']) == str(loc_data['col']):
+                                            if str(data_del['quantity']) != str(loc_data['quantity']):
+                                                lista_tmp = []
+                                                dict_temp = {'stock' : data['stock_pos'].splitlines()[loc_pos], 'id' : loc_data['id_lot'], 'lang' : '' }
+                                                lista_tmp = self.l.checkModifiedFields('', dict_temp, data['id_strain'], strain_code, '', 'insert', id_log_operation, id_log_entity, self.ConvertStrUnicode(data['lot_name']))
+                                                return_sql.append(lista_tmp[len(lista_tmp) - 1].replace('|%|ID|%|',str(data['id_strain'])))
+                                            data_del['used'] = True
+                                            found = True
+                                            break
+    
+                                    #if any item was added
+                                    if not found:
+                                        lista_tmp = []
+                                        dict_temp = {'stock' : data['stock_pos'].splitlines()[loc_pos], 'id' : loc_data['id_lot'], 'lang' : '' }
+                                        lista_tmp = self.l.checkModifiedFields('', dict_temp, data['id_strain'], strain_code, '', 'insert', id_log_operation, id_log_entity, self.ConvertStrUnicode(data['lot_name']))
+                                        return_sql.append(lista_tmp[len(lista_tmp) - 1].replace('|%|ID|%|',str(data['id_strain'])))
 
                 #items with 'used' = 0, are items than was deleted
                 if self.action == 'update':

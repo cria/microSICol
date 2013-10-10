@@ -192,7 +192,7 @@ class CSV_Report(Reports_Common):
         sys.stdout.write("Content-Type: application/octet-stream\n")
         sys.stdout.write("Content-Length: " + str(len(output)) + "\n")
         sys.stdout.write("Content-Disposition: attachment; filename=\"sicol_report.csv\"\r\n\n")
-        sys.stdout.write(output.encode("utf-8"))
+        sys.stdout.write(output.encode("utf-8-sig"))
                         
         return output
         
