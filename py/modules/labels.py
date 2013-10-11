@@ -447,6 +447,7 @@ label_dict = {
 "label_Access_Denied": _("ACCESS DENIED!"),
 "label_Location_Container": _("Container"),
 "label_Location_Location": _("Location"),
+"label_Location_ValorClique": _("Click Quantity"),
 "label_Location_Yes": _("yes"),
 "label_Location_No": _("no"),
 "label_Print": _("PRINT"),
@@ -569,7 +570,6 @@ label_dict = {
 "label_Rep_General_Report_Format": _("Report format"),
 "label_Rep_Language" : _("Language"),
 "label_Rep_Language_Values" : _ ("Use fields content in"),
-"label_Rep_Loading": _("Loading report. This operation may take several minutes."),
 
 "label_Rep_Format": _("Format"),
 "label_Rep_Default_HTML": _("Default HTML"),

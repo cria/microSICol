@@ -10,7 +10,7 @@
     </div>
     <div class="main">
         <div id="location0" class="location">
-        	<table class="locationTable">
+        <table class="locationTable">
             <tr>
             	<td width="120">
 	            	<label for="container">%(label_Location_Container)s</label>
@@ -25,11 +25,15 @@
 	                <select name="location" class="location">
 	                    <option></option>
 	                </select>
+			</td>
+				<td>
+					<label for="location">%(label_Location_ValorClique)s</label><br/>
+					<input type="text" id="txtQtdClick" name="txtQtdClick" value="1" maxlength="4" style="width:30px; border-style:solid !important; border-width: 1px !important; border-color: rgb(155,176,107) !important;"/>
 				</td>
 			</tr>
-			</table>
-			<br/>
-			<table class="locationDetailsTable">
+	</table>
+	<br/>
+	<table class="locationDetailsTable">
 			<tr>
 				<td>
 					<div class="locationContainer">
@@ -52,8 +56,8 @@
                     	</td></tr>
                     </table>
                 </td>
-			</tr>
-			</table>
+		</tr>
+		</table>
         </div>
     </div>
     <input type="hidden" id="operation" value="%(operation)s">

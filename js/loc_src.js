@@ -102,7 +102,8 @@ Array.prototype.remove = function(from, to) {
     return this.push.apply(this, rest);
 };
 
-function LocationPicker(data) {
+function LocationPicker(data)
+{
     // -------------- object properties
     
     // collection id
@@ -225,16 +226,33 @@ function LocationPicker(data) {
             }
         }
         
-        if (this.operation == 'add') {
+        if (this.operation == 'add')
+        {
             if (td.is(".selectedCell") || td.is(".selectedCellDist")) {
                 quantity_used = parseInt(quantity_used, 10);
-                quantity_used += 1;
+                if(click)
+                {
+                    if (isNaN($("#txtQtdClick").val()))
+                    {
+                        quantity_used += parseInt($("#txtQtdClick").val(), 10);
+                    }
+                    else
+                    {
+                        quantity_used += 1;
+                        $("#txtQtdClick").val("1")
+                    }
+                }
+                else
+                {
+                    quantity_used += 1;
+                }
                 td.attr('quantity_used', quantity_used);
                 this.addSelectedLocation(hierarchy, row, col, quantity_used);
                 
                 td.css('background-image', "url('../img/inserting.gif')");
                 td.css('background-repeat', 'no-repeat');
                 td.css('background-position', 'center');
+                td.css('background-color', '#C3C3C3');
                 td.css('color','#FFFFFF');
                 
                 td.attr('title', _('Selected'));
@@ -243,7 +261,8 @@ function LocationPicker(data) {
                     td.html(quantity_used);                   
             }
         }
-        else {
+        else
+        {
             if (td.is(".selectedCell")) {
                 quantity_total = parseInt(quantity_total, 10);
                 quantity_used = parseInt(quantity_used, 10);
