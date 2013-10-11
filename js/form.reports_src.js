@@ -268,6 +268,37 @@ function checkFloat(obj,lbl_obj,max_integers,max_decimals,signed, isList)
 }
 
 
+function escondeCarregando()
+{
+    $("[id*=divCarregando]").css({ 'display': 'none', 'cursor': 'default' });    
+}
+
+function mostraCarregando()
+{
+    var $document = $(document);
+    $("[id*=divCarregando]").css({ 'display': 'block', 'cursor': 'wait' });    
+    //var $window = $(window);
+
+    //$window.scroll(atualizaDiv());
+    //$window.resize(atualizaDiv());
+
+    var left = $("[id*=divCarregando]").width() / 5;
+    var top = $("[id*=divCarregando]").height() / 3;
+    $("[id*=tableCarregando]").css({ 'left': left, 'top': top });
+}
+
+function atualizaDiv()
+{
+    $("[id*=divCarregando]").css({ 'height': $(document).height(), 'width': $(document).width() });
+
+    var $window = $(window);
+
+    var left = $window.width() / 2;
+    var top = $window.height() / 2;
+    $("[id*=tableCarregando]").css({ 'left': left, 'top': top });
+}
+
+
 
 function ajustarAction()
 {
@@ -276,6 +307,7 @@ function ajustarAction()
         document.forms['formReports'].action = "./reports.edit.py";
     }
 }
+
 
 
 if (document.location.toString().indexOf('reports.edit.py') != -1 ||

@@ -81,4 +81,18 @@ div.content label
   text-transform:lowercase;
 }
 
-
+#divCarregando
+{  
+  position:absolute;
+  top:0px !important;
+  left:0px !important;
+  height:100% !important;
+  width:100% !important;
+  background-image:url(../img/page_loading.gif);
+  vertical-align:middle;
+  vertical-align:middle;
+  text-align:center;
+  overflow:hidden;
+  cursor:default;
+  z-index:9999;
+}
