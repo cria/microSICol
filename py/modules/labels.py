@@ -569,7 +569,6 @@ label_dict = {
 "label_Rep_General_Report_Format": _("Report format"),
 "label_Rep_Language" : _("Language"),
 "label_Rep_Language_Values" : _ ("Use fields content in"),
-"label_Rep_Loading": _("Loading report. This operation may take several minutes."),
 
 "label_Rep_Format": _("Format"),
 "label_Rep_Default_HTML": _("Default HTML"),

@@ -136,8 +136,8 @@ class Reports(object):
     
         except Exception, err:
             raise err
-            
-        return output.replace('%', '%%')
+    
+        return output
     
     def new(self):
         step = '1'
@@ -310,7 +310,7 @@ class Reports(object):
                 return_types.extend("<option  value='" + str(type['id_report_type']) + "'>" + type['type'] + "</option>")
         
         data['type'] = "".join(return_types)
-        #self.session.data['new_report'] = {}
+        self.session.data['new_report'] = {}
         
         return data
             
@@ -726,7 +726,17 @@ class Reports(object):
     def save_data_step2(self):
         #brk(host="localhost", port=9000)
         
-        mudou = False        
+        mudou = False
+        
+        fieldsAntigo = self.session.data['new_report'].get('field', [])
+        
+        if self.form.has_key('hdn_field'):
+            self.session.data['new_report']['field'] = self.form['hdn_field'].value[1:-1].split(',')
+        else:
+            self.session.data['new_report']['field'] = []
+        
+        if fieldsAntigo != self.session.data['new_report']['field']:
+            mudou = True
             
         selectAntigo = self.session.data['new_report'].get('select', [])
         
