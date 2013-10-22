@@ -27,20 +27,11 @@ The detailed instructions on how to add these packages are very system-specific 
 
 == Getting USC ==
 
-USC can be obtaing by downloading a compressed version available here:
+A compressed zip file containing USC can be obtained by the following link:
 
-[http://sicol.cria.org.br http://sicol.cria.org.br]
+[https://github.com/cria/microSICol/archive/v2.02.zip https://github.com/cria/microSICol/archive/v2.02.zip]
 
-Instead, an alternative method is to fetch a up-to-date version directly from the repository. You can do this by running the following command:
-```
-git clone https://github.com/cria/microSICol.git 
-```
-
-Of course, you'll need to have ``git`` installed. How to install Git is beyound the scope of this guide, but usually you can install as a package just like you did to install the requirements.
-
-At the moment, only the most up-to-date development version can be fetched. Earlier versions were keep closed in a close development model and weren't release-tagged.
-
-This doesn't mean that USC is under heavy development. On the contrary, the software is internally considered very stable for CRIA purposes and it is highly probable that it won't change too much from now on. The purpose of versioning is to facilitate distributing changes. Compressing distributions in e-mail exchanges is not productive.
+Extracting it will yield a directory called ``microSICol-v2.02/``.
 
 == Extracting ==
 
