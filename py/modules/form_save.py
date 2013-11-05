@@ -2234,7 +2234,7 @@ class Save(object):
             dic_temp['cryo'] = form.getvalue('preservation_cryo_'+str(n))
             dic_temp['type'] = form.getvalue('preservation_type_'+str(n))
             dic_temp['purity'] = form.getvalue('preservation_purity_'+str(n))
-            if form.getvalue('hdnReusedStrain') <> "[]":
+            if form.getvalue('hdnReusedStrain') <> "[]" and form.getvalue('hdnReusedStrain') <> None:
                 dic_temp['hdnReusedStrain'] = eval(form.getvalue('hdnReusedStrain'))
             else:
                 dic_temp['hdnReusedStrain'] = []
