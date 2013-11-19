@@ -13,7 +13,7 @@
 					<p><input type="hidden" name="row" id="row" value="%(row_number)s" /></p>
 					<p class='cols_2'>
 						<label for="code" id="label_code">%(label_Documents_General_Code)s</label><br />
-						<input onblur="if (!isEmpty(this,null)) checkCode(this,null);" name="code" id="code" type="text" maxlength="20" value="%(code)s" />
+						<input onblur="if (!isEmpty(this,null)) checkCode(this,null);" name="code" id="code" type="text" maxlength="20" value="%(code)s" %(code_Documents_disabled)s/>
 					</p>					
   					<p class='cols_2'>
   						<label for="qualifier" id="label_qualifier">%(label_Documents_General_Qualifier)s</label><br />

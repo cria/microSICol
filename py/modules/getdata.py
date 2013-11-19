@@ -1972,6 +1972,7 @@ class Getdata(object):
             is_first = False
         #Security Tab
         self.g.security_tab(self.cookie_value, action, data, 'doc')
+        
         if action in ('edit','new'):
             #Qualifier
             self.execute('get_all_from_table',{'table':'doc_qualifier'})
@@ -1994,6 +1995,7 @@ class Getdata(object):
             del qualifiers, qualifier_menu
 
         if action in ('edit'):
+            data['code_Documents_disabled'] = " disabled='True' "
             if data['id_qualifier'] == 4: # Type of document: Meio
                 # Need to check preservation dependency
                 self.execute('get_doc_dependency_with_preservation', {'id':data['id']})
@@ -2013,6 +2015,7 @@ class Getdata(object):
 
         if action in ('new'):
             data['js_data'] += 'qualifier_blocked = false;'
+            data['code_Documents_disabled'] = ""
 
         return data
 
@@ -3630,6 +3633,7 @@ class Getdata(object):
                 aux_data += ",".join(all_info)
                 aux_data += '}; reused_strains = ' + JsonBuilder.dump(reused_strains) + ';'
                 data['js_data'].append(aux_data)
+                data['hdn_reused_strain'] = JsonBuilder.dump(reused_strains)
 
 
         data['old_combination'] = ",".join(data['old_combination'])

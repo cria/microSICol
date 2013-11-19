@@ -447,6 +447,7 @@ label_dict = {
 "label_Access_Denied": _("ACCESS DENIED!"),
 "label_Location_Container": _("Container"),
 "label_Location_Location": _("Location"),
+"label_Location_ValorClique": _("Click Quantity"),
 "label_Location_Yes": _("yes"),
 "label_Location_No": _("no"),
 "label_Print": _("PRINT"),

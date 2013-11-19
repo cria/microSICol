@@ -195,6 +195,6 @@ class XML_Report(Reports_Common):
         sys.stdout.write("Content-Type: text/xml\n")
         sys.stdout.write("Content-Length: " + str(len(output)) + "\n")
         sys.stdout.write("Content-Disposition: attachment; filename=\"sicol_report.xml\"\r\n\n")
-        sys.stdout.write(output.encode("utf-8"))
+        sys.stdout.write(output.encode("utf-8-sig"))
        
         return output
