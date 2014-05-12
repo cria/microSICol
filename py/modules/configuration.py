@@ -693,7 +693,7 @@ class Configuration(object):
           except ImportError:
               from md5 import new as new_md5
           user_pwd = new_md5(str(self.form['util_user_pwd'].value)).hexdigest()
-        user_name = str(self.form['util_user_name'].value)
+        user_name = str(self.form['util_user_name'].value).replace("'", "''")
         user_comments = ''
         if (self.form.has_key('util_user_comments')): #Empty fields are discarded automatically
           user_comments = str(self.form['util_user_comments'].value)
