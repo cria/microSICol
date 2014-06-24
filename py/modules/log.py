@@ -70,7 +70,7 @@ class Log(object):
                 data_entity = entity_selected[0]
             
             for key, value in data.items():
-                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang')):
+                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang') and (key != 'hdnReusedStrain')):
                     valorForm = self.ConvertStrUnicode(data[key])
                     valorBanco = self.ConvertStrUnicode(data_entity[key])
                     if ((valorForm == 'None' and data_entity[key] == '') or (valorForm == valorBanco)):
@@ -97,7 +97,7 @@ class Log(object):
                         return_value.append("('"  + x.strftime('%Y-%m-%d %H:%M:%S') + "', '" + self.session.data['user_name'] + "'," + str(id_log_operation) + "," + str(id_subcoll) + "," + str(id_log_entity) + "," + str(id_entity) + ", '" + code_entity + "'," + lot_name_final + ", " + str(log_dict[key]['id']) + "," + lang_name + ",'" + data_lookup.replace("'", "\\'") + "'),")
         elif(action == "insert"):
             for key, value in data.items():
-                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang')):
+                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang') and (key != 'hdnReusedStrain')):
                     
                     valor = self.ConvertStrUnicode((data[key]))
                     if ((valor != None) and (self.ConvertStrUnicode(valor) != "") and (self.ConvertStrUnicode(valor) != 'None')):
