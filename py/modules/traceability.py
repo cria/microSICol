@@ -315,7 +315,8 @@ class Traceability(object):
             return ""
 
     def user_condition(self, filter_value):
-        return "AND user LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND user LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 
     def operation_condition(self, filter_value):
         return "AND id_log_operation = '%s'" % filter_value
@@ -324,16 +325,19 @@ class Traceability(object):
         return "AND id_entity LIKE '%%%s%%'" % filter_value
 
     def strain_code_condition(self, filter_value):
-        return "AND code_entity LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND code_entity LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 		
     def lot_condition(self, filter_value):
-        return "AND lot LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND lot LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 
     def field_condition(self, filter_value):
         return "AND id_log_field = '%s'" % filter_value
 
     def value_condition(self, filter_value):
-        return "AND value LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND value LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 
     def users_list_as_options(self, selected_value):
         return self.anything_list_as_options(
@@ -365,6 +369,8 @@ class Traceability(object):
         selected_value=None,
         translate=False):
 
+        g = General()
+
         option_template = '<option value="%s">%s</option>'
         selected_option_template = '<option value="%s" selected>%s</option>'
 
@@ -382,7 +388,7 @@ class Traceability(object):
         options = [empty_option]
 
         for row in rows:
-            if str(row[value_field]) == str(selected_value):
+            if g.ConvertStrUnicode(row[value_field]) == g.ConvertStrUnicode(selected_value):
                 template = selected_option_template
             else:
                 template = option_template
