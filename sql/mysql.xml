@@ -2374,7 +2374,7 @@
                 str_quality.id_quality,
                 str_quality.id_user as tec_resp,
                 str_quality.id_lot AS id_lot_qc,
-                str_quality.`date`
+                str_quality.`date` AS date_qc
             FROM
                 str_quality
             WHERE
