@@ -296,7 +296,7 @@ class Reports(object):
         
         data['name_report'] = self.session.data.get('new_report', {'name':''})['name'].replace('"', '&#34;')
         
-        self.execute ("get_reports_types", self.session.data)
+        self.execute ("get_reports_types", {'id_lang':self.session.data['id_lang']}) 
         types = self.fetch("all")
         
         return_types = []
