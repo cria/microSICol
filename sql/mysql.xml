@@ -1904,7 +1904,7 @@
 
        <sql name="get_sciname_builder_fields"><![CDATA[
            SELECT
-          id_hierarchy, seq, hi_tax, rank, has_author, use_author, in_sciname, required,
+          id_hierarchy, seq, hi_tax, `rank`, has_author, use_author, in_sciname, required,
           important, string_format, string_case, prefix, suffix, default_value, id_taxon_group
         FROM
           view_hierarchy
