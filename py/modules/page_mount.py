@@ -49,7 +49,7 @@ class Principal(object):
         '''
         Class Constructor
         '''
-        
+
         #Define Logging
         self.logger = Logging.getLogger("page_mount")
         self.d = self.logger.debug
@@ -68,7 +68,7 @@ class Principal(object):
         self.execute = self.dbconnection.execute
         self.cursor = self.dbconnection.cursor
         self.fetch = self.dbconnection.fetch
-        
+
         #Define others global vars
         self.form = FieldStorage()
         self.session = Session()
@@ -135,9 +135,9 @@ class Principal(object):
         langs = db.fetch('all')
         langs_id = {}
         for lang in langs:
-           langs_id[lang['code']] = lang['id_lang']
+            langs_id[lang['code']] = lang['id_lang']
         for subcoll_lang in subcoll_langs:
-           data_lang.append( { subcoll_lang : langs_id[subcoll_lang] } )
+            data_lang.append( { subcoll_lang : langs_id[subcoll_lang] } )
 
         self.logger.debug('saindo')
         return data_lang
@@ -229,7 +229,7 @@ class Principal(object):
             #Save set data
             self.logger.debug("Returning from setting vars...")
             self.session.save()
-        except Exception, e:
+        except Exception as e:
             import traceback
             self.logger.error('Error logging user in: %s', traceback.format_exc(e))
             raise e
@@ -258,7 +258,7 @@ class Principal(object):
                 out += '\n\n%s <b>label_lang</b> %s' % (_("Invalid"), _("entry in config.xml."))
                 out += '\n<br />%s' % _('Check field "code" of table "lang" in main database.')
                 out += self.g.read_html('login_check') % -5
-                print out
+                print(out)
                 exit(1)
         #self.dbConnection always contain a reference to the first sqlite database only.
         self.session.save()
@@ -280,33 +280,33 @@ class Principal(object):
         import string
         exception.clear_exceptions()
         if (ex_error == 'column login is not unique'):
-          ex_error = _("Login already exists!")
-          str_error = '<div class="user_error">%s</div>' % ex_error
-          css = ('main','default','default.detail','form.save')
-          self.header_includes(page, category, js, css)
-          self.data['page'] = self.g.read_html('form.save')
-          self.data['error_info'] = str_error
+            ex_error = _("Login already exists!")
+            str_error = '<div class="user_error">%s</div>' % ex_error
+            css = ('main','default','default.detail','form.save')
+            self.header_includes(page, category, js, css)
+            self.data['page'] = self.g.read_html('form.save')
+            self.data['error_info'] = str_error
         elif (ex_error == "no_lots_available"):
-          ex_error = _("There are currently no lots available for distribution!") + "<br />\n" + _("Please insert a lot in the Preservation screen.")
-          str_error = '<div class="user_error">%s</div>' % ex_error
-          css = ('main','default','default.detail','form.save')
-          self.header_includes(page, category, (), css)
-          self.data['page'] = self.g.read_html('form.save')
-          self.data['error_info'] = str_error
+            ex_error = _("There are currently no lots available for distribution!") + "<br />\n" + _("Please insert a lot in the Preservation screen.")
+            str_error = '<div class="user_error">%s</div>' % ex_error
+            css = ('main','default','default.detail','form.save')
+            self.header_includes(page, category, (), css)
+            self.data['page'] = self.g.read_html('form.save')
+            self.data['error_info'] = str_error
         elif (ex_error == "no_inst_available"):
-          ex_error = _("There are currently no institutions available in the system!") + "<br />\n" + _("Please insert an institution.")
-          str_error = '<div class="user_error">%s</div>' % ex_error
-          css = ('main','default','default.detail','form.save')
-          self.header_includes(page, category, (), css)
-          self.data['page'] = self.g.read_html('form.save')
-          self.data['error_info'] = str_error
+            ex_error = _("There are currently no institutions available in the system!") + "<br />\n" + _("Please insert an institution.")
+            str_error = '<div class="user_error">%s</div>' % ex_error
+            css = ('main','default','default.detail','form.save')
+            self.header_includes(page, category, (), css)
+            self.data['page'] = self.g.read_html('form.save')
+            self.data['error_info'] = str_error
         elif (string.find(ex_error, "Timeout") != -1):
-          ex_error = _("Generation Timeout") + ": " + "%.1f " %  float(ex_error.split(":")[1]) + " seconds." + "<br />\n" + _("Please change the fields in your report or change the 'report_timeout' parameter in the config.xml file.")
-          str_error = '<div class="user_error">%s</div>' % ex_error
-          css = ('main','default','default.detail','form.save')
-          self.header_includes(page, category, (), css)
-          self.data['page'] = self.g.read_html('report.error')
-          self.data['error_info'] = str_error
+            ex_error = _("Generation Timeout") + ": " + "%.1f " %  float(ex_error.split(":")[1]) + " seconds." + "<br />\n" + _("Please change the fields in your report or change the 'report_timeout' parameter in the config.xml file.")
+            str_error = '<div class="user_error">%s</div>' % ex_error
+            css = ('main','default','default.detail','form.save')
+            self.header_includes(page, category, (), css)
+            self.data['page'] = self.g.read_html('report.error')
+            self.data['error_info'] = str_error
 
     def mount(self, page, category, js, css):
         #brk(host="localhost", port=9000)        
@@ -317,7 +317,7 @@ class Principal(object):
             self.session.delete()
             self.session.del_expired_sessions()
             #Go straight back to login screen
-            print self.g.redirect(self.index)
+            print(self.g.redirect(self.index))
         try:
             self.content_includes(page, category)
             self.header_includes(page, category, js, css)
@@ -352,7 +352,7 @@ class Principal(object):
             else:
                 #without permission, go to index.py
                 if (page.find("strains.quality") == -1): #iframe
-                    print self.g.redirect(self.index)
+                    print(self.g.redirect(self.index))
         else:
             self.session.load(self.cookie_value)
             #empty session cache
@@ -365,7 +365,7 @@ class Principal(object):
                     self.session.data['id_user']
                     self.session.data['login']
                 except KeyError:
-                    print self.g.redirect(self.index)
+                    print(self.g.redirect(self.index))
 
             #test access violation without a chosen subcollection
             if (category == 'main'):
@@ -373,7 +373,7 @@ class Principal(object):
                     self.session.data['id_coll']
                     self.session.data['id_subcoll']
                 except KeyError:
-                    print self.g.redirect(self.index)
+                    print(self.g.redirect(self.index))
 
     def check_feedback(self):
         #check feedback parameter
@@ -393,46 +393,46 @@ class Principal(object):
         '''
         html_page = ''
         if action in ('save', 'del'):
-          if action == 'del':
-            allow_delete = self.g.get_area_permission(self.cookie_value, self.session, area, 'allow_delete')
-            if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-              allow_delete = 'y'
-            if allow_delete != 'y':
-              html_page = self.g.read_html('access.denied')
+            if action == 'del':
+                allow_delete = self.g.get_area_permission(self.cookie_value, self.session, area, 'allow_delete')
+                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    allow_delete = 'y'
+                if allow_delete != 'y':
+                    html_page = self.g.read_html('access.denied')
+                else:
+                    html_page = self.g.read_html('form.save')
             else:
-              html_page = self.g.read_html('form.save')
-          else:
-            html_page = self.g.read_html('form.save')
+                html_page = self.g.read_html('form.save')
         elif action in ('form', 'new'):
           #Check whether user has permission to create new items
-          if action == 'new':
-            allow_create = self.g.get_area_permission(self.cookie_value, self.session, area, 'allow_create')
-            if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-              allow_create = 'y'
-            if allow_create != 'y':
-              html_page = self.g.read_html('access.denied')
-            else:
-              html_page = self.g.read_html(area + '.form')
-          else: #action == 'form', when user is editing item
-            allow_edit = self.g.get_item_permission(self.cookie_value, self.session, area, self.form.getvalue('id'))
-            if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-              allow_edit = 'w'
-            if allow_edit != 'w':
-              html_page = self.g.read_html('access.denied')
-            else:
-              html_page = self.g.read_html(area + '.form')
+            if action == 'new':
+                allow_create = self.g.get_area_permission(self.cookie_value, self.session, area, 'allow_create')
+                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    allow_create = 'y'
+                if allow_create != 'y':
+                    html_page = self.g.read_html('access.denied')
+                else:
+                    html_page = self.g.read_html(area + '.form')
+            else: #action == 'form', when user is editing item
+                allow_edit = self.g.get_item_permission(self.cookie_value, self.session, area, self.form.getvalue('id'))
+                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    allow_edit = 'w'
+                if allow_edit != 'w':
+                    html_page = self.g.read_html('access.denied')
+                else:
+                    html_page = self.g.read_html(area + '.form')
         else:
-          if action == 'detail':
-            #Check whether user has permission to see item details of chosen area
-            allow_detail = self.g.get_item_permission(self.cookie_value, self.session, area, self.form.getvalue('id'))
-            if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-              allow_detail = 'w'
-            if allow_detail == '': #no permission
-              html_page = self.g.read_html('access.denied')
-            else: #read or write permission
-              html_page = self.g.read_html(page)
-          else:
-            html_page = self.g.read_html(page)
+            if action == 'detail':
+                #Check whether user has permission to see item details of chosen area
+                allow_detail = self.g.get_item_permission(self.cookie_value, self.session, area, self.form.getvalue('id'))
+                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    allow_detail = 'w'
+                if allow_detail == '': #no permission
+                    html_page = self.g.read_html('access.denied')
+                else: #read or write permission
+                    html_page = self.g.read_html(page)
+            else:
+                html_page = self.g.read_html(page)
         return html_page
 
     def content_includes(self, page, category):
@@ -473,7 +473,7 @@ class Principal(object):
                             self.session.save()
 
                     if redirect:
-                        print self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/logout.py'))
+                        print(self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/logout.py')))
                 #update session for chosen subcollection
                 else:
                     self.set_session_vars(self.form.getvalue('coll'), self.form.getvalue('subcoll'))
@@ -481,7 +481,7 @@ class Principal(object):
                     from modules.js_translator import JS_Translator
                     js_tr = JS_Translator(self.cookie_value, self.i18n)
                     if (js_tr.needsUpdate()): js_tr.doUpdate()
-                    print self.g.redirect( self.start_page )
+                    print(self.g.redirect( self.start_page ))
             elif (page == 'login_check'):
 
                 self.html_main = ''
@@ -518,7 +518,7 @@ class Principal(object):
             if page == 'download':
                 from download import Download
                 page = Download(self.form)
-                print page.doc()
+                print(page.doc())
                 exit(0)
             elif page.split('.')[0] == 'reports' and page.split('.')[1] in ('show', 'edit', 'new'):
                 from reports import Reports
@@ -529,7 +529,7 @@ class Principal(object):
                     #brk(host="localhost", port=9000)                        
                     try:
                         self.html_main = page.show()
-                    except Exception, err:                        
+                    except Exception as err:                        
                         raise exception.SicolException(err.message)                        
                         
                     self.html_header = ""
@@ -540,10 +540,10 @@ class Principal(object):
                     #If user cannot create a new strain, he also cannot create a new strain from a previous one.
                     allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'reports', 'allow_create')
                     if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                      allow_create = 'y'
+                        allow_create = 'y'
                     if allow_create != 'y':
-                      self.data['page'] = self.g.read_html('access.denied')
-                      self.page_parts['submenu'] = ""
+                        self.data['page'] = self.g.read_html('access.denied')
+                        self.page_parts['submenu'] = ""
                     else:                    
                         dict = {}
                         dict = page.new()
@@ -593,31 +593,31 @@ class Principal(object):
                     user_id = str(self.form['util_user_id'].value)
                     user_pwd = ''
                     if (self.form.has_key('util_user_pwd')): #Empty fields are discarded automatically
-                      user_pwd = str(self.form['util_user_pwd'].value)
-                      try:
-                        from hashlib import md5 as new_md5
-                      except ImportError:
-                        from md5 import new as new_md5
-                      user_pwd = new_md5(user_pwd).hexdigest()
-                      #Change User Password
-                      self.execute('update_user_pwd_only',{'id_user':user_id,'pwd':user_pwd})
+                        user_pwd = str(self.form['util_user_pwd'].value)
+                        try:
+                            from hashlib import md5 as new_md5
+                        except ImportError:
+                            from md5 import new as new_md5
+                        user_pwd = new_md5(user_pwd).hexdigest()
+                        #Change User Password
+                        self.execute('update_user_pwd_only',{'id_user':user_id,'pwd':user_pwd})
 
                     #Update user lines shown per page (used for paging)
                     user_lines_per_page = 50 #default value
                     if (self.form.has_key('util_user_lines_per_page')): #Empty fields are discarded automatically
-                      user_lines_per_page = int(self.form['util_user_lines_per_page'].value)
-                      if user_lines_per_page <= 0:
-                        user_lines_per_page = 50 #default value
-                      self.session.data['lines_per_page'] = user_lines_per_page
+                        user_lines_per_page = int(self.form['util_user_lines_per_page'].value)
+                        if user_lines_per_page <= 0:
+                            user_lines_per_page = 50 #default value
+                        self.session.data['lines_per_page'] = user_lines_per_page
                     self.execute('update_user_lines_per_page',{'id_user':user_id,'lines_per_page':user_lines_per_page})
 
                     #Update user lines shown per page (used for paging)
                     user_max_num_pages = 5 #default value
                     if (self.form.has_key('util_user_max_num_pages')): #Empty fields are discarded automatically
-                      user_max_num_pages = int(self.form['util_user_max_num_pages'].value)
-                      if user_max_num_pages <= 0:
-                        user_max_num_pages = 5 #default value
-                      self.session.data['max_num_pages'] = user_max_num_pages
+                        user_max_num_pages = int(self.form['util_user_max_num_pages'].value)
+                        if user_max_num_pages <= 0:
+                            user_max_num_pages = 5 #default value
+                        self.session.data['max_num_pages'] = user_max_num_pages
                     self.execute('update_user_max_num_pages',{'id_user':user_id,'max_num_pages':user_max_num_pages})
 
                     #Update user show strain inactives (used to show on list inactives strains)
@@ -643,7 +643,7 @@ class Principal(object):
                     if (js_tr.needsUpdate()): js_tr.doUpdate()
 
                     #Reload page to get effects from changes
-                    print self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/preferences.py'))
+                    print(self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/preferences.py')))
                     exit(0)
 
                 self.check_feedback()
@@ -693,10 +693,10 @@ class Principal(object):
                     self.check_feedback()
                 #Load HTML template
                 if (self.g.isAdmin(self.session.data['roles'])): #Administrator
-                  self.data['page'] = self.g.read_html('configuration')
+                    self.data['page'] = self.g.read_html('configuration')
                 else: #Non-Admin users are not allowed here
-                  self.data['page'] = self.g.read_html('access.denied')
-                  return
+                    self.data['page'] = self.g.read_html('access.denied')
+                    return
                 # JAVASCRIPT Global Data
                 utils.loadJSData(self.data)
                 # Collections tab
@@ -768,13 +768,13 @@ class Principal(object):
 
             #Get who_lang
             if who not in ('doc','docpopup','ref','refpopup','container'):
-               self.data['who_lang'] = self.label_dict['menu_%s' % who.title()]
+                self.data['who_lang'] = self.label_dict['menu_%s' % who.title()]
             elif who in ('doc','docpopup'):
-               self.data['who_lang'] = self.label_dict['menu_Documents']
+                self.data['who_lang'] = self.label_dict['menu_Documents']
             elif who in ('ref','refpopup'):
-               self.data['who_lang'] = self.label_dict['menu_References']
+                self.data['who_lang'] = self.label_dict['menu_References']
             elif who in ('container'):
-               self.data['who_lang'] = self.label_dict['menu_Containers']
+                self.data['who_lang'] = self.label_dict['menu_Containers']
 
             #Getting Template Page
             if who in ('docpopup',):
@@ -805,19 +805,19 @@ class Principal(object):
                 elif action == 'form':
                     process_data = getdata.get(who, 'edit')
                     if process_data['next_action'] == 'insert':
-                      #Security
-                      #If user cannot create a new strain, he also cannot create a new strain from a previous one.
-                      allow_create = self.g.get_area_permission(self.cookie_value, self.session, who, 'allow_create')
-                      if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                        allow_create = 'y'
-                      if allow_create != 'y':
-                        html_page = self.g.read_html('access.denied')
+                        #Security
+                        #If user cannot create a new strain, he also cannot create a new strain from a previous one.
+                        allow_create = self.g.get_area_permission(self.cookie_value, self.session, who, 'allow_create')
+                        if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                            allow_create = 'y'
+                        if allow_create != 'y':
+                            html_page = self.g.read_html('access.denied')
                 elif action == 'new':
                     allow_create = self.g.get_area_permission(self.cookie_value, self.session, who, 'allow_create')
                     if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                      allow_create = 'y'
+                        allow_create = 'y'
                     if allow_create == 'y':
-                      process_data = getdata.get(who, 'new')
+                        process_data = getdata.get(who, 'new')
                 self.page_parts = getdata.page_parts
                 self.data['feedback_value'] = getdata.feedback_value
                 del getdata
@@ -833,12 +833,12 @@ class Principal(object):
             elif action == 'del':
                 allow_delete = self.g.get_area_permission(self.cookie_value, self.session, who, 'allow_delete')
                 if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                  allow_delete = 'y'
+                    allow_delete = 'y'
                 if allow_delete == 'y':
-                  from form_del import Delete
-                  delete = Delete(self.cookie_value, self.form)
-                  process_data = delete.set(who)
-                  del delete
+                    from form_del import Delete
+                    delete = Delete(self.cookie_value, self.form)
+                    process_data = delete.set(who)
+                    del delete
         elif (category == 'external'):
             if not (self.cookie_value and self.session.isvalid(self.cookie_value)):
                 self.html_main = "<script type='text/javascript'>window.parent.document.location = '%s';</script>" % self.index
@@ -919,42 +919,42 @@ class Principal(object):
         self.process_data = process_data
 
     def replace_externals(self, js, js_line, debug_mode=False):
-            tinymce_path = 'external/tinymce/jscripts/tiny_mce/tiny_mce'
-            
-            jquery_path = 'external/jquery/jquery'
-            jquery_boxy_path = 'external/jquery/jquery.boxy'
-            jquery_tooltip_path = 'external/jquery/jquery.tooltip.min'
-            jquery_select_path = 'external/jquery/jquery.selectboxes.min'
-            
-            jquery_ui_core = 'external/jquery/ui/jquery.ui.core'
-            jquery_ui_widget = 'external/jquery/ui/jquery.ui.widget'
-            jquery_ui_mouse = 'external/jquery/ui/jquery.ui.mouse'
-            
-            jquery_ui_sortable = 'external/jquery/ui/jquery.ui.sortable'
-            
-            json_path = 'external/json2'
-            sprintf_path = 'external/sprintf'
-            if js == 'ext.tinymce':
-                self.data['js'] += js_line % tinymce_path
-            elif js == 'ext.jquery':
-                self.data['js'] += js_line % jquery_path
-                self.data['js'] += js_line % jquery_boxy_path
-                self.data['js'] += js_line % jquery_tooltip_path
-                self.data['js'] += js_line % jquery_select_path
-            elif js == 'ext.jquery.ui':
-                self.data['js'] += js_line % jquery_ui_core
-                self.data['js'] += js_line % jquery_ui_widget
-                self.data['js'] += js_line % jquery_ui_mouse
-            elif js == 'ext.jquery.ui.sortable':
-                self.data['js'] += js_line % jquery_ui_sortable
-            elif js == 'ext.json':
-                self.data['js'] += js_line % json_path
-            elif js == 'ext.sprintf':
-                self.data['js'] += js_line % sprintf_path
-            else:
-                if debug_mode.lower() == 'true':
-                    js += '_src'
-                self.data['js'] += js_line % js
+        tinymce_path = 'external/tinymce/jscripts/tiny_mce/tiny_mce'
+
+        jquery_path = 'external/jquery/jquery'
+        jquery_boxy_path = 'external/jquery/jquery.boxy'
+        jquery_tooltip_path = 'external/jquery/jquery.tooltip.min'
+        jquery_select_path = 'external/jquery/jquery.selectboxes.min'
+
+        jquery_ui_core = 'external/jquery/ui/jquery.ui.core'
+        jquery_ui_widget = 'external/jquery/ui/jquery.ui.widget'
+        jquery_ui_mouse = 'external/jquery/ui/jquery.ui.mouse'
+
+        jquery_ui_sortable = 'external/jquery/ui/jquery.ui.sortable'
+
+        json_path = 'external/json2'
+        sprintf_path = 'external/sprintf'
+        if js == 'ext.tinymce':
+            self.data['js'] += js_line % tinymce_path
+        elif js == 'ext.jquery':
+            self.data['js'] += js_line % jquery_path
+            self.data['js'] += js_line % jquery_boxy_path
+            self.data['js'] += js_line % jquery_tooltip_path
+            self.data['js'] += js_line % jquery_select_path
+        elif js == 'ext.jquery.ui':
+            self.data['js'] += js_line % jquery_ui_core
+            self.data['js'] += js_line % jquery_ui_widget
+            self.data['js'] += js_line % jquery_ui_mouse
+        elif js == 'ext.jquery.ui.sortable':
+            self.data['js'] += js_line % jquery_ui_sortable
+        elif js == 'ext.json':
+            self.data['js'] += js_line % json_path
+        elif js == 'ext.sprintf':
+            self.data['js'] += js_line % sprintf_path
+        else:
+            if debug_mode.lower() == 'true':
+                js += '_src'
+            self.data['js'] += js_line % js
 
     def header_includes(self, page, category, js, css):
         g = General()
@@ -1023,31 +1023,31 @@ class Principal(object):
 
         #Force all data to be UTF8 compatible - make them all of 'unicode' type
         if self.data.has_key('error_info'):
-          try:
-            self.data['error_info'] = str(self.data['error_info'])
-            exception.clear_exceptions()
-          except:
-            pass
+            try:
+                self.data['error_info'] = str(self.data['error_info'])
+                exception.clear_exceptions()
+            except:
+                pass
 
         for i in self.data:
-          if type(self.data[i]) == str:
-            try:
-              self.data[i] = self.data[i].decode('utf8')
-            except:
-              pass
+            if type(self.data[i]) == str:
+                try:
+                    self.data[i] = self.data[i].decode('utf8')
+                except:
+                    pass
 
         #Join parts and show
         self.data['page'] = (self.data['page'] % self.data)
 
         #Do not show the configuration button to ordinary users
         if self.session.data.has_key('roles'):
-          if not self.g.isAdmin(self.session.data['roles']):
-            self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_admin")) document.getElementById("user_menu_admin").style.display="none";</script>'
+            if not self.g.isAdmin(self.session.data['roles']):
+                self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_admin")) document.getElementById("user_menu_admin").style.display="none";</script>'
         
         #Do not show the utilites button to ordinary users
         if self.session.data.has_key('roles'):
-          if not self.g.isManager(self.session.data['roles']):
-            self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_utilities")) document.getElementById("user_menu_utilities").style.display="none";</script>'
+            if not self.g.isManager(self.session.data['roles']):
+                self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_utilities")) document.getElementById("user_menu_utilities").style.display="none";</script>'
         
         full_page = "\n".join ((
                     self.http_header + "\n",
@@ -1059,7 +1059,7 @@ class Principal(object):
         try:
           #message,submenu
           full_page = full_page % self.data
-        except KeyError, e:
+        except KeyError as e:
             #create a SicolException, which properly formats our error:
             exception.SicolException ("%s: %s" % (_("KeyError when assembling final html"), e), 1, "%s\n<br />%s %s" % (str(e.args), _("Data"), self.data))
             full_page = "\n".join ((
@@ -1068,7 +1068,7 @@ class Principal(object):
                     exception.get_html(),
                     self.html_main,
                     self.html_footer))
-        except TypeError, e:
+        except TypeError as e:
           #Programming error: missing key(s) in self.data dictionary
           import re
           page_keys = re.compile(r"%\((.+?)\)",re.MULTILINE | re.DOTALL | re.IGNORECASE)
@@ -1086,5 +1086,5 @@ class Principal(object):
                   self.html_header,
                   exception.get_html()
                   ))
-        print full_page.encode('utf8')
+        print(full_page.encode('utf8'))
     
