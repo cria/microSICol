@@ -18,11 +18,11 @@ from cgi import FieldStorage
 from urlparse import urljoin
 
 #project imports
-from i18n import I18n
+from i18n import I18n, _
 import exception
 from session import Session
 from cookie import Cookie
-from general import General,DefDict
+from general import General, DefDict
 from dbconnection import dbConnection
 from loghelper import Logging
 
@@ -30,14 +30,14 @@ class Principal(object):
     i18n = I18n()
     g = General()
 
-    #Configs
+    # Configs
     root_dir = g.get_config('root_dir')
     index_url = g.get_config('index_url')
     http_header = g.get_config('http_header')
     js_line = g.get_config('javascript_line')
     css_line = g.get_config('css_line')
 
-    #HTML Parts
+    # HTML Parts
     html_header = g.read_html('header')
     html_main = g.read_html('main')
     html_footer = g.read_html('footer')
@@ -50,36 +50,36 @@ class Principal(object):
         Class Constructor
         '''
 
-        #Define Logging
+        # Define Logging
         self.logger = Logging.getLogger("page_mount")
         self.d = self.logger.debug
 
-        #Define Cookie
+        # Define Cookie
         self.cookie = Cookie()
         self.cookie_value = self.cookie.read('Sicol_Session')
 
-        #Set Language according to user preference
+        # Set Language according to user preference
         self.i18n = I18n(cookie_value=self.cookie_value)
         from labels import label_dict
         self.label_dict = label_dict
 
-        #Define Sqlite Connection
+        # Define Sqlite Connection
         self.dbconnection = dbConnection()
         self.execute = self.dbconnection.execute
         self.cursor = self.dbconnection.cursor
         self.fetch = self.dbconnection.fetch
 
-        #Define others global vars
+        # Define others global vars
         self.form = FieldStorage()
         self.session = Session()
         self.data = DefDict()
         self.data.update({
-                     'js':'',
-                     'css':'',
-                     'cookie':'',
-                     'start_page':self.start_page,
-                     'who':'',
-                     'feedback_value':0,
+                     'js': '',
+                     'css': '',
+                     'cookie': '',
+                     'start_page': self.start_page,
+                     'who': '',
+                     'feedback_value': 0,
                     })
         self.set_version()
         self.process_data = {}
@@ -89,7 +89,7 @@ class Principal(object):
         '''
         Check SICol version to show on page title
         '''
-        work_dir = path.join(self.root_dir,'v???')
+        work_dir = path.join(self.root_dir, 'v???')
         from glob import glob
         v = (glob(work_dir)[0])
         self.data['version'] = v[-3:-2]+'.'+v[-2:]
@@ -99,34 +99,36 @@ class Principal(object):
                      'subcoll_code','db_host','db_port','db_name','db_user',
                      'db_pwd','dbms')
         for info in init_info:
-            try: del self.session.data[info]
-            except KeyError: pass
+            try:
+                del self.session.data[info]
+            except KeyError:
+                pass
         self.session.save()
 
-    def fetch_data_langs(self,subcoll_id):
+    def fetch_data_langs(self, subcoll_id):
         '''
         Fetch all data_langs from database and return them ordered according
         to user-defined index of "sys_data_lang" table in SQLite
         '''
         self.logger.debug('entrando')
-        data_lang = [] #use list so we can ORDER a sequence of dictionaries
-        #langs ordered by user-defined index where the first one is the user current lang
-        #Presume that all indexes are correctly ordered (no gaps allowed)
-        self.execute('get_subcoll_data_langs',{'id_subcoll':subcoll_id})
+        data_lang = [] # use list so we can ORDER a sequence of dictionaries
+        # langs ordered by user-defined index where the first one is the user current lang
+        # Presume that all indexes are correctly ordered (no gaps allowed)
+        self.execute('get_subcoll_data_langs', {'id_subcoll': subcoll_id})
         subcoll_langs = self.fetch('rows')
-        if subcoll_langs == []: #Then get info from config.xml
+        if subcoll_langs == []:  # Then get info from config.xml
             subcoll_langs = self.g.get_config('data_lang').split(",")
-            #remove spaces
+            # remove spaces
             i = 0
             for subcoll_lang in subcoll_langs:
                 subcoll_langs[i] = subcoll_lang.replace(' ','')
                 i += 1
             del i
 
-        #import commands
-        #self.logger.debug("Whoami: %s", commands.getstatusoutput('whoami'))
+        # import commands
+        # self.logger.debug("Whoami: %s", commands.getstatusoutput('whoami'))
 
-        #Get all langs id and code
+        # Get all langs id and code
         self.session.save()
         self.logger.debug('metade')
         db = dbConnection(self.cookie_value)
@@ -137,7 +139,7 @@ class Principal(object):
         for lang in langs:
             langs_id[lang['code']] = lang['id_lang']
         for subcoll_lang in subcoll_langs:
-            data_lang.append( { subcoll_lang : langs_id[subcoll_lang] } )
+            data_lang.append({subcoll_lang: langs_id[subcoll_lang]})
 
         self.logger.debug('saindo')
         return data_lang
@@ -149,36 +151,36 @@ class Principal(object):
         self.session.load(self.cookie_value)
         id_user = self.session.data['id_user']
 
-        #Collection and Subcollection info
+        # Collection and Subcollection info
         if not (id_coll and id_subcoll):
             self.logger.debug('Problem zone 1: %s %s' % (id_coll, id_subcoll))
-            #Collection Data
+            # Collection Data
             self.execute('get_coll_data',{'id_user':id_user})
             coll_data = self.fetch('columns')
             self.logger.debug('coll_data: %s' % str(coll_data))
             self.session.data['id_coll'] = coll_data['id_coll']
             self.session.data['coll_name'] = coll_data['coll_name']
-            #Subcollection Data
-            self.execute('get_subcoll_data',{'id_user':id_user})
+            # Subcollection Data
+            self.execute('get_subcoll_data', {'id_user': id_user})
             subcoll_data = self.fetch('columns')
             self.logger.debug('subcoll_data: %s' % str(subcoll_data))
             self.session.data['id_subcoll'] = subcoll_data['id_subcoll']
             self.session.data['subcoll_code'] = subcoll_data['subcoll_code']
             del coll_data, subcoll_data
         else:
-            #Collection Data
+            # Collection Data
             self.session.data['id_coll'] = id_coll
-            self.execute('get_coll_name',{'id_coll':id_coll})
+            self.execute('get_coll_name', {'id_coll': id_coll})
             self.session.data['coll_name'] = self.fetch('one', 'coll_name')
-            #Subcollection Data
+            # Subcollection Data
             self.session.data['id_subcoll'] = id_subcoll
-            self.execute('get_subcoll_code',{'id_coll':id_coll, 'id_subcoll':id_subcoll})
+            self.execute('get_subcoll_code', {'id_coll': id_coll, 'id_subcoll': id_subcoll})
             self.session.data['subcoll_code'] = self.fetch('one', 'subcoll_code')
-            del id_coll, id_subcoll #below use only session data
+            del id_coll, id_subcoll  # below use only session data
 
         try:
-            #Database info
-            self.execute('get_db_info',{'id_coll':self.session.data['id_coll']})
+            # Database info
+            self.execute('get_db_info', {'id_coll': self.session.data['id_coll']})
             db_info = self.fetch('columns')
             self.logger.debug('db_info: %s' % str(db_info))
             self.session.data['id_base'] = db_info['id_base']
@@ -189,15 +191,15 @@ class Principal(object):
             self.session.data['db_pwd'] = db_info['pwd']
             self.session.data['dbms'] = db_info['dbms']
 
-            #Get Preferences
+            # Get Preferences
             self.d('user_pref')
-            user_pref = {'label_lang':None} #It needed because return null-string if no values
-            self.execute('get_user_preferences',{'id_user':id_user})
+            user_pref = {'label_lang': None}  # It needed because return null-string if no values
+            self.execute('get_user_preferences', {'id_user': id_user})
             user_pref.update(self.fetch('columns'))
 
             self.d('subcoll_pref')
-            subcoll_pref = {'date_input_mask':None, 'date_output_mask':None, 'label_lang':None} #It needed because return null-string if no values
-            self.execute('get_subcoll_preferences',{'id_subcoll':self.session.data['id_subcoll']})
+            subcoll_pref = {'date_input_mask': None, 'date_output_mask': None, 'label_lang': None} #It needed because return null-string if no values
+            self.execute('get_subcoll_preferences', {'id_subcoll': self.session.data['id_subcoll']})
             subcoll_pref.update(self.fetch('columns'))
             self.session.data.update(subcoll_pref)
 
@@ -206,27 +208,27 @@ class Principal(object):
             self.session.data['data_langs'] = self.fetch_data_langs(self.session.data['id_subcoll'])
             self.d('after data_langs')
 
-            #Set Label Language
+            # Set Label Language
             self.d('set label lang')
             id_lang, code_lang = self.get_id_lang(user_pref['label_lang'], subcoll_pref['label_lang'])
             self.session.data['id_lang'] = id_lang
             self.session.data['label_lang_code'] = code_lang
 
-            #Get user roles - user must have at least 1 role, from group "user"
+            # Get user roles - user must have at least 1 role, from group "user"
             db = dbConnection(self.cookie_value)
-            db.execute('get_all_user_roles',{'id_user':id_user})
-            self.session.data['roles'] = db.fetch('rows') #List of roles. E.g.:[1L,2L,3L...]
+            db.execute('get_all_user_roles', {'id_user': id_user})
+            self.session.data['roles'] = db.fetch('rows')  # List of roles. E.g.:[1L,2L,3L...]
 
-            #Get user preference of how many lines are shown for each page (used in paging)
+            # Get user preference of how many lines are shown for each page (used in paging)
             from getdata import Getdata
             self.session.data['lines_per_page'] = Getdata.user_lines_per_page(self.session.data['id_user'])
             self.session.data['max_num_pages'] = Getdata.user_max_num_pages(self.session.data['id_user'])
             self.session.data['show_str_inactives'] = Getdata.user_show_str_inactives(self.session.data['id_user'])
 
-            #Load user preference of how to order list fields
-            self.g.loadListOrder(self.session.data['id_user'],self.session.data['id_subcoll'])
+            # Load user preference of how to order list fields
+            self.g.loadListOrder(self.session.data['id_user'], self.session.data['id_subcoll'])
 
-            #Save set data
+            # Save set data
             self.logger.debug("Returning from setting vars...")
             self.session.save()
         except Exception as e:
@@ -246,7 +248,7 @@ class Principal(object):
         return lang_code
 
     def get_id_lang(self, user_lang=None, subcoll_lang=None):
-        #Language used must obey the following order: user config -> subcoll config -> server config
+        # Language used must obey the following order: user config -> subcoll config -> server config
         if user_lang:
             lang_code = user_lang
         elif subcoll_lang:
@@ -260,14 +262,14 @@ class Principal(object):
                 out += self.g.read_html('login_check') % -5
                 print(out)
                 exit(1)
-        #self.dbConnection always contain a reference to the first sqlite database only.
+        # self.dbConnection always contain a reference to the first sqlite database only.
         self.session.save()
         self.i18n.set_lang(lang_code)
         db = dbConnection(self.cookie_value)
         db.execute('get_lang_by_code', {'code': lang_code})
         return db.fetch('one'), lang_code
 
-    def user_related_error(self,ex_error,page,category,js,css):
+    def user_related_error(self, ex_error, page, category, js, css):
         '''
         Treat here all user-related errors. Show a user-friendly message
 
@@ -282,41 +284,41 @@ class Principal(object):
         if (ex_error == 'column login is not unique'):
             ex_error = _("Login already exists!")
             str_error = '<div class="user_error">%s</div>' % ex_error
-            css = ('main','default','default.detail','form.save')
+            css = ('main', 'default', 'default.detail', 'form.save')
             self.header_includes(page, category, js, css)
             self.data['page'] = self.g.read_html('form.save')
             self.data['error_info'] = str_error
         elif (ex_error == "no_lots_available"):
             ex_error = _("There are currently no lots available for distribution!") + "<br />\n" + _("Please insert a lot in the Preservation screen.")
             str_error = '<div class="user_error">%s</div>' % ex_error
-            css = ('main','default','default.detail','form.save')
+            css = ('main', 'default', 'default.detail', 'form.save')
             self.header_includes(page, category, (), css)
             self.data['page'] = self.g.read_html('form.save')
             self.data['error_info'] = str_error
         elif (ex_error == "no_inst_available"):
             ex_error = _("There are currently no institutions available in the system!") + "<br />\n" + _("Please insert an institution.")
             str_error = '<div class="user_error">%s</div>' % ex_error
-            css = ('main','default','default.detail','form.save')
+            css = ('main', 'default', 'default.detail','form.save')
             self.header_includes(page, category, (), css)
             self.data['page'] = self.g.read_html('form.save')
             self.data['error_info'] = str_error
         elif (string.find(ex_error, "Timeout") != -1):
-            ex_error = _("Generation Timeout") + ": " + "%.1f " %  float(ex_error.split(":")[1]) + " seconds." + "<br />\n" + _("Please change the fields in your report or change the 'report_timeout' parameter in the config.xml file.")
+            ex_error = _("Generation Timeout") + ": " + "%.1f " % float(ex_error.split(":")[1]) + " seconds." + "<br />\n" + _("Please change the fields in your report or change the 'report_timeout' parameter in the config.xml file.")
             str_error = '<div class="user_error">%s</div>' % ex_error
-            css = ('main','default','default.detail','form.save')
+            css = ('main', 'default', 'default.detail', 'form.save')
             self.header_includes(page, category, (), css)
             self.data['page'] = self.g.read_html('report.error')
             self.data['error_info'] = str_error
 
     def mount(self, page, category, js, css):
-        #brk(host="localhost", port=9000)        
+        # brk(host="localhost", port=9000)
         self.logger.debug("Mounting page %s category [%s] js [%s] css [%s]" % (page, category, js, css))
         self.checkup(page, category)
-        if (page == 'logout'): #delete session
+        if (page == 'logout'):  # delete session
             self.html_footer = ''
             self.session.delete()
             self.session.del_expired_sessions()
-            #Go straight back to login screen
+            # Go straight back to login screen
             print(self.g.redirect(self.index))
         try:
             self.content_includes(page, category)
@@ -324,42 +326,42 @@ class Principal(object):
         except exception.SicolException:
             import sys
             self.logger.error("[page: %s] %s" % (page, str(sys.exc_value)))
-            #Error messages in sicol exception
-            #are presented to the user when the final html is displayed
+            # Error messages in sicol exception
+            # are presented to the user when the final html is displayed
             if not self.data.has_key("page"):
                 self.data["page"] = ""
                 ex_error = sys.exc_value.args[0].encode('utf8')
-                #User related error - show differently from developer generated error
-                self.user_related_error(ex_error,page,category,js,css)
+                # User related error - show differently from developer generated error
+                self.user_related_error(ex_error, page, category, js, css)
 
-        #join data for output
+        # join data for output
         self.data.update(self.session.data)
         self.data.update(self.process_data)
         self.data.update(self.label_dict)
 
-        #Format page_parts and insert in data
+        # Format page_parts and insert in data
         for key in self.page_parts:
             self.page_parts[key] = self.page_parts[key] % self.data
         self.data.update(self.page_parts)
         self.page_show(page)
 
-    def checkup(self,page,category):
-        #test cookie and session
+    def checkup(self, page, category):
+        # test cookie and session
         if not (self.cookie_value and self.session.isvalid(self.cookie_value)):
             if (page == 'tests'):
-                self.session.create() #automatic save session
+                self.session.create()  # automatic save session
                 self.data['cookie'] = self.cookie.send(self.session.data['id'])
             else:
-                #without permission, go to index.py
-                if (page.find("strains.quality") == -1): #iframe
+                # without permission, go to index.py
+                if (page.find("strains.quality") == -1):  # iframe
                     print(self.g.redirect(self.index))
         else:
             self.session.load(self.cookie_value)
-            #empty session cache
+            # empty session cache
             if (category not in ('main', 'external')) and (page != 'subcollections'):
                 self.clear_session_data()
 
-            #test access violation without login
+            # test access violation without login
             if (category == 'main') or (page == 'subcollections'):
                 try:
                     self.session.data['id_user']
@@ -367,7 +369,7 @@ class Principal(object):
                 except KeyError:
                     print(self.g.redirect(self.index))
 
-            #test access violation without a chosen subcollection
+            # test access violation without a chosen subcollection
             if (category == 'main'):
                 try:
                     self.session.data['id_coll']
@@ -376,7 +378,7 @@ class Principal(object):
                     print(self.g.redirect(self.index))
 
     def check_feedback(self):
-        #check feedback parameter
+        # check feedback parameter
         if self.session.data.has_key('feedback') and self.session.data['feedback']:
             self.data['feedback_value'] = self.session.data['feedback']
             self.session.data['feedback'] = 0
@@ -384,7 +386,7 @@ class Principal(object):
         else:
             self.data['feedback_value'] = 0
 
-    def get_template(self,page,area,action):
+    def get_template(self, page, area, action):
         '''
         Get HTML template according to given parameters and user permissions:
         action = "save" | "del" | "form" | "new" | "detail" | (others)
@@ -395,7 +397,7 @@ class Principal(object):
         if action in ('save', 'del'):
             if action == 'del':
                 allow_delete = self.g.get_area_permission(self.cookie_value, self.session, area, 'allow_delete')
-                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                     allow_delete = 'y'
                 if allow_delete != 'y':
                     html_page = self.g.read_html('access.denied')
@@ -404,18 +406,18 @@ class Principal(object):
             else:
                 html_page = self.g.read_html('form.save')
         elif action in ('form', 'new'):
-          #Check whether user has permission to create new items
+            # Check whether user has permission to create new items
             if action == 'new':
                 allow_create = self.g.get_area_permission(self.cookie_value, self.session, area, 'allow_create')
-                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                     allow_create = 'y'
                 if allow_create != 'y':
                     html_page = self.g.read_html('access.denied')
                 else:
                     html_page = self.g.read_html(area + '.form')
-            else: #action == 'form', when user is editing item
+            else:  # action == 'form', when user is editing item
                 allow_edit = self.g.get_item_permission(self.cookie_value, self.session, area, self.form.getvalue('id'))
-                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                     allow_edit = 'w'
                 if allow_edit != 'w':
                     html_page = self.g.read_html('access.denied')
@@ -423,36 +425,36 @@ class Principal(object):
                     html_page = self.g.read_html(area + '.form')
         else:
             if action == 'detail':
-                #Check whether user has permission to see item details of chosen area
+                # Check whether user has permission to see item details of chosen area
                 allow_detail = self.g.get_item_permission(self.cookie_value, self.session, area, self.form.getvalue('id'))
-                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                     allow_detail = 'w'
-                if allow_detail == '': #no permission
+                if allow_detail == '':  # no permission
                     html_page = self.g.read_html('access.denied')
-                else: #read or write permission
+                else:  # read or write permission
                     html_page = self.g.read_html(page)
             else:
                 html_page = self.g.read_html(page)
         return html_page
 
     def content_includes(self, page, category):
-        #brk(host="localhost", port=9000)
+        # brk(host="localhost", port=9000)
         html_page = ''
         process_data = ''
-        #'others' category pages
+        # 'others' category pages
         if (category == 'others'):
             if page is not 'login_check':
-                #for not 'main' category, html_main is the proper page file
+                # for not 'main' category, html_main is the proper page file
                 self.html_main = self.g.read_html(page)
                 if (page == 'login'):
                     self.html_footer = ''
-                    #Generate i18n javascript file, if needed
+                    # Generate i18n javascript file, if needed
                     from modules.js_translator import JS_Translator
                     js_tr = JS_Translator(self.cookie_value, self.i18n)
                     if (js_tr.needsUpdate()): js_tr.doUpdate()
-                #from modules.page_mount import Principal
+                # from modules.page_mount import Principal
             if (page == 'subcollections'):
-                #list subcollections to choose from
+                # list subcollections to choose from
                 if not (self.form.has_key('coll') and self.form.has_key('subcoll')):
                     from subcollections import Subcollections
                     subcollections = Subcollections(self.cookie_value)
@@ -474,21 +476,22 @@ class Principal(object):
 
                     if redirect:
                         print(self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/logout.py')))
-                #update session for chosen subcollection
+                # update session for chosen subcollection
                 else:
                     self.set_session_vars(self.form.getvalue('coll'), self.form.getvalue('subcoll'))
-                    #Generate i18n javascript file, if needed
+                    # Generate i18n javascript file, if needed
                     from modules.js_translator import JS_Translator
                     js_tr = JS_Translator(self.cookie_value, self.i18n)
-                    if (js_tr.needsUpdate()): js_tr.doUpdate()
-                    print(self.g.redirect( self.start_page ))
+                    if (js_tr.needsUpdate()):
+                        js_tr.doUpdate()
+                    print(self.g.redirect(self.start_page))
             elif (page == 'login_check'):
 
                 self.html_main = ''
                 self.html_header = ''
                 self.html_footer = ''
 
-                self.session.load( self.cookie_value )
+                self.session.load(self.cookie_value)
 
                 from login import Login
                 login = Login(self.form)
@@ -496,10 +499,10 @@ class Principal(object):
 
                 self.logger.debug("Test: %s" % (test))
 
-                if (test in (1,2)):
+                if (test in (1, 2)):
                     login_data = self.form.getvalue('user')
                     self.session.data['login'] = login_data
-                    self.execute('get_user_data',{'login':login_data})
+                    self.execute('get_user_data', {'login': login_data})
                     user_data = self.fetch('columns')
                     self.logger.debug('user_data: %s' % (str(user_data)))
                     self.session.data['id_user'] = user_data['id_user']
@@ -508,13 +511,13 @@ class Principal(object):
                     self.set_session_vars()
                     del user_data
 
-                #return script to login message
+                # return script to login message
                 self.html_main = self.g.read_html(page) % test
                 self.logger.debug("Returning: %s" % (self.html_main))
                 del login, test
 
-        #'main' category pages
-        elif (category=='main'):
+        # 'main' category pages
+        elif (category == 'main'):
             if page == 'download':
                 from download import Download
                 page = Download(self.form)
@@ -524,72 +527,71 @@ class Principal(object):
                 from reports import Reports
                 action = page.split('.')[1]
                 page = Reports(self.form, self.cookie_value)
-                                
-                if action == 'show':                    
-                    #brk(host="localhost", port=9000)                        
+
+                if action == 'show':
+                    # brk(host="localhost", port=9000)
                     try:
                         self.html_main = page.show()
-                    except Exception as err:                        
-                        raise exception.SicolException(err.message)                        
-                        
+                    except Exception as err:
+                        raise exception.SicolException(err.message)
+
                     self.html_header = ""
                     self.html_footer = ""
-                    
-                elif action == 'new':                    
-                    #Security
-                    #If user cannot create a new strain, he also cannot create a new strain from a previous one.
+
+                elif action == 'new':
+                    # Security
+                    # If user cannot create a new strain, he also cannot create a new strain from a previous one.
                     allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'reports', 'allow_create')
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                         allow_create = 'y'
                     if allow_create != 'y':
                         self.data['page'] = self.g.read_html('access.denied')
                         self.page_parts['submenu'] = ""
-                    else:                    
+                    else:
                         dict = {}
                         dict = page.new()
                         self.process_data = dict['data']
                         self.data['page'] = self.g.read_html(dict['screen_name'])
-                        self.page_parts['submenu'] = self.g.read_html('submenu.form')                    
-                    
+                        self.page_parts['submenu'] = self.g.read_html('submenu.form')
+
                 elif action == 'edit':
                     if (self.form.has_key('id')):
-                        id = self.form['id'].value                        
+                        id = self.form['id'].value
                     else:
-                        id = self.session.data['new_report']['id']                        
+                        id = self.session.data['new_report']['id']
                     allow_edit = self.g.get_item_permission(self.cookie_value, self.session, 'reports', id)
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                         allow_edit = 'w'
-                    if allow_edit == '' or allow_edit == 'r': #no permission
+                    if allow_edit == '' or allow_edit == 'r':  # no permission
                         self.data['page'] = self.g.read_html('access.denied')
                         self.page_parts['submenu'] = ""
-                    else:        
+                    else:
                         dict = {}
                         dict = page.edit()
                         self.process_data = dict['data']
                         self.data['page'] = self.g.read_html(dict['screen_name'])
                         self.page_parts['submenu'] = self.g.read_html('submenu.form')
-                    
                 return
-            
+
             elif page.split('.')[0] == 'reports' and page.split('.')[1] in ('list'):
                 self.session.data['new_report'] = {}
                 self.session.save()
-            
+
             elif page == 'preferences':
                 from getdata import Getdata
                 getdata = Getdata(self.cookie_value, self.form)
                 if (self.form.has_key('language')):
-                    #Update user preferences in SQLite
+                    # Update user preferences in SQLite
                     chosen_label_lang = self.form['language'].value
-                    if (chosen_label_lang == 'default'): #Delete user preference and let him use the system's default settings
-                        self.execute('delete_user_label',{'id_user':self.session.data['id_user']})
+                    if (chosen_label_lang == 'default'):  # Delete user preference and let him use the system's default settings
+                        self.execute('delete_user_label', {'id_user': self.session.data['id_user']})
                         chosen_label_lang = ''
                     elif (getdata.usingDefaultLabel()): #Insert new
-                        self.execute('insert_user_label',{'label_lang':chosen_label_lang, 'id_user':self.session.data['id_user']})
+                        self.execute('insert_user_label', {'label_lang': chosen_label_lang, 'id_user': self.session.data['id_user']})
                     else: #Update only
-                        self.execute('update_user_label',{'label_lang':chosen_label_lang, 'id_user':self.session.data['id_user']})
+                        self.execute('update_user_label', {'label_lang': chosen_label_lang, 'id_user': self.session.data['id_user']})
 
-                    #Update user password, if he wants to
+                    # Update user password, if he wants to
                     user_id = str(self.form['util_user_id'].value)
                     user_pwd = ''
                     if (self.form.has_key('util_user_pwd')): #Empty fields are discarded automatically
@@ -599,77 +601,77 @@ class Principal(object):
                         except ImportError:
                             from md5 import new as new_md5
                         user_pwd = new_md5(user_pwd).hexdigest()
-                        #Change User Password
-                        self.execute('update_user_pwd_only',{'id_user':user_id,'pwd':user_pwd})
+                        # Change User Password
+                        self.execute('update_user_pwd_only', {'id_user': user_id,'pwd': user_pwd})
 
-                    #Update user lines shown per page (used for paging)
-                    user_lines_per_page = 50 #default value
-                    if (self.form.has_key('util_user_lines_per_page')): #Empty fields are discarded automatically
+                    # Update user lines shown per page (used for paging)
+                    user_lines_per_page = 50  # default value
+                    if (self.form.has_key('util_user_lines_per_page')):  # Empty fields are discarded automatically
                         user_lines_per_page = int(self.form['util_user_lines_per_page'].value)
                         if user_lines_per_page <= 0:
-                            user_lines_per_page = 50 #default value
+                            user_lines_per_page = 50  # default value
                         self.session.data['lines_per_page'] = user_lines_per_page
-                    self.execute('update_user_lines_per_page',{'id_user':user_id,'lines_per_page':user_lines_per_page})
+                    self.execute('update_user_lines_per_page', {'id_user': user_id,'lines_per_page': user_lines_per_page})
 
-                    #Update user lines shown per page (used for paging)
-                    user_max_num_pages = 5 #default value
-                    if (self.form.has_key('util_user_max_num_pages')): #Empty fields are discarded automatically
+                    # Update user lines shown per page (used for paging)
+                    user_max_num_pages = 5  # default value
+                    if (self.form.has_key('util_user_max_num_pages')):  # Empty fields are discarded automatically
                         user_max_num_pages = int(self.form['util_user_max_num_pages'].value)
                         if user_max_num_pages <= 0:
-                            user_max_num_pages = 5 #default value
+                            user_max_num_pages = 5  # default value
                         self.session.data['max_num_pages'] = user_max_num_pages
-                    self.execute('update_user_max_num_pages',{'id_user':user_id,'max_num_pages':user_max_num_pages})
+                    self.execute('update_user_max_num_pages', {'id_user': user_id,'max_num_pages': user_max_num_pages})
 
-                    #Update user show strain inactives (used to show on list inactives strains)
+                    # Update user show strain inactives (used to show on list inactives strains)
                     user_show_str_inactives = 0 #default value
                     if (self.form.has_key('util_user_show_str_inactives')):
                         user_show_str_inactives = int(self.form['util_user_show_str_inactives'].value)
                     self.session.data['show_str_inactives'] = user_show_str_inactives
-                    self.execute('update_user_show_str_inactives',{'id_user':user_id,'show_str_inactives':user_show_str_inactives})
+                    self.execute('update_user_show_str_inactives', {'id_user': user_id,'show_str_inactives': user_show_str_inactives})
 
 
-                    #Update session
+                    # Update session
                     self.session.data['id_lang'], self.session.data['label_lang_code'] = self.get_id_lang(chosen_label_lang)
 
-                    #Warn user that operation was successful
+                    # Warn user that operation was successful
                     self.session.data['feedback'] = 1
 
-                    #Save set data
+                    # Save set data
                     self.session.save()
 
-                    #Generate i18n javascript file, if needed
+                    # Generate i18n javascript file, if needed
                     from js_translator import JS_Translator
-                    js_tr = JS_Translator(self.cookie_value, self.i18n,chosen_label_lang)
+                    js_tr = JS_Translator(self.cookie_value, self.i18n, chosen_label_lang)
                     if (js_tr.needsUpdate()): js_tr.doUpdate()
 
-                    #Reload page to get effects from changes
+                    # Reload page to get effects from changes
                     print(self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/preferences.py')))
                     exit(0)
 
                 self.check_feedback()
 
-                #Update global variables
+                # Update global variables
                 self.data['page'] = self.g.read_html('preferences')
-                
-                #brk(host="localhost", port=9000)
+
+                # brk(host="localhost", port=9000)
                 self.page_parts['submenu'] = self.g.read_html('submenu.save')
 
-                #Show user roles (groups)
+                # Show user roles (groups)
                 self.data['usergroups'] = getdata.user_roles(self.session.data['id_user'])
 
-                #Show user info
+                # Show user info
                 self.data['userlines_per_page'] = Getdata.user_lines_per_page(self.session.data['id_user'])
                 self.data['usermax_num_pages'] = Getdata.user_max_num_pages(self.session.data['id_user'])
                 self.data['usershow_str_inactives'] = Getdata.user_show_str_inactives(self.session.data['id_user'], html=True)
 
-                #Create Languages selection
-                #Check whether user is using his own preference or the system's default
+                # Create Languages selection
+                # Check whether user is using his own preference or the system's default
                 if (getdata.usingDefaultLabel()):
                     self.data['languages'] = getdata.preferences('default')
                 else:
                     self.data['languages'] = getdata.preferences(self.session.data['id_lang'])
 
-                #Account tab
+                # Account tab
                 self.data['iduser'] = self.session.data['id_user']
                 self.data['username'] = self.session.data['user_name']
                 self.data['userlogin'] = self.session.data['login']
@@ -686,15 +688,15 @@ class Principal(object):
             elif page == 'configuration':
                 from configuration import Configuration
                 utils = Configuration(self.cookie_value, self.form)
-                if (self.form.has_key('util_type')): #User submitted data
+                if (self.form.has_key('util_type')):  # User submitted data
                     utils.readForm()
-                    #Read feedback value from saved session data
+                    # Read feedback value from saved session data
                     self.session.load(self.cookie_value)
                     self.check_feedback()
-                #Load HTML template
-                if (self.g.isAdmin(self.session.data['roles'])): #Administrator
+                # Load HTML template
+                if (self.g.isAdmin(self.session.data['roles'])):  # Administrator
                     self.data['page'] = self.g.read_html('configuration')
-                else: #Non-Admin users are not allowed here
+                else:  # Non-Admin users are not allowed here
                     self.data['page'] = self.g.read_html('access.denied')
                     return
                 # JAVASCRIPT Global Data
@@ -726,69 +728,75 @@ class Principal(object):
                 return
 
             elif page == 'textlink':
-                #Page = TinyMCE's Javascript PopUp for TextLink insertion
+                # Page = TinyMCE's Javascript PopUp for TextLink insertion
                 from getdata import Getdata
                 getdata = Getdata(self.cookie_value, self.form)
                 self.html_main = '%(page)s'
                 self.data['page'] = self.g.read_html('textlink')
-                #Get Document and Reference titles
-                self.data['sel_doc'] = getdata.get_available_docs(self.session.data['id_lang'],self.session.data['id_coll'],self.session.data['roles'])
-                self.data['sel_ref'] = getdata.get_available_refs(self.session.data['id_lang'],self.session.data['id_coll'],self.session.data['roles'])
-                self.data['sel_qualifier_doc'] = getdata.get_doc_qualifiers()                                
-                
+                # Get Document and Reference titles
+                self.data['sel_doc'] = getdata.get_available_docs(
+                    self.session.data['id_lang'],
+                    self.session.data['id_coll'],
+                    self.session.data['roles']
+                )
+                self.data['sel_ref'] = getdata.get_available_refs(
+                    self.session.data['id_lang'],
+                    self.session.data['id_coll'],
+                    self.session.data['roles']
+                )
+                self.data['sel_qualifier_doc'] = getdata.get_doc_qualifiers()
                 return
-            
+
             elif page == 'fieldlink':
-                #brk(host="localhost", port=9000)                
-                #Page = TinyMCE's Javascript PopUp for FieldLink insertion
-                
+                # brk(host="localhost", port=9000)                
+                # Page = TinyMCE's Javascript PopUp for FieldLink insertion
+
                 from reports import Reports
                 page = Reports(self.form, self.cookie_value)
-                
+
                 page.fill_system_fieldlinks(self.data)
-                
+
                 self.html_main = '%(page)s'
-                self.data['page'] = self.g.read_html('fieldlink')               
-                
+                self.data['page'] = self.g.read_html('fieldlink')
                 return
 
-            
 
-            #Getting which page we are dealing with
+
+            # Getting which page we are dealing with
             self.data['who'] = who = page.split('.')[0]
             action = page.split('.')[1]
 
             self.logger.debug("Parsed: action %s for page %s" % (action, who))
-            
-            #Only Administrator and Manager can view utilites area
-            if who in ('stockmovement'):
-                if not (self.g.isManager(self.session.data['roles'])): #Administrator or Manager
-                  self.data['page'] = self.g.read_html('access.denied')
-                  return
 
-            #Get who_lang
-            if who not in ('doc','docpopup','ref','refpopup','container'):
+            # Only Administrator and Manager can view utilites area
+            if who in ('stockmovement'):
+                if not (self.g.isManager(self.session.data['roles'])):  # Administrator or Manager
+                    self.data['page'] = self.g.read_html('access.denied')
+                    return
+
+            # Get who_lang
+            if who not in ('doc', 'docpopup', 'ref', 'refpopup', 'container'):
                 self.data['who_lang'] = self.label_dict['menu_%s' % who.title()]
-            elif who in ('doc','docpopup'):
+            elif who in ('doc', 'docpopup'):
                 self.data['who_lang'] = self.label_dict['menu_Documents']
-            elif who in ('ref','refpopup'):
+            elif who in ('ref', 'refpopup'):
                 self.data['who_lang'] = self.label_dict['menu_References']
             elif who in ('container'):
                 self.data['who_lang'] = self.label_dict['menu_Containers']
 
-            #Getting Template Page
+            # Getting Template Page
             if who in ('docpopup',):
-                html_page = self.get_template(page,'doc',action)
+                html_page = self.get_template(page, 'doc', action)
             elif who in ('refpopup',):
-                html_page = self.get_template(page,'ref',action)
+                html_page = self.get_template(page, 'ref', action)
             else:
-                html_page = self.get_template(page,who,action)
+                html_page = self.get_template(page, who, action)
 
             if who in ('docpopup', 'refpopup'):
                 self.html_main = html_page
                 self.html_footer = ''
 
-            #Get LIST Data
+            # Get LIST Data
             if action == 'list':
                 from lists import Lists
                 lists = Lists(self.form, self.cookie_value)
@@ -797,24 +805,25 @@ class Principal(object):
                 self.data['feedback_value'] = lists.feedback_value
                 self.data[lists.order_img] = lists.img
                 del lists
-            #Get Detail and Form Data
+            # Get Detail and Form Data
             elif action in ('detail', 'form', 'new'):
                 from getdata import Getdata
                 getdata = Getdata(self.cookie_value, self.form)
-                if action == 'detail': process_data = getdata.get(who, 'view')
+                if action == 'detail':
+                    process_data = getdata.get(who, 'view')
                 elif action == 'form':
                     process_data = getdata.get(who, 'edit')
                     if process_data['next_action'] == 'insert':
-                        #Security
-                        #If user cannot create a new strain, he also cannot create a new strain from a previous one.
+                        # Security
+                        # If user cannot create a new strain, he also cannot create a new strain from a previous one.
                         allow_create = self.g.get_area_permission(self.cookie_value, self.session, who, 'allow_create')
-                        if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                        if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                             allow_create = 'y'
                         if allow_create != 'y':
                             html_page = self.g.read_html('access.denied')
                 elif action == 'new':
                     allow_create = self.g.get_area_permission(self.cookie_value, self.session, who, 'allow_create')
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                         allow_create = 'y'
                     if allow_create == 'y':
                         process_data = getdata.get(who, 'new')
@@ -822,17 +831,17 @@ class Principal(object):
                 self.data['feedback_value'] = getdata.feedback_value
                 del getdata
 
-            #Receiver Save Return
+            # Receiver Save Return
             elif action == 'save':
                 from form_save import Save
                 save = Save(self.cookie_value, self.form)
                 process_data = save.set(who)
                 del save
 
-            #Receiver Delete Return
+            # Receiver Delete Return
             elif action == 'del':
                 allow_delete = self.g.get_area_permission(self.cookie_value, self.session, who, 'allow_delete')
-                if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                     allow_delete = 'y'
                 if allow_delete == 'y':
                     from form_del import Delete
@@ -883,9 +892,11 @@ class Principal(object):
                     action = self.form.getvalue('next_action')
                     has_permission = True
                     if (action == 'insert' or action == 'update'):
-                        if (not quality.hasItemPermission(self.form.getvalue('id_strain'))): has_permission = False
-                    else: #delete
-                        if (not quality.hasAreaPermission('allow_delete')): has_permission = False
+                        if (not quality.hasItemPermission(self.form.getvalue('id_strain'))):
+                            has_permission = False
+                    else:  # delete
+                        if (not quality.hasAreaPermission('allow_delete')):
+                            has_permission = False
                     if (has_permission):
                         from form_save import Save
                         save = Save(self.cookie_value, self.form)
@@ -896,12 +907,12 @@ class Principal(object):
                     else:
                         self.html_main = self.g.read_html('access.denied')
                 if page == 'strains.stock.list':
-                    #Check whether user has permission to see item details of chosen area
+                    # Check whether user has permission to see item details of chosen area
                     self.session.load(self.cookie_value)
                     allow_detail = self.g.get_item_permission(self.cookie_value, self.session, 'strains', self.form.getvalue('id'))
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                    if self.g.isManager(self.session.data['roles']):  # Administrator or Manager
                         allow_detail = 'w'
-                    if allow_detail == '': #no permission
+                    if allow_detail == '':  # no permission
                         self.html_main = self.g.read_html('access.denied')
                     else:
                         self.data['who'] = "strains.stock"
@@ -914,7 +925,7 @@ class Principal(object):
                         getdata.strainStock(self.data)
                         self.html_main = html_page
 
-        #Update global variables
+        # Update global variables
         self.data['page'] = html_page
         self.process_data = process_data
 
@@ -965,26 +976,26 @@ class Principal(object):
         else:
             self.data['js'] += self.js_line % 'general'
 
-        #JavaScript Inclusions
+        # JavaScript Inclusions
         if js:
             js_line = '\n%s' % self.js_line
             js_lang_code = self.get_label_code()
             translation_js_path = 'js_i18n/translation_%s' % js_lang_code
-            #one javascript file
+            # one javascript file
             if isinstance(js, str):
-                self.data['js'] += js_line % translation_js_path #add js_translator file
+                self.data['js'] += js_line % translation_js_path  # add js_translator file
                 self.replace_externals(js, js_line, debug_mode)
 
-            #many javascript files
+            # many javascript files
             elif isinstance(js, tuple):
-                self.data['js'] += js_line % translation_js_path #add js_translator file
+                self.data['js'] += js_line % translation_js_path  # add js_translator file
                 for item in js:
                     self.replace_externals(item, js_line, debug_mode)
         else:
             js_line = self.js_line
             js_lang_code = self.get_label_code()
             translation_js_path = 'js_i18n/translation_%s' % js_lang_code
-            self.data['js'] += js_line % translation_js_path #add js_translator file
+            self.data['js'] += js_line % translation_js_path  # add js_translator file
             """
                                 <script src="../../jquery-1.5.1.js"></script>
                                 <script src="../../ui/jquery.ui.core.js"></script>
@@ -993,7 +1004,7 @@ class Principal(object):
                                 <script src="../../ui/jquery.ui.sortable.js"></script>
             """
 
-        #CSS Inclusions
+        # CSS Inclusions
         css_line = '\n%s' % self.css_line
         if (category == 'main'):
             self.data['css'] += css_line % category
@@ -1016,12 +1027,12 @@ class Principal(object):
         return css_list
 
     def page_show(self, page):
-        #raise str(page)
-        #Complete the  http_header if Cookie exists
+        # raise str(page)
+        # Complete the  http_header if Cookie exists
         if self.data['cookie']:
             self.http_header += '\n%(cookie)s'
 
-        #Force all data to be UTF8 compatible - make them all of 'unicode' type
+        # Force all data to be UTF8 compatible - make them all of 'unicode' type
         if self.data.has_key('error_info'):
             try:
                 self.data['error_info'] = str(self.data['error_info'])
@@ -1036,55 +1047,56 @@ class Principal(object):
                 except:
                     pass
 
-        #Join parts and show
+        # Join parts and show
         self.data['page'] = (self.data['page'] % self.data)
 
-        #Do not show the configuration button to ordinary users
+        # Do not show the configuration button to ordinary users
         if self.session.data.has_key('roles'):
             if not self.g.isAdmin(self.session.data['roles']):
                 self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_admin")) document.getElementById("user_menu_admin").style.display="none";</script>'
-        
+
         #Do not show the utilites button to ordinary users
         if self.session.data.has_key('roles'):
             if not self.g.isManager(self.session.data['roles']):
                 self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_utilities")) document.getElementById("user_menu_utilities").style.display="none";</script>'
-        
-        full_page = "\n".join ((
+
+        full_page = "\n".join((
                     self.http_header + "\n",
                     self.html_header,
                     exception.get_html(),
                     self.html_main,
-                    self.html_footer))
+                    self.html_footer
+                ))
 
         try:
-          #message,submenu
-          full_page = full_page % self.data
+            # message,submenu
+            full_page = full_page % self.data
         except KeyError as e:
-            #create a SicolException, which properly formats our error:
-            exception.SicolException ("%s: %s" % (_("KeyError when assembling final html"), e), 1, "%s\n<br />%s %s" % (str(e.args), _("Data"), self.data))
-            full_page = "\n".join ((
+            # create a SicolException, which properly formats our error:
+            exception.SicolException("%s: %s" % (_("KeyError when assembling final html"), e), 1, "%s\n<br />%s %s" % (str(e.args), _("Data"), self.data))
+            full_page = "\n".join((
                     self.http_header + "\n",
                     self.html_header,
                     exception.get_html(),
                     self.html_main,
-                    self.html_footer))
+                    self.html_footer
+                ))
         except TypeError as e:
-          #Programming error: missing key(s) in self.data dictionary
-          import re
-          page_keys = re.compile(r"%\((.+?)\)",re.MULTILINE | re.DOTALL | re.IGNORECASE)
-          page_keys = page_keys.findall(full_page)
-          not_found = []
-          for k in page_keys:
-            if k not in self.data.keys():
-              not_found.append(k)
-          #create a SicolException, which properly formats our error:
-          exception.clear_exceptions()
-          self.html_header = re.sub(r'%\(.+?\)s',r'',self.html_header)
-          exception.SicolException ("<p>%s </p>\n%s: %s" % ("TypeError: " + str(e),_("Missing keys"),str(", ".join(not_found))))
-          full_page = "\n".join ((
+            # Programming error: missing key(s) in self.data dictionary
+            import re
+            page_keys = re.compile(r"%\((.+?)\)", re.MULTILINE | re.DOTALL | re.IGNORECASE)
+            page_keys = page_keys.findall(full_page)
+            not_found = []
+            for k in page_keys:
+                if k not in self.data.keys():
+                    not_found.append(k)
+            # create a SicolException, which properly formats our error:
+            exception.clear_exceptions()
+            self.html_header = re.sub(r'%\(.+?\)s', r'', self.html_header)
+            exception.SicolException("<p>%s </p>\n%s: %s" % ("TypeError: " + str(e), _("Missing keys"), str(", ".join(not_found))))
+            full_page = "\n".join((
                   self.http_header + "\n",
                   self.html_header,
                   exception.get_html()
                   ))
         print(full_page.encode('utf8'))
-    
