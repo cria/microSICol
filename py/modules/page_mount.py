@@ -18,7 +18,7 @@ from cgi import FieldStorage
 from urlparse import urljoin
 
 #project imports
-from i18n import I18n, _
+from i18n import I18n
 import exception
 from session import Session
 from cookie import Cookie
