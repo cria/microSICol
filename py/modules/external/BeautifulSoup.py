@@ -53,15 +53,7 @@ __date__ = "$Date: 2004/10/18 00:14:20 $"
 __copyright__ = "Copyright (c) 2004-2005 Leonard Richardson"
 __license__ = "PSF"
 
-from sgmllib import SGMLParser, SGMLParseError
-import codecs
-import types
-import re
-import sgmllib
-from htmlentitydefs import name2codepoint
-
-#This code makes Beautiful Soup able to parse XML with namespaces
-sgmllib.tagfind = re.compile('[a-zA-Z][-_.:a-zA-Z0-9]*')
+from bs4 import BeautifulSoup
 
 DEFAULT_OUTPUT_ENCODING = "utf-8"
 
@@ -355,7 +347,7 @@ class NavigableString(unicode, PageElement):
         if attr == 'string':
             return self
         else:
-            raise AttributeError, "'%s' object has no attribute '%s'" % (self.__class__.__name__, attr)
+            raise AttributeError("'%s' object has no attribute '%s'" % (self.__class__.__name__, attr))
 
     def __unicode__(self):
         return __str__(self, None)
@@ -737,8 +729,8 @@ class SoupStrainer:
             if self._matches(markup, self.text):
                 found = markup
         else:
-            raise Exception, "I don't know how to match against a %s" \
-                  % markup.__class__
+            raise Exception("I don't know how to match against a %s" \
+                  % markup.__class__)
         return found
         
     def _matches(self, markup, matchAgainst):    
@@ -1076,7 +1068,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         if self.quoteStack:
             #This is not a real tag.
             #print "<%s> is not real!" % name
-            attrs = ''.join(map(lambda(x, y): ' %s="%s"' % (x, y), attrs))
+            attrs = ''.join(map(lambda attr: ' %s="%s"' % (attr[0], attr[1]), attrs))
             self.handle_data('<%s%s>' % (name, attrs))
             return        
         self.endData()
@@ -1315,7 +1307,7 @@ class BeautifulSoup(BeautifulStoneSoup):
                     # else an encoding was specified explicitly and it
                     # worked. Rewrite the meta tag.
                     newAttr = self.CHARSET_RE.sub\
-                              (lambda(match):match.group(1) +
+                              (lambda match: match.group(1) +
                                "%SOUP-ENCODING%", value)
                     attrs[contentTypeIndex] = (attrs[contentTypeIndex][0],
                                                newAttr)
@@ -1533,7 +1525,7 @@ class UnicodeDammit:
                                               "ISO-8859-1",
                                               "ISO-8859-2"):
             markup = re.compile("([\x80-\x9f])").sub \
-                     (lambda(x): self._subMSChar(x.group(1)),
+                     (lambda x: self._subMSChar(x.group(1)),
                       markup)
 
         try:
@@ -1541,7 +1533,7 @@ class UnicodeDammit:
             u = self._toUnicode(markup, proposed)
             self.markup = u       
             self.originalEncoding = proposed
-        except Exception, e:
+        except Exception as e:
             # print "That didn't work!"
             # print e
             return None        
@@ -1719,4 +1711,4 @@ class UnicodeDammit:
 if __name__ == '__main__':
     import sys
     soup = BeautifulStoneSoup(sys.stdin.read())
-    print soup.prettify()
+    print(soup.prettify())

@@ -1,20 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 from time import time
 from random import sample
 from os import environ, getcwd, path, remove, listdir
-from string import letters, digits, join
-from cPickle import dump, load
+from string import ascii_letters, digits
+from pickle import dump, load
 try:
     from hashlib import sha1 as new_sha
 except ImportError:
     from sha import new as new_sha
 
 #project imports
-from general import General
-from loghelper import Logging
+from .general import General
+from .loghelper import Logging
 
 class Session(object):
 
@@ -29,10 +29,10 @@ class Session(object):
         self.logger = Logging.getLogger("page_mount")
         self.d = self.logger.debug
 
-        import config
+        from . import config
         try:
           self.timeout = config.session_timeout
-        except AttributeError,e:
+        except AttributeError as e:
           self.timeout = 30 * 60 #30 minutes - default value
         self.data = {}
 
@@ -43,7 +43,7 @@ class Session(object):
         self.save()
 
     def random_string(self,size=10):
-        random_string = ''.join( sample(letters + digits,size))
+        random_string = ''.join(sample(ascii_letters + digits, size))
         return random_string
 
     def session_id(self):
@@ -79,7 +79,7 @@ class Session(object):
                 self.data = load(sessionFile) #this load() comes from cPickle
                 sessionFile.close()
             except IOError:
-                import config
+                from . import config
                 out = config.http_header + '\n\n'
                 out += '%s "%s"' % (_("Permission denied to read in"), self.session_path)
 
@@ -100,7 +100,7 @@ class Session(object):
                 dump(self.data,sessionFile)
                 sessionFile.close()
             except IOError:
-                import config
+                from . import config
                 out = config.http_header + '\n\n'
                 out += '%s "%s"' % (_("Permission denied to write in"), self.session_path)
                 self.logger.error(out)
@@ -117,7 +117,7 @@ class Session(object):
             self.save()
             remove(path.join(self.session_path, file))
         except IOError:
-            import config
+            from . import config
             out = config.http_header + '\n\n'
             out += '%s "%s"' % (_("Permission denied to delete in"), self.session_path)
 

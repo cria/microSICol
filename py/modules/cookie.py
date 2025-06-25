@@ -1,8 +1,8 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 #python imports
-from Cookie import BaseCookie
+from http.cookies import BaseCookie
 from os import environ
 from time import time, strftime, gmtime
 
@@ -22,7 +22,7 @@ class Cookie(object):
         config['comment'] = comment #comment from the server explaining the function of this cookie, or None.
 
         cookie_string = 'Set-Cookie: Sicol_Session=' + code + '; '
-        cookie_string += '; '.join([(key + '=' + item) for key, item in config.items()]) + '; '
+        cookie_string += '; '.join([(key + '=' + item) for key, item in list(config.items())]) + '; '
 
         return BaseCookie(cookie_string)
 

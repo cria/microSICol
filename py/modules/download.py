@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -9,7 +9,7 @@ except ImportError:
     from sha import new as new_sha
 
 #project imports
-from general import General
+from .general import General
 
 class Download(object):
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -6,9 +6,9 @@ from sys import exit
 #from dbgp.client import brk
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from general import General
+from .session import Session
+from .dbconnection import dbConnection
+from .general import General
 import math
 from os import environ
 
@@ -30,7 +30,7 @@ class Lists(object):
             self.session.load(cookie_value)
 
             #check feedback parameter
-            if self.session.data.has_key('feedback') and self.session.data['feedback']:
+            if 'feedback' in self.session.data and self.session.data['feedback']:
                 self.feedback_value = self.session.data['feedback']
                 self.session.data['feedback'] = 0
                 self.session.save()
@@ -67,10 +67,10 @@ class Lists(object):
 			
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
+        if (isinstance(valor, str) == False):
             retorno = str(valor).decode("utf8")
         else:
             retorno = valor
@@ -104,9 +104,9 @@ class Lists(object):
         "genus" is mandatory and "lang" is always a two-letter language code
         """
 
-        from loghelper import Logging
+        from .loghelper import Logging
 
-        if parts_dict.has_key('sciname'):
+        if 'sciname' in parts_dict:
             if use_author:
                 ret = parts_dict['sciname']
             else:
@@ -120,9 +120,9 @@ class Lists(object):
 
             if data != []:
                 parts = parts_dict.copy()
-                if not parts.has_key('species'):
+                if 'species' not in parts:
                     parts['species'] = ''
-                if not parts.has_key('subspecies'):
+                if 'subspecies' not in parts:
                     parts['subspecies'] = ''
 
                 data['sp_dictionary'] = "genus=%(genus)s&species=%(species)s&subspecies=%(subspecies)s&lang=%%s" % parts
@@ -276,14 +276,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_species'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_species')):
+        elif ('filter_species' in self.session.data):
             filter = self.session.data['filter_species']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -302,7 +302,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'species', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -347,7 +347,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -355,8 +355,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_species'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_species')):
-            if (self.form.has_key('filter')):
+        elif ('page_species' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_species'] = page
                 self.session.save()
@@ -428,14 +428,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_strains'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_strains')):
+        elif ('filter_strains' in self.session.data):
             filter = self.session.data['filter_strains']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -467,7 +467,7 @@ class Lists(object):
 
         #raise self.data['condition']
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'strains', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -512,7 +512,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -520,8 +520,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_strains'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_strains')):
-            if (self.form.has_key('filter')):
+        elif ('page_strains' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_strains'] = page
                 self.session.save()
@@ -567,7 +567,7 @@ class Lists(object):
             else:
                 style_tr = 'color:#A2A2A2'
 
-            from labels import label_dict
+            from .labels import label_dict
             has_critical = False
             critical_stock_html = []
             #Check critical stock for this strain by preservation method
@@ -645,14 +645,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_docs'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_docs')):
+        elif ('filter_docs' in self.session.data):
             filter = self.session.data['filter_docs']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -667,7 +667,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'doc', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -705,7 +705,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -713,8 +713,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_docs'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_docs')):
-            if (self.form.has_key('filter')):
+        elif ('page_docs' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_docs'] = page
                 self.session.save()
@@ -779,14 +779,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_refs'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_refs')):
+        elif ('filter_refs' in self.session.data):
             filter = self.session.data['filter_refs']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -801,7 +801,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'ref', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -844,7 +844,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -852,8 +852,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_refs'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_refs')):
-            if (self.form.has_key('filter')):
+        elif ('page_refs' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_refs'] = page
                 self.session.save()
@@ -917,14 +917,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_people'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_people')):
+        elif ('filter_people' in self.session.data):
             filter = self.session.data['filter_people']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -943,7 +943,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'people', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -988,7 +988,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -996,8 +996,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_people'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_people')):
-            if (self.form.has_key('filter')):
+        elif ('page_people' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_people'] = page
                 self.session.save()
@@ -1087,14 +1087,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_insts'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_insts')):
+        elif ('filter_insts' in self.session.data):
             filter = self.session.data['filter_insts']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -1112,7 +1112,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'inst', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1152,7 +1152,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1160,8 +1160,8 @@ class Lists(object):
             self.session.data['page_insts'] = page
             self.session.save()
 
-        elif (self.session.data.has_key('page_insts')):
-            if (self.form.has_key('filter')):
+        elif ('page_insts' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_insts'] = page
                 self.session.save()
@@ -1228,14 +1228,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_preservations'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_preservations')):
+        elif ('filter_preservations' in self.session.data):
             filter = self.session.data['filter_preservations']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -1263,7 +1263,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'preservation', self.form['field_order'].value)
 
         isTaxon = False;
@@ -1322,7 +1322,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1330,8 +1330,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_preservations'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_preservations')):
-            if (self.form.has_key('filter')):
+        elif ('page_preservations' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_preservations'] = page
                 self.session.save()
@@ -1431,14 +1431,14 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
             #Save filter on session
             self.session.data['filter_distributions'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_distributions')):
+        elif ('filter_distributions' in self.session.data):
             filter = self.session.data['filter_distributions']
             filter = self.ConvertStrUnicode(filter).encode("utf-8")
 			
@@ -1460,7 +1460,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'distribution', self.form['field_order'].value)
 
         isInstitution = False;
@@ -1512,7 +1512,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1520,8 +1520,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_distributions'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_distributions')):
-            if (self.form.has_key('filter')):
+        elif ('page_distributions' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_distributions'] = page
                 self.session.save()
@@ -1609,13 +1609,13 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
 
             #Save filter on session
             self.session.data['filter_reports'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_reports')):
+        elif ('filter_reports' in self.session.data):
             filter = self.session.data['filter_reports']
 
         if (filter != ''):
@@ -1632,7 +1632,7 @@ class Lists(object):
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'reports', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1670,7 +1670,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1678,8 +1678,8 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_reports'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_reports')):
-            if (self.form.has_key('filter')):
+        elif ('page_reports' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_reports'] = page
                 self.session.save()
@@ -1854,7 +1854,7 @@ class Lists(object):
                   %s</tr>'
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'stockmovement', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1885,7 +1885,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1893,7 +1893,7 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_stock_movement'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_stock_movement')):            
+        elif ('page_stock_movement' in self.session.data):            
             page = int(self.session.data['page_stock_movement'])
 
         #Enable paging
@@ -1930,7 +1930,7 @@ class Lists(object):
                   %s</tr>'
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'container', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1961,7 +1961,7 @@ class Lists(object):
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1969,7 +1969,7 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_container'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_container')):            
+        elif ('page_container' in self.session.data):            
             page = int(self.session.data['page_container'])
 
         #Enable paging

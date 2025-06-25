@@ -1,14 +1,14 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 #project imports
-from enum import Enum
-from dbconnection import dbConnection
-from urllib import urlencode
+from .enum import Enum
+from .dbconnection import dbConnection
+from urllib.parse import urlencode
 
 class Keyword(Enum):
     #Enumerate keywords
-    NONE, REF, DOC, LINK, TAX = range(5)
+    NONE, REF, DOC, LINK, TAX = list(range(5))
 
 class TextLink(object):
     """One Standard TextLink"""
@@ -35,7 +35,7 @@ class TextLink(object):
     def set_keyword(self, value):
 
         #str and unicode inherit basestring
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             if TextLink.isValidKeyword(value):
                 self.__keyword = TextLink.ToKeyword(value.strip())
             else:
@@ -45,7 +45,7 @@ class TextLink(object):
             self.__keyword = value
 
         else:
-            raise TypeError, _("Invalid Keyword type.")
+            raise TypeError(_("Invalid Keyword type."))
 
     #Define keyword property
     keyword = property(get_keyword, set_keyword)
@@ -62,7 +62,7 @@ class TextLink(object):
         if value.find("<a") == 0 and value.find(">", 2, len(value) - 4 ) and value.find("</a>") == len(value) - 4:
             self.__hyperlink = value
         else:
-            raise ValueError, _("Invalid Hyperlink type.")
+            raise ValueError(_("Invalid Hyperlink type."))
 
     #Define hyperlink property
     hyperlink = property(get_hyperlink, set_hyperlink)
@@ -126,7 +126,7 @@ class TextLink(object):
         elif sKey.strip().upper() == str(Keyword.TAX):
             return Keyword.TAX
         else:
-           raise ValueError, _("Cannot be convert to Keyword.")
+           raise ValueError(_("Cannot be convert to Keyword."))
 
     @classmethod
     def ToHyperLink(cls, keyword, text, cookie_value, id_lang=0):
@@ -138,7 +138,7 @@ class TextLink(object):
 
         #"str" and "unicode" inherit "basestring"
         #If keyword type is basestring, convert to Keyword TextLink
-        if isinstance(keyword, basestring):
+        if isinstance(keyword, str):
             try:
                 keyword = TextLink.ToKeyword(keyword)
             except:
@@ -159,7 +159,7 @@ class TextLink(object):
                         strTitle = rowref['title']
                         strHref = "./refpopup.detail.py?%s" % (urlencode({'id':rowref['id_ref']}))
                     else:
-                        raise Exception, _("Error in database.")
+                        raise Exception(_("Error in database."))
                 except:
                     strName = "ref%s" % text.strip()
                     strHref = "#"
@@ -183,7 +183,7 @@ class TextLink(object):
                         strTitle = rowdoc['title']
                         strHref = "./docpopup.detail.py?%s" % (urlencode({'id':rowdoc['id_doc']}))
                     else:
-                        raise Exception, "Error in database."
+                        raise Exception("Error in database.")
                 except:
                     strName = "doc%s" % text.strip()
                     strHref = "#"
@@ -247,7 +247,7 @@ class TextLink(object):
                         strTitle = NameAndHref[0].strip()
                         strHref = "http://%s" % (NameAndHref[0].strip())
                     else:
-                        raise Exception, "Error in database."
+                        raise Exception("Error in database.")
                 except:
                     strName = "link%s" % (text.strip())
                     strHref = "#"

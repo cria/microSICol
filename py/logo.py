@@ -1,4 +1,4 @@
-#!/usr/bin/env python  
+#!/usr/bin/env python3  
 #-*- coding: utf-8 -*-
 #
 # Return image related to current collection
@@ -6,9 +6,9 @@ import cgitb; cgitb.enable()
 #python imports
 import sys
 import base64
-from modules.cookie import Cookie
-from modules.session import Session
-from modules.dbconnection import dbConnection
+from .modules.cookie import Cookie
+from .modules.session import Session
+from .modules.dbconnection import dbConnection
 from cgi import FieldStorage
 
 if sys.platform == "win32":
@@ -16,7 +16,7 @@ if sys.platform == "win32":
     msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
 #Print HTTP Header
-print "Content-Type: image/png\n" #Accept only png files
+print("Content-Type: image/png\n") #Accept only png files
 
 #Load GET data
 form = FieldStorage()
@@ -39,20 +39,20 @@ try:
   colls = [coll['id_coll'] for coll in colls]
   if (not int(id_coll) in colls) and (2 not in session.data['roles']): #Use default Logo then 
     id_coll = session.data['id_coll'] 
-except Exception,e:
+except Exception as e:
   pass
 db.execute('get_coll_logo',{'id_coll':id_coll})
 logo = db.fetch('one')
 if logo == '':
   #Get default image
   from os import path
-  from modules.general import General
+  from .modules.general import General
   g = General()
   img_dir = path.join(g.get_config('root_dir'), 'img')
   #For some reason, relative path does not work on IIS7-IE7-Win-Vista
   f = file(path.join(img_dir,'logo.png'),'rb')
   logo = f.read()
   f.close()
-  print logo
+  print(logo)
 else:
-  print base64.decodestring(logo)
+  print(base64.decodestring(logo))

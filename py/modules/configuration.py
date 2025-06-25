@@ -1,16 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 
 #project imports
-from session import Session
-from general import General
-from dbconnection import dbConnection
-from getdata import Getdata
-from loghelper import Logging
-from log import Log
+from .session import Session
+from .general import General
+from .dbconnection import dbConnection
+from .getdata import Getdata
+from .loghelper import Logging
+from .log import Log
 #from dbgp.client import brk
-from labels import label_dict
+from .labels import label_dict
 
 class Configuration(object):
 
@@ -117,7 +117,7 @@ class Configuration(object):
     def deleteDivision(self):
         id_division = str(self.form['util_division_id'].value)
 
-        from strain_formatter import StrainFormatter, StrainFormatterError
+        from .strain_formatter import StrainFormatter, StrainFormatterError
         s = StrainFormatter(self.cookie_value)
 
         try:
@@ -203,12 +203,12 @@ class Configuration(object):
     def saveRole(self):
         #Read form data
         role_id = ''
-        if (self.form.has_key('util_role_id')): #Empty fields are discarded automatically
+        if ('util_role_id' in self.form): #Empty fields are discarded automatically
           role_id = str(self.form['util_role_id'].value)
         role_name = str(self.form['util_role_name'].value)
         role_type = str(self.form['util_role_type'].value)
         role_descr = ''
-        if (self.form.has_key('util_role_descr')): #Empty fields are discarded automatically
+        if ('util_role_descr' in self.form): #Empty fields are discarded automatically
           role_descr = str(self.form['util_role_descr'].value)
         if role_id == '': #New Role
             self.db.execute('insert_role', {'role_name': role_name,'role_type':role_type,'role_descr':role_descr})
@@ -233,15 +233,15 @@ class Configuration(object):
         for item in js_area_list:
            areadel = 'n'
            areacreate = 'n'
-           if self.form.has_key('areadel_'+item):
+           if 'areadel_'+item in self.form:
              areadel = 'y'
-           if self.form.has_key('areacreate_'+item):
+           if 'areacreate_'+item in self.form:
              areacreate = 'y'
            self.db.execute('insert_area_access',{'id_area':item,'id_role':role_id,'allow_delete':areadel,'allow_create':areacreate})
         #Associate users to current role
         #Delete previous associations
         self.db.execute('delete_role_users',{'id_role':role_id})
-        if (self.form.has_key('util_group_members')):
+        if ('util_group_members' in self.form):
           if (isinstance(self.form['util_group_members'], list)):
              for x in self.form['util_group_members']:
                 member_id = x.value
@@ -256,7 +256,7 @@ class Configuration(object):
     def saveCombo(self):
         #Read form data
         combo_id = ''
-        if (self.form.has_key('util_combo_id')): #Empty fields are discarded automatically
+        if ('util_combo_id' in self.form): #Empty fields are discarded automatically
            combo_id = str(self.form['util_combo_id'].value)
         #Update Taxon Group
         self.db.execute('delete_subcoll_combo_taxon_group', {'id_subcoll': combo_id})
@@ -274,7 +274,7 @@ class Configuration(object):
             self.db.execute('insert_subcoll_str_type', {'id_subcoll': combo_id, 'id_type': self.form['util_combo_str_type'].value})
         new_type = {}
         for lang in self.form['util_combo_langs'].value.split(","):
-            if self.form.has_key('combo_str_type_'+lang) and self.form['combo_str_type_'+lang].value != '':
+            if 'combo_str_type_'+lang in self.form and self.form['combo_str_type_'+lang].value != '':
                 new_type[lang] = self.form['combo_str_type_'+lang].value
         if new_type != {}: #A new item is to be inserted
             #Insert new item and get its id
@@ -283,7 +283,7 @@ class Configuration(object):
             new_id = self.db.cursor.lastrowid
             #It now belongs to this subcollection
             self.db.execute('insert_subcoll_str_type', {'id_subcoll': combo_id, 'id_type': new_id})
-            for item_lang,item_type in new_type.items(): #Add names for each language
+            for item_lang,item_type in list(new_type.items()): #Add names for each language
                 self.db.execute('insert_subcoll_str_type_lang', {'id_type': new_id,'type': item_type,'code': item_lang})
         #Update Strain - Deposit - Type - combobox
         self.db.execute('delete_subcoll_combo_dep_reason', {'id_subcoll': combo_id})
@@ -294,7 +294,7 @@ class Configuration(object):
             self.db.execute('insert_subcoll_dep_reason', {'id_subcoll': combo_id, 'id_dep_reason': self.form['util_combo_dep_reason'].value})
         new_dep_reason = {}
         for lang in self.form['util_combo_langs'].value.split(","):
-            if self.form.has_key('combo_dep_reason_'+lang) and self.form['combo_dep_reason_'+lang].value != '':
+            if 'combo_dep_reason_'+lang in self.form and self.form['combo_dep_reason_'+lang].value != '':
                 new_dep_reason[lang] = self.form['combo_dep_reason_'+lang].value
         if new_dep_reason != {}: #A new item is to be inserted
             #Insert new item and get its id
@@ -303,7 +303,7 @@ class Configuration(object):
             new_id = self.db.cursor.lastrowid
             #It now belongs to this subcollection
             self.db.execute('insert_subcoll_dep_reason', {'id_subcoll': combo_id, 'id_dep_reason': new_id})
-            for item_lang,item_dep_reason in new_dep_reason.items(): #Add names for each language
+            for item_lang,item_dep_reason in list(new_dep_reason.items()): #Add names for each language
                 self.db.execute('insert_subcoll_dep_reason_lang', {'id_dep_reason': new_id,'dep_reason': item_dep_reason,'code': item_lang})
         #Update Preservation Method - combobox
         self.db.execute('delete_subcoll_combo_preservation_method', {'id_subcoll': combo_id})
@@ -314,7 +314,7 @@ class Configuration(object):
             self.db.execute('insert_subcoll_preservation_method', {'id_subcoll': combo_id, 'id_preservation_method': self.form['util_combo_preservation_method'].value})
         new_preservation_method = {}
         for lang in self.form['util_combo_langs'].value.split(","):
-            if self.form.has_key('combo_preservation_method_'+lang) and self.form['combo_preservation_method_'+lang].value != '' and self.form['combo_unit_measure_'+lang].value != '':
+            if 'combo_preservation_method_'+lang in self.form and self.form['combo_preservation_method_'+lang].value != '' and self.form['combo_unit_measure_'+lang].value != '':
                 new_preservation_method[lang] = {'method':self.form['combo_preservation_method_'+lang].value, 'unit':self.form['combo_unit_measure_'+lang].value}
         if new_preservation_method != {}: #A new item is to be inserted
             #Insert new item and get its id
@@ -323,7 +323,7 @@ class Configuration(object):
             new_id = self.db.cursor.lastrowid
             #It now belongs to this subcollection
             self.db.execute('insert_subcoll_preservation_method', {'id_subcoll': combo_id, 'id_preservation_method': new_id})
-            for item_lang,item_preservation_method in new_preservation_method.items(): #Add names for each language
+            for item_lang,item_preservation_method in list(new_preservation_method.items()): #Add names for each language
                 self.db.execute('insert_subcoll_preservation_method_lang', {'id_preservation_method': new_id,'method': item_preservation_method['method'],'code': item_lang,'unit_measure': item_preservation_method['unit']})
         #Update Test Group - combobox
         self.db.execute('delete_subcoll_combo_test_group', {'id_subcoll': combo_id})
@@ -334,7 +334,7 @@ class Configuration(object):
             self.db.execute('insert_subcoll_test_group', {'id_subcoll': combo_id, 'id_test_group': self.form['util_combo_test_group'].value})
         new_test_group = {}
         for lang in self.form['util_combo_langs'].value.split(","):
-            if self.form.has_key('combo_test_group_'+lang) and self.form['combo_test_group_'+lang].value != '':
+            if 'combo_test_group_'+lang in self.form and self.form['combo_test_group_'+lang].value != '':
                 new_test_group[lang] = self.form['combo_test_group_'+lang].value
         if new_test_group != {}: #A new item is to be inserted
             #Insert new item and get its id
@@ -343,7 +343,7 @@ class Configuration(object):
             new_id = self.db.cursor.lastrowid
             #It now belongs to this subcollection
             self.db.execute('insert_subcoll_test_group', {'id_subcoll': combo_id, 'id_test_group': new_id})
-            for item_lang,item_test_group in new_test_group.items(): #Add names for each language
+            for item_lang,item_test_group in list(new_test_group.items()): #Add names for each language
                 self.db.execute('insert_subcoll_test_group_lang', {'id_test_group': new_id,'category': item_test_group,'code': item_lang})
         #Commit
         self.db.connect.commit()
@@ -355,13 +355,13 @@ class Configuration(object):
         
         #Read form data
         division_id = ''
-        if (self.form.has_key('util_division_id')): #Empty fields are discarded automatically
+        if ('util_division_id' in self.form): #Empty fields are discarded automatically
            division_id = str(self.form['util_division_id'].value)
 
         division_division = str(self.form['util_division_division'].value)
         division_pattern = str(self.form['util_division_pattern'].value)
 
-        from strain_formatter import StrainFormatter, StrainFormatterError
+        from .strain_formatter import StrainFormatter, StrainFormatterError
         s = StrainFormatter(self.cookie_value, self.db)
                 
         log = False
@@ -453,11 +453,11 @@ class Configuration(object):
         footer = ''
         styles = ''
                
-        if self.form.has_key('header_template'):
+        if 'header_template' in self.form:
             header = base64.b64encode(self.form['header_template'].value)            
-        if self.form.has_key('footer_template'):
+        if 'footer_template' in self.form:
             footer = base64.b64encode(self.form['footer_template'].value)            
-        if self.form.has_key('css_template'):
+        if 'css_template' in self.form:
             styles = base64.b64encode(self.form['css_template'].value)
             
         self.execute('update_subcoll_template', {'id_subcoll':id_subcoll, 'header':header, 'footer':footer, 'styles':styles})
@@ -468,12 +468,12 @@ class Configuration(object):
     def saveSubcoll(self):
         #Read form data
         subcoll_id = ''
-        if (self.form.has_key('util_subcoll_id')): #Empty fields are discarded automatically
+        if ('util_subcoll_id' in self.form): #Empty fields are discarded automatically
           subcoll_id = str(self.form['util_subcoll_id'].value)
         subcoll_coll = str(self.form['util_subcoll_coll'].value)
         subcoll_code = str(self.form['util_subcoll_code'].value)
         subcoll_name = ''
-        if (self.form.has_key('util_subcoll_name')): #Empty fields are discarded automatically
+        if ('util_subcoll_name' in self.form): #Empty fields are discarded automatically
           subcoll_name = str(self.form['util_subcoll_name'].value).decode('utf8')
         self.execute('count_subcoll',{'subcoll_code':subcoll_code,'subcoll_coll':subcoll_coll})
         count_subcoll = self.fetch('one')
@@ -531,12 +531,12 @@ class Configuration(object):
     def saveColl(self):
         #Read form data
         coll_id = ''
-        if (self.form.has_key('util_coll_id')): #Empty fields are discarded automatically
+        if ('util_coll_id' in self.form): #Empty fields are discarded automatically
           coll_id = str(self.form['util_coll_id'].value)
         coll_base = str(self.form['util_coll_base'].value)
         coll_code = str(self.form['util_coll_code'].value)
         coll_name = ''
-        if (self.form.has_key('util_coll_name')): #Empty fields are discarded automatically
+        if ('util_coll_name' in self.form): #Empty fields are discarded automatically
           coll_name = str(self.form['util_coll_name'].value).decode('utf8')
         coll_logo = '' #empty string = default image is used
         valid_logo = True
@@ -584,31 +584,31 @@ class Configuration(object):
         #Read form data
         #database
         base_id = ''
-        if (self.form.has_key('util_base_id')): #Empty fields are discarded automatically
+        if ('util_base_id' in self.form): #Empty fields are discarded automatically
           base_id = str(self.form['util_base_id'].value)
         base_dbms = str(self.form['util_base_dbms'].value)
         base_host = str(self.form['util_base_host'].value)
         base_port = str(self.form['util_base_port'].value)
         base_name = str(self.form['util_base_name'].value)
         base_user = ''
-        if (self.form.has_key('util_base_user')): #Empty fields are discarded automatically
+        if ('util_base_user' in self.form): #Empty fields are discarded automatically
           base_user = str(self.form['util_base_user'].value)
         base_pwd = ''
-        if (self.form.has_key('util_base_pwd')): #Empty fields are discarded automatically
+        if ('util_base_pwd' in self.form): #Empty fields are discarded automatically
           base_pwd = str(self.form['util_base_pwd'].value)
         #tracebility
         base_tracebility_id = ''
-        if (self.form.has_key('util_base_tracebility_id')): #Empty fields are discarded automatically
+        if ('util_base_tracebility_id' in self.form): #Empty fields are discarded automatically
           base_tracebility_id = str(self.form['util_base_tracebility_id'].value)
         base_tracebility_dbms = str(self.form['util_base_tracebility_dbms'].value)
         base_tracebility_host = str(self.form['util_base_tracebility_host'].value)
         base_tracebility_port = str(self.form['util_base_tracebility_port'].value)
         base_tracebility_name = str(self.form['util_base_tracebility_name'].value)
         base_tracebility_user = ''
-        if (self.form.has_key('util_base_tracebility_user')): #Empty fields are discarded automatically
+        if ('util_base_tracebility_user' in self.form): #Empty fields are discarded automatically
           base_tracebility_user = str(self.form['util_base_tracebility_user'].value)
         base_tracebility_pwd = ''
-        if (self.form.has_key('util_base_tracebility_pwd')): #Empty fields are discarded automatically
+        if ('util_base_tracebility_pwd' in self.form): #Empty fields are discarded automatically
           base_tracebility_pwd = str(self.form['util_base_tracebility_pwd'].value)
 
         #Connect in instance
@@ -662,7 +662,7 @@ class Configuration(object):
                 self.execute('update_base_log',{'base_id_log':base_tracebility_id,'dbms_id':base_tracebility_dbms,'host':base_tracebility_host,'port':base_tracebility_port,'db_name':base_tracebility_name.decode('utf8'),'base_pwd':base_tracebility_pwd,'base_user':base_tracebility_user.decode('utf8')})
             self.session.data['feedback'] = 1
             self.session.save()
-        except mysql.Error, e:
+        except mysql.Error as e:
             if (e.args[0] == 1045): #Error - Access Denied on MySQL database
                 self.session.data['feedback'] = -10
             elif (e.args[0] == 1044): #Error - Access denied for user 'sicol'@'%' to database
@@ -682,11 +682,11 @@ class Configuration(object):
 
         #Read form data
         user_id = ''
-        if (self.form.has_key('util_user_id')): #Empty fields are discarded automatically
+        if ('util_user_id' in self.form): #Empty fields are discarded automatically
           user_id = str(self.form['util_user_id'].value)
         user_login = str(self.form['util_user_login'].value)
         user_pwd = ''
-        if (self.form.has_key('util_user_pwd') and self.form['util_user_pwd'].value != ''): #Empty fields are discarded automatically
+        if ('util_user_pwd' in self.form and self.form['util_user_pwd'].value != ''): #Empty fields are discarded automatically
           #Hide user password
           try:
               from hashlib import md5 as new_md5
@@ -695,7 +695,7 @@ class Configuration(object):
           user_pwd = new_md5(str(self.form['util_user_pwd'].value)).hexdigest()
         user_name = str(self.form['util_user_name'].value).replace("'", "''")
         user_comments = ''
-        if (self.form.has_key('util_user_comments')): #Empty fields are discarded automatically
+        if ('util_user_comments' in self.form): #Empty fields are discarded automatically
           user_comments = str(self.form['util_user_comments'].value)
 
         #Get all bases from all collections and subcollections
@@ -734,7 +734,7 @@ class Configuration(object):
               #Grant permission to create to all areas
               self.db.execute('grant_role_create_all_areas',{'id_role':role_id})
 
-          except Exception, e:
+          except Exception as e:
               #In case of a problem on the insertion of the user on one of the
               #databases, we delete it from SQLite and rollback the insertion
               self.execute('delete_user',{'id_user':str(user_id)})
@@ -788,7 +788,7 @@ class Configuration(object):
 
         #Insert new user-group configuration
         for item in js_list:
-          if self.form.has_key(item):
+          if item in self.form:
             role_info = item.split("_") #userrole_<role>
             role_id = role_info[1]
             self.db.execute('insert_user_role',{'id_user':user_id,'id_role':role_id})
@@ -821,7 +821,7 @@ class Configuration(object):
 
           #Insert new access configuration
           for item in js_list:
-            if self.form.has_key(item):
+            if item in self.form:
               coll_info = item.split("_") #user_<coll>_<subcoll>. E.g: user_1_1
               coll_id = coll_info[1]
               subcoll_id = coll_info[2]
@@ -846,9 +846,9 @@ class Configuration(object):
         for item in js_area_list:
            areadel = 'n'
            areacreate = 'n'
-           if self.form.has_key('userareadel_'+item):
+           if 'userareadel_'+item in self.form:
              areadel = 'y'
-           if self.form.has_key('userareacreate_'+item):
+           if 'userareacreate_'+item in self.form:
              areacreate = 'y'
            self.db.execute('insert_area_access',{'id_area':item,'id_role':user_role_id,'allow_delete':areadel,'allow_create':areacreate})
 
@@ -1229,7 +1229,7 @@ class Configuration(object):
         Load Division Tab
         '''
 
-        from strain_formatter import StrainFormatter
+        from .strain_formatter import StrainFormatter
         s = StrainFormatter(self.cookie_value)
         divisions = s.get_division_list(self.session.data['id_subcoll'])
 
@@ -1312,10 +1312,10 @@ class Configuration(object):
 
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
+        if (isinstance(valor, str) == False):
             retorno = str(valor).decode("utf8")
         else:
             retorno = valor

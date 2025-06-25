@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 # Python imports
@@ -6,16 +6,16 @@ from time import strftime, strptime
 import math
 
 # Project imports
-from dbconnection import dbConnection
-from general import General
-from getdata import Getdata
-from log import Log
-from loghelper import Logging
+from .dbconnection import dbConnection
+from .general import General
+from .getdata import Getdata
+from .log import Log
+from .loghelper import Logging
 from os import environ
-from session import Session
-from labels_traceability import label_trace
-from labels_traceability import label_values_dict
-from labels_traceability import values_dict
+from .session import Session
+from .labels_traceability import label_trace
+from .labels_traceability import label_values_dict
+from .labels_traceability import values_dict
 
 
 class Traceability(object):

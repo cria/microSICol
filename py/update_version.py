@@ -1,9 +1,9 @@
-#!/usr/bin/env python  
+#!/usr/bin/env python3  
 #-*- coding: utf-8 -*-
 import cgitb;cgitb.enable() 
 import os
 from cgi import FieldStorage
-from modules.general import General
+from .modules.general import General
 from glob import glob
 #Globals
 MAIN_ACTION = 'get_version_number'
@@ -16,18 +16,18 @@ v = v[(len(v)-1)][1:] #get number only, e.g. "123"
 #Get QUERY_STRING
 query = FieldStorage()
 action = MAIN_ACTION
-if query.has_key('action'):
+if 'action' in query:
   action = query['action'].value
   if action not in VALID_ACTIONS:
     action = MAIN_ACTION
 #Do the requested action
 if action == 'get_version_number':
   #Print HTTP Header
-  print "Content-Type: plain/text\n\n"
+  print("Content-Type: plain/text\n\n")
   #Print Content Body
-  print v #receiver will have to trim this string
+  print(v) #receiver will have to trim this string
 elif action == 'get_version_zip_file':
   #Print HTTP Header
-  print "Content-Type: plain/text\n\n"
+  print("Content-Type: plain/text\n\n")
   #Print Content Body
-  print open(os.path.join(g.get_config('root_dir'),'sicol_v'+str(v)+'.zip'),'rb').read()
+  print(open(os.path.join(g.get_config('root_dir'),'sicol_v'+str(v)+'.zip'),'rb').read())

@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 from types import *
@@ -8,8 +8,8 @@ class JsonBuilder:
     @classmethod
     def createJson(cls, dictionary):
         json = []
-        keys = dictionary.keys();
-        from loghelper import Logging
+        keys = list(dictionary.keys());
+        from .loghelper import Logging
         keys.sort();
         
         for key in keys:

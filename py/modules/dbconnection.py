@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -6,11 +6,11 @@ from sys import exit
 #from dbgp.client import brk
 
 #project imports
-import exception
-from sql import Sql
-from session import Session
-from general import General
-from loghelper import Logging
+from . import exception
+from .sql import Sql
+from .session import Session
+from .general import General
+from .loghelper import Logging
 
 class dbConnection(object):
 
@@ -50,7 +50,7 @@ class dbConnection(object):
             #Connect in instance
             import MySQLdb as mysql
             try: self.connect = mysql.connect(host, user, pwd, dbname, port, use_unicode=True, charset='utf8')
-            except mysql.Error, e:
+            except mysql.Error as e:
                 import traceback
                 self.logger.error("Error while connecting to MySQL: %s", traceback.format_exc(e))
 
@@ -64,7 +64,7 @@ class dbConnection(object):
                   out += self.g.read_html('login_check') % -4
                 else:
                   out += self.g.read_html('login_check') % 0
-                print out
+                print(out)
                 exit(1)
         else:
             self.logger = Logging.getLogger("dbconnection")
@@ -83,7 +83,7 @@ class dbConnection(object):
             else:
                 out = '%s%s' % (self.g.get_config('http_header'), '\n\n')
                 out += '%s\n<br />%s %s' % (_("Sqlite Connection Failed!"), _("This database file does not exist:"), sqlitedb)
-                print out
+                print(out)
                 exit(1)
 
         if self.dbms == "mysql":
@@ -104,7 +104,7 @@ class dbConnection(object):
                     try: data = all[0][colname]
                     except IndexError: data = ''
                 else:
-                    try: data = all[0][all[0].keys()[0]]
+                    try: data = all[0][list(all[0].keys())[0]]
                     except IndexError: data = ''
             elif (mode == 'columns'):
                 data = {}
@@ -112,7 +112,7 @@ class dbConnection(object):
                     data[x] = all[0][x]
             elif (mode == 'rows'):
                 for x in all:
-                    data.append(x.values()[0])
+                    data.append(list(x.values())[0])
             elif (mode == 'all'):
                 data = self.__fetchall[:]
         except IndexError:
@@ -145,7 +145,7 @@ class dbConnection(object):
             #We need to do this in separate, because table names are needed
             # in the "from" clause of the query, and cannot be quoted with "'"
             # the execute method of the cursor always quotes the parameters.
-            if values.has_key("table"):
+            if "table" in values:
                 sql_line = sql_line.replace("%(table)s", values["table"])
         else:
             if fixed_sql != None:
@@ -160,7 +160,7 @@ class dbConnection(object):
                   import re
                   sql_line = re.sub("'\%.*?\)s'","?",str(sql_line))
                   self.logger.debug("[sqlite: %s] [%s]" % (sqlfunction, sql_line))
-                  if values.has_key('coll_id'):
+                  if 'coll_id' in values:
                     self.rows = self.cursor.execute(sql_line,(values['coll_base'],values['coll_code'],values['coll_name'],values['coll_logo'],values['coll_id']) )
                   else:
                     self.rows = self.cursor.execute(sql_line,(values['coll_base'],values['coll_code'],values['coll_name'],values['coll_logo']) )
@@ -177,12 +177,12 @@ class dbConnection(object):
                     data_dicts = []
                     for line in self.cursor.fetchall():
                         data_dict = {}
-                        for i in xrange (len(line)):
+                        for i in range (len(line)):
                             data_dict[col_names[i][0]] = line[i]
                         data_dicts.append (data_dict)
                     self.__fetchall = data_dicts
 
-            except Exception, e:
+            except Exception as e:
                 self.logger.exception("[sqlite: %s] %s: %s" % (sqlfunction, str(e), sql_line))
                 if str(e) == 'column login is not unique': #treat differently
                   raise exception.SicolSQLException (str(e))
@@ -200,16 +200,16 @@ class dbConnection(object):
                   if force_debug:
                     try:
                         self.logger.error("[mysql: %s] [%s]" % (sqlfunction, str(sql_line) % values))
-                    except Exception, e:
+                    except Exception as e:
                         self.logger.error("[mysql: %s] [%s] \nwith values: %s" % (sqlfunction, sql_line, str(values)))
                   else:
                     try:
                         self.logger.debug("[mysql: %s] [%s]" % (sqlfunction, str(sql_line) % values))
-                    except Exception, e:
+                    except Exception as e:
                         self.logger.debug("[mysql: %s] [%s] \nwith values: %s" % (sqlfunction, sql_line, str(values)))
                   
                   self.rows = self.cursor.execute(sql_line, values)
-            except Exception, e:
+            except Exception as e:
                 self.logger.error("[mysql: %s] %s: %s \nwith values: %s" % (sqlfunction, str(e), str(sql_line), str(values)))
                 if e.args[0] == 1062: #"Duplicate entry '%d' for key 2" where %d = duplicated value
                   duplicated_value = e.args[1][17:e.args[1].rfind("'")]

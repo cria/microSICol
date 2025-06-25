@@ -1,12 +1,12 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 import cgi
 import cgitb; cgitb.enable()
 import sys
-from general import General
-from loghelper import Logging
-from json import JsonBuilder
+from .general import General
+from .loghelper import Logging
+from .json import JsonBuilder
 
 class AjaxBuilder(object):
     g = General()
@@ -71,4 +71,4 @@ class AjaxBuilder(object):
             full_page = full_page.encode('utf8')
         
         #self.logger.debug("Page: %s" % (full_page.encode('utf8')))
-        print full_page
+        print(full_page)

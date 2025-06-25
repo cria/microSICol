@@ -1,7 +1,7 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
-from general import General
+from .general import General
 import logging
 import pprint
 
