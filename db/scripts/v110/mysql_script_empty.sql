@@ -1,4 +1,5 @@
 DROP DATABASE IF EXISTS sicol_v110;
+DROP USER IF EXISTS 'sicol'@'localhost';
 CREATE USER 'sicol'@'localhost' IDENTIFIED BY 'sicol';
 CREATE DATABASE IF NOT EXISTS sicol_v110 CHARACTER SET utf8;
 GRANT ALL PRIVILEGES ON sicol_v110 . * TO 'sicol'@'localhost'; flush privileges;

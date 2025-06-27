@@ -48,8 +48,17 @@ class dbConnection(object):
             self.logger = Logging.getLogger("dbconnection", extra=dbname)
 
             #Connect in instance
-            import MySQLdb as mysql
-            try: self.connect = mysql.connect(host, user, pwd, dbname, port, use_unicode=True, charset='utf8')
+            import mysql.connector as mysql
+            try:
+                self.connect = mysql.connect(
+                    host=host,
+                    user=user,
+                    password=pwd,
+                    database=dbname,
+                    port=port,
+                    use_unicode=True,
+                    charset='utf8'
+                )
             except mysql.Error as e:
                 import traceback
                 self.logger.error("Error while connecting to MySQL: %s", traceback.format_exc(e))
@@ -75,7 +84,7 @@ class dbConnection(object):
                 from pysqlite2 import dbapi2 as sqlite
             except ImportError:
                 import sqlite3 as sqlite
-            sqlitedb = path.join(self.g.get_config('root_dir'),'db','sqlite.db')
+            sqlitedb = path.abspath(path.join(self.g.root_dir, 'db', 'sqlite.db'))
             if path.exists(sqlitedb):
                 self.connect = sqlite.connect(sqlitedb,detect_types=sqlite.PARSE_COLNAMES,isolation_level=None)
                 self.dbms = 'sqlite'
@@ -87,7 +96,8 @@ class dbConnection(object):
                 exit(1)
 
         if self.dbms == "mysql":
-            self.cursor = mysql.cursors.DictCursor(self.connect)
+            # Usando cursor dictionary=True para compatibilidade com mysql-connector-python
+            self.cursor = self.connect.cursor(dictionary=True)
         else:
             self.cursor = self.connect.cursor()
 
@@ -227,5 +237,5 @@ class dbConnection(object):
             self.__fetchall = self.cursor.fetchall()
         else:
             raise exception.SicolException (_("Database not implemented."),1, "")
-            
-        
+
+
