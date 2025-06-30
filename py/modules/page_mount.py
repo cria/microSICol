@@ -90,8 +90,12 @@ class Principal(object):
         '''
         work_dir = path.join(self.root_dir, 'v???')
         from glob import glob
-        v = (glob(work_dir)[0])
-        self.data['version'] = v[-3:-2]+'.'+v[-2:]
+        versions = glob(work_dir)
+        if versions:
+            v = versions[0]
+            self.data['version'] = v[-3:-2] + '.' + v[-2:]
+        else:
+            self.data['version'] = "desconhecida"
 
     def clear_session_data(self):
         init_info = ('id_user','login','id_coll','coll_name','id_subcoll',
@@ -1060,11 +1064,14 @@ class Principal(object):
                 self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_utilities")) document.getElementById("user_menu_utilities").style.display="none";</script>'
 
         # Monta o HTML sem reimprimir cabeçalho HTTP (enviado em index.py)
+        html_header = self.html_header.decode('utf-8') if isinstance(self.html_header, bytes) else self.html_header
+        html_main = self.html_main.decode('utf-8') if isinstance(self.html_main, bytes) else self.html_main
+        html_footer = self.html_footer.decode('utf-8') if isinstance(self.html_footer, bytes) else self.html_footer
         full_page = "\n".join((
-                    self.html_header,
+                    html_header,
                     exception.get_html(),
-                    self.html_main,
-                    self.html_footer
+                    html_main,
+                    html_footer
                 ))
 
         try:

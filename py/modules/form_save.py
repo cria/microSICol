@@ -1487,7 +1487,7 @@ class Save(object):
 
                             #Make and Open File
                             file_dir = path.join(self.doc_dir, file_code)
-                            file_open = file(file_dir, "wb")
+                            file_open = open(file_dir, "wb")
 
                             #Update Data from File and close
                             max_file_size = self.g.get_config('upload_limit')
@@ -1512,7 +1512,7 @@ class Save(object):
 
                             #Make and Open File
                             file_dir = path.join(self.doc_dir, file_code)
-                            file_open = file(file_dir, "wb")
+                            file_open = open(file_dir, "wb")
 
                             #Save data in File and close
                             max_file_size = self.g.get_config('upload_limit')

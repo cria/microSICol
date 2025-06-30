@@ -50,7 +50,7 @@ if logo == '':
   g = General()
   img_dir = path.join(g.get_config('root_dir'), 'img')
   #For some reason, relative path does not work on IIS7-IE7-Win-Vista
-  f = file(path.join(img_dir,'logo.png'),'rb')
+  f = open(path.join(img_dir,'logo.png'),'rb')
   logo = f.read()
   f.close()
   print(logo)

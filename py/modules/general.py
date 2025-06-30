@@ -48,13 +48,15 @@ class General( object ):
         Read File and return it into a string
         """
         try:
-            arq = open( dir, 'rb' ).read()
+            arq = open(dir, 'rb').read()
+            return arq
         except IOError:
-            out = self.get_config('http_header') + '\n\n'
+            header = self.get_config('http_header')
+            if not header:
+                header = "Content-type: text/html; charset=utf-8"
+            out = header + '\n\n'
             out += '%s: %s' % ("No such file or directory", dir)
-            print(out)
-            exit(1)
-        return arq
+            return out.encode('utf-8')
 
     def read_html( self, html_name ):
         """

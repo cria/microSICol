@@ -41,7 +41,7 @@ Content-Disposition: attachment; filename="%s"\n\n'''
         doc_dir = path.join(self.root_dir, 'doc_file')
         #Open and Read the File
         try:
-            arq = file(path.join(doc_dir, file_code), 'rb')
+            arq = open(path.join(doc_dir, file_code), 'rb')
             data = arq.read()
             arq.close()
         except: data = ''
