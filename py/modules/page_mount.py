@@ -30,7 +30,7 @@ class Principal(object):
     g = General()
 
     # Configs
-    root_dir = g.get_config('root_dir')
+    root_dir = g.root_dir
     index_url = g.get_config('index_url')
     http_header = g.get_config('http_header')
     js_line = g.get_config('javascript_line')
@@ -1064,6 +1064,12 @@ class Principal(object):
             if not self.g.isManager(self.session.data['roles']):
                 self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_utilities")) document.getElementById("user_menu_utilities").style.display="none";</script>'
 
+        # Enviar cabeçalhos HTTP primeiro se houver cookie
+        if self.data['cookie']:
+            formatted_header = self.http_header % self.data
+            print(formatted_header)
+            print()  # Linha em branco separando cabeçalhos do corpo
+
         # Monta o HTML sem reimprimir cabeçalho HTTP (enviado em index.py)
         html_header = self.html_header.decode('utf-8') if isinstance(self.html_header, bytes) else self.html_header
         html_main = self.html_main.decode('utf-8') if isinstance(self.html_main, bytes) else self.html_main
@@ -1106,5 +1112,6 @@ class Principal(object):
                   self.html_header,
                   exception.get_html()
                   ))
+
         # Imprime o conteúdo HTML já em str, sem bytes prefixados
         print(full_page)

@@ -54,19 +54,20 @@ class I18n(object):
         import builtins
         builtins.__dict__['_'] = _
 
-    def gettext(self,text):
+    def gettext(self, text):
         '''
         Format translated data in order to avoid
         Unicode(De|En)codeErrors
         '''
         try:
-          tr_text = str(self.lang.ugettext(text))
-        except UnicodeEncodeError:
-          try:
-            tr_text = str(self.lang.ugettext(text).encode('utf8'))
-          except UnicodeEncodeError:
-            tr_text = str(self.lang.ugettext(text).decode('utf8'))
-        return tr_text.decode('utf8')
+            tr_text = self.lang.gettext(text)
+            # In Python 3, gettext returns strings, not bytes
+            if isinstance(tr_text, bytes):
+                tr_text = tr_text.decode('utf8')
+            return tr_text
+        except (UnicodeDecodeError, UnicodeEncodeError):
+            # Fallback to original text if there are encoding issues
+            return text
 
     def set_lang(self, lang_code):
         if lang_code in code_dict:
