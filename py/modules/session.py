@@ -12,6 +12,9 @@ try:
 except ImportError:
     from sha import new as new_sha
 
+import os
+from os import path
+from pickle import dump
 #project imports
 from .general import General
 from .loghelper import Logging
@@ -19,7 +22,7 @@ from .loghelper import Logging
 class Session(object):
 
     g = General()
-    root_dir = g.get_config('root_dir')
+    root_dir = g.root_dir
     session_dir = g.get_config('session_dir')
     session_path = path.join(root_dir, session_dir)
     extension = g.get_config('session_file_extension')
@@ -60,7 +63,7 @@ class Session(object):
         #Use Secure Hash Algorithm (SHA) to generate a unique ID
         #The SHA is defined by NIST document FIPS PUB 180-2
         #The SHA algorithm is considered a more secure hash.
-        session_id = new_sha(session_string)
+        session_id = new_sha(session_string.encode('utf8'))
         return session_id.hexdigest()
 
     def isvalid(self, cookie_value):
@@ -75,9 +78,8 @@ class Session(object):
         """Unpickle dictionary of existing session"""
         if session_id:
             try:
-                sessionFile = file(path.join(self.session_path, session_id+self.extension), "rw")
-                self.data = load(sessionFile) #this load() comes from cPickle
-                sessionFile.close()
+                with open(path.join(self.session_path, session_id+self.extension), "rb") as sessionFile:
+                        self.data = load(sessionFile)
             except IOError:
                 from . import config
                 out = config.http_header + '\n\n'
@@ -96,9 +98,8 @@ class Session(object):
         """Pickle session dictionary to session file"""
         if self.data['id']:
             try:
-                sessionFile = file(path.join(self.session_path, self.data['id']+self.extension), "wb")
-                dump(self.data,sessionFile)
-                sessionFile.close()
+                with open(path.join(self.session_path, self.data['id']+self.extension), "wb") as sessionFile:
+                    dump(self.data, sessionFile)
             except IOError:
                 from . import config
                 out = config.http_header + '\n\n'

@@ -40,7 +40,9 @@ class Logging:
     log_level = g.get_config('log_level')
     
     if not log_filename:
-        log_filename = './sicol.log'
+        import tempfile
+        import os
+        log_filename = os.path.join(tempfile.gettempdir(), 'sicol.log')
         
     if not log_level:
         log_level = 'error'

@@ -259,6 +259,7 @@ class Principal(object):
         else:
             lang_code = self.g.get_config('label_lang')
             if (len(lang_code) < 2) or (len(lang_code) > 4) or (not lang_code):
+                from .i18n import _
                 out = self.g.get_config('http_header')
                 out += '\n\n%s <b>label_lang</b> %s' % (_("Invalid"), _("entry in config.xml."))
                 out += '\n<br />%s' % _('Check field "code" of table "lang" in main database.')
@@ -282,7 +283,7 @@ class Principal(object):
         user_related_error(ex_error)
         '''
         from . import exception
-        import string
+        from .i18n import _
         exception.clear_exceptions()
         if (ex_error == 'column login is not unique'):
             ex_error = _("Login already exists!")
@@ -305,7 +306,7 @@ class Principal(object):
             self.header_includes(page, category, (), css)
             self.data['page'] = self.g.read_html('form.save')
             self.data['error_info'] = str_error
-        elif (string.find(ex_error, "Timeout") != -1):
+        elif (ex_error.find("Timeout") != -1):
             ex_error = _("Generation Timeout") + ": " + "%.1f " % float(ex_error.split(":")[1]) + " seconds." + "<br />\n" + _("Please change the fields in your report or change the 'report_timeout' parameter in the config.xml file.")
             str_error = '<div class="user_error">%s</div>' % ex_error
             css = ('main', 'default', 'default.detail', 'form.save')
@@ -1079,9 +1080,9 @@ class Principal(object):
             full_page = full_page % self.data
         except KeyError as e:
             # create a SicolException, which properly formats our error:
+            from .i18n import _
             exception.SicolException("%s: %s" % (_("KeyError when assembling final html"), e), 1, "%s\n<br />%s %s" % (str(e.args), _("Data"), self.data))
             full_page = "\n".join((
-                    self.http_header + "\n",
                     self.html_header,
                     exception.get_html(),
                     self.html_main,
@@ -1090,6 +1091,7 @@ class Principal(object):
         except TypeError as e:
             # Programming error: missing key(s) in self.data dictionary
             import re
+            from .i18n import _
             page_keys = re.compile(r"%\((.+?)\)", re.MULTILINE | re.DOTALL | re.IGNORECASE)
             page_keys = page_keys.findall(full_page)
             not_found = []
@@ -1101,7 +1103,6 @@ class Principal(object):
             self.html_header = re.sub(r'%\(.+?\)s', r'', self.html_header)
             exception.SicolException("<p>%s </p>\n%s: %s" % ("TypeError: " + str(e), _("Missing keys"), str(", ".join(not_found))))
             full_page = "\n".join((
-                  self.http_header + "\n",
                   self.html_header,
                   exception.get_html()
                   ))
