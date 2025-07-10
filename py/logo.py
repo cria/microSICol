@@ -16,7 +16,8 @@ if sys.platform == "win32":
     msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
 #Print HTTP Header
-print("Content-Type: image/png\n") #Accept only png files
+print("Content-Type: image/png")
+print()  # Empty line to separate headers from content
 
 #Load GET data
 form = FieldStorage()
@@ -53,6 +54,6 @@ if logo == '':
   f = open(path.join(img_dir,'logo.png'),'rb')
   logo = f.read()
   f.close()
-  print(logo)
+  sys.stdout.buffer.write(logo)
 else:
-  print(base64.decodestring(logo))
+  sys.stdout.buffer.write(base64.decodestring(logo))

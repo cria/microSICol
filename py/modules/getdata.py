@@ -222,7 +222,9 @@ class Getdata(object):
                   if who == 'strains': #then don't show the "save as button" too
                     self.page_parts['submenu'] = re.sub('<a id="saveas_link" href="javascript:document.getElementById\(\'(saveas)\'.*?/a>','',self.page_parts['submenu'])
             else:
-                print(self.g.redirect(self.list_page % who))
+                from . import exception
+                redirect_url = self.list_page % who
+                raise exception.SicolException("REDIRECT:" + redirect_url)
 
         if who in ('docpopup','refpopup'):
             self.page_parts['top'] = ''

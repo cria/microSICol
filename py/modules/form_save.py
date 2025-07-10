@@ -220,8 +220,9 @@ class Save(object):
             else:
                 str_row = ''
 
-            
-            print(self.g.redirect(urljoin(self.index_url, self.who_detail + str(id_ok) + str_row)))
+            from . import exception
+            redirect_url = urljoin(self.index_url, self.who_detail + str(id_ok) + str_row)
+            raise exception.SicolException("REDIRECT:" + redirect_url)
 
     def supportMultiLanguage(self, field_names):
         data_lang = self.data_lang

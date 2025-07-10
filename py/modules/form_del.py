@@ -409,7 +409,9 @@ class Delete(object):
         try:
           self.execute(sql, self.data)
           self.commit()
-          print(self.g.redirect(urljoin(self.index_url, self.who_list)))
+          from . import exception
+          redirect_url = urljoin(self.index_url, self.who_list)
+          raise exception.SicolException("REDIRECT:" + redirect_url)
         except Exception as e:
           self.rollback(e)
 

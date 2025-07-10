@@ -23,11 +23,13 @@ if 'action' in query:
 #Do the requested action
 if action == 'get_version_number':
   #Print HTTP Header
-  print("Content-Type: plain/text\n\n")
+  print("Content-Type: text/plain\n")
   #Print Content Body
   print(v) #receiver will have to trim this string
 elif action == 'get_version_zip_file':
   #Print HTTP Header
-  print("Content-Type: plain/text\n\n")
+  print("Content-Type: application/zip")
+  print()  # Empty line to separate headers from content
   #Print Content Body
-  print(open(os.path.join(g.get_config('root_dir'),'sicol_v'+str(v)+'.zip'),'rb').read())
+  import sys
+  sys.stdout.buffer.write(open(os.path.join(g.get_config('root_dir'),'sicol_v'+str(v)+'.zip'),'rb').read())

@@ -67,8 +67,6 @@ class AjaxBuilder(object):
                 full_page = "\n".join((
                         self.http_header + "\n",
                         contents))
-                
-            full_page = full_page.encode('utf8')
         
-        #self.logger.debug("Page: %s" % (full_page.encode('utf8')))
+        #self.logger.debug("Page: %s" % (full_page))
         print(full_page)
