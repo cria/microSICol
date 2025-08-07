@@ -6,9 +6,9 @@ import cgitb; cgitb.enable()
 #python imports
 import sys
 import base64
-from .modules.cookie import Cookie
-from .modules.session import Session
-from .modules.dbconnection import dbConnection
+from modules.cookie import Cookie
+from modules.session import Session
+from modules.dbconnection import dbConnection
 from cgi import FieldStorage
 
 if sys.platform == "win32":
@@ -47,7 +47,7 @@ logo = db.fetch('one')
 if logo == '':
   #Get default image
   from os import path
-  from .modules.general import General
+  from modules.general import General
   g = General()
   img_dir = path.join(g.get_config('root_dir'), 'img')
   #For some reason, relative path does not work on IIS7-IE7-Win-Vista

@@ -250,17 +250,17 @@ class Lists(object):
         #Not a valid date
         if len(date) != 3: return ''
         if len(date[2]) == 2 or len(date[2]) == 1: #Convert 1 or 2-digit year to 4-digit year
-          import datetime
-          date[2] = int(date[2])
-          if date[2] <= int(str(datetime.date.today().year)[2:]):
-            date[2] += 2000
-            date[2] = str(date[2])
-          else:
-            date[2] += 1900
-            date[2] = str(date[2])
-        date = "/".join(date)
-        sql_date = strftime("%Y-%m-%d",strptime(date,self.get_dateformat('input')))
-        return sql_date
+            import datetime
+            date[2] = int(date[2])
+            if date[2] <= int(str(datetime.date.today().year)[2:]):
+                date[2] += 2000
+                date[2] = str(date[2])
+            else:
+                date[2] += 1900
+                date[2] = str(date[2])
+            date = "/".join(date)
+            sql_date = strftime("%Y-%m-%d",strptime(date,self.get_dateformat('input')))
+            return sql_date
 
     def get_stripped(self, field):
         return "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(%s, '<b>', ''), '<i>', ''), '</b>', ''), '</i>', ''), '  ', ' ')" % (field)
@@ -312,9 +312,9 @@ class Lists(object):
 
         #Define if order is Asc, or Desc
         if mode == "ASC":
-          self.img="<img class='order' src='"+self.img_path_up+"'/>"
+            self.img="<img class='order' src='"+self.img_path_up+"'/>"
         else:
-          self.img="<img class='order' src='"+self.img_path_down+"'/>"
+            self.img="<img class='order' src='"+self.img_path_down+"'/>"
 
         #define what img in HTML must be changed
         self.order_img = "img_" + field
@@ -334,13 +334,13 @@ class Lists(object):
 
         #Execute again for rows count
         if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-          self.execute('get_species_list', self.data, True)
+            self.execute('get_species_list', self.data, True)
         else:
-          roles = str(self.session.data['roles']).replace("L","")
-          roles = roles.replace("[","(")
-          roles = roles.replace("]",")")
-          self.data['roles_list'] = roles
-          self.execute('get_species_list_restrict', self.data,raw_mode = True)
+            roles = str(self.session.data['roles']).replace("L","")
+            roles = roles.replace("[","(")
+            roles = roles.replace("]",")")
+            self.data['roles_list'] = roles
+            self.execute('get_species_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
         totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
@@ -365,17 +365,17 @@ class Lists(object):
 
         #Enable paging
         if (totalpages > 1):
-          self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
+            self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
 
         #SELECT id_species, taxon_group, genus, subgenus, species, subdiv, infra_name, hazard_group
         if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-          self.execute('get_species_list', self.data, True)
+            self.execute('get_species_list', self.data, True)
         else:
-          roles = str(self.session.data['roles']).replace("L","")
-          roles = roles.replace("[","(")
-          roles = roles.replace("]",")")
-          self.data['roles_list'] = roles
-          self.execute('get_species_list_restrict', self.data, raw_mode = True)
+            roles = str(self.session.data['roles']).replace("L","")
+            roles = roles.replace("[","(")
+            roles = roles.replace("]",")")
+            self.data['roles_list'] = roles
+            self.execute('get_species_list_restrict', self.data, raw_mode = True)
 
         list_species = self.fetch('all')
 
@@ -405,14 +405,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'species', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'species', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
     
@@ -625,14 +625,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'strains', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'strains', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 
@@ -758,14 +758,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'doc', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'doc', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 
@@ -898,14 +898,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'ref', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'ref', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 
@@ -1068,12 +1068,12 @@ class Lists(object):
 
         #Security
         #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'people', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'people', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 
@@ -1203,14 +1203,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'institutions', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'institutions', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 
@@ -1407,14 +1407,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'preservation', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'preservation', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(6, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 
@@ -1589,14 +1589,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'distribution', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'distribution', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(5, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 
@@ -1719,14 +1719,14 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button	
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'reports', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])          
+            #Security
+            #If user does not have permission to create then don't show the "new" button	
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'reports', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])          
 
         return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
 

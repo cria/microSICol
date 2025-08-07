@@ -3,7 +3,7 @@
 import cgitb;cgitb.enable() 
 import os
 from cgi import FieldStorage
-from .modules.general import General
+from modules.general import General
 from glob import glob
 #Globals
 MAIN_ACTION = 'get_version_number'

@@ -32,6 +32,8 @@ class Principal(object):
     # Configs
     root_dir = g.root_dir
     index_url = g.get_config('index_url')
+    if not index_url:  # Fallback se index_url estiver vazio
+        index_url = 'http://localhost/'
     http_header = g.get_config('http_header')
     js_line = g.get_config('javascript_line')
     css_line = g.get_config('css_line')
@@ -1032,9 +1034,12 @@ class Principal(object):
 
     def page_show(self, page):
         # raise str(page)
+        # Criar cópia do http_header para evitar modificar a variável de classe
+        current_http_header = self.http_header
+        
         # Complete the  http_header if Cookie exists
         if self.data['cookie']:
-            self.http_header += '\n%(cookie)s'
+            current_http_header += '\n%(cookie)s'
 
         # Force all data to be UTF8 compatible - make them all of 'unicode' type
         if 'error_info' in self.data:
@@ -1064,11 +1069,13 @@ class Principal(object):
             if not self.g.isManager(self.session.data['roles']):
                 self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_utilities")) document.getElementById("user_menu_utilities").style.display="none";</script>'
 
-        # Enviar cabeçalhos HTTP primeiro se houver cookie
-        if self.data['cookie']:
-            formatted_header = self.http_header % self.data
-            print(formatted_header)
-            print()  # Linha em branco separando cabeçalhos do corpo
+        # Sempre enviar cabeçalhos HTTP primeiro
+        formatted_header = current_http_header % self.data
+        print(formatted_header)
+        print("--- Start of headers ---")
+        print(repr(formatted_header))
+        print("--- End of headers ---")
+        print()  # Linha em branco separando cabeçalhos do corpo
 
         # Monta o HTML sem reimprimir cabeçalho HTTP (enviado em index.py)
         html_header = self.html_header.decode('utf-8') if isinstance(self.html_header, bytes) else self.html_header
