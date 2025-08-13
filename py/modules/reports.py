@@ -1,22 +1,22 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 from os import path
-from session import Session
-from default_html_report import Default_Html_Report
-from custom_html_report import Custom_Html_Report
-from csv_report import CSV_Report
-from xml_report import XML_Report
-from chart_report import Chart_Report
+from .session import Session
+from .default_html_report import Default_Html_Report
+from .custom_html_report import Custom_Html_Report
+from .csv_report import CSV_Report
+from .xml_report import XML_Report
+from .chart_report import Chart_Report
 #from dbgp.client import brk
-from dbconnection import dbConnection
-from dom_xml import Xml
-from labels import label_dict
+from .dbconnection import dbConnection
+from .dom_xml import Xml
+from .labels import label_dict
 from xml.dom.minidom import parse, parseString
-from getdata import Getdata
-from label_values_reports import label_values_dict
-from label_values_reports import values_dict
+from .getdata import Getdata
+from .label_values_reports import label_values_dict
+from .label_values_reports import values_dict
 
 try:
     from hashlib import sha1 as new_sha
@@ -24,7 +24,7 @@ except ImportError:
     from sha import new as new_sha
 
 #project imports
-from general import General
+from .general import General
 
 class Reports(object):
     
@@ -38,14 +38,14 @@ class Reports(object):
 
     def verify_notnull_fields(self, fields='',who=''):
         error = False
-        import config
+        from . import config
         out = config.http_header+'\n\n'
         out += '<b>%s</b>: %s:<br>\n' % (_("Error"), _("Obrigatory fields left blank"))
         main_title = '' #To be used when there is no other title in other languages
         for field in fields:
             if (who == 'doc' and field == 'title'):
                 for lang in self.data_lang:
-                    fields.append("%s_%s" %(field,lang.keys()[0]))
+                    fields.append("%s_%s" %(field,list(lang.keys())[0]))
             elif (who == 'doc') and main_title == '' and field.startswith('title_') and self.form.getvalue(field):
                 main_title = self.form.getvalue(field)
             elif not self.form.getvalue(field) and who == '':
@@ -58,7 +58,7 @@ class Reports(object):
             else:
                 return main_title
         if error:
-            print out.encode('utf8')
+            print(out.encode('utf8'))
             exit(1)
 
     def __init__(self, form, cookie_value):
@@ -81,7 +81,7 @@ class Reports(object):
         for item in tmp_list:
             if str(item["user_defined"]) == 'True':
                 self.report_index_field += 1
-                if self.form.has_key('value_' + str(self.report_index_field)):
+                if 'value_' + str(self.report_index_field) in self.form:
                     item['value'] = self.form['value_' + str(self.report_index_field)].value
                 else:
                     lista_filter.remove(item)
@@ -117,7 +117,7 @@ class Reports(object):
                 type = Chart_Report(dict_final, self.cookie_value)
                 output =  type.mount_report_file()
             elif (dict_final['format'].lower() == 'csv'):
-                if self.form.has_key('with_header'):
+                if 'with_header' in self.form:
                     dict_final['header'] = str(self.form['with_header'].value == 'on').lower()
                 else:
                     dict_final['header'] = 'false'
@@ -134,18 +134,18 @@ class Reports(object):
                 type = Default_Html_Report(dict_final, self.cookie_value)        
                 output =  type.mount_report_file()
     
-        except Exception, err:
+        except Exception as err:
             raise err
             
         return output.replace('%', '%%')
     
     def new(self):
         step = '1'
-        if self.form.has_key('step'):
+        if 'step' in self.form:
             step = self.form['step'].value
         
         step_next = '1'
-        if self.form.has_key('step_next'):
+        if 'step_next' in self.form:
             step_next = self.form['step_next'].value
 
         dict = {}
@@ -161,16 +161,16 @@ class Reports(object):
     def edit(self):
         #brk(host="localhost", port=9000)
         
-        if self.form.has_key('id'):
+        if 'id' in self.form:
             self.session.data['new_report']['id'] = self.form['id'].value
         
         step = '1'
         
-        if self.form.has_key('step'):
+        if 'step' in self.form:
             step = self.form['step'].value
         
         step_next = '1'
-        if self.form.has_key('step_next'):
+        if 'step_next' in self.form:
             step_next = self.form['step_next'].value
 
         dict = {}
@@ -178,7 +178,7 @@ class Reports(object):
         report = []
         
         if step == '1' and step_next == '1':
-            if self.session.data.has_key('new_report') == False:
+            if ('new_report' in self.session.data) == False:
                 self.session.data['new_report'] = {}
                 
             data = {}
@@ -232,7 +232,7 @@ class Reports(object):
             if len(report) > 0:
                 message_type = report['id_report_type']
             
-            elif dict['data'].has_key('message_type'):
+            elif 'message_type' in dict['data']:
                 message_type = dict['data']['message_type']
         else:
             message_name = self.session.data['new_report']['name']
@@ -263,10 +263,10 @@ class Reports(object):
             data['contentValues'] += "$('#field_" + str(self.num_fields) + "').val('" + value['field']+ "');\n"            
             data['contentValues'] += "$('#condition_" + str(self.num_fields) + "').val('" + self.ConvertStrUnicode(value['condition']).encode("utf8") + "');\n"
             
-            if (value.has_key('connector')):                
+            if ('connector' in value):                
                 data['contentValues'] += "$('#connector_" + str(self.num_fields) + "').val('" +self.ConvertStrUnicode(value['connector']).encode("utf8") + "');\n"
                 
-            if (value.has_key('user_defined') and value['user_defined'] != ""):
+            if ('user_defined' in value and value['user_defined'] != ""):
                 if value['user_defined'].lower() == "true":
                     data['contentValues'] += "$('#type_" + str(self.num_fields) + "').val('Variable');\n"
                 else:
@@ -276,11 +276,11 @@ class Reports(object):
             
             data['contentValues'] += "$('#type_" + str(self.num_fields) + "').change();\n"
                 
-            if (value.has_key('field_lookup')):
+            if ('field_lookup' in value):
                 data['contentValues'] += "$('#anotherfield_" + str(self.num_fields) + "').val('" + value['field_lookup'] + "');\n"
             
             #brk(host="localhost", port=9000)    
-            if (value.has_key('value') and value['value'] != ""):
+            if ('value' in value and value['value'] != ""):
                 val = value['value'].replace("'", "\\" + "'").replace('&#34;', '"').replace('&#60;', '<').replace('&#62;', '>')
                 data['contentValues'] += "$('#value_" + str(self.num_fields) + "').val('" + val + "');\n"
                 data['contentValues'] += "$('#enum_" + str(self.num_fields) + "').val('" + val + "');\n"
@@ -396,7 +396,7 @@ class Reports(object):
         data['enum_label_values'] = str(label_values_dict).replace(": u'",": '")
         data['enum_values'] = str(values_dict).replace(": u'",": '")
             
-        if self.session.data.get("new_report").has_key("filters"):
+        if "filters" in self.session.data.get("new_report"):
             num_fields = 0;
             
             dicFilters = self.session.data.get("new_report").get("filters")
@@ -572,13 +572,13 @@ class Reports(object):
         import base64
         
         #brk(host="localhost", port=9000)
-        if self.session.data[name_report].has_key('total') and self.session.data[name_report]['total'] != {}:
+        if 'total' in self.session.data[name_report] and self.session.data[name_report]['total'] != {}:
             data['allow_chart'] = 'true';
         else:
             data['allow_chart'] = 'false';
         
         
-        if self.session.data[name_report].has_key('format'):
+        if 'format' in self.session.data[name_report]:
             format = self.session.data[name_report]['format']
             
             
@@ -663,7 +663,7 @@ class Reports(object):
                 data['value_data_template'] = (self.session.data[name_report]['templates']['main']['data'])
                 data['value_css_template'] = (self.session.data[name_report]['templates']['main']['css'])                
                 
-                group_list = self.session.data[name_report]['templates']['group'].keys()
+                group_list = list(self.session.data[name_report]['templates']['group'].keys())
                 for field in group_list: 
                     data['group_header'] = data['group_header'].replace('name=\"' + field + '_header\">' ,'name=\"' + field + '_header\">' + (self.session.data[name_report]['templates']['group'][field]['header']))
                     data['group_footer'] = data['group_footer'].replace('name=\"' + field + '_footer\">' ,'name=\"' + field + '_footer\">' + (self.session.data[name_report]['templates']['group'][field]['footer']))
@@ -692,7 +692,7 @@ class Reports(object):
         
         action = ""
         
-        if self.session.data.get('new_report', {'action':''}).has_key('action') == False:
+        if ('action' in self.session.data.get('new_report', {'action':''})) == False:
             action = "new"
         else:
             action = "edit"
@@ -702,15 +702,15 @@ class Reports(object):
         return self.session.data
     
     def save_data_step1(self):
-        if self.session.data.has_key('new_report') == False:
+        if ('new_report' in self.session.data) == False:
             self.session.data['new_report'] = {}
         
-        if self.form.has_key('name_report'):
+        if 'name_report' in self.form:
             self.session.data['new_report']['name'] = self.form['name_report'].value
         else:
             self.session.data['new_report']['name'] = ""
             
-        if self.form.has_key('type'):
+        if 'type' in self.form:
             
             if self.session.data['new_report']['type'] != int(self.form['type'].value):
                 self.clean_session_report('new_report', 2)
@@ -730,7 +730,7 @@ class Reports(object):
             
         selectAntigo = self.session.data['new_report'].get('select', [])
         
-        if self.form.has_key('hdn_select'):
+        if 'hdn_select' in self.form:
             self.session.data['new_report']['select'] = self.form['hdn_select'].value[1:-1].split(',')
         else:
             self.session.data['new_report']['select'] = []
@@ -739,7 +739,7 @@ class Reports(object):
             mudou = True
             
         groupAntigo = self.session.data['new_report'].get('group', [])
-        if self.form.has_key('hdn_group'):
+        if 'hdn_group' in self.form:
             self.session.data['new_report']['group'] = self.form['hdn_group'].value[1:-1].split(',')
         else:
             self.session.data['new_report']['group'] = []
@@ -749,7 +749,7 @@ class Reports(object):
            
         totalAntigo = self.session.data['new_report'].get('total', {})
         total = {}
-        if self.form.has_key('hdn_total'):           
+        if 'hdn_total' in self.form:           
             self.get_fields_definition()
             total['name'] = self.form['hdn_total'].value[1:-1].split(',')[0]            
             total['function'] = self.fields_definition[total['name']]['aggregate_function']            
@@ -769,10 +769,10 @@ class Reports(object):
     def save_data_step3(self):
         #brk(host="localhost", port=9000)        
         
-        if self.session.data.has_key('new_report') == False:
+        if ('new_report' in self.session.data) == False:
             self.session.data['new_report'] = tmp
         else:
-            if (self.form.has_key('allFilters')):
+            if ('allFilters' in self.form):
                 self.session.data['new_report']['filters'] = eval(self.form['allFilters'].value)
         
         self.session.save()
@@ -806,7 +806,7 @@ class Reports(object):
         elif format == 2:
             
             self.session.data['new_report']['format'] = 'csv'
-            if self.form.has_key('with_header'):            
+            if 'with_header' in self.form:            
                 header = self.form['with_header'].value
                 if header == 'on':
                     self.session.data['new_report']['header'] = 'true'
@@ -816,7 +816,7 @@ class Reports(object):
             else:
                 self.session.data['new_report']['header'] = 'false'                            
             
-            if self.form.has_key('separator'):
+            if 'separator' in self.form:
                 self.session.data['new_report']['separator'] = self.form['separator'].value
             else:
                 self.session.data['new_report']['separator'] = ''
@@ -843,7 +843,7 @@ class Reports(object):
         elif format == 4:            
             import base64
             self.session.data['new_report']['format'] = 'custom'
-            if self.form.has_key('with_subcoll_template'):            
+            if 'with_subcoll_template' in self.form:            
                 with_subcoll_template = self.form['with_subcoll_template'].value
                 if with_subcoll_template == 'on':
                     self.session.data['new_report']['append_subcoll_templates'] = 'true'
@@ -855,13 +855,13 @@ class Reports(object):
             templates = {'main':{'data':'', 'header':'', 'footer':'', 'css':''}, 'group':''}
             
             #brk(host="localhost", port=9000) 
-            if self.form.has_key('header_template'):
+            if 'header_template' in self.form:
                 templates['main']['header'] = (self.form['header_template'].value)
-            if self.form.has_key('footer_template'):
+            if 'footer_template' in self.form:
                 templates['main']['footer'] = (self.form['footer_template'].value)
-            if self.form.has_key('data_template'):
+            if 'data_template' in self.form:
                 templates['main']['data'] = (self.form['data_template'].value)
-            if self.form.has_key('css_template'):
+            if 'css_template' in self.form:
                 templates['main']['css'] = (self.form['css_template'].value)
             
             group = {}
@@ -870,9 +870,9 @@ class Reports(object):
             #brk(host="localhost", port=9000) 
             for field in group_list:
                 group[field] = {'header':'', 'footer':''}
-                if self.form.has_key(field + '_header'):
+                if field + '_header' in self.form:
                     group[field]['header'] = (self.form[field + '_header'].value)
-                if self.form.has_key(field + '_footer'):
+                if field + '_footer' in self.form:
                     group[field]['footer'] = (self.form[field + '_footer'].value)
             
             templates['group'] = group
@@ -899,7 +899,7 @@ class Reports(object):
               perm_value = self.form['perm_' + str(role_id)].value
               
               if perm_value == 'w' or perm_value == 'r' or role_id == '1':
-                perm[long(str(role_id)+'L')] = perm_value
+                perm[int(str(role_id)+'L')] = perm_value
         
         self.session.data['new_report']['report_permissions'] = perm
      
@@ -930,7 +930,7 @@ class Reports(object):
         self.order_keys = []
         
         newArray = []
-        for key,value in self.fields_definition.items():
+        for key,value in list(self.fields_definition.items()):
             dicTmp = label_dict[self.fields_definition[key]['label']] + "#" + key
             newArray.append(dicTmp)
             
@@ -942,37 +942,37 @@ class Reports(object):
     def clean_session_report(self, name, step):
         
         if step == 2:
-            if self.session.data.has_key(name):
+            if name in self.session.data:
                 self.session.data[name]['field'] = []
                 self.session.data[name]['select'] = []
                 self.session.data[name]['group'] = []
                 self.session.data[name]['total'] = {}
         
         elif step == 3:
-            if self.session.data.has_key(name):
+            if name in self.session.data:
                 self.session.data[name]['filters'] = {}                
         
         elif step == 4:
-            if self.session.data.has_key(name):
-                if self.session.data[name].has_key('format'):        
+            if name in self.session.data:
+                if 'format' in self.session.data[name]:        
                     self.session.data[name].pop('format')
                     
-                if self.session.data[name].has_key('header_position'):        
+                if 'header_position' in self.session.data[name]:        
                     self.session.data[name].pop('header_position')
                     
-                if self.session.data[name].has_key('header'):        
+                if 'header' in self.session.data[name]:        
                     self.session.data[name].pop('header')
                 
-                if self.session.data[name].has_key('separator'):        
+                if 'separator' in self.session.data[name]:        
                     self.session.data[name].pop('separator')
                     
-                if self.session.data[name].has_key('chart_type'):        
+                if 'chart_type' in self.session.data[name]:        
                     self.session.data[name].pop('chart_type')
                     
-                if self.session.data[name].has_key('append_subcoll_templates'):        
+                if 'append_subcoll_templates' in self.session.data[name]:        
                     self.session.data[name].pop('append_subcoll_templates')
                 
-                if self.session.data[name].has_key('templates'):        
+                if 'templates' in self.session.data[name]:        
                     self.session.data[name].pop('templates')
                 
                 
@@ -985,7 +985,7 @@ class Reports(object):
         dict['templates']['main']['footer'] = base64.b64decode(dict['templates']['main']['footer'])
         dict['templates']['main']['css'] = base64.b64decode(dict['templates']['main']['css'])
     
-        group_list = dict['templates']['group'].keys()
+        group_list = list(dict['templates']['group'].keys())
         for field in group_list: 
             dict['templates']['group'][field]['header'] =  base64.b64decode(dict['templates']['group'][field]['header'])
             dict['templates']['group'][field]['footer'] =  base64.b64decode(dict['templates']['group'][field]['footer'])
@@ -1006,10 +1006,10 @@ class Reports(object):
     
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
+        if (isinstance(valor, str) == False):
             retorno = str(valor).decode("utf8")
         else:
             retorno = valor

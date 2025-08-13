@@ -1,9 +1,9 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 import re
 
-from dbconnection import dbConnection
+from .dbconnection import dbConnection
 
 
 class StrainFormatterError(Exception):

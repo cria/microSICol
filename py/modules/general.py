@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -12,18 +12,22 @@ class General( object ):
         """
         Constructor
         """
-        root_dir = self.get_config('root_dir')
-        self.html_dir = path.join(root_dir, self.get_config('html_dir'))
+        # Define root_dir como o diretório raiz do projeto
+        from os import path, pardir
+        self.root_dir = path.abspath(path.join(path.dirname(__file__), pardir, pardir))
+        self.html_dir = path.join(self.root_dir, 'html')
+        # Se quiser manter compatibilidade com config.xml:
+        # self.html_dir = path.join(self.root_dir, self.get_config('html_dir'))
 
     def get_config(self, config_name):
         """
         Read installation config (config.xml)
         """
-        import config
-        if config.__dict__.has_key(config_name):
+        from . import config
+        if config_name in config.__dict__:
             return config.__dict__[config_name]
         else:
-            from dom_xml import Xml
+            from .dom_xml import Xml
             from os import pardir
             config_file = self.read_file(path.abspath(path.join(pardir, 'config.xml')))
             xml = Xml('config', config_file)
@@ -36,7 +40,7 @@ class General( object ):
         if url.startswith('http://') or url.startswith('./'):
             return "Location: %s\n" % url
         else:
-            from urlparse import urljoin
+            from urllib.parse import urljoin
             return "Location: %s\n" % urljoin( 'http://', url )
 
     def read_file( self, dir ):
@@ -44,29 +48,32 @@ class General( object ):
         Read File and return it into a string
         """
         try:
-            arq = file( dir, 'rb' ).read()
+            arq = open(dir, 'rb').read()
+            return arq
         except IOError:
-            out = self.get_config('http_header') + '\n\n'
+            header = self.get_config('http_header')
+            if not header:
+                header = "Content-type: text/html; charset=utf-8"
+            out = header + '\n\n'
             out += '%s: %s' % ("No such file or directory", dir)
-            print out
-            exit(1)
-        return arq
+            return out.encode('utf-8')
 
     def read_html( self, html_name ):
         """
         Read html file and return it into a string
         """
         try:
-            dir = path.join(self.html_dir, html_name+'.html')
-            arq = file(dir, 'rb').read()
+            # Garante caminho absoluto a partir do root_dir
+            dir = path.join(self.root_dir, 'html', html_name+'.html')
+            arq = open(dir, 'rb').read()
         except IOError:
             out = self.get_config('http_header') + '\n\n'
             out += '%s: %s' % ("No such file or directory", dir)
-            print out
+            print(out)
             exit(1)
         else:
-            arq = arq.replace('\r\n', '\n') #this replace is to remove double break lines
-            arq = arq.replace('\t', '  ') #this replace is to see pretty HTML source code :D
+            arq = arq.replace(b'\r\n', b'\n') # remove double break lines
+            arq = arq.replace(b'\t', b'  ') # pretty HTML source code
         return arq
 
     def replace_nonetypes(self, obj):
@@ -93,7 +100,7 @@ class General( object ):
         """
         Tranform ' into \'. Quote can be other characters, like " or \
         """
-        return string.replace(quote, u"\\%s" % quote)
+        return string.replace(quote, "\\%s" % quote)
 
     def get_area_permission(self, cookie_value, session, area, permission_type):
         '''
@@ -105,7 +112,7 @@ class General( object ):
         area = 'species' | 'strains' | 'people' | 'institutions' | 'doc' | 'ref' | 'preservation' | 'distribution'
         permission_type = 'allow_create' | 'allow_delete'
         '''
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
         #Define Database
         self.dbconnection = dbConnection(cookie_value)
         self.execute = self.dbconnection.execute
@@ -128,7 +135,7 @@ class General( object ):
         area = 'species' | 'strains' | 'people' | 'institutions' | 'doc' | 'ref' | 'preservation' | 'distribution'
         id_item = unique id of item of chosen area
         '''
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
         #Define Database
         self.dbconnection = dbConnection(cookie_value)
         self.execute = self.dbconnection.execute
@@ -199,7 +206,7 @@ class General( object ):
         Initialize global "permissions" variable
         '''
         #brk(host="localhost", port=9000)
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
         #Define Database
         self.dbconnection = dbConnection(cookie_value)
         self.execute = self.dbconnection.execute
@@ -217,7 +224,7 @@ class General( object ):
         return permissions
 
     def get_log_db(self, id_base):
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
 
         #Define Database
         self.dbconnection = dbConnection()
@@ -243,7 +250,7 @@ class General( object ):
         id_user = self.fetch('one')
 
         #Start SQLite database
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
         db = dbConnection()
 
         #Load this user's collection from Database
@@ -257,15 +264,15 @@ class General( object ):
 
     def security_tab(self, cookie_value, action, data, area):
         #Load Session
-        from session import Session
+        from .session import Session
         session = Session()
         session.load(cookie_value)
         #brk(host="localhost", port=9000)
-        if not data.has_key('groups_table'):
+        if 'groups_table' not in data:
             data['groups_table'] = ''
         #brk(host="localhost", port=9000)
-        if session.data.has_key('new_report') and area == 'reports':
-          if session.data['new_report'].has_key('id'):
+        if 'new_report' in session.data and area == 'reports':
+          if 'id' in session.data['new_report']:
             data['id'] = session.data['new_report']['id']
         
         permissions = self.get_permissions(cookie_value, area, data)
@@ -286,7 +293,7 @@ class General( object ):
                   #elif (role_type == 'level'): role_type_print = _("Level ")
                   data['groups_table'] += '<tr>\n\t<th align="right">%s</th>\n\t<td>&nbsp;</td>\n</tr>\n' % role_type_print.upper()
               permission = ''
-              if permissions.has_key(role['id_role']):
+              if role['id_role'] in permissions:
                 if permissions[role['id_role']] == 'r':
                   permission = _("Read")
                 elif permissions[role['id_role']] == 'w':
@@ -298,8 +305,8 @@ class General( object ):
               else:
                 data['groups_table'] += '<tr>\n\t<td align="right">%s</td>\n\t<td>%s</td>\n</tr>\n' % (role['name'],permission)
         else:
-            if session.data.has_key('new_report') and area == 'reports':
-              if session.data['new_report'].has_key('report_permissions'):
+            if 'new_report' in session.data and area == 'reports':
+              if 'report_permissions' in session.data['new_report']:
                 permissions = session.data['new_report']['report_permissions']
    
             all_permissions = []
@@ -321,7 +328,7 @@ class General( object ):
               sel1 = ''
               sel2 = ''
               
-              if permissions.has_key(role['id_role']):
+              if role['id_role'] in permissions:
                 if permissions[role['id_role']] == 'r':
                   sel1 = 'selected="selected"'
                 elif permissions[role['id_role']] == 'w':
@@ -329,7 +336,7 @@ class General( object ):
               if action == 'new' and role['name'] == 'all':
                 if area != 'reports':
                   sel2 = 'selected="selected"'
-                elif not session.data['new_report'].has_key('report_permissions'):
+                elif 'report_permissions' not in session.data['new_report']:
                   sel2 = 'selected="selected"'
                     
               permission += '\t<option '+sel1+' value="r">'+_("Read")+'</option>\n'
@@ -373,7 +380,7 @@ class General( object ):
         Save user's list order preference in Database
         '''
         #Start SQLite database
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
         db = dbConnection()
         #Save changes inside Session and Database
         db.execute('load_area_list_order',{'id_user':id_user,'id_subcoll':id_subcoll,'area':area})
@@ -393,7 +400,7 @@ class General( object ):
         Returns (field,mode) tuple
         '''
         #Start SQLite database
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
         db = dbConnection()
         #Load List Order from Database
         db.execute('load_area_list_order',{'id_user':id_user,'id_subcoll':id_subcoll,'area':area})
@@ -411,7 +418,7 @@ class General( object ):
         #brk(host="localhost", port=9000)
         
         #Start SQLite database
-        from dbconnection import dbConnection
+        from .dbconnection import dbConnection
         db = dbConnection()
         #Load List Order from Database to Session
         db.execute('load_list_order',{'id_user':id_user,'id_subcoll':id_subcoll})
@@ -553,10 +560,10 @@ class General( object ):
         
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
+        if (isinstance(valor, str) == False):
             retorno = str(valor).decode("utf8")
         else:
             retorno = valor

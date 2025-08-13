@@ -1,12 +1,12 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
-from session import Session
-from cookie import Cookie
-from general import General
-from dbconnection import dbConnection
-from loghelper import Logging
-from json import JsonBuilder
+from .session import Session
+from .cookie import Cookie
+from .general import General
+from .dbconnection import dbConnection
+from .loghelper import Logging
+from .json import JsonBuilder
 
 def ppnode(node):
     try:
@@ -17,7 +17,7 @@ def ppnode(node):
             node['loc_count'],
             node['id_parent'],
             ('children' in node and [len(node['children'])] or ['N/A'])[0])
-    except Exception, e:
+    except Exception as e:
         Logging.getLogger("LocationCache").error('Error on ppnode', e)
         Logging.getLogger("LocationCache").debugObj('Node: %s', node)
         return 'Error on ppnode: ' + str(e)
@@ -43,7 +43,7 @@ class LocationHelper(object):
         return val % self.model
         
     def __init__(self, action, model, data, cookie_value=None, decrease_stock_optional=False, quantity_field=None, query=None, css_classes=None):
-        from labels import label_dict
+        from .labels import label_dict
         self.label_dict = label_dict
         self.quantity_field = quantity_field
         
@@ -152,7 +152,7 @@ class LocationHelper(object):
                 options.append(self.__location_templates[self.view_template] % _("Not identified"))
         else:
             if self.req_locations:
-                from location import LocationBuilder
+                from .location import LocationBuilder
                 loc_builder = LocationBuilder(self.cookie_value)
                 
                 if self.query:
@@ -396,7 +396,7 @@ class LocationBuilder(object):
         row = None
         for row in self.fetch('all'):
             #self.logger.debug("*** ROW: %s" % str(row))
-            if cval == -1 or cval <> row['id_container_hierarchy']: 
+            if cval == -1 or cval != row['id_container_hierarchy']: 
                 if cval != -1:
                     #self.logger.debug('current_dict')
                     #self.logger.debug(current_dict)
@@ -441,7 +441,7 @@ class LocationBuilder(object):
 #           id_container_hierarchy, row, col, 
 #           id_lot, id_strain, lot.name, strain.code, sciname.sciname_no_auth, 
 #           id_lot_strain_location
-            if cval == -1 or cval <> row['id_container_hierarchy']: 
+            if cval == -1 or cval != row['id_container_hierarchy']: 
                 if cval != -1:
                     #self.logger.debug('current_dict')
                     #self.logger.debug(current_dict)
@@ -592,11 +592,11 @@ class LocationBuilder(object):
             type_str = 'dict'
         
         if not is_list and not isinstance(from_obj, dict):
-            raise TypeError, "remove_from_node can't handle %s: only lists and dicts allowed"
+            raise TypeError("remove_from_node can't handle %s: only lists and dicts allowed")
         
         to_remove = None
         if is_list:
-            for i in xrange(len(from_obj)):
+            for i in range(len(from_obj)):
                 #self.logger.debug("   #%s - %s <=> %s ? %s", i, ppnode(node), from_obj[i], node == from_obj[i])
                 if from_obj[i] == node:
                     to_remove = i
@@ -676,7 +676,7 @@ class LocationBuilder(object):
         for row in rows:
             line = []
             for key in dict:
-                if isinstance(row[key], unicode):
+                if isinstance(row[key], str):
                     field = row[key]
                 else:
                     field = str(row[key]).strip()

@@ -1,12 +1,12 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 #local imports
 from os import listdir, path
-from general import General
-from i18n import code_dict
-from session import Session
-from dbconnection import dbConnection
+from .general import General
+from .i18n import code_dict
+from .session import Session
+from .dbconnection import dbConnection
 
 class JS_Translator(object):
     g = General()
@@ -28,7 +28,7 @@ class JS_Translator(object):
         else:
           self.js_file = path.join(self.js_i18n_dir,"translation_%s.js" % chosen_lang)
         #Find out which .mo file to look for
-        if code_dict.has_key(self.lang_code):
+        if self.lang_code in code_dict:
             po_lang_code = code_dict[self.lang_code]
         else:
             po_lang_code = self.lang_code
@@ -43,7 +43,7 @@ class JS_Translator(object):
 #        if (self.session.data.has_key("id_user")):
 #            self.execute('get_user_label',{'id_user':self.session.data['id_user']})
 #            lang_code = self.fetch('one')
-        if (self.session.data.has_key("label_lang_code")):
+        if ("label_lang_code" in self.session.data):
             lang_code = self.session.data['label_lang_code']
         if not lang_code:
             lang_code = self.g.get_config('label_lang')
@@ -100,10 +100,10 @@ class JS_Translator(object):
             #Save javascript translation file
             jscontent = f_jsheader
 #            raise str(jscontent + '====' + self.lang_code )
-            jscontent += ''.join(["__tr["+`k`+"] = '"+str(v)+"';\n" for k,v in js_translated.iteritems()])
+            jscontent += ''.join(["__tr["+repr(k)+"] = '"+str(v)+"';\n" for k,v in js_translated.items()])
             fjava = open(path.join(self.js_i18n_dir, "translation_"+self.lang_code+".js"), 'w')
             #Add __tinyMCE_lang global variable to set tinyMCE's language
-            if code_dict.has_key(self.lang_code):
+            if self.lang_code in code_dict:
                 tinyMCE_lang = '\nvar __tinyMCE_lang = "' + code_dict[self.lang_code].lower() + '";\n'
             else:
                 tinyMCE_lang = '\nvar __tinyMCE_lang = "' + self.lang_code.lower() + '";\n'

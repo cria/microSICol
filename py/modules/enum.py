@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 import string
@@ -34,12 +34,12 @@ class EnumMetaClass:
         """
         for base in bases:
             if base.__class__ is not EnumMetaClass:
-                raise TypeError, "Enumeration base class must be enumeration"
-        bases = filter(lambda x: x is not Enum, bases)
+                raise TypeError("Enumeration base class must be enumeration")
+        bases = [x for x in bases if x is not Enum]
         self.__name__ = name
         self.__bases__ = bases
         self.__dict = {}
-        for key, value in dict.items():
+        for key, value in list(dict.items()):
             self.__dict[key] = EnumInstance(name, key, value)
 
     def __getattr__(self, name):
@@ -56,7 +56,7 @@ class EnumMetaClass:
 
         """
         if name == '__members__':
-            return self.__dict.keys()
+            return list(self.__dict.keys())
 
         try:
             return self.__dict[name]
@@ -67,16 +67,15 @@ class EnumMetaClass:
                 except AttributeError:
                     continue
 
-        raise AttributeError, name
+        raise AttributeError(name)
 
     def __repr__(self):
         s = self.__name__
         if self.__bases__:
-            s = s + '(' + string.join(map(lambda x: x.__name__,
-                                          self.__bases__), ", ") + ')'
+            s = s + '(' + string.join([x.__name__ for x in self.__bases__], ", ") + ')'
         if self.__dict:
             list = []
-            for key, value in self.__dict.items():
+            for key, value in list(self.__dict.items()):
                 list.append("%s: %s" % (key, int(value)))
             s = "%s: {%s}" % (s, string.join(list, ", "))
         return s
@@ -108,7 +107,7 @@ class EnumInstance:
         if isinstance(other, EnumInstance):
             return cmp(self.__value, int(other))
         else:
-            raise TypeError, "Invalid type to compare."
+            raise TypeError("Invalid type to compare.")
 
 # Create the base class for enumerations.
 # It is an empty enumeration.

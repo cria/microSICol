@@ -1,13 +1,13 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
-from session import Session
-from general import General
-from dbconnection import dbConnection
-from getdata import Getdata
-from textlinkfactory import TextLinkFactory
-from location import LocationHelper
-from loghelper import Logging
+from .session import Session
+from .general import General
+from .dbconnection import dbConnection
+from .getdata import Getdata
+from .textlinkfactory import TextLinkFactory
+from .location import LocationHelper
+from .loghelper import Logging
 import re
 
 class Quality(object):
@@ -42,13 +42,13 @@ class Quality(object):
         self.cursor = self.dbconnection.cursor
         self.fetch = self.dbconnection.fetch
 
-        self.data_lang = self.session.data['data_langs'][0].values()[0]
+        self.data_lang = list(self.session.data['data_langs'][0].values())[0]
 
         #Load GetData class
         self.getdata = Getdata(self.cookie_value, self.form)
         
     def loadQualities(self, data):
-        if (self.form.has_key('id')):
+        if ('id' in self.form):
             
             type = str(self.form['type'].value)
             
@@ -178,7 +178,7 @@ class Quality(object):
 
     def renderLocation(self, data, not_identified=False):
         self.logger.debug('action: %s' % self.action)
-        from location import LocationHelper
+        from .location import LocationHelper
         location_helper = LocationHelper(
             action=self.action,
             model='quality', 
@@ -239,7 +239,7 @@ class Quality(object):
         self.db.execute('get_str_quality_tests', {'id_lang':self.session.data['id_lang'],'id_quality':data['id_quality']})
         quality_tests = self.db.fetch('all')
         
-        for i in xrange(1,global_counter):
+        for i in range(1,global_counter):
             j = i - 1 #index for manipulation of "quality_tests" dictionary
             aux_dict = quality_tests[j]
             

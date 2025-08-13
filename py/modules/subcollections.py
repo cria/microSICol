@@ -1,14 +1,14 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 #python imports
 from sys import exit
 
 #project imports
-from dbconnection import dbConnection
-from session import Session
-from getdata import Getdata
-from lists import Lists
+from .dbconnection import dbConnection
+from .session import Session
+from .getdata import Getdata
+from .lists import Lists
 from cgi import FieldStorage
 
 class Subcollections(object):
@@ -37,7 +37,7 @@ class Subcollections(object):
         colls = self.fetch('all')
         
         #If logging out and there is only 1 access then logout directly
-        if self.form.has_key('logout') and int(self.form.getvalue('logout')) == 1:
+        if 'logout' in self.form and int(self.form.getvalue('logout')) == 1:
             self.execute('get_accesses',{'id_user':self.id_user})
             accesses = self.fetch('one')
             if accesses == 1: #Logout directly

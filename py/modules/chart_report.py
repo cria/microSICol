@@ -1,23 +1,23 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 #from dbgp.client import brk
 from cgi import escape
-from urlparse import urljoin
+from urllib.parse import urljoin
 from re import findall
 from sys import exit
-from urllib import urlencode
+from urllib.parse import urlencode
 import cgi
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from reports_common import Reports_Common
-from labels import label_dict
-from dom_xml import Xml
-from label_values_reports import label_values_dict
-from label_values_reports import values_dict
+from .session import Session
+from .dbconnection import dbConnection
+from .reports_common import Reports_Common
+from .labels import label_dict
+from .dom_xml import Xml
+from .label_values_reports import label_values_dict
+from .label_values_reports import values_dict
 
 class Chart_Report(Reports_Common):
     def __init__(self, param, cookie_value, conn=None):
@@ -80,7 +80,7 @@ class Chart_Report(Reports_Common):
                 
             try:
                 list = self.get_data(select, param['filters'], append_where, group)
-            except Exception, err:
+            except Exception as err:
                     raise err
                 
             output = output + "<tr>" + space + "<td colspan=2>"                
@@ -106,7 +106,7 @@ class Chart_Report(Reports_Common):
                   
             try:          
                 list_group = self.get_data(select, param['filters'], append_where, group, True)
-            except Exception, err:
+            except Exception as err:
                     raise err
             
             for item in list_group:
@@ -209,7 +209,7 @@ class Chart_Report(Reports_Common):
            
         try: 
             table = self.write_report(self.report_params, 0, "")
-        except Exception, err:
+        except Exception as err:
                     raise err
             
         output = output + table
@@ -229,7 +229,7 @@ class Chart_Report(Reports_Common):
             
         for line in list:
             string = ''
-            if line.has_key(field_name):
+            if field_name in line:
                 string = self.process_field(field_name, line[field_name])
             else:
                 string = label_dict[self.fields_definition.get(field_name, {'label':''})['label']]
@@ -348,7 +348,7 @@ class Chart_Report(Reports_Common):
         
         for line in list:
             temp = ''
-            if line.has_key(field_name):
+            if field_name in line:
                 temp = self.process_field(field_name, line[field_name])
             else:
                 temp = label_dict[self.fields_definition.get(field_name, {'label':''})['label']]
@@ -447,7 +447,7 @@ class Chart_Report(Reports_Common):
             
         for line in list:
             string = ''
-            if line.has_key(field_name):
+            if field_name in line:
                 string = self.process_field(field_name, line[field_name])
             else:
                 string = label_dict[self.fields_definition.get(field_name, {'label':''})['label']]
@@ -573,7 +573,7 @@ class Chart_Report(Reports_Common):
             
         for line in list:
             string = ''
-            if line.has_key(field_name):
+            if field_name in line:
                 string = self.process_field(field_name, line[field_name])
             else:
                 string = label_dict[self.fields_definition.get(field_name, {'label':''})['label']]

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 import cgitb;cgitb.enable()
@@ -6,10 +6,10 @@ import cgitb;cgitb.enable()
 from sys import exit
 
 #project imports
-import exception
-from dbconnection import dbConnection
-from general import General
-from loghelper import Logging
+from . import exception
+from .dbconnection import dbConnection
+from .general import General
+from .loghelper import Logging
 
 class Login(object):
 
@@ -22,7 +22,7 @@ class Login(object):
         self.logger = Logging.getLogger("login")
         self.d = self.logger.debug
 
-        if not (form.has_key("user") and form.has_key("pwd")):
+        if not ("user" in form and "pwd" in form):
             self.empty_error = True
         else:
             self.user = form.getvalue('user')

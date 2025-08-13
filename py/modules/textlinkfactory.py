@@ -1,11 +1,11 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 #project imports
-from textlinkcollection import TextLinkCollection
-from textlink import TextLink
-from textlink import Keyword
-from session import Session
+from .textlinkcollection import TextLinkCollection
+from .textlink import TextLink
+from .textlink import Keyword
+from .session import Session
 
 class TextLinkFactory(dict):
     """Factory for TextLink and TextLinkCollection manipulation."""
@@ -28,7 +28,7 @@ class TextLinkFactory(dict):
     def __setitem__(self, key, value):
 
         #str and unicode inherit basestring
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             dict.__setitem__(self, key, self.replaceWithHyperLinks(value))
 
         elif isinstance(value, TextLink):
@@ -38,15 +38,15 @@ class TextLinkFactory(dict):
             dict.__setitem__(self, key, self.extractHyperLinks(value))
 
         else:
-            raise TypeError, _("Invalid value type.")
+            raise TypeError(_("Invalid value type."))
 
     def update(self, e={}, **f):
         try:
             if len(e) != 0:
-                for key, value in e.items():
+                for key, value in list(e.items()):
 
                     #"str" and "unicode" inherit "basestring"
-                    if isinstance(value, basestring):
+                    if isinstance(value, str):
                         e[key] = self.replaceWithHyperLinks(value)
 
                     elif isinstance(value, TextLink):
@@ -56,13 +56,13 @@ class TextLinkFactory(dict):
                         e[key] = self.extractHyperLinks(value)
 
                     else:
-                        raise TypeError, _("Invalid value type.")
+                        raise TypeError(_("Invalid value type."))
 
             if len(f) != 0:
-                for key, value in f.items():
+                for key, value in list(f.items()):
 
                     #"str" and "unicode" inherit "basestring"
-                    if isinstance(value, basestring):
+                    if isinstance(value, str):
                         f[key] = self.replaceWithHyperLinks(value)
 
                     elif isinstance(value, TextLink):
@@ -72,7 +72,7 @@ class TextLinkFactory(dict):
                         f[key] = self.extractHyperLinks(value)
 
                     else:
-                        raise TypeError, _("Invalid value type.")
+                        raise TypeError(_("Invalid value type."))
 
             dict.update(self, e, **f)
         except:
@@ -144,13 +144,13 @@ class TextLinkFactory(dict):
                 text += item.split(":")[1] + " "
             return text
         else:
-            raise TypeError, _("Invalid value type.")
+            raise TypeError(_("Invalid value type."))
 
     #Fill data object
     def fillData(self, data):
         """Fill in data with TextLinks' HyperLinks saved in associated keys"""
 
-        for key, value in self.items():
+        for key, value in list(self.items()):
             data[key] = value
 
     #Convert str type to TextLink type
@@ -167,7 +167,7 @@ class TextLinkFactory(dict):
             #Return a TextLink
             return TextLink(keyword, hyperlink)
         else:
-            raise ValueError, _("Cannot be converted to TextLink type.")
+            raise ValueError(_("Cannot be converted to TextLink type."))
 
     #Convert list type to TextLinkCollection type
     def convertToTextLinkCollection(self, tlist):
@@ -177,14 +177,14 @@ class TextLinkFactory(dict):
         for item in tlist:
             if isinstance(item, TextLink):
                 listItems.append(item)
-            elif isinstance(item, basestring):
+            elif isinstance(item, str):
                 if isinstance(self.__cookie, str):
                     tlinkFactory = TextLinkFactory(self.__cookie)
                     listItems.append(tlinkFactory.convertToTextLink(item))
                 else:
                     raise Exception("The cookie_value is mandatory to str type values")
             else:
-                raise TypeError, _("Invalid value type in list.")
+                raise TypeError(_("Invalid value type in list."))
 
         #Return list
         return listItems

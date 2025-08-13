@@ -17,7 +17,7 @@ def updateDB(full_mode=True):
   import platform
   from sys import exit
 
-  print "Updating MySQL database..."
+  print("Updating MySQL database...")
   if platform.system() == "Windows" or platform.system() == "Microsoft":
     import winsound
   ####################
@@ -44,8 +44,8 @@ def updateDB(full_mode=True):
   # DB update script
   ####################
   if mysql_path == '' or mysql_path == []:
-    print "*********** ERROR ***********"
-    print "Please insert path to executable directory (mysql.exe) in OS 'PATH' variable."
+    print("*********** ERROR ***********")
+    print("Please insert path to executable directory (mysql.exe) in OS 'PATH' variable.")
     raw_input() #Wait for user input...
     return False
   else:
@@ -56,31 +56,31 @@ def updateDB(full_mode=True):
       mysql_path = '"' + mysql_path + 'mysql.exe"'
   try:
     bd_version = dados['mysql_bd'].split("_")[1]
-  except Exception,e:
-    print "*********** ERROR ***********"
-    print "Please type \"sicol_v###\" where ### = version number."
+  except Exception as e:
+    print("*********** ERROR ***********")
+    print("Please type \"sicol_v###\" where ### = version number.")
     raw_input() #Wait for user input...
     return False
   path_to_db = sicol_path + bd_version + os.sep
   # Load mysql_script_empty.sql
   dump_file = 'mysql_script_empty.sql'
-  print "Loading database structure..." 
+  print("Loading database structure..." )
   try:
     os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,path_to_db+dump_file) )
-  except Exception,e:
-    print "*********** ERROR ***********"
-    print str(e)
+  except Exception as e:
+    print("*********** ERROR ***********")
+    print(str(e))
     raw_input() #Wait for user input...
     
     #return False
   # Load mysql_start_dump.sql
   dump_file = "dump"+os.sep+"mysql_start_dump.sql"
-  print "Loading initial dump to database..." 
+  print("Loading initial dump to database..." )
   try:
     os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,path_to_db+dump_file) )
-  except Exception,e:
-    print "*********** ERROR ***********"
-    print str(e)
+  except Exception as e:
+    print("*********** ERROR ***********")
+    print(str(e))
     raw_input() #Wait for user input...
     return False
   ######################
@@ -93,12 +93,12 @@ def updateDB(full_mode=True):
     if opt == 'y':
       # Load mysql_testdata_dump.sql
       dump_file = "dump"+os.sep+"mysql_testdata_dump.sql"
-      print "Loading test data to database..." 
+      print("Loading test data to database..." )
       try:
         os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,path_to_db+dump_file) )
-      except Exception,e:
-        print "*********** ERROR ***********"
-        print str(e)
+      except Exception as e:
+        print("*********** ERROR ***********")
+        print(str(e))
         raw_input() #Wait for user input...
         return
     if platform.system() == "Windows" or platform.system() == "Microsoft":
@@ -107,12 +107,12 @@ def updateDB(full_mode=True):
     if opt == 'y':
       # Load mysql_cities_dump.sql
       dump_file = "dump"+os.sep+"mysql_cities_dump.sql"
-      print "Loading Brazilian cities name to database..." 
+      print("Loading Brazilian cities name to database..." )
       try:
         os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,path_to_db+dump_file) )
-      except Exception,e:
-        print "*********** ERROR ***********"
-        print str(e)
+      except Exception as e:
+        print("*********** ERROR ***********")
+        print(str(e))
         raw_input() #Wait for user input...
         return
     if platform.system() == "Windows" or platform.system() == "Microsoft":
@@ -121,19 +121,19 @@ def updateDB(full_mode=True):
     if opt == 'y':
       # Load mysql_cities_dump.sql
       dump_file = "dump"+os.sep+"mysql_debug_dump.sql"
-      print "Loading debug data to database..." 
+      print("Loading debug data to database..." )
       try:
         os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,path_to_db+dump_file) )
-      except Exception,e:
-        print "*********** ERROR ***********"
-        print str(e)
+      except Exception as e:
+        print("*********** ERROR ***********")
+        print(str(e))
         raw_input() #Wait for user input...
         return
   ########################
   # End of additional data
   ########################
   # Give database permissions to "sicol" user
-  print "Transfering access permission to user \"%s\"..." % dados['mysql_user']
+  print("Transfering access permission to user \"%s\"..." % dados['mysql_user'])
   try:
     #Create temp file in order to change user permissions
     f = open('temp_user_access_bd.sql','w')
@@ -141,9 +141,9 @@ def updateDB(full_mode=True):
     f.close()
     os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,os.getcwd()+os.sep+'temp_user_access_bd.sql') )
     os.unlink('temp_user_access_bd.sql')
-  except Exception,e:
-    print "*********** ERROR ***********"
-    print str(e)
+  except Exception as e:
+    print("*********** ERROR ***********")
+    print(str(e))
     raw_input() #Wait for user input...
     return
   ####################
@@ -151,11 +151,11 @@ def updateDB(full_mode=True):
   ####################
   if platform.system() == "Windows" or platform.system() == "Microsoft":
     winsound.MessageBeep(winsound.MB_ICONEXCLAMATION)
-  print "****************************"
+  print("****************************")
   raw_input("Update finished. Press [ENTER] to continue.")
 
 #If this script is called locally...
 if __name__ == "__main__":
-  print "*** Update SICol Database ***"
+  print("*** Update SICol Database ***")
   updateDB()
-  print "*** Update Finished ***"
+  print("*** Update Finished ***")

@@ -1729,7 +1729,17 @@
             INNER JOIN scientific_names sc USING (id_sciname)
             WHERE l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_distribution
+            GROUP BY 
+                d.id_distribution,
+                d.date,
+                l.name,
+                i.name,
+                p.name,
+                sc.sciname,
+                st.code,
+                sc.sciname_no_auth,
+                sc.hi_tax,
+                st.infra_complement
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
@@ -1871,7 +1881,7 @@
       ORDER BY roles_permissions.permission DESC;]]></sql>
 
       <sql name="get_possible_data_langs"><![CDATA[
-            SELECT DISTINCT code FROM lang ORDER BY id_lang;]]></sql>
+            SELECT code FROM lang ORDER BY id_lang;]]></sql>
 
       <sql name="get_possible_start_pages"><![CDATA[
             SELECT id_area,name,description FROM system_areas ORDER BY id_area ASC;]]></sql>
@@ -2068,11 +2078,11 @@
 
        <sql name="get_location_data"><![CDATA[
        SELECT
-           id_location, id_container_hierarchy, rows, cols, ini_row, ini_col, pattern
+           `id_location`, `id_container_hierarchy`, `rows`, `cols`, `ini_row`, `ini_col`, `pattern`
        FROM
-           location
+           `location`
        WHERE
-           id_container_hierarchy = %(id_container_hierarchy)s;
+           `id_container_hierarchy` = %(id_container_hierarchy)s;
        ]]></sql>
 
        <sql name="get_all_location_data"><![CDATA[
@@ -3820,7 +3830,7 @@
             VALUES (%(id_container)s, %(id_parent)s, %(abbreviation)s, %(description)s);]]></sql>
 
         <sql name="insert_location"><![CDATA[
-            INSERT INTO location (id_container_hierarchy, rows, cols, ini_row, ini_col, pattern)
+            INSERT INTO location (`id_container_hierarchy`, `rows`, `cols`, `ini_row`, `ini_col`, `pattern`)
             VALUES (%(id_container_hierarchy)s, %(rows)s, %(cols)s, %(ini_row)s, %(ini_col)s, %(pattern)s);]]></sql>
 
         <sql name="insert_log"><![CDATA[
