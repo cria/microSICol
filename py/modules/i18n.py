@@ -38,7 +38,7 @@ class I18n(object):
 
         #Install lang
         from os import path
-        self.locale_dir = path.join(self.g.get_config('root_dir'), self.g.get_config('po_dir'))
+        self.locale_dir = path.join(self.g.root_dir, self.g.get_config('po_dir'))
         self.language_install(lang_code)
 
     def language_install (self, lang_code):
@@ -50,6 +50,8 @@ class I18n(object):
             #self.gettext = _ = lang.ugettext
         #if lang does not exist, bind _ to a do nothing function
         except IOError:
+            from gettext import NullTranslations
+            self.lang = NullTranslations()
             _ = lambda x: x
         import builtins
         builtins.__dict__['_'] = _

@@ -10,8 +10,8 @@ from .dbconnection import dbConnection
 
 class JS_Translator(object):
     g = General()
-    js_dir = path.join(g.get_config("root_dir"),g.get_config("js_dir"))
-    js_i18n_dir = path.join(g.get_config("root_dir"),g.get_config("js_i18n_dir"))
+    js_dir = path.join(g.root_dir, g.get_config("js_dir"))
+    js_i18n_dir = path.join(g.root_dir, g.get_config("js_i18n_dir"))
     
     def __init__(self,cookie_value,i18n,chosen_lang=None):
         '''
