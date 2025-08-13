@@ -481,7 +481,7 @@ class Principal(object):
                             self.session.save()
 
                     if redirect:
-                        print((self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/logout.py'))))
+                        print((self.g.redirect('./logout.py')))
                 # update session for chosen subcollection
                 else:
                     self.set_session_vars(self.form.getvalue('coll'), self.form.getvalue('subcoll'))
@@ -651,7 +651,7 @@ class Principal(object):
                     if (js_tr.needsUpdate()): js_tr.doUpdate()
 
                     # Reload page to get effects from changes
-                    print((self.g.redirect(urljoin(self.g.get_config('index_url'), 'py/preferences.py'))))
+                    print((self.g.redirect('./preferences.py')))
                     exit(0)
 
                 self.check_feedback()
@@ -1072,9 +1072,6 @@ class Principal(object):
         # Sempre enviar cabeçalhos HTTP primeiro
         formatted_header = current_http_header % self.data
         print(formatted_header)
-        print("--- Start of headers ---")
-        print(repr(formatted_header))
-        print("--- End of headers ---")
         print()  # Linha em branco separando cabeçalhos do corpo
 
         # Monta o HTML sem reimprimir cabeçalho HTTP (enviado em index.py)
