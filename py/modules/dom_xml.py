@@ -4,11 +4,6 @@
 #python imports
 from os import pardir, sep, path, getcwd
 #from dbgp.client import brk
-import sys
-# Garante que o site-packages local está no sys.path
-site_packages = '/home/maciel/.local/lib/python3.10/site-packages'
-if site_packages not in sys.path:
-    sys.path.append(site_packages)
 
 #project imports
 # from .external.BeautifulSoup import BeautifulSoup
@@ -22,11 +17,8 @@ class Xml(object):
         self.root = self.soup.find(root)
 
     def get(self, name):
-        # Busca a tag pelo nome dentro do root
-        if self.root is None:
-            return ''
-        tag = self.root.find(name)
-        if tag is None:
+        tag = self.soup.find('config', {'name': name})
+        if not tag:
             return ''
         # Retorna o texto da tag (CDATA ou texto comum)
         return tag.get_text(strip=True)
