@@ -11,13 +11,24 @@ from bs4 import BeautifulSoup
 
 
 class Xml(object):
-    def __init__(self, root, file):
+    '''Aparentemente essa lib foi criada para lidar com arquivos XML com uma tag
+       root e subtags num único nível sempre com o mesmo nome, como é o caso do
+       arquivo de configuração do sistema (config.xml):
+       <configs>
+         <config name="config1">some value1</config>
+         <config name="config2">some value2</config>
+       </configs>
+       O método "get" busca o conteúdo da tag com base no valor do atributo "name":
+       xml = Xml('subtag', '/path/to/xml/file')
+       config1 = xml.get('config1') # <- some value1
+    '''
+    def __init__(self, tag_name, file):
         # Use 'xml' parser for XML files
         self.soup = BeautifulSoup(file, 'xml')
-        self.root = self.soup.find(root)
+        self.tag_name = tag_name
 
     def get(self, name):
-        tag = self.soup.find('config', {'name': name})
+        tag = self.soup.find(self.tag_name, {'name': name})
         if not tag:
             return ''
         # Retorna o texto da tag (CDATA ou texto comum)
