@@ -318,7 +318,7 @@ class Principal(object):
 
     def mount(self, page, category, js, css):
         # brk(host="localhost", port=9000)
-        self.logger.debug("Mounting page %s category [%s] js [%s] css [%s]" % (page, category, js, css))
+        self.logger.debug(f"Mounting page {page} category [{category}] js [{js}] css [{css}]")
         self.checkup(page, category)
         if (page == 'logout'):  # delete session
             self.html_footer = ''
