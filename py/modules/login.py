@@ -31,7 +31,7 @@ class Login(object):
                 from hashlib import md5 as new_md5
             except ImportError:
                 from md5 import new as new_md5
-            self.pwd = new_md5(form.getvalue('pwd')).hexdigest()
+            self.pwd = new_md5(form.getvalue('pwd').encode('utf-8')).hexdigest()
 
     def test( self, cookie_value ):
         if self.empty_error:
