@@ -460,7 +460,7 @@ class General( object ):
         """
         import re
         if gps_type == 'latitude':
-          dmsRegex = re.compile("([-+])?(\d{1,3})([^-0-9+])((\d{1,2})(\.\d+)?['`]((\d{1,2})(\.\d+)?(\"|''|``))?)?([NSns])?")
+          dmsRegex = re.compile(r"([-+])?(\d{1,3})([^-0-9+])((\d{1,2})(\.\d+)?['`]((\d{1,2})(\.\d+)?(\"|''|``))?)?([NSns])?")
           m = dmsRegex.search(value)
           if m:
             #Find out the direction
@@ -491,7 +491,7 @@ class General( object ):
           else:
             return "0"
         elif gps_type == 'longitude':
-          dmsRegex = re.compile("([-+])?(\d{1,3})([^-0-9+])((\d{1,2})(\.\d+)?['`]((\d{1,2})(\.\d+)?(\"|''|``))?)?([WEwe])?")
+          dmsRegex = re.compile(r"([-+])?(\d{1,3})([^-0-9+])((\d{1,2})(\.\d+)?['`]((\d{1,2})(\.\d+)?(\"|''|``))?)?([WEwe])?")
           m = dmsRegex.search(value)
           if m:
             #Find out the direction
