@@ -1,5 +1,2 @@
-beautifulsoup4==4.13.4
-lxml==6.0.0
-mysql-connector-python==9.4.0
-soupsieve==2.7
-typing_extensions==4.14.1
+beautifulsoup4
+mysql-connector-python
