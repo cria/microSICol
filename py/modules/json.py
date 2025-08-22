@@ -27,7 +27,7 @@ class JsonBuilder:
             #    item = "[%s]" % (", ".join(item)) 
 
             # if type is numeric, use raw value, without scaping
-            if type(item) in (IntType, LongType, FloatType):
+            if isinstance(item, (int, float)):
                 format = "'%s': %s"
                 
             json.append(format % (key, item))
