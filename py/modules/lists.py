@@ -508,7 +508,11 @@ class Lists(object):
           self.execute('get_strain_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
