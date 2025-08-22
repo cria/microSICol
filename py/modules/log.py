@@ -2,7 +2,6 @@
 #-*- coding: utf-8 -*-
 
 #python imports
-from cgi import escape
 from urllib.parse import urljoin
 from re import findall
 from sys import exit
