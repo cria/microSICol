@@ -638,7 +638,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter
 
     def doc(self):
         html = '%s<tr class="%s" onclick="location=\'./doc.detail.py?id=%s&row=%s\'">\
