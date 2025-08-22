@@ -187,6 +187,8 @@ class Getdata(object):
                 validate = 'href="javascript:validate(\''+who+'\',\''+date_format+'\')"'
             else:
                 validate = 'href="javascript: if (!validateContact()) validate(\''+who+'\',\''+date_format+'\');"'
+            if isinstance(self.page_parts['submenu'], bytes):
+                self.page_parts['submenu'] = self.page_parts['submenu'].decode('utf-8')
             self.page_parts['submenu'] = self.page_parts['submenu'].replace('href=""', validate)
         elif action == 'view':
             if self.data['id']:
