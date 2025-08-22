@@ -262,7 +262,10 @@ class Traceability(object):
         self.execute_log('log_log_list', query_data)
 
         # Calculate how many pages are
-        lines = float(self.dbconnection_log.getrows())
+        rowscount = self.dbconnection_log.getrows()
+        if rowscount is None:
+            rowscount = 0
+        lines = float(rowscount)
         lines_per_page = int(self.session.data['lines_per_page'])
         total_pages = int(math.ceil(lines / lines_per_page))
 
