@@ -709,7 +709,10 @@ class Lists(object):
           self.execute('get_doc_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -775,7 +778,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def ref(self):
         html = '%s<tr class="%s" onclick="location=\'./ref.detail.py?id=%s&row=%s\'">\
@@ -848,7 +851,10 @@ class Lists(object):
           self.execute('get_ref_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -915,7 +921,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def people(self):
         html = '%s<tr class="%s" onclick="location=\'./people.detail.py?id=%s&row=%s\'">\
@@ -992,7 +998,10 @@ class Lists(object):
           self.execute('get_person_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -1083,7 +1092,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def inst(self):
         #Output
@@ -1156,7 +1165,10 @@ class Lists(object):
           self.execute('get_inst_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -1220,7 +1232,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def preservation(self):
         html = '%s<tr class="%s" onclick="location=\'./preservation.detail.py?id=%s&row=%s\'">\
@@ -1326,7 +1338,10 @@ class Lists(object):
           self.execute('get_preservation_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -1424,7 +1439,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(6, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(6, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def distribution(self):
         html = '%s<tr class="%s" onclick="location=\'./distribution.detail.py?id=%s&row=%s\'">\
@@ -1516,7 +1531,10 @@ class Lists(object):
           self.data['roles_list'] = roles
           self.execute('get_distribution_list_restrict', self.data,raw_mode = True)
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -1606,7 +1624,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(5, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(5, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def reports(self):
         #brk(host="localhost", port=9000)
@@ -1674,7 +1692,10 @@ class Lists(object):
           self.execute('get_report_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -1736,7 +1757,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])          
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def get_foothtml(self, number_columns, current, max_numberpages, total, base_link):
         """Return html for the foot of the list"""
@@ -1889,7 +1910,10 @@ class Lists(object):
         self.execute('get_stock_movement_list', self.data, True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -1965,7 +1989,10 @@ class Lists(object):
         self.execute('get_container_list', self.data, True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
