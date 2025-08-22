@@ -343,7 +343,11 @@ class Lists(object):
             self.execute('get_species_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
@@ -414,7 +418,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
     
     def strains(self):
         html = '%s<tr class="%s" onclick="location=\'./strains.detail.py?id=%s&row=%s\'" style="white-space:nowrap; %s">\
