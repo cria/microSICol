@@ -745,9 +745,9 @@ class Configuration(object):
 
         else: #Edited user
           self.execute('get_user_name',{'id_user':user_id})
-          old_name = self.fetch('one').encode('utf8')
+          old_name = str(self.fetch('one'))
           if old_name != user_name: #Update related group name
-            if old_name == self.session.data['user_name'].encode('utf8'): #User changed his own name
+            if old_name == str(self.session.data['user_name']):
               self.session.data['user_name'] = user_name
               self.session.save()
 
@@ -904,7 +904,7 @@ class Configuration(object):
           data['user_access'] += '<input type="checkbox" name="user_%s_%s" id="user_%s_%s" />%s - %s <br />' % \
                                      (str(coll['coll_id']),str(coll['subcoll_id']),
                                       str(coll['coll_id']),str(coll['subcoll_id']),
-                                      str(coll['coll_code']),str(coll['subcoll_code'].encode('utf8')))
+                                      str(coll['coll_code']),str(coll['subcoll_code']))
           js_list.append(str("user_"+str(coll['coll_id'])+"_"+str(coll['subcoll_id'])))
         #Get all existing groups (where types in ('group','level'))
         self.db.execute('get_all_common_roles')
@@ -1019,7 +1019,7 @@ class Configuration(object):
                str_areas.append('userareacreate_'+str(area['id_area']))
           jsparam = "onclick=\"edit_user('%s','%s','%s','%s','%s','%s','%s')\"" % (str(user['id_user']),user['login'].encode("utf8"),user['name'].encode("utf8"),user['comments'].encode("utf8"),",".join(str_user_colls),",".join(str_user_roles),",".join(str_areas))
           line = line % jsparam
-          data['user_table'] += line.decode("utf8")
+          data['user_table'] += str(line)
 
     def loadGroupTab(self,data):
         '''
@@ -1051,7 +1051,7 @@ class Configuration(object):
              if (area['allow_create'] == 'y'):
                 str_areas.append('areacreate_'+str(area['id_area']))
            jsparam = ''
-           if role['name'].encode('utf8') == 'Administrator' or role['name'].encode('utf8') == 'Curador': #Prevent Administrator and Curador group to be edited
+           if str(role['name']) == 'Administrator' or str(role['name']) == 'Curador': #Prevent Administrator and Curador group to be edited
              jsparam = "onclick=\"alert('%s');\"" % _("Unable to edit special groups")
              line = line.replace('<tr ','<tr class="non_editable" ')
            else:
@@ -1072,7 +1072,7 @@ class Configuration(object):
         list_dbs = self.fetch('all')
         data['coll_list'] = ''
         for onedb in list_dbs:
-          data['coll_list'] += '<option value="%s">%s</option>' % (str(onedb['base_id']),onedb['db_name'].encode('utf8')+" - "+str(onedb['host'])+":"+str(onedb['port'])+" ("+str(onedb['dbms_name'])+")")
+          data['coll_list'] += '<option value="%s">%s</option>' % (str(onedb['base_id']),str(onedb['db_name'])+" - "+str(onedb['host'])+":"+str(onedb['port'])+" ("+str(onedb['dbms_name'])+")")
         #Create row template
         coll_table = '<tr onclick="edit_coll(%%s)">\
              <td class="">%s</td>\
