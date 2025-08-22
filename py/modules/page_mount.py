@@ -347,7 +347,10 @@ class Principal(object):
 
         # Format page_parts and insert in data
         for key in self.page_parts:
-            self.page_parts[key] = self.page_parts[key] % self.data
+            template = self.page_parts[key]
+            if isinstance(template, bytes):
+                template = template.decode('utf-8')  # decode bytes to str
+            self.page_parts[key] = template % self.data  # regular str formatting
         self.data.update(self.page_parts)
         self.page_show(page)
 
@@ -1057,7 +1060,10 @@ class Principal(object):
                     pass
 
         # Join parts and show
-        self.data['page'] = (self.data['page'] % self.data)
+        template = self.data['page']
+        if isinstance(template, bytes):
+            template = template.decode('utf-8')  # decode bytes to str
+        self.data['page'] = (template % self.data)
 
         # Do not show the configuration button to ordinary users
         if 'roles' in self.session.data:
