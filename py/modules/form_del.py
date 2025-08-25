@@ -423,6 +423,9 @@ class Delete(object):
           from . import exception
           redirect_url = urljoin(self.index_url, self.who_list)
           raise exception.SicolException("REDIRECT:" + redirect_url)
+        except exception.SicolException:
+          # Re-raise SicolException (including REDIRECT) to be handled by the caller
+          raise
         except Exception as e:
           self.rollback(e)
 
