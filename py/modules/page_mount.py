@@ -320,6 +320,11 @@ class Principal(object):
             self.header_includes(page, category, (), css)
             self.data['page'] = self.g.read_html('form.save')
             self.data['error_info'] = str_error
+        elif (ex_error.startswith("REDIRECT:")):
+            # Handle para redirecionamento após salvar
+            redirect_url = ex_error[9:]  # Remove "REDIRECT:" prefix
+            print(self.g.redirect(redirect_url))
+            exit()
         elif (ex_error.find("Timeout") != -1):
             ex_error = _("Generation Timeout") + ": " + "%.1f " % float(ex_error.split(":")[1]) + " seconds." + "<br />\n" + _("Please change the fields in your report or change the 'report_timeout' parameter in the config.xml file.")
             str_error = '<div class="user_error">%s</div>' % ex_error
@@ -630,8 +635,8 @@ class Principal(object):
                         try:
                             from hashlib import md5 as new_md5
                         except ImportError:
-                            from md5 import new as new_md5
-                        user_pwd = new_md5(user_pwd).hexdigest()
+                            from hashlib import md5 as new_md5
+                        user_pwd = new_md5(user_pwd.encode('utf-8')).hexdigest()
                         # Change User Password
                         self.execute('update_user_pwd_only', {'id_user': user_id,'pwd': user_pwd})
 
