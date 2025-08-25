@@ -20,6 +20,17 @@ from .sciname import SciNameBuilder
 from .loghelper import Logging
 from .log import Log
 from . import exception
+
+# Initialize internationalization
+try:
+    from .i18n import I18n
+    # Create a temporary instance to initialize the global _
+    _temp_i18n = I18n()
+    from builtins import _
+except (ImportError, AttributeError):
+    # Fallback if i18n is not available
+    def _(text):
+        return text
 #from dbgp.client import brk
 
 class Save(object):
@@ -194,20 +205,40 @@ class Save(object):
     def feedback(self, value, id_ok=None):
         if value == -1: #Errors
             import sys
-            file_name = sys.exc_traceback.tb_frame.f_code.co_filename
-            file_name = file_name[file_name.rfind(sep)+1:] #sep == os.sep - Operational System Separator '/' or '\\'
-            ex_type = str(sys.exc_info()[0]).strip("'>").split('.')
-            ex_type = str(ex_type[1])
-            str_error = '<div class="user_error"><b>'+_("File")+'</b>: '+file_name+'<br />'
-            str_error += '<b>'+_("Line")+'</b>: '+str(sys.exc_traceback.tb_lineno)+'<br />'
-            str_error += '<b>'+_("Type")+'</b>: '+ex_type+'<br />'
-            if not sys.exc_value.args:
-                ex_error = "None"
-            elif isinstance(sys.exc_value.args[0],int):
-                ex_error = str(sys.exc_value.args[0])
+            import traceback
+            
+            # Get current exception info (Python 3 compatible way)
+            ex_type, ex_value, ex_traceback = sys.exc_info()
+            
+            if ex_traceback:
+                file_name = ex_traceback.tb_frame.f_code.co_filename
+                file_name = file_name[file_name.rfind(sep)+1:] #sep == os.sep - Operational System Separator '/' or '\\'
+                line_no = ex_traceback.tb_lineno
             else:
-                ex_error = sys.exc_value.args[0].encode('utf8')
-            str_error += '<b>'+_("Value")+'</b>: %s</div>' % ex_error.decode('utf8')
+                file_name = "unknown"
+                line_no = 0
+            
+            if ex_type:
+                ex_type_str = str(ex_type).strip("'>").split('.')
+                ex_type_str = str(ex_type_str[-1]) if ex_type_str else "UnknownError"
+            else:
+                ex_type_str = "UnknownError"
+            
+            str_error = '<div class="user_error"><b>'+_("File")+'</b>: '+file_name+'<br />'
+            str_error += '<b>'+_("Line")+'</b>: '+str(line_no)+'<br />'
+            str_error += '<b>'+_("Type")+'</b>: '+ex_type_str+'<br />'
+            
+            if not ex_value or not ex_value.args:
+                ex_error = "None"
+            elif isinstance(ex_value.args[0], int):
+                ex_error = str(ex_value.args[0])
+            else:
+                try:
+                    ex_error = str(ex_value.args[0])
+                except UnicodeDecodeError:
+                    ex_error = repr(ex_value.args[0])
+            
+            str_error += '<b>'+_("Value")+'</b>: %s</div>' % ex_error
             self.html['error_info'] = str_error
         elif value == 1: #Success
             self.session.data['feedback'] = 1
