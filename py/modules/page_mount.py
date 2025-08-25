@@ -331,7 +331,13 @@ class Principal(object):
             self.header_includes(page, category, js, css)
         except exception.SicolException:
             import sys
-            self.logger.error("[page: %s] %s" % (page, str(sys.exc_info()[1])))
+            exc = sys.exc_info()[1]
+            msg = exc
+            if isinstance(msg, bytes):
+                msg = msg.decode('utf-8', errors='replace')
+            else:
+                msg = str(msg)
+            self.logger.error("[page: %s] %s" % (page, msg))
             # Error messages in sicol exception
             # are presented to the user when the final html is displayed
             if "page" not in self.data:
