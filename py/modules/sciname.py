@@ -8,6 +8,17 @@ from .dbconnection import dbConnection
 from .loghelper import Logging
 from .json import JsonBuilder
 
+# Import translation function
+try:
+    from .i18n import I18n
+    # Create a temporary instance to initialize the global _
+    _temp_i18n = I18n()
+    from builtins import _
+except (ImportError, AttributeError):
+    # Fallback if translation is not available
+    def _(text):
+        return text
+
 class SciNameBuilder(object):
     g = General()
 
@@ -39,21 +50,44 @@ class SciNameBuilder(object):
         if not hi_tax:
             hi_tax = ''
         
-        id_sciname = str(id_sciname)
-        sciname_data = { 'compound_hitax_sciname': '%s|%s' % (hi_tax, sciname)}
-        self.execute('check_sciname', sciname_data)
-        current_id_sciname = str(self.fetch('one'))
-        self.logger.debug("current id: %s" % (current_id_sciname))
+        if id_sciname is not None:
+            id_sciname = str(id_sciname)
+        
+        # Escapar caracteres especiais e garantir que os valores sejam strings válidas
+        if sciname is None:
+            sciname = ''
+        if hi_tax is None:
+            hi_tax = ''
+            
+        # Limpar e validar os dados de entrada
+        sciname = str(sciname).strip()
+        hi_tax = str(hi_tax).strip()
+        
+        # Criar o valor composto de forma segura
+        compound_value = '%s|%s' % (hi_tax, sciname)
+        sciname_data = {'compound_hitax_sciname': compound_value}
+        
+        self.logger.debug("Checking for existing sciname with compound value: %s" % compound_value)
+        
+        try:
+            self.execute('check_sciname', sciname_data)
+            result = self.fetch('one')
+            current_id_sciname = str(result) if result is not None else None
+            self.logger.debug("current id: %s" % (current_id_sciname))
+        except Exception as e:
+            self.logger.error("Error in check_existing: %s" % str(e))
+            self.logger.error("compound_value: %s" % compound_value)
+            return False
         
         # if nothing was returned from the database, there isn't such sciname
-        if not current_id_sciname:
+        if not current_id_sciname or current_id_sciname == 'None':
             self.logger.debug("not found - False")
             return False
         
         # if a specific id was passed, it only "exists" if it's another sciname
         # or in other words, if the id of the existing item is different from the
         # one we are probably updating
-        if id_sciname:
+        if id_sciname is not None:
             self.logger.debug("found: %s <> %s = %s" % (id_sciname, current_id_sciname, id_sciname != current_id_sciname))
             return id_sciname != current_id_sciname
         
@@ -63,21 +97,26 @@ class SciNameBuilder(object):
         return True         
         
     def update(self, id_subcoll, id_lang, id_sciname, form):
-        hi_tax = form.getvalue('higher_taxa_html')
-        sciname = form.getvalue('sciname_html')
+        hi_tax = form.getvalue('higher_taxa_html') or ''
+        sciname = form.getvalue('sciname_html') or ''
         if self.check_existing(hi_tax, sciname, id_sciname):
             from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
 
-        sciname_data = { 'id_sciname': id_sciname, 'hi_tax': hi_tax, 'sciname': sciname, 'sciname_no_auth': form.getvalue('sciname_no_auth') }
+        sciname_data = { 
+            'id_sciname': id_sciname, 
+            'hi_tax': hi_tax, 
+            'sciname': sciname, 
+            'sciname_no_auth': form.getvalue('sciname_no_auth') or ''
+        }
         self.execute('update_sciname', sciname_data)
         
         self.execute('delete_sciname_hierarchy', {'id_sciname': id_sciname})
         self.insert_hierarchy(id_subcoll, id_lang, id_sciname, form)
         
     def insert(self, id_subcoll, id_lang, form):
-        hi_tax = form.getvalue('higher_taxa_html')
-        sciname = form.getvalue('sciname_html')
+        hi_tax = form.getvalue('higher_taxa_html') or ''
+        sciname = form.getvalue('sciname_html') or ''
         if self.check_existing(hi_tax, sciname):
             from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
@@ -89,7 +128,11 @@ class SciNameBuilder(object):
         self.logger.debug('id_taxon_group: %s' % (id_taxon_group))
 
         #creates the sciname record
-        sciname_data = { 'hi_tax': form.getvalue('higher_taxa_html'), 'sciname': form.getvalue('sciname_html'), 'sciname_no_auth': form.getvalue('sciname_no_auth') }
+        sciname_data = { 
+            'hi_tax': form.getvalue('higher_taxa_html') or '', 
+            'sciname': form.getvalue('sciname_html') or '', 
+            'sciname_no_auth': form.getvalue('sciname_no_auth') or ''
+        }
         self.logger.debug('sciname_data: %s' % (str(sciname_data)))
         
         self.execute('insert_sciname', sciname_data)

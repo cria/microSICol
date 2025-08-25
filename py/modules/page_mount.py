@@ -25,6 +25,17 @@ from .general import General, DefDict
 from .dbconnection import dbConnection
 from .loghelper import Logging
 
+# Import translation function
+try:
+    from .i18n import I18n
+    # Create a temporary instance to initialize the global _
+    _temp_i18n = I18n()
+    from builtins import _
+except (ImportError, AttributeError):
+    # Fallback if translation is not available
+    def _(text):
+        return text
+
 class Principal(object):
     i18n = I18n()
     g = General()
@@ -281,11 +292,12 @@ class Principal(object):
 
         Usage:
         import sys
-        ex_error = sys.exc_value.args[0].encode('utf8')
+        ex_error = sys.exc_info()[1].args[0]
+        if isinstance(ex_error, bytes):
+            ex_error = ex_error.decode('utf-8')
         user_related_error(ex_error)
         '''
         from . import exception
-        from .i18n import _
         exception.clear_exceptions()
         if (ex_error == 'column login is not unique'):
             ex_error = _("Login already exists!")
@@ -342,7 +354,11 @@ class Principal(object):
             # are presented to the user when the final html is displayed
             if "page" not in self.data:
                 self.data["page"] = ""
-                ex_error = sys.exc_value.args[0].encode('utf8')
+                ex_error = sys.exc_info()[1].args[0]
+                if isinstance(ex_error, bytes):
+                    ex_error = ex_error.decode('utf-8')
+                else:
+                    ex_error = str(ex_error)
                 # User related error - show differently from developer generated error
                 self.user_related_error(ex_error, page, category, js, css)
 
