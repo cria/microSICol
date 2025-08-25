@@ -269,7 +269,20 @@ class SciNameBuilder(object):
         html = "\n".join(html_body) % label_dict
 
         #transfer the javascript and the html to the html template file
-        template = self.g.read_html('sciname.form') % { 'sciname_builder_js': js, 'sciname_builder_html' : html }
+        if isinstance(js, bytes):
+            js = js.decode('utf-8')
+        if isinstance(html, bytes):
+            html = html.decode('utf-8')
+
+        # Garantir que o template seja string
+        template_content = self.g.read_html('sciname.form')
+        if isinstance(template_content, bytes):
+            template_content = template_content.decode('utf-8')
+
+        template = template_content % { 
+            'sciname_builder_js': js, 
+            'sciname_builder_html': html 
+        }
         
         #and returns it
         return template

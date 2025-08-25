@@ -16,6 +16,7 @@ from .lists import Lists
 from .textlinkfactory import TextLinkFactory
 from .loghelper import Logging
 from .location import LocationBuilder
+from functools import cmp_to_key
 #from dbgp.client import brk
 
 class Getdata(object):
@@ -3987,7 +3988,7 @@ class Getdata(object):
         alternate_states = []
         alternate_states.append("var alternate_states = new Array();\n")
         #List sorting
-        species_list = sorted(species_list, lambda x, y: cmp(Lists.spe_fullname(x), Lists.spe_fullname(y)))
+        species_list = sorted(species_list, key=cmp_to_key(lambda x, y: (Lists.spe_fullname(x) > Lists.spe_fullname(y)) - (Lists.spe_fullname(x) < Lists.spe_fullname(y))))
         for species in species_list:
             if (str(id_specie) != str(species['id_species'])):
                 alternate_states.append("alternate_states[alternate_states.length] = ")
