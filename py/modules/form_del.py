@@ -17,6 +17,17 @@ from .general import General
 from .log import Log
 #from dbgp.client import brk
 
+# Import translation function
+try:
+    from .i18n import I18n
+    # Create a temporary instance to initialize the global _
+    _temp_i18n = I18n()
+    from builtins import _
+except (ImportError, AttributeError):
+    # Fallback if translation is not available
+    def _(text):
+        return text
+
 class Delete(object):
 
     g = General()
