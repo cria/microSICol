@@ -83,33 +83,33 @@ class Configuration(object):
 
     def deleteSubcoll(self,id_subcoll=None):
         if id_subcoll is None:
-          self.execute('delete_subcoll',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
-          self.execute('delete_subcoll_template',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
-          self.execute('delete_sys_config',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
-          self.execute('delete_subcoll_access',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
-          self.execute('delete_subcoll_data_lang', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_subcoll_combo_str_type', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_subcoll_combo_dep_reason', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_subcoll_combo_test_group', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_subcoll_combo_preservation_method', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_ref_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_doc_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_strain_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
-          self.db.execute('delete_species_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.execute('delete_subcoll',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
+            self.execute('delete_subcoll_template',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
+            self.execute('delete_sys_config',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
+            self.execute('delete_subcoll_access',{'subcoll_id':str(self.form['util_subcoll_id'].value)})
+            self.execute('delete_subcoll_data_lang', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_subcoll_combo_str_type', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_subcoll_combo_dep_reason', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_subcoll_combo_test_group', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_subcoll_combo_preservation_method', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_ref_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_doc_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_strain_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_species_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
         else:
-          self.execute('delete_subcoll',{'subcoll_id':id_subcoll})
-          self.execute('delete_subcoll_template',{'subcoll_id':id_subcoll})
-          self.execute('delete_sys_config',{'subcoll_id':id_subcoll})
-          self.execute('delete_subcoll_access',{'subcoll_id':id_subcoll})
-          self.execute('delete_subcoll_data_lang', {'id_subcoll':id_subcoll})
-          self.db.execute('delete_subcoll_combo_str_type', {'id_subcoll': id_subcoll})
-          self.db.execute('delete_subcoll_combo_dep_reason', {'id_subcoll': id_subcoll})
-          self.db.execute('delete_subcoll_combo_test_group', {'id_subcoll': id_subcoll})
-          self.db.execute('delete_subcoll_combo_preservation_method', {'id_subcoll': id_subcoll})
-          self.db.execute('delete_ref_by_subcoll', {'id_subcoll': id_subcoll})
-          self.db.execute('delete_doc_by_subcoll', {'id_subcoll': id_subcoll})
-          self.db.execute('delete_strain_by_subcoll', {'id_subcoll': id_subcoll})
-          self.db.execute('delete_species_by_subcoll', {'id_subcoll': id_subcoll})
+            self.execute('delete_subcoll',{'subcoll_id':id_subcoll})
+            self.execute('delete_subcoll_template',{'subcoll_id':id_subcoll})
+            self.execute('delete_sys_config',{'subcoll_id':id_subcoll})
+            self.execute('delete_subcoll_access',{'subcoll_id':id_subcoll})
+            self.execute('delete_subcoll_data_lang', {'id_subcoll':id_subcoll})
+            self.db.execute('delete_subcoll_combo_str_type', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_subcoll_combo_dep_reason', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_subcoll_combo_test_group', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_subcoll_combo_preservation_method', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_ref_by_subcoll', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_doc_by_subcoll', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_strain_by_subcoll', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_species_by_subcoll', {'id_subcoll': id_subcoll})
         self.db.connect.commit()
         self.session.data['feedback'] = 2
         self.session.save()
@@ -131,7 +131,7 @@ class Configuration(object):
         self.execute('get_subcolls_from_coll',{'coll_id':str(self.form['util_coll_id'].value)})
         subcolls = self.fetch('rows')
         for subcoll in subcolls:
-          self.deleteSubcoll(subcoll)
+            self.deleteSubcoll(subcoll)
         self.execute('delete_coll',{'coll_id':str(self.form['util_coll_id'].value)})
         self.session.data['feedback'] = 2
         self.session.save()
@@ -190,65 +190,65 @@ class Configuration(object):
   <!-- debug_mode: if the software is on production mode or development mode -->
   <config name="debug_mode">false</config>
 </configs>
-""" % (config_indexurl,config_rootdir,config_startpage,config_lang,config_upload,config_data_lang,config_dateinput,config_dateoutput)
+""" % (config_indexurl, config_rootdir, config_startpage, config_lang, config_upload, config_data_lang, config_dateinput, config_dateoutput)
         from os import path
         try:
-          open(path.join(config_rootdir,'config.xml'),'w').write(configxml)
-          self.session.data['feedback'] = 1
-          self.session.save()
-        except IOError: #No permission to open file
-          self.session.data['feedback'] = -2
-          self.session.save()
+            open(path.join(config_rootdir, 'config.xml'), 'w').write(configxml)
+            self.session.data['feedback'] = 1
+            self.session.save()
+        except IOError:  # No permission to open file
+            self.session.data['feedback'] = -2
+            self.session.save()
 
     def saveRole(self):
-        #Read form data
+        # Read form data
         role_id = ''
-        if ('util_role_id' in self.form): #Empty fields are discarded automatically
-          role_id = str(self.form['util_role_id'].value)
+        if ('util_role_id' in self.form):  # Empty fields are discarded automatically
+            role_id = str(self.form['util_role_id'].value)
         role_name = str(self.form['util_role_name'].value)
         role_type = str(self.form['util_role_type'].value)
         role_descr = ''
-        if ('util_role_descr' in self.form): #Empty fields are discarded automatically
-          role_descr = str(self.form['util_role_descr'].value)
-        if role_id == '': #New Role
-            self.db.execute('insert_role', {'role_name': role_name,'role_type':role_type,'role_descr':role_descr})
+        if ('util_role_descr' in self.form):  # Empty fields are discarded automatically
+            role_descr = str(self.form['util_role_descr'].value)
+        if role_id == '':  # New Role
+            self.db.execute('insert_role', {'role_name': role_name, 'role_type': role_type, 'role_descr': role_descr})
             self.db.execute('last_insert_id')
             role_id = self.db.fetch('one')
-        else: #Edited Role
-            self.db.execute('update_role', {'id_role':role_id,'role_name': role_name,'role_type':role_type,'role_descr':role_descr})
-        #Manage area access
-        #Delete all previous area accesses of this group
+        else:  # Edited Role
+            self.db.execute('update_role', {'id_role': role_id, 'role_name': role_name, 'role_type': role_type, 'role_descr': role_descr})
+        # Manage area access
+        # Delete all previous area accesses of this group
         self.db.execute('delete_area_access',{'role_id':role_id})
-        #Get all existing areas
+        # Get all existing areas
         self.db.execute('get_all_areas')
         list_areas = self.db.fetch('all')
         js_areadel_list = []
         js_areacreate_list = []
         js_area_list = []
         for area in list_areas:
-           js_areadel_list.append("areadel_"+str(area['id_area']))
-           js_areacreate_list.append("areacreate_"+str(area['id_area']))
-           js_area_list.append(str(area['id_area']))
-        #Insert new area access configuration
+            js_areadel_list.append("areadel_"+str(area['id_area']))
+            js_areacreate_list.append("areacreate_"+str(area['id_area']))
+            js_area_list.append(str(area['id_area']))
+        # Insert new area access configuration
         for item in js_area_list:
-           areadel = 'n'
-           areacreate = 'n'
-           if 'areadel_'+item in self.form:
-             areadel = 'y'
-           if 'areacreate_'+item in self.form:
-             areacreate = 'y'
-           self.db.execute('insert_area_access',{'id_area':item,'id_role':role_id,'allow_delete':areadel,'allow_create':areacreate})
-        #Associate users to current role
-        #Delete previous associations
+            areadel = 'n'
+            areacreate = 'n'
+            if 'areadel_'+item in self.form:
+                areadel = 'y'
+            if 'areacreate_'+item in self.form:
+                areacreate = 'y'
+            self.db.execute('insert_area_access',{'id_area':item,'id_role':role_id,'allow_delete':areadel,'allow_create':areacreate})
+        # Associar usuários ao papel atual
+        # Deletar associações anteriores
         self.db.execute('delete_role_users',{'id_role':role_id})
         if ('util_group_members' in self.form):
-          if (isinstance(self.form['util_group_members'], list)):
-             for x in self.form['util_group_members']:
-                member_id = x.value
+            if (isinstance(self.form['util_group_members'], list)):
+                for x in self.form['util_group_members']:
+                    member_id = x.value
+                    self.db.execute('insert_user_role',{'id_user':member_id,'id_role':role_id})
+            else:
+                member_id = self.form['util_group_members'].value
                 self.db.execute('insert_user_role',{'id_user':member_id,'id_role':role_id})
-          else:
-             member_id = self.form['util_group_members'].value
-             self.db.execute('insert_user_role',{'id_user':member_id,'id_role':role_id})
         self.db.connect.commit()
         self.session.data['feedback'] = 1
         self.session.save()
@@ -454,11 +454,11 @@ class Configuration(object):
         styles = ''
                
         if 'header_template' in self.form:
-            header = base64.b64encode(self.form['header_template'].value)            
+            header = base64.b64encode(self.form['header_template'].value.encode('utf-8')).decode('utf-8')
         if 'footer_template' in self.form:
-            footer = base64.b64encode(self.form['footer_template'].value)            
+            footer = base64.b64encode(self.form['footer_template'].value.encode('utf-8')).decode('utf-8')
         if 'css_template' in self.form:
-            styles = base64.b64encode(self.form['css_template'].value)
+            styles = base64.b64encode(self.form['css_template'].value.encode('utf-8')).decode('utf-8')
             
         self.execute('update_subcoll_template', {'id_subcoll':id_subcoll, 'header':header, 'footer':footer, 'styles':styles})
                 
@@ -474,7 +474,7 @@ class Configuration(object):
         subcoll_code = str(self.form['util_subcoll_code'].value)
         subcoll_name = ''
         if ('util_subcoll_name' in self.form): #Empty fields are discarded automatically
-          subcoll_name = str(self.form['util_subcoll_name'].value).decode('utf8')
+          subcoll_name = str(self.form['util_subcoll_name'].value)
         self.execute('count_subcoll',{'subcoll_code':subcoll_code,'subcoll_coll':subcoll_coll})
         count_subcoll = self.fetch('one')
         #raise str(count_subcoll)
@@ -486,7 +486,7 @@ class Configuration(object):
         if (subcoll_lang == 'default'): subcoll_lang = ''
         if subcoll_id == '': #New Subcollection
             if count_subcoll < 1:
-                self.execute('insert_subcoll',{'subcoll_coll':subcoll_coll,'subcoll_code':subcoll_code.decode('utf8'),'subcoll_name':subcoll_name})                
+                self.execute('insert_subcoll',{'subcoll_coll':subcoll_coll,'subcoll_code':subcoll_code,'subcoll_name':subcoll_name})
                 self.execute('insert_blank_subcoll_template')
                 subcoll_id = self.cursor.lastrowid
                 self.execute('insert_sys_config',{'subcoll_id':subcoll_id,'date_input_mask':subcoll_inputmask,'date_output_mask':subcoll_outputmask,'label_lang':subcoll_lang})
@@ -501,13 +501,13 @@ class Configuration(object):
             else: new_subcoll = False
         else: #Edited Subcollection
             if count_subcoll < 1:
-                self.execute('update_subcoll',{'subcoll_id':subcoll_id,'subcoll_coll':subcoll_coll,'subcoll_code':subcoll_code.decode('utf8'),'subcoll_name':subcoll_name})
+                self.execute('update_subcoll',{'subcoll_id':subcoll_id,'subcoll_coll':subcoll_coll,'subcoll_code':subcoll_code,'subcoll_name':subcoll_name})
                 self.execute('update_sys_config',{'subcoll_id':subcoll_id,'date_input_mask':subcoll_inputmask,'date_output_mask':subcoll_outputmask,'label_lang':subcoll_lang})
             else:
                 self.execute('get_subcoll_code',{'id_subcoll':subcoll_id, 'id_coll':subcoll_coll})
                 subcoll_oldcode = self.fetch('one')
                 if subcoll_oldcode == subcoll_code:
-                    self.execute('update_subcoll',{'subcoll_id':subcoll_id,'subcoll_coll':subcoll_coll,'subcoll_code':subcoll_code.decode('utf8'),'subcoll_name':subcoll_name})
+                    self.execute('update_subcoll',{'subcoll_id':subcoll_id,'subcoll_coll':subcoll_coll,'subcoll_code':subcoll_code,'subcoll_name':subcoll_name})
                     self.execute('update_sys_config',{'subcoll_id':subcoll_id,'date_input_mask':subcoll_inputmask,'date_output_mask':subcoll_outputmask,'label_lang':subcoll_lang})
                 else: new_subcoll = False
         # Update data languages
@@ -537,7 +537,7 @@ class Configuration(object):
         coll_code = str(self.form['util_coll_code'].value)
         coll_name = ''
         if ('util_coll_name' in self.form): #Empty fields are discarded automatically
-          coll_name = str(self.form['util_coll_name'].value).decode('utf8')
+          coll_name = str(self.form['util_coll_name'].value)
         coll_logo = '' #empty string = default image is used
         valid_logo = True
         if (self.form['util_coll_logo'].value != ''): #An image has been sent
@@ -549,14 +549,14 @@ class Configuration(object):
               if not chunk: break
               logo.append(chunk)
           #Escape NUL (0x00) and ' (simple quote) in order to insert correctly in SQLite
-          coll_logo = "".join(logo)
+          coll_logo = b"".join(logo)
           import base64,imghdr
           img_type = imghdr.what('',coll_logo) #Read Image Header and see if it is a valid image or not
           if img_type is None:
             coll_logo = '' #Use default image
             valid_logo = False
           else:
-            coll_logo = base64.encodestring(coll_logo)
+            coll_logo = base64.b64encode(coll_logo).decode('utf-8')
         else:
             self.execute('get_coll_logo',{'id_coll':coll_id})
             coll_logo = self.fetch('one')
@@ -653,13 +653,13 @@ class Configuration(object):
                                                           })
                 base_conn.connect.commit()
 
-                self.execute('insert_base',{'dbms_id':base_dbms,'host':base_host,'port':base_port,'db_name':base_name.decode('utf8'),'base_pwd':base_pwd,'base_user':base_user.decode('utf8')})
+                self.execute('insert_base',{'dbms_id':base_dbms,'host':base_host,'port':base_port,'db_name':base_name,'base_pwd':base_pwd,'base_user':base_user})
                 self.execute('last_insert_id')
                 id_base_new = self.fetch('one')
-                self.execute('insert_base_log',{'id_base':id_base_new,'dbms_id':base_tracebility_dbms,'host':base_tracebility_host,'port':base_tracebility_port,'db_name':base_tracebility_name.decode('utf8'),'base_pwd':base_tracebility_pwd,'base_user':base_tracebility_user.decode('utf8')})
+                self.execute('insert_base_log',{'id_base':id_base_new,'dbms_id':base_tracebility_dbms,'host':base_tracebility_host,'port':base_tracebility_port,'db_name':base_tracebility_name,'base_pwd':base_tracebility_pwd,'base_user':base_tracebility_user})
             else: #Edited base
-                self.execute('update_base',{'base_id':base_id,'dbms_id':base_dbms,'host':base_host,'port':base_port,'db_name':base_name.decode('utf8'),'base_pwd':base_pwd,'base_user':base_user.decode('utf8')})
-                self.execute('update_base_log',{'base_id_log':base_tracebility_id,'dbms_id':base_tracebility_dbms,'host':base_tracebility_host,'port':base_tracebility_port,'db_name':base_tracebility_name.decode('utf8'),'base_pwd':base_tracebility_pwd,'base_user':base_tracebility_user.decode('utf8')})
+                self.execute('update_base',{'base_id':base_id,'dbms_id':base_dbms,'host':base_host,'port':base_port,'db_name':base_name,'base_pwd':base_pwd,'base_user':base_user})
+                self.execute('update_base_log',{'base_id_log':base_tracebility_id,'dbms_id':base_tracebility_dbms,'host':base_tracebility_host,'port':base_tracebility_port,'db_name':base_tracebility_name,'base_pwd':base_tracebility_pwd,'base_user':base_tracebility_user})
             self.session.data['feedback'] = 1
             self.session.save()
         except mysql.Error as e:
@@ -704,7 +704,7 @@ class Configuration(object):
 
         if user_id == '': #New user
           #Inserts user on sqlite
-          self.execute('insert_user',{'login':user_login.decode('utf8'),'name':user_name.decode("utf8"),'pwd':user_pwd,'comments':user_comments.decode("utf8")})
+          self.execute('insert_user',{'login':user_login,'name':user_name,'pwd':user_pwd,'comments':user_comments})
           #Retrieves the id
           user_id = self.cursor.lastrowid
           
@@ -765,9 +765,9 @@ class Configuration(object):
                 #base_db.connect.commit()
 
           if user_pwd == '': #Keep previous password
-            self.execute('update_user_no_pwd',{'id_user':user_id,'login':user_login.decode("utf8"),'name':user_name.decode("utf8"),'comments':user_comments.decode("utf8")})
+            self.execute('update_user_no_pwd',{'id_user':user_id,'login':user_login,'name':user_name,'comments':user_comments})
           else: #Change user password
-            self.execute('update_user',{'id_user':user_id,'login':user_login.decode("utf8"),'name':user_name.decode("utf8"),'pwd':user_pwd,'comments':user_comments.decode("utf8")})
+            self.execute('update_user',{'id_user':user_id,'login':user_login,'name':user_name,'pwd':user_pwd,'comments':user_comments})
 
         # commits all bases
         for base in bases_to_commit:
@@ -988,7 +988,7 @@ class Configuration(object):
         list_users = self.fetch('all')
         for user in list_users:
           #Table data
-          line = user_table % (user['login'].encode("utf8"),user['name'].encode("utf8"),user['comments'].encode("utf8"))
+          line = user_table % (user['login'],user['name'],user['comments'])
           #Javascript data
           str_user_colls = []
           self.execute('get_user_colls',{'id_user':str(user['id_user'])})
@@ -1017,7 +1017,7 @@ class Configuration(object):
                str_areas.append('userareadel_'+str(area['id_area']))
             if (area['allow_create'] == 'y'):
                str_areas.append('userareacreate_'+str(area['id_area']))
-          jsparam = "onclick=\"edit_user('%s','%s','%s','%s','%s','%s','%s')\"" % (str(user['id_user']),user['login'].encode("utf8"),user['name'].encode("utf8"),user['comments'].encode("utf8"),",".join(str_user_colls),",".join(str_user_roles),",".join(str_areas))
+          jsparam = "onclick=\"edit_user('%s','%s','%s','%s','%s','%s','%s')\"" % (str(user['id_user']),user['login'],user['name'],user['comments'],",".join(str_user_colls),",".join(str_user_roles),",".join(str_areas))
           line = line % jsparam
           data['user_table'] += str(line)
 
@@ -1213,9 +1213,9 @@ class Configuration(object):
         
         self.execute('get_subcoll_templates', {'id_subcoll': self.session.data['id_subcoll']})
         list_templates = self.fetch('all')
-        data['value_header_template'] = base64.b64decode(list_templates[0]['header'])
-        data['value_footer_template'] = base64.b64decode(list_templates[0]['footer'])
-        data['value_css_template'] =    base64.b64decode(list_templates[0]['styles'])
+        data['value_header_template'] = base64.b64decode(list_templates[0]['header']).decode('utf-8')
+        data['value_footer_template'] = base64.b64decode(list_templates[0]['footer']).decode('utf-8')
+        data['value_css_template'] =    base64.b64decode(list_templates[0]['styles']).decode('utf-8')
         
         data['label_subcoll_select'] = label_dict['label_Configuration_Templates_Subcollection']
         
