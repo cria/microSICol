@@ -16,7 +16,6 @@ from .lists import Lists
 from .textlinkfactory import TextLinkFactory
 from .loghelper import Logging
 from .location import LocationBuilder
-from functools import cmp_to_key
 #from dbgp.client import brk
 
 class Getdata(object):
@@ -274,18 +273,18 @@ class Getdata(object):
         else:
             if action == 'new': species_menu = '\n\t<option selected="selected" value="" group=""></option>'
             else: species_menu = '\n\t<option value="" group=""></option>'
-        #List sorting
-        species_list = sorted(species_list, lambda x, y: cmp(Lists.spe_fullname(x, use_author=False), Lists.spe_fullname(y, use_author=False)))
+        # List sorting
+        species_list = sorted(species_list, key=lambda x: Lists.spe_fullname(x, use_author=False))
         for species in species_list:
             species_menu += ('\n\t<option %%s value="%s" group="%s">%s</option>'
-                            % (species['id_species'], species['id_taxon_group'], Lists.spe_fullname(species, use_author=False).replace("%","%%") ) )
+                             % (species['id_species'], species['id_taxon_group'], Lists.spe_fullname(species, use_author=False).replace("%","%%") ) )
             if species['id_species'] == id_species:
-              species_menu = species_menu % self.opt_selected
+                species_menu = species_menu % self.opt_selected
             else:
-              species_menu = species_menu.replace("%s","")
+                species_menu = species_menu.replace("%s","")
         return species_menu
 
-    def species(self,action):
+    def species(self, action):
         '''
         Species == Taxa
         '''
@@ -1976,13 +1975,13 @@ class Getdata(object):
             is_first = False
         #Security Tab
         self.g.security_tab(self.cookie_value, action, data, 'doc')
-        
+
         if action in ('edit','new'):
             #Qualifier
             self.execute('get_all_from_table',{'table':'doc_qualifier'})
             qualifiers = self.fetch('all')
             #List sorting
-            qualifiers = sorted(qualifiers, lambda x, y: cmp(x['qualifier'], y['qualifier']))
+            qualifiers = sorted(qualifiers, key=lambda x: x['qualifier'])
             if action == 'new': qualifier_menu = self.opt_html_selected
             else: qualifier_menu = ''
             for qualifier in qualifiers:
@@ -2725,7 +2724,7 @@ class Getdata(object):
         db.execute('get_all_users')
         users = db.fetch('all')
         #List sorting
-        users = sorted(users, lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
+        users = sorted(users, key=lambda x: x['name'].lower())
         users_opt = []
         for user in users:
             if user['id_user'] == id_user:
@@ -2789,7 +2788,7 @@ class Getdata(object):
         self.execute('get_preservation_method_subcoll',{'id_lang':self.session.data['id_lang'],'id_subcoll':self.session.data['id_subcoll']})
         methods = self.fetch('all')
         #List sorting
-        methods = sorted(methods, lambda x, y: cmp(x['method'].lower(), y['method'].lower()))
+        methods = sorted(methods, key=lambda x: x['method'].lower())
         method_opt = []
         for method in methods:
             selected = ''
@@ -3988,7 +3987,7 @@ class Getdata(object):
         alternate_states = []
         alternate_states.append("var alternate_states = new Array();\n")
         #List sorting
-        species_list = sorted(species_list, key=cmp_to_key(lambda x, y: (Lists.spe_fullname(x) > Lists.spe_fullname(y)) - (Lists.spe_fullname(x) < Lists.spe_fullname(y))))
+        species_list = sorted(species_list, key=lambda x: Lists.spe_fullname(x))
         for species in species_list:
             if (str(id_specie) != str(species['id_species'])):
                 alternate_states.append("alternate_states[alternate_states.length] = ")
