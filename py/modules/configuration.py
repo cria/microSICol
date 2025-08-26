@@ -690,12 +690,12 @@ class Configuration(object):
         user_login = str(self.form['util_user_login'].value)
         user_pwd = ''
         if ('util_user_pwd' in self.form and self.form['util_user_pwd'].value != ''): #Empty fields are discarded automatically
-          #Hide user password
-          try:
-              from hashlib import md5 as new_md5
-          except ImportError:
-              from md5 import new as new_md5
-          user_pwd = new_md5(str(self.form['util_user_pwd'].value)).hexdigest()
+            #Hide user password
+            try:
+                from hashlib import md5 as new_md5
+            except ImportError:
+                from md5 import new as new_md5
+            user_pwd = new_md5(str(self.form['util_user_pwd'].value).encode('utf-8')).hexdigest()
         user_name = str(self.form['util_user_name'].value).replace("'", "''")
         user_comments = ''
         if ('util_user_comments' in self.form): #Empty fields are discarded automatically
