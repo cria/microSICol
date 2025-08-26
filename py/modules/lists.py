@@ -18,6 +18,10 @@ class Lists(object):
     page_parts = {}
     page_parts['top'] = g.read_html('default.top.list')
     page_parts['submenu'] = g.read_html('submenu.list')
+    if isinstance(page_parts['top'], bytes):
+        page_parts['top'] = page_parts['top'].decode('utf-8')
+    if isinstance(page_parts['submenu'], bytes):
+        page_parts['submenu'] = page_parts['submenu'].decode('utf-8')
     session = None
 
     def __init__(self, form=None, cookie_value=''):

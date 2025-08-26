@@ -164,7 +164,10 @@ class Principal(object):
             data['sel_location'] = ''
             
             ret = {}
-            ret['html'] = self.g.read_html('location.form') % (data)
+            html_content = self.g.read_html('location.form')
+            if isinstance(html_content, bytes):
+                html_content = html_content.decode('utf-8')
+            ret['html'] = html_content % (data)
             ret['containers'] = containers
             ret['hierarchy'] = hierarchy
             ret['hierarchyMap'] = hierarchyMap
@@ -217,7 +220,10 @@ class Principal(object):
             data['sel_location'] = ''
             
             ret = {}
-            ret['html'] = self.g.read_html('location.form') % (data)
+            html_content = self.g.read_html('location.form')
+            if isinstance(html_content, bytes):
+                html_content = html_content.decode('utf-8')
+            ret['html'] = html_content % (data)
             ret['containers'] = containers
             ret['hierarchy'] = hierarchy
             ret['hierarchyMap'] = hierarchyMap

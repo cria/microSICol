@@ -276,7 +276,10 @@ class Principal(object):
                 out = self.g.get_config('http_header')
                 out += '\n\n%s <b>label_lang</b> %s' % (_("Invalid"), _("entry in config.xml."))
                 out += '\n<br />%s' % _('Check field "code" of table "lang" in main database.')
-                out += self.g.read_html('login_check') % -5
+                login_check = self.g.read_html('login_check')
+                if isinstance(login_check, bytes):
+                    login_check = login_check.decode('utf-8')
+                out += login_check % -5
                 print(out)
                 exit(1)
         # self.dbConnection always contain a reference to the first sqlite database only.

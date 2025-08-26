@@ -46,6 +46,8 @@ class Traceability(object):
             data['id_subcoll'] = self.session.data['id_subcoll']
             # Non-Admin users are not allowed here
             data['page'] = self.g.read_html('access.denied')
+            if isinstance(data['page'], bytes):
+                data['page'] = data['page'].decode('utf-8')
             self.data = data
 
             self.form = form
@@ -81,6 +83,9 @@ class Traceability(object):
     def check_permissions(self):
         if (self.g.isManager(self.session.data['roles'])):  # Admin or Manager
             self.data['page'] = self.g.read_html('traceability')
+            # Convert bytes to string if necessary
+            if isinstance(self.data['page'], bytes):
+                self.data['page'] = self.data['page'].decode('utf-8')
 
     def render_page(self):
         self.check_permissions()

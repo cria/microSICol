@@ -175,6 +175,9 @@ class Getdata(object):
         
         if action in ('edit', 'new'):
             self.page_parts['submenu'] = self.g.read_html('submenu.form')
+            # Convert bytes to string if necessary
+            if isinstance(self.page_parts['submenu'], bytes):
+                self.page_parts['submenu'] = self.page_parts['submenu'].decode('utf-8')
             if self.session.data['date_input_mask'] is not None: date_format = self.session.data['date_input_mask']
             else: date_format = self.g.get_config('date_input_mask')
             #If we can't find date_format attribute in config.xml then use a default date format
@@ -195,6 +198,10 @@ class Getdata(object):
                 self.page_parts['submenu'] = self.g.read_html('submenu.detail')
                 #brk(host="localhost", port=9000)
                 self.page_parts['hidden_forms'] = self.g.read_html('hidden_forms.detail')
+                if isinstance(self.page_parts['submenu'], bytes):
+                    self.page_parts['submenu'] = self.page_parts['submenu'].decode('utf-8')
+                if isinstance(self.page_parts['hidden_forms'], bytes):
+                    self.page_parts['hidden_forms'] = self.page_parts['hidden_forms'].decode('utf-8')
                 if (who == 'strains'):
                     self.page_parts['submenu'] = self.page_parts['submenu'].replace("document.getElementById('edit').submit();", "document.getElementById('saveas').value = '0';document.getElementById('edit').submit();")
                     self.page_parts['submenu'] = "<a id=\"saveas_link\" href=\"javascript:document.getElementById('saveas').value = '1';document.getElementById('edit').action = setActiveTab(document.getElementById('edit').action);document.getElementById('edit').submit();\"><img src='../img/record_saveas.png' title=\"%(label_SaveAs)s\" alt=\"%(label_SaveAs)s\"></a>" + self.page_parts['submenu']

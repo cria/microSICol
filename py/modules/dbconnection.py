@@ -77,13 +77,25 @@ class dbConnection(object):
                 out = '%s%s' % (self.g.get_config('http_header'), '\n\n')
                 out += "%s %d: %s" % (_('Error'), e.args[0], e.args[1])
                 if (e.args[0] == 1045):  # Error - Access Denied on MySQL database
-                    out += self.g.read_html('login_check') % -3
+                    login_check = self.g.read_html('login_check')
+                    if isinstance(login_check, bytes):
+                        login_check = login_check.decode('utf-8')
+                    out += login_check % -3
                 if (e.args[0] == 1044):  # Error - Access denied for user 'sicol'@'%' to database 'sicol_v100'
-                    out += self.g.read_html('login_check') % -6
+                    login_check = self.g.read_html('login_check')
+                    if isinstance(login_check, bytes):
+                        login_check = login_check.decode('utf-8')
+                    out += login_check % -6
                 elif (e.args[0] == 2003):  # Error - MySQL database has not been activated
-                    out += self.g.read_html('login_check') % -4
+                    login_check = self.g.read_html('login_check')
+                    if isinstance(login_check, bytes):
+                        login_check = login_check.decode('utf-8')
+                    out += login_check % -4
                 else:
-                    out += self.g.read_html('login_check') % 0
+                    login_check = self.g.read_html('login_check')
+                    if isinstance(login_check, bytes):
+                        login_check = login_check.decode('utf-8')
+                    out += login_check % 0
                 print(out)
                 exit(1)
         else:
