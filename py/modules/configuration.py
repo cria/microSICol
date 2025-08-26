@@ -257,7 +257,7 @@ class Configuration(object):
         #Read form data
         combo_id = ''
         if ('util_combo_id' in self.form): #Empty fields are discarded automatically
-           combo_id = str(self.form['util_combo_id'].value)
+            combo_id = str(self.form['util_combo_id'].value)
         #Update Taxon Group
         self.db.execute('delete_subcoll_combo_taxon_group', {'id_subcoll': combo_id})
         if (isinstance(self.form['util_combo_taxon_group'], list)):
@@ -283,8 +283,8 @@ class Configuration(object):
             new_id = self.db.cursor.lastrowid
             #It now belongs to this subcollection
             self.db.execute('insert_subcoll_str_type', {'id_subcoll': combo_id, 'id_type': new_id})
-            for item_lang,item_type in list(new_type.items()): #Add names for each language
-                self.db.execute('insert_subcoll_str_type_lang', {'id_type': new_id,'type': item_type,'code': item_lang})
+            for item_lang, item_type in list(new_type.items()):  # Add names for each language
+                self.db.execute('insert_subcoll_str_type_lang', {'id_type': new_id, 'type': item_type, 'code': item_lang})
         #Update Strain - Deposit - Type - combobox
         self.db.execute('delete_subcoll_combo_dep_reason', {'id_subcoll': combo_id})
         if (isinstance(self.form['util_combo_dep_reason'], list)):
@@ -356,7 +356,7 @@ class Configuration(object):
         #Read form data
         division_id = ''
         if ('util_division_id' in self.form): #Empty fields are discarded automatically
-           division_id = str(self.form['util_division_id'].value)
+            division_id = str(self.form['util_division_id'].value)
 
         division_division = str(self.form['util_division_division'].value)
         division_pattern = str(self.form['util_division_pattern'].value)
@@ -469,12 +469,12 @@ class Configuration(object):
         #Read form data
         subcoll_id = ''
         if ('util_subcoll_id' in self.form): #Empty fields are discarded automatically
-          subcoll_id = str(self.form['util_subcoll_id'].value)
+            subcoll_id = str(self.form['util_subcoll_id'].value)
         subcoll_coll = str(self.form['util_subcoll_coll'].value)
         subcoll_code = str(self.form['util_subcoll_code'].value)
         subcoll_name = ''
         if ('util_subcoll_name' in self.form): #Empty fields are discarded automatically
-          subcoll_name = str(self.form['util_subcoll_name'].value)
+            subcoll_name = str(self.form['util_subcoll_name'].value)
         self.execute('count_subcoll',{'subcoll_code':subcoll_code,'subcoll_coll':subcoll_coll})
         count_subcoll = self.fetch('one')
         #raise str(count_subcoll)
@@ -494,11 +494,12 @@ class Configuration(object):
                 self.db.execute('get_admins')
                 admins = self.db.fetch('rows')
                 for admin in admins:
-                  self.execute('insert_access',{'id_user':admin,'id_subcoll':subcoll_id})
+                    self.execute('insert_access',{'id_user':admin,'id_subcoll':subcoll_id})
                 #If Collection changed is the same one user is in, then change session data
                 if int(subcoll_id) == int(self.session.data['id_subcoll']):
                     self.session.data['subcoll_code'] = subcoll_code
-            else: new_subcoll = False
+            else:
+                new_subcoll = False
         else: #Edited Subcollection
             if count_subcoll < 1:
                 self.execute('update_subcoll',{'subcoll_id':subcoll_id,'subcoll_coll':subcoll_coll,'subcoll_code':subcoll_code,'subcoll_name':subcoll_name})
@@ -523,40 +524,41 @@ class Configuration(object):
 
         #Return feedback value
         if not new_subcoll:
-          self.session.data['feedback'] = -5
+            self.session.data['feedback'] = -5
         else:
-          self.session.data['feedback'] = 1
+            self.session.data['feedback'] = 1
         self.session.save()
 
     def saveColl(self):
         #Read form data
         coll_id = ''
         if ('util_coll_id' in self.form): #Empty fields are discarded automatically
-          coll_id = str(self.form['util_coll_id'].value)
+            coll_id = str(self.form['util_coll_id'].value)
         coll_base = str(self.form['util_coll_base'].value)
         coll_code = str(self.form['util_coll_code'].value)
         coll_name = ''
         if ('util_coll_name' in self.form): #Empty fields are discarded automatically
-          coll_name = str(self.form['util_coll_name'].value)
+            coll_name = str(self.form['util_coll_name'].value)
         coll_logo = '' #empty string = default image is used
         valid_logo = True
         if (self.form['util_coll_logo'].value != ''): #An image has been sent
-          doc_file = self.form['util_coll_logo'].file
-          logo = []
-          if doc_file is not None:
-            while True:
-              chunk = doc_file.read()
-              if not chunk: break
-              logo.append(chunk)
-          #Escape NUL (0x00) and ' (simple quote) in order to insert correctly in SQLite
-          coll_logo = b"".join(logo)
-          import base64,imghdr
-          img_type = imghdr.what('',coll_logo) #Read Image Header and see if it is a valid image or not
-          if img_type is None:
-            coll_logo = '' #Use default image
-            valid_logo = False
-          else:
-            coll_logo = base64.b64encode(coll_logo).decode('utf-8')
+            doc_file = self.form['util_coll_logo'].file
+            logo = []
+            if doc_file is not None:
+                while True:
+                    chunk = doc_file.read()
+                    if not chunk:
+                        break
+                logo.append(chunk)
+            #Escape NUL (0x00) and ' (simple quote) in order to insert correctly in SQLite
+            coll_logo = b"".join(logo)
+            import base64,imghdr
+            img_type = imghdr.what('',coll_logo) #Read Image Header and see if it is a valid image or not
+            if img_type is None:
+                coll_logo = '' #Use default image
+                valid_logo = False
+            else:
+                coll_logo = base64.b64encode(coll_logo).decode('utf-8')
         else:
             self.execute('get_coll_logo',{'id_coll':coll_id})
             coll_logo = self.fetch('one')
@@ -565,19 +567,20 @@ class Configuration(object):
             self.execute('count_coll',{'coll_code':coll_code})
             if self.fetch('one') < 1:
                 self.execute('insert_coll',{'coll_base':coll_base,'coll_code':coll_code,'coll_name':coll_name,'coll_logo':coll_logo},raw_mode=True)
-            else: new_coll = False
+            else:
+               new_coll = False
         else: #Edited Collection
             self.execute('update_coll',{'coll_id':coll_id,'coll_base':coll_base,'coll_code':coll_code,'coll_name':coll_name,'coll_logo':coll_logo},raw_mode=True)
             #If Collection changed is the same one user is in, then change session data
             if int(coll_id) == int(self.session.data['id_coll']):
-              self.session.data['coll_name'] = coll_code
+                self.session.data['coll_name'] = coll_code
         #Return feedback value
         if not new_coll:
-          self.session.data['feedback'] = -6
-          if not valid_logo:
-              self.session.data['feedback'] = -3
+            self.session.data['feedback'] = -6
+            if not valid_logo:
+                self.session.data['feedback'] = -3
         else:
-          self.session.data['feedback'] = 1
+            self.session.data['feedback'] = 1
         self.session.save()
 
     def saveDB(self):
@@ -585,31 +588,31 @@ class Configuration(object):
         #database
         base_id = ''
         if ('util_base_id' in self.form): #Empty fields are discarded automatically
-          base_id = str(self.form['util_base_id'].value)
+            base_id = str(self.form['util_base_id'].value)
         base_dbms = str(self.form['util_base_dbms'].value)
         base_host = str(self.form['util_base_host'].value)
         base_port = str(self.form['util_base_port'].value)
         base_name = str(self.form['util_base_name'].value)
         base_user = ''
         if ('util_base_user' in self.form): #Empty fields are discarded automatically
-          base_user = str(self.form['util_base_user'].value)
+            base_user = str(self.form['util_base_user'].value)
         base_pwd = ''
         if ('util_base_pwd' in self.form): #Empty fields are discarded automatically
-          base_pwd = str(self.form['util_base_pwd'].value)
+            base_pwd = str(self.form['util_base_pwd'].value)
         #tracebility
         base_tracebility_id = ''
         if ('util_base_tracebility_id' in self.form): #Empty fields are discarded automatically
-          base_tracebility_id = str(self.form['util_base_tracebility_id'].value)
+            base_tracebility_id = str(self.form['util_base_tracebility_id'].value)
         base_tracebility_dbms = str(self.form['util_base_tracebility_dbms'].value)
         base_tracebility_host = str(self.form['util_base_tracebility_host'].value)
         base_tracebility_port = str(self.form['util_base_tracebility_port'].value)
         base_tracebility_name = str(self.form['util_base_tracebility_name'].value)
         base_tracebility_user = ''
         if ('util_base_tracebility_user' in self.form): #Empty fields are discarded automatically
-          base_tracebility_user = str(self.form['util_base_tracebility_user'].value)
+            base_tracebility_user = str(self.form['util_base_tracebility_user'].value)
         base_tracebility_pwd = ''
         if ('util_base_tracebility_pwd' in self.form): #Empty fields are discarded automatically
-          base_tracebility_pwd = str(self.form['util_base_tracebility_pwd'].value)
+            base_tracebility_pwd = str(self.form['util_base_tracebility_pwd'].value)
 
         #Connect in instance
         import MySQLdb as mysql
@@ -707,7 +710,7 @@ class Configuration(object):
           self.execute('insert_user',{'login':user_login,'name':user_name,'pwd':user_pwd,'comments':user_comments})
           #Retrieves the id
           user_id = self.cursor.lastrowid
-          
+
           #brk(host="localhost", port=9000)
 
           try:
@@ -925,51 +928,51 @@ class Configuration(object):
         js_userareadel_list = []
         js_userareacreate_list = []
         for area in list_areas:
-           #checkbox name format: 'area_' + <id_area>
-           area_description = area['description']
-           if (area_description != ''): #Make database labels translatable
-              if area_description == 'Taxa Tab': area_description = _("plural|Species")
-              elif area_description == 'Strains Tab': area_description = _("Strains")
-              elif area_description == 'People Tab': area_description = _("People")
-              elif area_description == 'Institutions Tab': area_description = _("Institutions")
-              elif area_description == 'Documents Tab': area_description = _("Documents")
-              elif area_description == 'References Tab': area_description = _("References")
-              elif area_description == 'Preservation Tab': area_description = _("Preservation")
-              elif area_description == 'Distribution Tab': area_description = _("Distribution")
-           data['role_areas'] += '<tr>\n\t<td>%s</td>\n\t<td><input type="checkbox" name="areadel_%s" id="areadel_%s" /></td>\n\t<td><input checked="checked" type="checkbox" name="areacreate_%s" id="areacreate_%s" /></td>\n</tr>\n' % \
-                                     (area_description,str(area['id_area']),str(area['id_area']),str(area['id_area']),str(area['id_area']))
-           data['user_areas'] += '<tr>\n\t<td>%s</td>\n\t<td><input type="checkbox" name="userareadel_%s" id="userareadel_%s" /></td>\n\t<td><input checked="checked" type="checkbox" name="userareacreate_%s" id="userareacreate_%s" /></td>\n</tr>\n' % \
-                                     (area_description,str(area['id_area']),str(area['id_area']),str(area['id_area']),str(area['id_area']))
-           js_areadel_list.append("areadel_"+str(area['id_area']))
-           js_areacreate_list.append("areacreate_"+str(area['id_area']))
-           js_userareadel_list.append("userareadel_"+str(area['id_area']))
-           js_userareacreate_list.append("userareacreate_"+str(area['id_area']))
+            #checkbox name format: 'area_' + <id_area>
+            area_description = area['description']
+            if (area_description != ''): #Make database labels translatable
+                if area_description == 'Taxa Tab': area_description = _("plural|Species")
+                elif area_description == 'Strains Tab': area_description = _("Strains")
+                elif area_description == 'People Tab': area_description = _("People")
+                elif area_description == 'Institutions Tab': area_description = _("Institutions")
+                elif area_description == 'Documents Tab': area_description = _("Documents")
+                elif area_description == 'References Tab': area_description = _("References")
+                elif area_description == 'Preservation Tab': area_description = _("Preservation")
+                elif area_description == 'Distribution Tab': area_description = _("Distribution")
+            data['role_areas'] += '<tr>\n\t<td>%s</td>\n\t<td><input type="checkbox" name="areadel_%s" id="areadel_%s" /></td>\n\t<td><input checked="checked" type="checkbox" name="areacreate_%s" id="areacreate_%s" /></td>\n</tr>\n' % \
+                                        (area_description,str(area['id_area']),str(area['id_area']),str(area['id_area']),str(area['id_area']))
+            data['user_areas'] += '<tr>\n\t<td>%s</td>\n\t<td><input type="checkbox" name="userareadel_%s" id="userareadel_%s" /></td>\n\t<td><input checked="checked" type="checkbox" name="userareacreate_%s" id="userareacreate_%s" /></td>\n</tr>\n' % \
+                                        (area_description,str(area['id_area']),str(area['id_area']),str(area['id_area']),str(area['id_area']))
+            js_areadel_list.append("areadel_"+str(area['id_area']))
+            js_areacreate_list.append("areacreate_"+str(area['id_area']))
+            js_userareadel_list.append("userareadel_"+str(area['id_area']))
+            js_userareacreate_list.append("userareacreate_"+str(area['id_area']))
         #Create a bridge in order to let javascript access this kind of info
         data['js_list'] = '<script type="text/javascript">'
         if js_list == []:
-          data['js_list'] += 'all_colls = new Array();'
+            data['js_list'] += 'all_colls = new Array();'
         else:
-          data['js_list'] += 'all_colls = new Array("'+'","'.join(js_list)+'");'
+            data['js_list'] += 'all_colls = new Array("'+'","'.join(js_list)+'");'
         if js_roles_list == []:
-          data['js_list'] += 'all_roles = new Array();'
+            data['js_list'] += 'all_roles = new Array();'
         else:
-          data['js_list'] += 'all_roles = new Array("'+'","'.join(js_roles_list)+'");'
+            data['js_list'] += 'all_roles = new Array("'+'","'.join(js_roles_list)+'");'
         if js_areadel_list == []:
-          data['js_list'] += 'alldel_areas = new Array();'
+            data['js_list'] += 'alldel_areas = new Array();'
         else:
-          data['js_list'] += 'alldel_areas = new Array("'+'","'.join(js_areadel_list)+'");'
+            data['js_list'] += 'alldel_areas = new Array("'+'","'.join(js_areadel_list)+'");'
         if js_areacreate_list == []:
-          data['js_list'] += 'allcreate_areas = new Array();'
+            data['js_list'] += 'allcreate_areas = new Array();'
         else:
-          data['js_list'] += 'allcreate_areas = new Array("'+'","'.join(js_areacreate_list)+'");'
+            data['js_list'] += 'allcreate_areas = new Array("'+'","'.join(js_areacreate_list)+'");'
         if js_userareadel_list == []:
-          data['js_list'] += 'useralldel_areas = new Array();'
+            data['js_list'] += 'useralldel_areas = new Array();'
         else:
-          data['js_list'] += 'useralldel_areas = new Array("'+'","'.join(js_userareadel_list)+'");'
+            data['js_list'] += 'useralldel_areas = new Array("'+'","'.join(js_userareadel_list)+'");'
         if js_userareacreate_list == []:
-          data['js_list'] += 'userallcreate_areas = new Array();'
+            data['js_list'] += 'userallcreate_areas = new Array();'
         else:
-          data['js_list'] += 'userallcreate_areas = new Array("'+'","'.join(js_userareacreate_list)+'");'
+            data['js_list'] += 'userallcreate_areas = new Array("'+'","'.join(js_userareacreate_list)+'");'
         data['js_list'] += '</script>'
 
     def loadUserTab(self,data):
@@ -987,39 +990,39 @@ class Configuration(object):
         self.execute('get_all_users')
         list_users = self.fetch('all')
         for user in list_users:
-          #Table data
-          line = user_table % (user['login'],user['name'],user['comments'])
-          #Javascript data
-          str_user_colls = []
-          self.execute('get_user_colls',{'id_user':str(user['id_user'])})
-          user_colls = self.fetch('all')
-          for user_coll in user_colls:
-            str_user_colls.append(str('user_'+str(user_coll['id_coll'])+'_'+str(user_coll['id_subcoll'])))
-          str_user_roles = []
-          str_roles = []
-          self.db.execute('get_user_roles',{'id_user':str(user['id_user'])})
-          user_roles = self.db.fetch('rows')
-          for user_role in user_roles:
-            str_user_roles.append('userrole_'+str(user_role))
-            str_roles.append(str(user_role))
-          if str_roles == []:
-            data['global_js'] += '\t_current_roles["%s"] = %s;\n' % (user['id_user'],"''")
-          else:
-            data['global_js'] += '\t_current_roles["%s"] = %s;\n' % (user['id_user'],",".join(str_roles))
-          #Javascript data for area access
-          self.db.execute('get_user_group',{'id_user':str(user['id_user'])})
-          user_role_id = self.db.fetch('one')
-          str_areas = []
-          self.db.execute('get_area_access',{'id_role':user_role_id})
-          areas = self.db.fetch('all')
-          for area in areas:
-            if (area['allow_delete'] == 'y'):
-               str_areas.append('userareadel_'+str(area['id_area']))
-            if (area['allow_create'] == 'y'):
-               str_areas.append('userareacreate_'+str(area['id_area']))
-          jsparam = "onclick=\"edit_user('%s','%s','%s','%s','%s','%s','%s')\"" % (str(user['id_user']),user['login'],user['name'],user['comments'],",".join(str_user_colls),",".join(str_user_roles),",".join(str_areas))
-          line = line % jsparam
-          data['user_table'] += str(line)
+            #Table data
+            line = user_table % (user['login'],user['name'],user['comments'])
+            #Javascript data
+            str_user_colls = []
+            self.execute('get_user_colls',{'id_user':str(user['id_user'])})
+            user_colls = self.fetch('all')
+            for user_coll in user_colls:
+                str_user_colls.append(str('user_'+str(user_coll['id_coll'])+'_'+str(user_coll['id_subcoll'])))
+            str_user_roles = []
+            str_roles = []
+            self.db.execute('get_user_roles',{'id_user':str(user['id_user'])})
+            user_roles = self.db.fetch('rows')
+            for user_role in user_roles:
+                str_user_roles.append('userrole_'+str(user_role))
+                str_roles.append(str(user_role))
+            if str_roles == []:
+                data['global_js'] += '\t_current_roles["%s"] = %s;\n' % (user['id_user'],"''")
+            else:
+                data['global_js'] += '\t_current_roles["%s"] = %s;\n' % (user['id_user'],",".join(str_roles))
+            #Javascript data for area access
+            self.db.execute('get_user_group',{'id_user':str(user['id_user'])})
+            user_role_id = self.db.fetch('one')
+            str_areas = []
+            self.db.execute('get_area_access',{'id_role':user_role_id})
+            areas = self.db.fetch('all')
+            for area in areas:
+                if (area['allow_delete'] == 'y'):
+                    str_areas.append('userareadel_'+str(area['id_area']))
+                if (area['allow_create'] == 'y'):
+                    str_areas.append('userareacreate_'+str(area['id_area']))
+            jsparam = "onclick=\"edit_user('%s','%s','%s','%s','%s','%s','%s')\"" % (str(user['id_user']),user['login'],user['name'],user['comments'],",".join(str_user_colls),",".join(str_user_roles),",".join(str_areas))
+            line = line % jsparam
+            data['user_table'] += str(line)
 
     def loadGroupTab(self,data):
         '''
@@ -1034,32 +1037,32 @@ class Configuration(object):
         self.db.execute('get_all_roles')
         list_roles = self.db.fetch('all')
         for role in list_roles:
-           #Table data
-           role_type = str(role['type'])
-           if (role_type == 'all'): continue #Do not show the "all" type
-           elif (role_type == 'group'): role_type = _("Group")
-           elif (role_type == 'user'): continue #Do not show the "user" type
-           elif (role_type == 'level'): role_type = _("Level ")
-           line = role_table % (role['name'],role['description'],role_type)
-           #Javascript data
-           str_areas = []
-           self.db.execute('get_area_access',{'id_role':str(role['id_role'])})
-           areas = self.db.fetch('all')
-           for area in areas:
-             if (area['allow_delete'] == 'y'):
-                str_areas.append('areadel_'+str(area['id_area']))
-             if (area['allow_create'] == 'y'):
-                str_areas.append('areacreate_'+str(area['id_area']))
-           jsparam = ''
-           if str(role['name']) == 'Administrator' or str(role['name']) == 'Curador': #Prevent Administrator and Curador group to be edited
-             jsparam = "onclick=\"alert('%s');\"" % _("Unable to edit special groups")
-             line = line.replace('<tr ','<tr class="non_editable" ')
-           else:
-             jsparam = "onclick=\"edit_group('%s','%s','%s','%s','%s','%s')\"" % (
-                  str(role['id_role']),role['name'],role['description'],str(role['type']),
-                  ",".join(str_areas),self.getdata.group_members(str(role['id_role'])))
-           line = line % jsparam
-           data['role_table'] += line
+            #Table data
+            role_type = str(role['type'])
+            if (role_type == 'all'): continue #Do not show the "all" type
+            elif (role_type == 'group'): role_type = _("Group")
+            elif (role_type == 'user'): continue #Do not show the "user" type
+            elif (role_type == 'level'): role_type = _("Level ")
+            line = role_table % (role['name'],role['description'],role_type)
+            #Javascript data
+            str_areas = []
+            self.db.execute('get_area_access',{'id_role':str(role['id_role'])})
+            areas = self.db.fetch('all')
+            for area in areas:
+                if (area['allow_delete'] == 'y'):
+                    str_areas.append('areadel_'+str(area['id_area']))
+                if (area['allow_create'] == 'y'):
+                    str_areas.append('areacreate_'+str(area['id_area']))
+            jsparam = ''
+            if str(role['name']) == 'Administrator' or str(role['name']) == 'Curador': #Prevent Administrator and Curador group to be edited
+                jsparam = "onclick=\"alert('%s');\"" % _("Unable to edit special groups")
+                line = line.replace('<tr ','<tr class="non_editable" ')
+            else:
+                jsparam = "onclick=\"edit_group('%s','%s','%s','%s','%s','%s')\"" % (
+                    str(role['id_role']),role['name'],role['description'],str(role['type']),
+                    ",".join(str_areas),self.getdata.group_members(str(role['id_role'])))
+            line = line % jsparam
+            data['role_table'] += line
         #Create possible members
         data['group_possible_members'] = self.getdata.possible_members()
 
@@ -1082,14 +1085,14 @@ class Configuration(object):
         self.execute('get_all_colls_only')
         list_colls = self.fetch('all')
         for coll in list_colls:
-           #Table data
-           line = coll_table % (str(coll['dbms_name']),str(coll['coll_code']),coll['coll_name'])
-           has_logo = '0' #False
-           if coll['coll_logo'] != '':
-            has_logo = '1' #True
-           jsparam = "'%s','%s','%s','%s','%s'" % (str(coll['coll_id']),str(coll['coll_base']),str(coll['coll_code']),coll['coll_name'],has_logo)
-           line = line % jsparam
-           data['coll_table'] += line
+            #Table data
+            line = coll_table % (str(coll['dbms_name']),str(coll['coll_code']),coll['coll_name'])
+            has_logo = '0' #False
+            if coll['coll_logo'] != '':
+                has_logo = '1' #True
+            jsparam = "'%s','%s','%s','%s','%s'" % (str(coll['coll_id']),str(coll['coll_base']),str(coll['coll_code']),coll['coll_name'],has_logo)
+            line = line % jsparam
+            data['coll_table'] += line
 
     def loadSubCollTab(self,data):
         '''
@@ -1100,10 +1103,10 @@ class Configuration(object):
         list_colls = self.fetch('all')
         data['subcoll_list'] = ''
         for coll in list_colls:
-          coll_info = str(coll['coll_code'])
-          if coll['coll_name'] != '':
-            coll_info += ' - ' + coll['coll_name']
-          data['subcoll_list'] += '<option value="%s">%s</option>' % (str(coll['coll_id']),coll_info)
+            coll_info = str(coll['coll_code'])
+            if coll['coll_name'] != '':
+                coll_info += ' - ' + coll['coll_name']
+            data['subcoll_list'] += '<option value="%s">%s</option>' % (str(coll['coll_id']),coll_info)
         #Create possible data_langs array
         data['possible_data_langs'] = self.getdata.possible_data_langs()
         #Create Language list
@@ -1117,24 +1120,24 @@ class Configuration(object):
         self.execute('get_all_subcolls')
         list_subcolls = self.fetch('all')
         for subcoll in list_subcolls:
-           #Table data
-           subcoll_data_langs = self.getdata.subcoll_data_langs(str(subcoll['subcoll_id']))
-           coll_info = str(subcoll['coll_code'])
-           if subcoll['coll_name'] != '':
-             coll_info += ' - '+ subcoll['coll_name']
-           line = subcoll_table % (coll_info,subcoll['subcoll_code'],subcoll['subcoll_name'])
-           jsparam = "'%s','%s','%s','%s','%s','%s','%s',%s" % (
-                                          str(subcoll['subcoll_id']),
-                                          str(subcoll['coll_id']),
-                                          subcoll['subcoll_code'],
-                                          subcoll['subcoll_name'],
-                                          str(subcoll['input']),
-                                          str(subcoll['output']),
-                                          str(subcoll['lang']),
-                                          subcoll_data_langs
-                                          )
-           line = line % jsparam
-           data['subcoll_table'] += line
+            #Table data
+            subcoll_data_langs = self.getdata.subcoll_data_langs(str(subcoll['subcoll_id']))
+            coll_info = str(subcoll['coll_code'])
+            if subcoll['coll_name'] != '':
+                coll_info += ' - '+ subcoll['coll_name']
+            line = subcoll_table % (coll_info,subcoll['subcoll_code'],subcoll['subcoll_name'])
+            jsparam = "'%s','%s','%s','%s','%s','%s','%s',%s" % (
+                                            str(subcoll['subcoll_id']),
+                                            str(subcoll['coll_id']),
+                                            subcoll['subcoll_code'],
+                                            subcoll['subcoll_name'],
+                                            str(subcoll['input']),
+                                            str(subcoll['output']),
+                                            str(subcoll['lang']),
+                                            subcoll_data_langs
+                                            )
+            line = line % jsparam
+            data['subcoll_table'] += line
 
     def loadComboTab(self,data,id_lang):
         '''
@@ -1147,20 +1150,20 @@ class Configuration(object):
         data['combo_preservation_method_lang'] = []
         data['combo_test_group_lang'] = []
         for data_lang in data_langs:
-           id_str_type = 'combo_str_type_'+str(data_lang['code'])
-           id_dep_reason = 'combo_dep_reason_'+str(data_lang['code'])
-           id_preservation_method = 'combo_preservation_method_'+str(data_lang['code'])
-           id_unit_measure = 'combo_unit_measure_'+str(data_lang['code'])
-           id_test_group = 'combo_test_group_'+str(data_lang['code'])
-           data['combo_str_type_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
-           data['combo_str_type_lang'].append('<input type="text" name="'+id_str_type+'" maxlength="15" id="'+id_str_type+'" style="margin-bottom: 3px" /><br /></li>')
-           data['combo_dep_reason_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
-           data['combo_dep_reason_lang'].append('<input type="text" name="'+id_dep_reason+'" maxlength="25" id="'+id_dep_reason+'" style="margin-bottom: 3px" /><br /></li>')
-           data['combo_preservation_method_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
-           data['combo_preservation_method_lang'].append('<input type="text" name="'+id_preservation_method+'" maxlength="100" id="'+id_preservation_method+'" style="margin-bottom: 3px" />')
-           data['combo_preservation_method_lang'].append('&nbsp;[ <input type="text" name="'+id_unit_measure+'" maxlength="100" id="'+id_unit_measure+'" title="'+_("Unit of Measure")+'" alt="'+_("Unit of Measure")+'" style="margin-bottom: 3px; width: 100px;" /> ]<br /></li>')
-           data['combo_test_group_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
-           data['combo_test_group_lang'].append('<input type="text" name="'+id_test_group+'" maxlength="100" id="'+id_test_group+'" style="margin-bottom: 3px" /><br /></li>')
+            id_str_type = 'combo_str_type_'+str(data_lang['code'])
+            id_dep_reason = 'combo_dep_reason_'+str(data_lang['code'])
+            id_preservation_method = 'combo_preservation_method_'+str(data_lang['code'])
+            id_unit_measure = 'combo_unit_measure_'+str(data_lang['code'])
+            id_test_group = 'combo_test_group_'+str(data_lang['code'])
+            data['combo_str_type_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
+            data['combo_str_type_lang'].append('<input type="text" name="'+id_str_type+'" maxlength="15" id="'+id_str_type+'" style="margin-bottom: 3px" /><br /></li>')
+            data['combo_dep_reason_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
+            data['combo_dep_reason_lang'].append('<input type="text" name="'+id_dep_reason+'" maxlength="25" id="'+id_dep_reason+'" style="margin-bottom: 3px" /><br /></li>')
+            data['combo_preservation_method_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
+            data['combo_preservation_method_lang'].append('<input type="text" name="'+id_preservation_method+'" maxlength="100" id="'+id_preservation_method+'" style="margin-bottom: 3px" />')
+            data['combo_preservation_method_lang'].append('&nbsp;[ <input type="text" name="'+id_unit_measure+'" maxlength="100" id="'+id_unit_measure+'" title="'+_("Unit of Measure")+'" alt="'+_("Unit of Measure")+'" style="margin-bottom: 3px; width: 100px;" /> ]<br /></li>')
+            data['combo_test_group_lang'].append('<li><label>' + data_lang['lang'] + ' / ' + data_lang['lang_en'] + ' (' + data_lang['code'] + ')' + '</label><br />')
+            data['combo_test_group_lang'].append('<input type="text" name="'+id_test_group+'" maxlength="100" id="'+id_test_group+'" style="margin-bottom: 3px" /><br /></li>')
         data['combo_str_type_lang'] = "\n".join(data['combo_str_type_lang'])
         data['combo_dep_reason_lang'] = "\n".join(data['combo_dep_reason_lang'])
         data['combo_preservation_method_lang'] = "\n".join(data['combo_preservation_method_lang'])
@@ -1208,18 +1211,18 @@ class Configuration(object):
         Load Templates Tab
         '''
         #brk(host="localhost", port=9000)
-        
+
         import base64
-        
+
         self.execute('get_subcoll_templates', {'id_subcoll': self.session.data['id_subcoll']})
         list_templates = self.fetch('all')
         data['value_header_template'] = base64.b64decode(list_templates[0]['header']).decode('utf-8')
         data['value_footer_template'] = base64.b64decode(list_templates[0]['footer']).decode('utf-8')
         data['value_css_template'] =    base64.b64decode(list_templates[0]['styles']).decode('utf-8')
-        
+
         data['label_subcoll_select'] = label_dict['label_Configuration_Templates_Subcollection']
-        
-        
+
+
         data['label_header_template'] = label_dict['label_Rep_header_template']
         data['label_footer_template'] = label_dict['label_Rep_footer_template']
         data['label_css_template'] = label_dict['label_Rep_css_template']
@@ -1254,7 +1257,7 @@ class Configuration(object):
         self.execute('get_all_dbms')
         list_dbms = self.fetch('all')
         for dbms in list_dbms:
-          data['dbms_list'] += '<option value="%s">%s</option>' % (str(dbms['id_dbms']),str(dbms['name']))
+            data['dbms_list'] += '<option value="%s">%s</option>' % (str(dbms['id_dbms']),str(dbms['name']))
         #Create row template
         db_table = '<tr %%s>\
             <td class="">%s</td>\
@@ -1266,31 +1269,31 @@ class Configuration(object):
           </tr>'
         self.execute('get_all_dbs')
         list_dbs = self.fetch('all')
-        
+
         #brk(host="localhost", port=9000)
 
         for onedb in list_dbs:
-          #Table data
-          line = db_table % (str(onedb['dbms_name']),str(onedb['host']),str(onedb['port']),
-                             onedb['db_name'],onedb['user'],str(onedb['pwd'])
-                            )
-          if (self.session.data['dbms'] == onedb['dbms_name']
-              and self.session.data['db_host'] == onedb['host']
-              and self.session.data['db_port'] == onedb['port']
-              and self.session.data['db_name'] == onedb['db_name']
-              and self.session.data['db_user'] == onedb['user']
-              and self.session.data['db_pwd'] == onedb['pwd']):
-            jsparam = "onclick=\"alert('%s')\"" % _("Unable to edit current database.")
-          else:
-            self.execute('get_all_dbs_log',{'id_base':str(onedb['base_id'])})
-            tracebility_onedb = self.fetch('all')
-            if tracebility_onedb:
-                tracebility_onedb = tracebility_onedb[0]
-                jsparam = "onclick=\"edit_base('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')\"" % (str(onedb['base_id']),str(onedb['dbms_id']),str(onedb['host']),str(onedb['port']),onedb['db_name'],onedb['user'],str(onedb['pwd']),str(tracebility_onedb['base_id']),str(tracebility_onedb['dbms_id']),str(tracebility_onedb['host']),str(tracebility_onedb['port']),tracebility_onedb['db_name'],tracebility_onedb['user'],str(tracebility_onedb['pwd']))
+            #Table data
+            line = db_table % (str(onedb['dbms_name']),str(onedb['host']),str(onedb['port']),
+                                onedb['db_name'],onedb['user'],str(onedb['pwd'])
+                                )
+            if (self.session.data['dbms'] == onedb['dbms_name']
+                and self.session.data['db_host'] == onedb['host']
+                and self.session.data['db_port'] == onedb['port']
+                and self.session.data['db_name'] == onedb['db_name']
+                and self.session.data['db_user'] == onedb['user']
+                and self.session.data['db_pwd'] == onedb['pwd']):
+                jsparam = "onclick=\"alert('%s')\"" % _("Unable to edit current database.")
             else:
-                jsparam = "onclick=\"alert('%s')\"" % _("Unable to find the log database of this database.")
-          line = line % jsparam
-          data['dbs_table'] += line
+                self.execute('get_all_dbs_log',{'id_base':str(onedb['base_id'])})
+                tracebility_onedb = self.fetch('all')
+                if tracebility_onedb:
+                    tracebility_onedb = tracebility_onedb[0]
+                    jsparam = "onclick=\"edit_base('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')\"" % (str(onedb['base_id']),str(onedb['dbms_id']),str(onedb['host']),str(onedb['port']),onedb['db_name'],onedb['user'],str(onedb['pwd']),str(tracebility_onedb['base_id']),str(tracebility_onedb['dbms_id']),str(tracebility_onedb['host']),str(tracebility_onedb['port']),tracebility_onedb['db_name'],tracebility_onedb['user'],str(tracebility_onedb['pwd']))
+                else:
+                    jsparam = "onclick=\"alert('%s')\"" % _("Unable to find the log database of this database.")
+            line = line % jsparam
+            data['dbs_table'] += line
 
     def loadConfigTab(self,data):
         '''
@@ -1314,12 +1317,11 @@ class Configuration(object):
         retorno = '';
         if isinstance(valor, (int, float)):
             return str(valor)
-            
+
         if (isinstance(valor, str) == False):
             retorno = str(valor).decode("utf8")
         else:
             retorno = valor
-        
+
         return retorno
-    
-   
+
