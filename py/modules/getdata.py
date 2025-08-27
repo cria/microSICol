@@ -102,7 +102,7 @@ class Getdata(object):
             return str(valor)
             
         if (isinstance(valor, str) == False):
-            retorno = str(valor).decode("utf8")
+            retorno = str(valor)
         else:
             retorno = valor
         
@@ -352,14 +352,14 @@ class Getdata(object):
             filter = ''
             if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
                 #Save filter on session
                 self.session.data['filter_species'] = filter
                 self.session.save()
             elif ('filter_species' in self.session.data):
                 filter = self.session.data['filter_species']
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
             if (filter != ''):
                 words = [x for x in filter.split(" ") if x != '']
@@ -368,9 +368,9 @@ class Getdata(object):
                     #0x25 == '%'
                     #self.data['condition'].append("AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' OR sp.genus LIKE x'25" + word.encode("hex") + "25' OR sp.subgenus LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR sp.species LIKE x'25" + word.encode("hex") + "25' OR sub.subdiv LIKE x'25" + word.encode("hex") + "25' OR sp.infra_name LIKE x'25" + word.encode("hex") + "25' OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
                     self.data['condition'].append(
-                                                  "AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
+                                                  "AND (tgl.taxon_group LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR sp.hazard_group LIKE x'25" + word.encode("utf-8").hex() + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -700,14 +700,14 @@ class Getdata(object):
 
             if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
                 #Save filter on session
                 self.session.data['filter_strains'] = filter
                 self.session.save()
             elif ('filter_strains' in self.session.data):
                 filter = self.session.data['filter_strains']
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
             if (filter != ''):
                 words = [x for x in filter.split(" ") if x != '']
@@ -720,11 +720,11 @@ class Getdata(object):
                 for word in words:
                     #0x25 == '%'
                     self.data['condition'].append(
-                                                  "AND (st.code LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR st.internal_code LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR ty.type LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                                                  "AND (st.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR st.internal_code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR ty.type LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 if (self.session.data['show_str_inactives'] == 0):
@@ -1470,7 +1470,7 @@ class Getdata(object):
               # Save csc.js file to improve performance #
               ###########################################
               f = open(js_csc, 'w')
-              f.write(data['js_country_state_city'].encode('utf8'))
+              f.write(data['js_country_state_city'])
               f.close()
 
             #If we are on edit mode, make some adjustments
@@ -1921,7 +1921,7 @@ class Getdata(object):
             if data['file_name_%s'% one_lang]:
                 data['download_%s'% one_lang] = (' [<a href="./doc.download.py?%s&%s&%s&%s" class="tlink">%s</a>]'
                                             % (
-                                                urlencode({'file_name_%s' % one_lang: data['file_name_%s' % one_lang].encode('utf8')}),
+                                                urlencode({'file_name_%s' % one_lang: data['file_name_%s' % one_lang]}),
                                                 urlencode({'id': data['id']}),
                                                 urlencode({'code': one_lang}),
                                                 urlencode({'id_lang': list(lang.values())[0]}),
@@ -3279,7 +3279,13 @@ class Getdata(object):
 
 
         #Get Main Data
-        self.execute('get_preservation_data',data)
+        # Only pass the required parameters to avoid "Python type list cannot be converted" error
+        preservation_query_params = {
+            'id': data.get('id'),
+            'id_lang': data.get('id_lang'),
+            'id_subcoll': data.get('id_subcoll')
+        }
+        self.execute('get_preservation_data', preservation_query_params)
         preservation = self.fetch('columns')
 
         # marks all the strains that are reused on other
@@ -3329,7 +3335,9 @@ class Getdata(object):
             preservation = DefDict()
 
         #Get GLOBAL COUNTER
-        self.execute('get_preservation_strain_count',data)
+        # Only pass the required parameters to avoid "Python type list cannot be converted" error
+        count_query_params = {'id': data.get('id')}
+        self.execute('get_preservation_strain_count', count_query_params)
         global_counter = int(self.fetch('one')) + 1
 
         #Get Main Data
@@ -3388,7 +3396,12 @@ class Getdata(object):
         data['message'] = '%s - <b>Lote %s</b><br />%s' % (data['date'], preservation['lot_name'], preservation['used_method'])
 
         #Get Data for each Strain
-        self.execute('get_preservation_strain_data',data,force_debug=False)
+        # Only pass the required parameters to avoid "Python type list cannot be converted" error
+        strain_query_params = {
+            'id': data.get('id'),
+            'id_lang': data.get('id_lang')
+        }
+        self.execute('get_preservation_strain_data', strain_query_params, force_debug=False)
         preservation_strain = self.fetch('all') #26 fields
 
         #Security tab
@@ -3855,9 +3868,9 @@ class Getdata(object):
         for member in members:
             #Get user name from his ID
             db.execute('get_user_name',{'id_user':member['id_user']})
-            group_members.append(str(db.fetch('one').encode('utf8')) + "," + str(member['id_user']))
+            group_members.append(str(db.fetch('one')) + "," + str(member['id_user']))
         group_members = ";".join(group_members)
-        return group_members.decode('utf8')
+        return group_members
 
     def subcoll_data_langs(self, id_subcoll):
         '''
