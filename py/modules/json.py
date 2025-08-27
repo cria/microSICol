@@ -36,10 +36,10 @@ class JsonBuilder:
     
     @classmethod
     def parse(cls, jsonString):
-        import simplejson
-        return simplejson.loads(jsonString)
+        import json
+        return json.loads(jsonString)
     
     @classmethod
     def dump(cls, obj):
-        import simplejson
-        return simplejson.dumps(obj)
+        import json
+        return json.dumps(obj)

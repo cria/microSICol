@@ -15,7 +15,6 @@ if platform == "win32": #Windows reads upload/download as Text instead of Binary
 
 import cgitb; cgitb.enable()
 #python imports
-from string import join
 from cgi import FieldStorage
 from urllib.parse import urljoin
 
