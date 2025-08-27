@@ -3,7 +3,7 @@
 
 #python imports
 from sys import exit
-from os import path, rename,sep
+from os import path, rename, sep
 from pickle import dump
 from glob import glob
 try:
@@ -829,7 +829,7 @@ class Save(object):
                 pro = self.verify_data(pro)
                 data.update(pro)
 
-                #Stock                
+                #Stock
                 string_stock_minimum_list = form.getvalue('stock_minimum_list')
                 if string_stock_minimum_list:
                     try:
@@ -1203,7 +1203,7 @@ class Save(object):
                 strain_code = self.fetch('one', 'code')
 
                 id_log_operation = ''
-                
+
                 if save_log:
                     if self.action == 'insert':
                         id_log_operation = 14
@@ -1306,7 +1306,7 @@ class Save(object):
                     data['result'] = form.getvalue('result_'+str(i))
                     data['comments'] = form.getvalue('comments_'+str(i))
                     self.execute('insert_str_quality_test', data)
-                    
+
                     #brk(host="localhost", port=9000)
                     data_db_tests += str(data['id_doc']) + str(data['purity']) + str(data['counting']) + str(data['counting_not_apply']) + str(data['result']) + str(data['comments'])
 
@@ -1470,6 +1470,32 @@ class Save(object):
                     #Doc File
                     doc_file = form['new_file_%s'%lang].file
 
+                    # Verify if file object is valid
+                    if not doc_file:
+                        raise Exception(_("No file was uploaded or file is empty"))
+
+                    # Reset file pointer to beginning
+                    if hasattr(doc_file, 'seek'):
+                        doc_file.seek(0)
+
+                    # Verify if document directory exists and is writable
+                    if not path.exists(self.doc_dir):
+                        raise Exception(_("Document directory does not exist") + ": " + self.doc_dir)
+
+                    # Test if directory is actually writable by creating a temporary file
+                    import tempfile
+                    try:
+                        with tempfile.NamedTemporaryFile(dir=self.doc_dir, delete=True):
+                            pass  # Directory is writable
+                    except (OSError, IOError, PermissionError) as e:
+                        import getpass
+                        current_user = getpass.getuser()
+                        error_msg = _("Document directory is not writable") + ": " + self.doc_dir + "<br/>"
+                        error_msg += _("Error") + ": " + str(e) + "<br/>"
+                        error_msg += _("Current user") + ": " + current_user + "<br/>"
+                        error_msg += _("Solution") + ": " + _("Contact administrator to fix directory permissions")
+                        raise Exception(error_msg)
+
                     if is_first:
                         if self.action == 'insert':
                             self.execute('get_doc_code',data)
@@ -1515,20 +1541,27 @@ class Save(object):
 
                             #Generate internal file code
                             file_code = str(data['id']) + str(data['data_lang'])
-                            file_code = new_sha(file_code).hexdigest()
+                            file_code = new_sha(file_code.encode('utf-8')).hexdigest()
 
                             #Make and Open File
                             file_dir = path.join(self.doc_dir, file_code)
-                            file_open = open(file_dir, "wb")
+                            file_open = None
+                            try:
+                                file_open = open(file_dir, "wb")
 
-                            #Update Data from File and close
-                            max_file_size = self.g.get_config('upload_limit')
-                            while True:
-                                chunk = doc_file.read()
-                                if not chunk: break
-                                if max_file_size != '' and (int(len(chunk)) > int(max_file_size)): raise Exception(_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes"))
-                                file_open.write(chunk)
-                            file_open.close()
+                                max_file_size = self.g.get_config('upload_limit')
+                                chunk_size = 8192000  # Read in 8MB chunks
+                                total_size = 0
+                                while True:
+                                    chunk = doc_file.read(chunk_size)
+                                    if not chunk: break
+                                    total_size += len(chunk)
+                                    if max_file_size != '' and total_size > int(max_file_size):
+                                        raise Exception(_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes"))
+                                    file_open.write(chunk)
+                            finally:
+                                if file_open:
+                                    file_open.close()
 
                     elif (self.action == 'insert'):
                             if data_mlang['title']: self.execute('insert_doc_title_multilanguage', data)
@@ -1540,20 +1573,28 @@ class Save(object):
                             #Generate internal file code
                             #file_code = str(data['id']) + str(data['id_lang'])
                             file_code = str(data['id']) + str(data['data_lang'])
-                            file_code = new_sha(file_code).hexdigest()
+                            file_code = new_sha(file_code.encode('utf-8')).hexdigest()
 
                             #Make and Open File
                             file_dir = path.join(self.doc_dir, file_code)
-                            file_open = open(file_dir, "wb")
+                            file_open = None
+                            try:
+                                file_open = open(file_dir, "wb")
 
-                            #Save data in File and close
-                            max_file_size = self.g.get_config('upload_limit')
-                            while True:
-                                chunk = doc_file.read()
-                                if not chunk: break #could not read file
-                                if max_file_size != '' and (int(len(chunk)) > int(max_file_size)): raise Exception(_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes"))
-                                file_open.write(chunk)
-                            file_open.close()
+                                #Save data in File and close
+                                max_file_size = self.g.get_config('upload_limit')
+                                chunk_size = 8192000  # Read in 8MB chunks
+                                total_size = 0
+                                while True:
+                                    chunk = doc_file.read(chunk_size)
+                                    if not chunk: break #could not read file
+                                    total_size += len(chunk)
+                                    if max_file_size != '' and total_size > int(max_file_size):
+                                        raise Exception(_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes"))
+                                    file_open.write(chunk)
+                            finally:
+                                if file_open:
+                                    file_open.close()
 
 
         except Exception as e:
@@ -1743,7 +1784,7 @@ class Save(object):
                                 #Deposit - responsible for authentication
                                 self.execute('exists_responsible_usage_in_strain_deposit', data, raw_mode = True)
                                 responsibles = self.fetch('all')
-                                
+
                                 if origins or isolations or identifications or deposits or responsibles:
                                     log = True
 
