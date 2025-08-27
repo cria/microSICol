@@ -562,7 +562,8 @@ class Save(object):
                     from os import path
                     from os import unlink
                     js_csc = path.join(self.g.get_config("root_dir"), self.g.get_config("js_dir"), "csc_%s.js" % self.session.data['db_name'])
-                    if (path.exists(js_csc)): unlink(js_csc)
+                    if (path.exists(js_csc)):
+                        unlink(js_csc)
                     #Get state name and state code
                     v_state = coll['coll_state'].rsplit('(',1)
                     if len(v_state) > 1:
@@ -596,7 +597,8 @@ class Save(object):
                     #Erase csc.js (in order to force it to be updated when needed)
                     from os import path,unlink
                     js_csc = path.join(self.g.get_config("root_dir"),self.g.get_config("js_dir"),"csc.js")
-                    if (path.exists(js_csc)): unlink(js_csc)
+                    if (path.exists(js_csc)):
+                        unlink(js_csc)
                     #Get city info
                     self.execute('get_city_id',coll)
                     city_id = self.dbconnection.fetch('one')
