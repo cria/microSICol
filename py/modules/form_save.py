@@ -559,14 +559,23 @@ class Save(object):
                 coll['coll_id_state'] = ''
                 if (coll['coll_state'] is not None):
                     #Erase csc.js (in order to force it to be updated when needed)
-                    from os import path,unlink
-                    js_csc = path.join(self.g.get_config("root_dir"),self.g.get_config("js_dir"),"csc_%s.js" % self.session.data['db_name'])
+                    from os import path
+                    from os import unlink
+                    js_csc = path.join(self.g.get_config("root_dir"), self.g.get_config("js_dir"), "csc_%s.js" % self.session.data['db_name'])
                     if (path.exists(js_csc)): unlink(js_csc)
                     #Get state name and state code
                     v_state = coll['coll_state'].rsplit('(',1)
-                    v_code = v_state[1].split(')')
-                    coll['coll_state'] = v_state[0]+v_code[1]
-                    coll['coll_code'] = v_code[0]
+                    if len(v_state) > 1:
+                        v_code = v_state[1].split(')')
+                        if len(v_code) > 1:
+                            coll['coll_state'] = v_state[0]+v_code[1]
+                            coll['coll_code'] = v_code[0]
+                        else:
+                            # Handle case where there's no closing parenthesis
+                            coll['coll_code'] = v_state[1]
+                    else:
+                        # Handle case where there's no opening parenthesis
+                        coll['coll_code'] = ''
                     self.execute('get_state_id',coll)
                     state_id = self.dbconnection.fetch('one')
                     if (state_id == ''):
