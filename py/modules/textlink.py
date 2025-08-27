@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 #project imports
-from .enum import Enum
+from .sicol_enum import Enum
 from .dbconnection import dbConnection
 from urllib.parse import urlencode
 
