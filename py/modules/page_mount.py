@@ -357,7 +357,12 @@ class Principal(object):
                 msg = msg.decode('utf-8', errors='replace')
             else:
                 msg = str(msg)
-            self.logger.error("[page: %s] %s" % (page, msg))
+            
+            # Check if this is a redirect (success case) vs actual error
+            if str(msg).startswith("REDIRECT:"):
+                self.logger.debug("[page: %s] %s" % (page, msg))
+            else:
+                self.logger.error("[page: %s] %s" % (page, msg))
             # Error messages in sicol exception
             # are presented to the user when the final html is displayed
             if "page" not in self.data:
