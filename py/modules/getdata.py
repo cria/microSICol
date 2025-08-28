@@ -4578,7 +4578,12 @@ class Getdata(object):
                 from xml.dom.minidom import parse, parseString
 
                 #brk(host="localhost", port=9000)
-                dom = parseString(data['xml'].encode("utf8").replace('\r\n',"[_new_line_]").replace("\t","[_tab_]"))
+                # Handle both string and bytes data for Python 3 compatibility
+                xml_data = data['xml']
+                if isinstance(xml_data, bytes):
+                    xml_data = xml_data.decode("utf8")
+                xml_data = xml_data.replace('\r\n',"[_new_line_]").replace("\t","[_tab_]")
+                dom = parseString(xml_data.encode("utf8"))
                 
                 from .labels import label_dict
                 from .reports import Reports
@@ -4629,8 +4634,8 @@ class Getdata(object):
                 
                 for key in self.order_keys:
                     data['arrayFieldsValues'].append(str(key))
-                    data['arrayFields'].append(str(label_dict[self.fields_definition[key]['label']].encode("utf8")))
-                    data['arrayFieldsDef'] += key + ": '" + str(self.fields_definition[key]['data_type'].encode("utf8")) +"', "
+                    data['arrayFields'].append(str(label_dict[self.fields_definition[key]['label']]))
+                    data['arrayFieldsDef'] += key + ": '" + str(self.fields_definition[key]['data_type']) +"', "
                 
                 data['arrayFieldsDef'] = data['arrayFieldsDef'][0:len(data['arrayFieldsDef'])-2] + "}";                    
                
