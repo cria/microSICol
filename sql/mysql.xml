@@ -2852,8 +2852,8 @@
                 id_lot AS id_lot,
                 id_strain AS id_strain,
                 id_container_hierarchy AS id_container_hierarchy,
-                row as row,
-                col AS col,
+                `row` AS `row`,
+                `col` AS col,
                 cast((((lslm.quantity - ifnull(lslm.used_qt_pres, 0)) - ifnull(lslm.used_qt_dist, 0)) - ifnull(lslm.used_qt_qual, 0)) AS UNSIGNED) AS available_qt
             FROM
                 lot_strain_stock_data lslm
@@ -2868,8 +2868,8 @@
                 id_lot AS id_lot,
                 id_strain AS id_strain,
                 id_container_hierarchy AS id_container_hierarchy,
-                row as row,
-                col AS col,
+                `row` AS `row`,
+                `col` AS col,
                 cast((((lslm.quantity - ifnull(lslm.used_qt_pres, 0)) - ifnull(lslm.used_qt_dist, 0)) - ifnull(lslm.used_qt_qual, 0)) AS UNSIGNED) AS available_qt
             FROM
                 lot_strain_stock_data lslm
