@@ -40,10 +40,10 @@ class Log(object):
         
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if (isinstance(valor, str) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno        
         

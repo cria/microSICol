@@ -577,7 +577,7 @@ class Principal(object):
                     try:
                         self.html_main = page.show()
                     except Exception as err:
-                        raise exception.SicolException(err.message)
+                        raise exception.SicolException(str(err))
 
                     self.html_header = ""
                     self.html_footer = ""

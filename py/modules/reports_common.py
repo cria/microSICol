@@ -67,10 +67,10 @@ class Reports_Common(object):
         if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, str) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno
     
@@ -244,10 +244,10 @@ class Reports_Common(object):
         select = select + order[0:len(order)-2] + " "                
         
         import time
-        start = time.clock()        
+        start = time.perf_counter()
         self.execute("", fixed_sql = select)
                 
-        elapsed = (time.clock() - start)
+        elapsed = (time.perf_counter() - start)
         
         
         self.timeout = self.timeout + elapsed
@@ -257,9 +257,7 @@ class Reports_Common(object):
         
         if self.timeout > self.maxTime:            
             import sys            
-            err = Exception()
-            err.message = "Timeout: " + str(self.timeout)
-            raise err
+            raise Exception("Timeout: " + str(self.timeout))
                        
         
         
