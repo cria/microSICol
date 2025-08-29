@@ -563,10 +563,10 @@ class General( object ):
         if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, str) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno
 

@@ -101,10 +101,10 @@ class Getdata(object):
         if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, str) == False):
-            retorno = str(valor)
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno	
 
@@ -2475,7 +2475,10 @@ class Getdata(object):
                 if isinstance(contact[key], str):
                     ret_list.append(self.g.escape_quote (contact[key]))
                 else:
-                    ret_list.append(str(contact[key]).decode('utf-8'))
+                    if isinstance(contact[key], bytes):
+                        ret_list.append(contact[key].decode('utf-8'))
+                    else:
+                        ret_list.append(str(contact[key]))
             return "[%s]" % ", ".join(["'%s'" % element for element in ret_list])
             #return str([str(contact[key]) for contact in contacts])
 

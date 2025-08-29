@@ -74,13 +74,13 @@ class CSV_Report(Reports_Common):
                     string = ""
                     i = 0
                     for value in look_back:
-                        string = string + self.process_field(param['group'][i], value) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(param['group'][i], value) + str(param['separator'])
                         i = i + 1
                     
                     if param['total']['function'] == 'count':
-                        string = string + self.process_field(param['total']['name'], line[param['total']['name']]) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(param['total']['name'], line[param['total']['name']]) + str(param['separator'])
                         
-                    string = string + self.ConvertStrUnicode(line[aggr]) + str(param['separator']).decode("utf-8")
+                    string = string + self.ConvertStrUnicode(line[aggr]) + str(param['separator'])
                 
                     string = string + "\n"
                                 
@@ -95,12 +95,12 @@ class CSV_Report(Reports_Common):
                     string = ""
                     i = 0
                     for value in look_back:
-                        string = string + self.process_field(param['group'][i], value) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(param['group'][i], value) + str(param['separator'])
                         i = i + 1
                         
                     
                     for field in param['select']:
-                        string = string + self.process_field(field, line[field]) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(field, line[field]) + str(param['separator'])
                     
                     string = string + "\n"         
                     
@@ -164,15 +164,15 @@ class CSV_Report(Reports_Common):
         if self.report_params['header'] == 'true':
             
             for field in self.report_params['group']:
-                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator']).decode("utf-8")
+                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator'])
             
             for field in self.report_params['select']:
-                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator']).decode("utf-8")
+                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator'])
                 
             if len(self.report_params.get('total','')) > 0:
-                output = output + label_dict[self.fields_definition[self.report_params['total']['name']]['label']] + str(self.report_params['separator']).decode("utf-8")
+                output = output + label_dict[self.fields_definition[self.report_params['total']['name']]['label']] + str(self.report_params['separator'])
                 if self.report_params['total']['function'] == 'count':
-                    output = output + "Total" + str(self.report_params['separator']).decode("utf-8")
+                    output = output + "Total" + str(self.report_params['separator'])
             
             #output = output + "<br/>"
             output = output + "\n"
@@ -189,9 +189,9 @@ class CSV_Report(Reports_Common):
         import sys
         
         sys.stdout.write("Content-Type: application/octet-stream\n")
-        sys.stdout.write("Content-Length: " + str(len(output)) + "\n")
+        sys.stdout.write("Content-Length: " + str(len(output.encode("utf-8-sig"))) + "\n")
         sys.stdout.write("Content-Disposition: attachment; filename=\"sicol_report.csv\"\r\n\n")
-        sys.stdout.write(output.encode("utf-8-sig"))
+        sys.stdout.buffer.write(output.encode("utf-8-sig"))
                         
         return output
         

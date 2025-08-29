@@ -137,7 +137,8 @@ class Save(object):
             else:
                 return main_title
         if error:
-            print(out.encode('utf8'))
+            import sys
+            sys.stdout.buffer.write(out.encode('utf8'))
             exit(1)
 
     def get_dateformat(self, act):
@@ -2898,7 +2899,8 @@ class Save(object):
                     from . import config
                     out = config.http_header+'\n\n'
                     out += ' - %s <b>%s</b> %s<br>\n' % (_("field"), _('structure'), _("must not be empty."))
-                    print(out.encode('utf8'))
+                    import sys
+                    sys.stdout.buffer.write(out.encode('utf8'))
                     exit(1)
  
                 for node in complete_structure:
@@ -2931,7 +2933,8 @@ class Save(object):
                     from . import config
                     out = config.http_header+'\n\n'
                     out += ' - %s <b>%s</b> %s<br>\n' % (_("field"), _('structure'), _("must not be empty."))
-                    print(out.encode('utf8'))
+                    import sys
+                    sys.stdout.buffer.write(out.encode('utf8'))
                     exit(1)
  
                 for node in complete_structure:
@@ -3120,9 +3123,9 @@ class Save(object):
         if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, str) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno
