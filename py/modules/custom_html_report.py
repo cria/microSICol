@@ -107,7 +107,12 @@ class Custom_Html_Report(Reports_Common):
                 group_value = ''
                 tmp = type(item[param['group'][num_group_by]]).__name__
                 if tmp != "str":
-                    group_value = param['group'][num_group_by] + " LIKE x'" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf-8").encode("hex") + "' "
+                    converted_value = self.ConvertStrUnicode(item[param['group'][num_group_by]])
+                    if isinstance(converted_value, str):
+                        hex_value = converted_value.encode("utf-8").hex()
+                    else:
+                        hex_value = str(converted_value).encode("utf-8").hex()
+                    group_value = param['group'][num_group_by] + " LIKE x'" + hex_value + "' "
                 else:
                     group_value = param['group'][num_group_by] + " IS NULL "
                     

@@ -1823,7 +1823,11 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
-                    self.data['condition'].append("AND (q.qualifier LIKE x'25" + word.encode("hex") + "25' OR doc.code LIKE x'25" + word.encode("hex") + "25' OR t.title LIKE x'25" + word.encode("hex") + "25') ")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    self.data['condition'].append("AND (q.qualifier LIKE x'25" + hex_value + "25' OR doc.code LIKE x'25" + hex_value + "25' OR t.title LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -2093,7 +2097,12 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
-                    self.data['condition'].append("AND (ref.id_ref LIKE x'25" + word.encode("hex") + "25' OR ref.author LIKE x'25" + word.encode("hex") + "25' OR ref.title LIKE x'25" + word.encode("hex") + "25' OR ref.year LIKE x'25" + word.encode("hex") + "25') ")
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    self.data['condition'].append("AND (ref.id_ref LIKE x'25" + hex_value + "25' OR ref.author LIKE x'25" + hex_value + "25' OR ref.title LIKE x'25" + hex_value + "25' OR ref.year LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -2269,10 +2278,16 @@ class Getdata(object):
                 self.data['condition'] = []
                 for word in words:
                     #0x25 == '%'
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                        self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
                     else:
-                        self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                        hex_value = str(word).encode("utf-8").hex()
+                    
+                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                        self.data['condition'].append("AND (p.name LIKE x'25" + hex_value + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + hex_value + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + hex_value + "25' OR institution.nickname LIKE x'25" + hex_value + "25')) > 0)) ")
+                    else:
+                        self.data['condition'].append("AND (p.name LIKE x'25" + hex_value + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + hex_value + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + hex_value + "25' OR institution.nickname LIKE x'25" + hex_value + "25')) > 0)) ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -2598,10 +2613,16 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager:
-                        self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
                     else:
-                        self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                        hex_value = str(word).encode("utf-8").hex()
+                    
+                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager:
+                        self.data['condition'].append("AND (nickname LIKE x'25" + hex_value + "25' OR name LIKE x'25" + hex_value + "25' OR complement LIKE x'25" + hex_value + "25') ")
+                    else:
+                        self.data['condition'].append("AND (nickname LIKE x'25" + hex_value + "25' OR name LIKE x'25" + hex_value + "25' OR complement LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -2964,12 +2985,18 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    
                     self.data['condition'].append(
-                            "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' "
-                            "OR dol.quantity = '" + word + "' OR i.name LIKE x'25" + word.encode("hex") + "25' OR p.name LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                            "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + hex_value + "25' " +
+                            "OR l.name LIKE x'25" + hex_value + "25' " +
+                            "OR " + stripped_sciname + " LIKE x'25" + hex_value + "25' "
+                            "OR dol.quantity = '" + word + "' OR i.name LIKE x'25" + hex_value + "25' OR p.name LIKE x'25" + hex_value + "25' " +
+                            "OR st.infra_complement LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -3204,20 +3231,26 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    
                     self.data['condition'].append(
-                            "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
+                            "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + hex_value + "25' " +
+                            "OR l.name LIKE x'25" + hex_value + "25' " +
                             "OR ((SELECT COUNT(preservation.id_preservation) " +
                             "FROM preservation " +
                             "INNER JOIN preservation_strain USING (id_preservation) " +
                             "INNER JOIN strain USING (id_strain) " +
                             "INNER JOIN species USING (id_species) " +
                             "WHERE preservation.id_preservation = p.id_preservation " +
-                            "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR strain.code LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25')) > 0) "
-                            "OR pml.method LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                            "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + hex_value + "25' " +
+                            "OR strain.code LIKE x'25" + hex_value + "25' " +
+                            "OR " + stripped_sciname + " LIKE x'25" + hex_value + "25')) > 0) "
+                            "OR pml.method LIKE x'25" + hex_value + "25' " +
+                            "OR st.infra_complement LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -4486,9 +4519,15 @@ class Getdata(object):
                 
                 for word in words:
                     #0x25 == '%'
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    
                     self.data['condition'].append(
-                                                  " AND (replang.type LIKE x'25" + word.encode("hex") + "25' " +
-                                                  " OR rep.description LIKE x'25" + word.encode("hex") + "25') ")
+                                                  " AND (replang.type LIKE x'25" + hex_value + "25' " +
+                                                  " OR rep.description LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
