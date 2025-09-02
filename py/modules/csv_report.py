@@ -157,48 +157,47 @@ class CSV_Report(Reports_Common):
         self.fields_definition = tmp.get_dict('name', ['label', 'data_type', 'aggregate_function', 'label_value_lookup', 'function_lookup'])
         
         self.code              =              data[0]['code']
-               
-    
-    
-    def mount_report_file(self):              
-              
-        self.timeout = 0  
+
+
+    def mount_report_file(self):          
+        self.timeout = 0
         output = ""
         #brk(host="localhost", port=9000)
-        
+
         if self.report_params['header'] == 'true':
-            
+
             for field in self.report_params['group']:
                 output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator'])
-            
+
             for field in self.report_params['select']:
                 output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator'])
-                
+
             if len(self.report_params.get('total','')) > 0:
                 output = output + label_dict[self.fields_definition[self.report_params['total']['name']]['label']] + str(self.report_params['separator'])
                 if self.report_params['total']['function'] == 'count':
                     output = output + "Total" + str(self.report_params['separator'])
-            
+
             #output = output + "<br/>"
             output = output + "\n"
-        
-        
-        
+
         try:
             table = self.write_report(self.report_params, 0, "", [])
         except Exception as err:
-                    raise err
-        
+            raise err
+
         output = output + table
-        
+
         import sys
-        
-        sys.stdout.write("Content-Type: application/octet-stream\n")
-        sys.stdout.write("Content-Length: " + str(len(output.encode("utf-8-sig"))) + "\n")
-        sys.stdout.write("Content-Disposition: attachment; filename=\"sicol_report.csv\"\r\n\n")
-        sys.stdout.buffer.write(output.encode("utf-8-sig"))
-                        
-        return output
-        
-        
-  
+
+        # Make sure we flush any buffered output before writing headers
+        sys.stdout.flush()
+        sys.stderr.flush()
+
+        # Use binary write for headers to avoid encoding issues
+        sys.stdout.buffer.write(b"Content-Type: application/octet-stream\r\n")
+        sys.stdout.buffer.write(("Content-Length: " + str(len(output.encode("utf-8"))) + "\r\n").encode('ascii'))
+        sys.stdout.buffer.write(b"Content-Disposition: attachment; filename=\"sicol_report.csv\"\r\n\r\n")
+        sys.stdout.buffer.write(output.encode("utf-8"))
+        sys.stdout.buffer.flush()
+
+        sys.exit(0)

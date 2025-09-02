@@ -28,8 +28,7 @@ class General( object ):
             return config.__dict__[config_name]
         else:
             from .dom_xml import Xml
-            from os import pardir
-            config_file = self.read_file(path.abspath(path.join(pardir, 'config.xml')))
+            config_file = self.read_file(path.join(self.root_dir, 'config.xml'))
             xml = Xml('config', config_file)
             return xml.get(config_name)
 

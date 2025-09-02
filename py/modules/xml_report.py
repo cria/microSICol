@@ -115,7 +115,7 @@ class XML_Report(Reports_Common):
                 group_value = ''
                 tmp = type(item[param['group'][num_group_by]]).__name__
                 if tmp != "str":
-                    group_value = param['group'][num_group_by] + " LIKE x'" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf-8").encode("hex") + "' "
+                    group_value = param['group'][num_group_by] + " LIKE x'" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf-8").hex() + "' "
                 else:
                     group_value = param['group'][num_group_by] + " IS NULL "
                     
@@ -191,9 +191,18 @@ class XML_Report(Reports_Common):
         
         import sys
         
-        sys.stdout.write("Content-Type: text/xml\n")
-        sys.stdout.write("Content-Length: " + str(len(output.encode("utf-8-sig"))) + "\n")
-        sys.stdout.write("Content-Disposition: attachment; filename=\"sicol_report.xml\"\r\n\n")
-        sys.stdout.buffer.write(output.encode("utf-8-sig"))
-       
-        return output
+        # Ensure all previous output is flushed
+        sys.stdout.flush()
+        sys.stderr.flush()
+        
+        # Write headers using binary mode to ensure proper ordering
+        sys.stdout.buffer.write(b"Content-Type: text/xml\r\n")
+        sys.stdout.buffer.write(("Content-Length: " + str(len(output.encode("utf-8"))) + "\r\n").encode('ascii'))
+        sys.stdout.buffer.write(b"Content-Disposition: attachment; filename=\"sicol_report.xml\"\r\n\r\n")
+        
+        # Write the actual XML content
+        sys.stdout.buffer.write(output.encode("utf-8"))
+        sys.stdout.buffer.flush()
+        
+        # For direct download, exit immediately to prevent any additional processing
+        sys.exit(0)
