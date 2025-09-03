@@ -204,6 +204,11 @@ class Reports(object):
         except Exception as err:
             raise err
 
+        if isinstance(output, bytes):
+            output = output.decode('utf-8', errors='replace')
+        elif not isinstance(output, str):
+            output = str(output)
+
         return output.replace('%', '%%')
 
     def new(self):

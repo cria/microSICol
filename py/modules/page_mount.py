@@ -357,7 +357,7 @@ class Principal(object):
                 msg = msg.decode('utf-8', errors='replace')
             else:
                 msg = str(msg)
-            
+
             # Check if this is a redirect (success case) vs actual error
             if str(msg).startswith("REDIRECT:"):
                 self.logger.debug("[page: %s] %s" % (page, msg))
@@ -573,9 +573,17 @@ class Principal(object):
                 page = Reports(self.form, self.cookie_value)
 
                 if action == 'show':
-                    # brk(host="localhost", port=9000)
                     try:
-                        self.html_main = page.show()
+                        if 'xml_dict' in self.form:
+                            dict_final = page.safe_eval_dict(self.form['xml_dict'].value)
+                            report_format = dict_final.get('format', '').lower()
+
+                            if report_format in ('csv', 'xml'):
+                                page.show()
+                                exit(0)
+
+                        output = page.show()
+                        self.html_main = output
                     except Exception as err:
                         raise exception.SicolException(str(err))
 
