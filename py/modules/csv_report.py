@@ -193,11 +193,15 @@ class CSV_Report(Reports_Common):
         sys.stdout.flush()
         sys.stderr.flush()
 
-        # Use binary write for headers to avoid encoding issues
-        sys.stdout.buffer.write(b"Content-Type: application/octet-stream\r\n")
-        sys.stdout.buffer.write(("Content-Length: " + str(len(output.encode("utf-8"))) + "\r\n").encode('ascii'))
-        sys.stdout.buffer.write(b"Content-Disposition: attachment; filename=\"sicol_report.csv\"\r\n\r\n")
-        sys.stdout.buffer.write(output.encode("utf-8"))
-        sys.stdout.buffer.flush()
-
+        # Use print for CGI headers - this is the standard way
+        print("Content-Type: application/octet-stream")
+        print(f"Content-Length: {len(output.encode('utf-8'))}")
+        print("Content-Disposition: attachment; filename=\"sicol_report.csv\"")
+        print()  # Empty line to end headers
+        
+        # Write the actual CSV content using print to avoid encoding issues
+        print(output, end='')
+        
+        # Flush everything and exit
+        sys.stdout.flush()
         sys.exit(0)

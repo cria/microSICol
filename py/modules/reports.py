@@ -191,18 +191,30 @@ class Reports(object):
                 dict_final['separator'] = self.form['separator'].value
                 type = CSV_Report(dict_final, self.cookie_value)
                 output =  type.mount_report_file()
+                # If output is None, it means the file was sent directly as download
+                if output is None:
+                    import sys
+                    sys.exit(0)
             elif (dict_final['format'].lower() == 'custom'):
                 type = Custom_Html_Report(dict_final, self.cookie_value)
                 output =  type.mount_report_file()
             elif (dict_final['format'].lower() == 'xml'):
                 type = XML_Report(dict_final, self.cookie_value)
                 output =  type.mount_report_file()
+                # If output is None, it means the file was sent directly as download
+                if output is None:
+                    import sys
+                    sys.exit(0)
             else:
                 type = Default_Html_Report(dict_final, self.cookie_value)
                 output =  type.mount_report_file()
 
         except Exception as err:
             raise err
+
+        # Check if output is None (for direct download cases)
+        if output is None:
+            return ""
 
         if isinstance(output, bytes):
             output = output.decode('utf-8', errors='replace')

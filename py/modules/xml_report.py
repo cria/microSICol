@@ -188,21 +188,22 @@ class XML_Report(Reports_Common):
         
         output = output + "</report>\n"    
        
-        
         import sys
+        import os
         
-        # Ensure all previous output is flushed
+        # Ensure all previous output is flushed and closed
         sys.stdout.flush()
         sys.stderr.flush()
         
-        # Write headers using binary mode to ensure proper ordering
-        sys.stdout.buffer.write(b"Content-Type: text/xml\r\n")
-        sys.stdout.buffer.write(("Content-Length: " + str(len(output.encode("utf-8"))) + "\r\n").encode('ascii'))
-        sys.stdout.buffer.write(b"Content-Disposition: attachment; filename=\"sicol_report.xml\"\r\n\r\n")
+        # Use print for CGI headers - this is the standard way
+        print("Content-Type: text/xml")
+        print(f"Content-Length: {len(output.encode('utf-8'))}")
+        print("Content-Disposition: attachment; filename=\"sicol_report.xml\"")
+        print()  # Empty line to end headers
         
-        # Write the actual XML content
-        sys.stdout.buffer.write(output.encode("utf-8"))
-        sys.stdout.buffer.flush()
+        # Write the actual XML content using print to avoid encoding issues
+        print(output, end='')
         
-        # For direct download, exit immediately to prevent any additional processing
+        # Flush everything and exit
+        sys.stdout.flush()
         sys.exit(0)
