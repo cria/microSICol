@@ -432,19 +432,19 @@ class Reports(object):
         keys = self.order_keys
 
         for item in select:
-            return_select.extend("<li id='" + item + "'>" + label_dict[self.fields_definition[item]['label']] + "</li>")
+            return_select.extend("<li id='" + item + "'>" + self.ConvertStrUnicode(label_dict[self.fields_definition[item]['label']]) + "</li>")
             keys.remove(item)
 
         for item in group:
-            return_group.extend("<li id='" + item + "'>" + label_dict[self.fields_definition[item]['label']] + "</li>")
+            return_group.extend("<li id='" + item + "'>" + self.ConvertStrUnicode(label_dict[self.fields_definition[item]['label']]) + "</li>")
             keys.remove(item)
 
         if total[0] != '':
-            return_total.extend("<li id='" + total[0] + "'>" + label_dict[self.fields_definition[total[0]]['label']] + "</li>")
+            return_total.extend("<li id='" + total[0] + "'>" + self.ConvertStrUnicode(label_dict[self.fields_definition[total[0]]['label']]) + "</li>")
             keys.remove(total[0])
 
         for item in keys:
-            return_field.extend("<li id='" + item + "'>" + label_dict[self.fields_definition[item]['label']] + "</li>")
+            return_field.extend("<li id='" + item + "'>" + self.ConvertStrUnicode(label_dict[self.fields_definition[item]['label']]) + "</li>")
 
         data['field'] = "".join(return_field)
         data['select'] = "".join(return_select)
@@ -470,7 +470,7 @@ class Reports(object):
 
         for key in self.order_keys:
             data['arrayFieldsValues'].append(str(key))
-            data['arrayFields'].append(str(label_dict[self.fields_definition[key]['label']]))
+            data['arrayFields'].append(self.ConvertStrUnicode(label_dict[self.fields_definition[key]['label']]))
             data['arrayFieldsDef'] += key + ": '" + str(self.fields_definition[key]['data_type']) +"', "
 
         data['arrayFieldsDef'] = data['arrayFieldsDef'][0:len(data['arrayFieldsDef'])-2] + "}";
@@ -486,8 +486,15 @@ class Reports(object):
         data['arrayTypes'].append(self.ConvertStrUnicode(_('Variable')))
         data['arrayTypes'].append(self.ConvertStrUnicode(_('Field')))
 
-        data['enum_label_values'] = str(label_values_dict).replace(": u'",": '")
-        data['enum_values'] = str(values_dict).replace(": u'",": '")
+        # Convert arrays to JSON for proper encoding
+        data['arrayFields'] = json.dumps(data['arrayFields'], ensure_ascii=False)
+        data['arrayFieldsValues'] = json.dumps(data['arrayFieldsValues'], ensure_ascii=False)
+        data['arrayConditions'] = json.dumps(data['arrayConditions'], ensure_ascii=False)
+        data['arrayConnectors'] = json.dumps(data['arrayConnectors'], ensure_ascii=False)
+        data['arrayTypes'] = json.dumps(data['arrayTypes'], ensure_ascii=False)
+        
+        data['enum_label_values'] = json.dumps(label_values_dict, ensure_ascii=False)
+        data['enum_values'] = json.dumps(values_dict, ensure_ascii=False)
 
         if "filters" in self.session.data.get("new_report"):
             num_fields = 0;
@@ -573,8 +580,8 @@ class Reports(object):
 
             groupitem = groupitem.replace("@field", item)
 
-            groupitem = groupitem.replace("@label_field_header", "Field " + label_dict[self.fields_definition[item]['label']] + " " + label_dict['label_Rep_header'])
-            groupitem = groupitem.replace("@label_name", label_dict[self.fields_definition[item]['label']])
+            groupitem = groupitem.replace("@label_field_header", "Field " + self.ConvertStrUnicode(label_dict[self.fields_definition[item]['label']]) + " " + self.ConvertStrUnicode(label_dict['label_Rep_header']))
+            groupitem = groupitem.replace("@label_name", self.ConvertStrUnicode(label_dict[self.fields_definition[item]['label']]))
 
             group = group + groupitem
 
@@ -597,8 +604,8 @@ class Reports(object):
 
             groupitem = groupitem.replace("@field", item)
 
-            groupitem = groupitem.replace("@label_field_footer", "Field " + label_dict[self.fields_definition[item]['label']] + " " + label_dict['label_Rep_footer'])
-            groupitem = groupitem.replace("@label_name", label_dict[self.fields_definition[item]['label']])
+            groupitem = groupitem.replace("@label_field_footer", "Field " + self.ConvertStrUnicode(label_dict[self.fields_definition[item]['label']]) + " " + self.ConvertStrUnicode(label_dict['label_Rep_footer']))
+            groupitem = groupitem.replace("@label_name", self.ConvertStrUnicode(label_dict[self.fields_definition[item]['label']]))
 
             group = group + groupitem
 
@@ -1024,7 +1031,7 @@ class Reports(object):
 
         newArray = []
         for key,value in list(self.fields_definition.items()):
-            dicTmp = label_dict[self.fields_definition[key]['label']] + "#" + key
+            dicTmp = self.ConvertStrUnicode(label_dict[self.fields_definition[key]['label']]) + "#" + key
             newArray.append(dicTmp)
 
         newArray = sorted(newArray)

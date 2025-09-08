@@ -283,7 +283,7 @@ function newDropDown(arrayItems, arrayValues, name, visible)
     
     for (i=0; i<arrayItems.length; i++)
     {	
-        tempDD.options[i+1] = new Option(decodeString(arrayItems[i]), arrayValues[i]);
+        tempDD.options[i+1] = new Option(arrayItems[i], arrayValues[i]);
     }
 
     if (name == 'field')
@@ -654,7 +654,7 @@ function dropDownItems(id, index, field)
 
     for (i=0; i<arrayItems.length; i++)
     {	
-        $('#' + id)[0].options[i] = new Option(decodeString(arrayItems[i]), arrayValues[i]);        
+        $('#' + id)[0].options[i] = new Option(arrayItems[i], arrayValues[i]);        
     }
 }
 
@@ -678,7 +678,7 @@ function checkAnotherField(index)
             data_type_another = arrayFieldsDef[arrayFieldsValues[i]];            
             if (data_type == data_type_another)
             {                
-                $('#anotherfield_' + index)[0].options[j] = new Option(decodeString(arrayFields[i]), arrayFieldsValues[i]);
+                $('#anotherfield_' + index)[0].options[j] = new Option(arrayFields[i], arrayFieldsValues[i]);
                 j++;
             }
         }
@@ -733,7 +733,7 @@ function checkConditions(index)
 
     for (i=0; i<arrayAll.length; i++)
     {	
-        $('#condition_' + index)[0].options[i + 1] = new Option(decodeString(arrayConditions[i]), arrayAll[i]);
+        $('#condition_' + index)[0].options[i + 1] = new Option(arrayConditions[i], arrayAll[i]);
     }
     
     $('#condition_' + index).val(valueSafe);
@@ -759,7 +759,7 @@ function populateEnumValues(index, field)
         {
             var option = document.createElement("option");
             option.value = arrayFieldsValues[i];
-            option.text = decodeString(arrayFields[i]);
+            option.text = arrayFields[i];
             $('#value_' + index)[0].appendChild(option);
         }
     }
