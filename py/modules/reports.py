@@ -20,10 +20,7 @@ from .getdata import Getdata
 from .label_values_reports import label_values_dict
 from .label_values_reports import values_dict
 
-try:
-    from hashlib import sha1 as new_sha
-except ImportError:
-    from sha import new as new_sha
+from hashlib import sha1 as new_sha
 
 # Import translation function
 try:
@@ -387,7 +384,7 @@ class Reports(object):
         data = {}
         data['position_focus'] = "$('#name_report').focus();"
 
-        data['name_report'] = self.session.data.get('new_report', {'name':''})['name'].replace('"', '&#34;')
+        data['name_report'] = self.session.data.get('new_report', {'name':''}).get('name', '').replace('"', '&#34;')
 
         self.execute ("get_reports_types", {'id_lang':self.session.data['id_lang']})
         types = self.fetch("all")
@@ -395,7 +392,7 @@ class Reports(object):
         return_types = []
 
         for type in types:
-            if self.session.data.get('new_report', {'type':''})['type'] == type['id_report_type']:
+            if self.session.data.get('new_report', {'type':''}).get('type', '') == type['id_report_type']:
                 return_types.extend("<option  value='" + str(type['id_report_type']) + "' selected='selected'>" + type['type'] + "</option>")
 
                 data['message_type'] = type['id_report_type']
@@ -563,7 +560,7 @@ class Reports(object):
 
         #brk(host="localhost", port=9000)
         group = ''
-        group_list = self.session.data.get('new_report', {'group':[]})['group']
+        group_list = self.session.data.get('new_report', {'group':[]}).get('group', [])
 
         for item in group_list:
 
@@ -645,8 +642,9 @@ class Reports(object):
             list = self.session.data.get('new_report', {'select':[]}).get('select', [])
 
             if len(list) == 0:
-                name = (self.session.data.get('new_report', {'total':{'name':'', 'function':''}}).get('total', {'name':'', 'function':''})['name'])
-                f = self.session.data.get('new_report', {'total':{'name':'', 'function':''}}).get('total', {'name':'', 'function':''})['function']
+                total_info = self.session.data.get('new_report', {'total':{'name':'', 'function':''}}).get('total', {'name':'', 'function':''})
+                name = total_info.get('name', '')
+                f = total_info.get('function', '')
                 function = ''
                 if f == 'count':
                     function = f + '(*)'
@@ -870,7 +868,7 @@ class Reports(object):
         #brk(host="localhost", port=9000)
 
         if ('new_report' in self.session.data) == False:
-            self.session.data['new_report'] = tmp
+            self.session.data['new_report'] = {}
         else:
             if ('allFilters' in self.form):
                 self.session.data['new_report']['filters'] = eval(self.form['allFilters'].value)
@@ -965,7 +963,7 @@ class Reports(object):
                 templates['main']['css'] = (self.form['css_template'].value)
 
             group = {}
-            group_list = self.session.data.get('new_report', {'group':[]})['group']
+            group_list = self.session.data.get('new_report', {'group':[]}).get('group', [])
 
             #brk(host="localhost", port=9000)
             for field in group_list:
@@ -1016,7 +1014,8 @@ class Reports(object):
                     id_report_type = '''
 
         if (id_report == None):
-            id = self.session.data.get('new_report', {'type':'1'})['type']
+            new_report = self.session.data.get('new_report', {'type':'1'})
+            id = new_report.get('type', '1')
         else:
             id = id_report
 
