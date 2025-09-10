@@ -541,15 +541,19 @@ class Configuration(object):
             coll_name = str(self.form['util_coll_name'].value)
         coll_logo = '' #empty string = default image is used
         valid_logo = True
-        if (self.form['util_coll_logo'].value != ''): #An image has been sent
+        # Check if a new logo file has been uploaded by verifying filename
+        if (hasattr(self.form['util_coll_logo'], 'filename') and self.form['util_coll_logo'].filename): #An image has been sent
             doc_file = self.form['util_coll_logo'].file
             logo = []
             if doc_file is not None:
+                # Reset file pointer to beginning to ensure we read the complete file
+                if hasattr(doc_file, 'seek'):
+                    doc_file.seek(0)
                 while True:
                     chunk = doc_file.read()
                     if not chunk:
                         break
-                logo.append(chunk)
+                    logo.append(chunk)
             #Escape NUL (0x00) and ' (simple quote) in order to insert correctly in SQLite
             coll_logo = b"".join(logo)
             import base64,imghdr
@@ -560,8 +564,11 @@ class Configuration(object):
             else:
                 coll_logo = base64.b64encode(coll_logo).decode('utf-8')
         else:
-            self.execute('get_coll_logo',{'id_coll':coll_id})
-            coll_logo = self.fetch('one')
+            # No new file uploaded, keep existing logo
+            if coll_id != '': # Only get existing logo if editing existing collection
+                self.execute('get_coll_logo',{'id_coll':coll_id})
+                coll_logo = self.fetch('one')
+            # For new collections without logo, coll_logo remains empty string
         new_coll = True
         if coll_id == '': #New Collection
             self.execute('count_coll',{'coll_code':coll_code})
