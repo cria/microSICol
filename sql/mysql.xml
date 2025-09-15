@@ -1077,7 +1077,7 @@
         <sql name="get_str_quality_data"><![CDATA[
             SELECT str_quality.id_quality, str_quality.id_user, lot.name AS lot,
                 str_quality.date, SUM(ifnull(sqol.quantity,0)) AS quantity,
-                preservation_method_lang.unit_measure, str_quality.not_identified
+                MAX(preservation_method_lang.unit_measure) AS unit_measure, str_quality.not_identified
             FROM str_quality
             LEFT JOIN str_quality_origin_location sqol USING (id_quality)
             INNER JOIN lot ON (str_quality.id_lot = lot.id_lot)
@@ -1085,7 +1085,7 @@
             INNER JOIN preservation_method_lang ON (preservation.id_preservation_method = preservation_method_lang.id_preservation_method)
             WHERE str_quality.id_strain = %(id_strain)s
             AND preservation_method_lang.id_lang = %(id_lang)s
-            GROUP BY id_quality
+            GROUP BY str_quality.id_quality, str_quality.id_user, lot.name, str_quality.date, str_quality.not_identified
             ORDER BY str_quality.date DESC;]]></sql>
 
         <sql name="get_str_quality_tests_count"><![CDATA[
@@ -2140,7 +2140,7 @@
 
         <sql name="get_available_locations"><![CDATA[
             SELECT
-                id_strain, id_lot, id_container_hierarchy, row, col, available_qt
+                id_strain, id_lot, id_container_hierarchy, `row`, `col`, available_qt
             FROM
                 lot_strain_available_locations
             WHERE
@@ -2149,7 +2149,7 @@
 
        <sql name="get_used_location_data"><![CDATA[
        SELECT
-           ch.id_container, ch.id_container_hierarchy, lsl.row, lsl.col,
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`,
            id_lot, id_strain, lot.name, strain.code, sciname.sciname_no_auth,
            available_qt
        FROM
@@ -2167,12 +2167,12 @@
            AND cpm.id_preservation_method = %(id_preservation_method)s
            %(extra)s
        ORDER BY
-           ch.id_container, ch.id_container_hierarchy, lsl.row, lsl.col;
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`;
        ]]></sql>
 
        <sql name="get_strain_locations"><![CDATA[
        SELECT
-           ch.id_container, ch.id_container_hierarchy, lsl.row, lsl.col,
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`,
            id_lot, id_strain, lot.name, strain.code, sciname.sciname_no_auth,
            available_qt
        FROM
@@ -2189,7 +2189,7 @@
            ((strain.id_strain = %(id_strain)s OR %(id_strain)s = '0') AND
            (lsl.id_lot = %(id_lot)s OR %(id_lot)s = '0')) AND cs.id_subcoll = %(id_subcoll)s
        ORDER BY
-           ch.id_container, ch.id_container_hierarchy, lsl.row, lsl.col;
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`;
        ]]></sql>
 
        <sql name="get_lot_strain_location_data"><![CDATA[
