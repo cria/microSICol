@@ -194,7 +194,7 @@ class dbConnection(object):
                 if (raw_mode):
                     # Special case - insert/update coll
                     import re
-                    sql_line = re.sub("'\%.*?\)s'","?",str(sql_line))
+                    sql_line = re.sub(r"'\%.*?\)s'", "?", str(sql_line))
                     self.logger.debug("[sqlite: %s] [%s]" % (sqlfunction, sql_line))
                     if 'coll_id' in values:
                         self.rows = self.cursor.execute(sql_line, (values['coll_base'], values['coll_code'], values['coll_name'], values['coll_logo'], values['coll_id']))
