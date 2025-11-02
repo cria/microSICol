@@ -586,6 +586,9 @@ class Getdata(object):
             self.execute('get_field_type',{'table':'species','field':'hazard_group'})
             hgroups = self.fetch('columns')
             hgroups = hgroups['Type']
+            # Convert to string if it's bytes
+            if isinstance(hgroups, bytes):
+                hgroups = hgroups.decode('utf-8')
             hgroups = findall('\'.*?\'',hgroups)
             if action == 'new': hgroup_html = self.opt_html_selected
             else: hgroup_html = self.opt_html
