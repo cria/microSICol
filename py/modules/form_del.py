@@ -141,6 +141,7 @@ class Delete(object):
                     id_log_level = 3
                     id_log_entity = 1
                     save_log = self.l.checkLogLevel(id_log_level)
+                    return_sql = []
                     dic_qt = {}
 
                     if save_log:
@@ -163,7 +164,6 @@ class Delete(object):
                         self.delete('delete_distribution_security')
 
                     if save_log:
-                        return_sql = []
                         from .location import LocationBuilder
                         self.location = LocationBuilder(self.cookie_value)
 
