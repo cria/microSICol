@@ -252,12 +252,20 @@ class dbConnection(object):
                     raise Exception("%s: %s (%s)" % (_("Duplicate entry"), duplicated_value.decode('utf8'), sql_line.decode('utf8')))
                 elif e.args[0] == 1451: #Cannot delete/update due foreign key constrain
                     import re
-                    table_name = re.search(r"REFERENCES `(\w+?)`",e.args[1]).group(1)
-                    if table_name == 'species':
-                        raise exception.SicolException(_("Unable to delete due associations with table \"Strains\""))
+                    table_match = re.search(r"REFERENCES `(\w+?)`",e.args[1])
+                    if table_match:
+                        table_name = table_match.group(1)
+                        if table_name == 'species':
+                            raise exception.SicolException(_("Unable to delete due associations with table \"Strains\""))
+                        else:
+                            foreign_match = re.search(r"fails \(.*?/(\w+?)`",e.args[1])
+                            if foreign_match:
+                                foreign_table_name = foreign_match.group(1)
+                                raise exception.SicolException(_("Unable to update/delete due foreign key constrain")+' - '+_("Foreign Table Name")+': '+foreign_table_name)
+                            else:
+                                raise exception.SicolException(_("Unable to update/delete due foreign key constrain"))
                     else:
-                        foreign_table_name = re.search(r"fails \(.*?/(\w+?)`",e.args[1]).group(1)
-                        raise exception.SicolException(_("Unable to update/delete due foreign key constrain")+' - '+_("Foreign Table Name")+': '+foreign_table_name)
+                        raise exception.SicolException(_("Unable to update/delete due foreign key constrain"))
                 else:
                     raise exception.SicolException("%s: %s" % (_("Error in MySQL execute"), e), 1, "%s: %s\n<br />%s: %s\n<br/>%s: %s" % (_("Sql function"), str(sqlfunction), _("Sql line"), str(sql_line), _("Values"), str(values)))
             self.__fetchall = self.cursor.fetchall()

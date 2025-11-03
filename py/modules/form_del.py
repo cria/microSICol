@@ -442,7 +442,7 @@ class Delete(object):
             #Delete Files Uploaded
             for language in languages:
                 file_code = self.data['id'] + str(language)
-                file_code = new_sha(file_code).hexdigest()
+                file_code = new_sha(file_code.encode('utf-8')).hexdigest()
                 file = path.join(self.doc_dir, file_code)
                 try: remove(file)
                 except OSError: pass

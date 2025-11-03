@@ -33,7 +33,7 @@ Content-Disposition: attachment; filename="%s"\n\n'''
         code = self.form.getvalue('code')
         #Generate file_code
         file_code = str(id) + str(id_lang)
-        file_code = new_sha(file_code).hexdigest()
+        file_code = new_sha(file_code.encode('utf-8')).hexdigest()
 
         #Set Document variables
         file_name = self.form.getvalue('file_name_%s' %code)
