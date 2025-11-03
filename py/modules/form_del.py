@@ -15,6 +15,7 @@ from .session import Session
 from .dbconnection import dbConnection
 from .general import General
 from .log import Log
+from . import exception
 #from dbgp.client import brk
 
 # Import translation function
@@ -420,7 +421,6 @@ class Delete(object):
         try:
           self.execute(sql, self.data)
           self.commit()
-          from . import exception
           redirect_url = urljoin(self.index_url, self.who_list)
           raise exception.SicolException("REDIRECT:" + redirect_url)
         except exception.SicolException:
