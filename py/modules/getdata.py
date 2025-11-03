@@ -342,7 +342,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -691,7 +692,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -1802,7 +1804,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2076,7 +2079,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2256,7 +2260,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2592,7 +2597,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2964,7 +2970,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -3208,7 +3215,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -4096,7 +4104,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
                 
             data['id_lang'] = self.session.data['id_lang']
             data['id_subcoll'] = self.session.data['id_subcoll']
@@ -4490,7 +4499,8 @@ class Getdata(object):
             if (data['row_number'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row_number']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(data['row_number']) - 1)
+                offset = max(0, int(data['row_number']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -4848,7 +4858,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
                 
             data['id_lang'] = self.session.data['id_lang']
             data['id_subcoll'] = self.session.data['id_subcoll']

@@ -1755,7 +1755,7 @@
             INNER JOIN scientific_names sc USING (id_sciname)
             WHERE l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_distribution
+            GROUP BY d.id_distribution, sc.sciname_no_auth, l.name, i.name
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
@@ -1773,7 +1773,7 @@
               WHERE id_role IN %(roles_list)s AND id_item=d.id_distribution AND id_area=8)
             AND l.id_subcoll = %(id_subcoll)s
               %(condition)s
-            GROUP BY id_distribution
+            GROUP BY d.id_distribution, sc.sciname_no_auth, l.name, i.name
               ORDER BY %(field_order)s
               %(paging)s;]]></sql>
 
@@ -1792,7 +1792,7 @@
               WHERE id_role IN %(roles_list)s AND id_item=d.id_distribution AND id_area=8)
             AND l.id_subcoll = %(id_subcoll)s
               %(condition)s
-            GROUP BY id_distribution
+            GROUP BY d.id_distribution, d.date, l.name, i.name, p.name, sc.sciname, sc.sciname_no_auth, sc.hi_tax, st.code, st.infra_complement
               ORDER BY %(field_order)s
               %(paging)s;]]></sql>
 
