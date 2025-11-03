@@ -1674,7 +1674,7 @@
             LEFT JOIN lot_strain_stock ls ON (ls.id_lot = l.id_lot AND ls.id_strain = st.id_strain)
             WHERE id_lang = %(id_lang)s AND l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_preservation
+            GROUP BY p.id_preservation, l.name, pml.method, sc.sciname_no_auth, st.code, p.date
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
@@ -1712,7 +1712,7 @@
             WHERE id_lang = %(id_lang)s AND p.id_preservation = (SELECT DISTINCT id_item FROM roles_permissions
                                          WHERE id_role IN %(roles_list)s AND id_item=p.id_preservation AND id_area=7) AND l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_preservation
+            GROUP BY p.id_preservation, l.name, pml.method, sc.sciname_no_auth, st.code, p.date
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
