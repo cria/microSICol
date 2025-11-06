@@ -1111,11 +1111,17 @@ class Principal(object):
         # Do not show the configuration button to ordinary users
         if 'roles' in self.session.data:
             if not self.g.isAdmin(self.session.data['roles']):
+                # Garantir que html_main é string antes de concatenar
+                if isinstance(self.html_main, bytes):
+                    self.html_main = self.html_main.decode('utf-8')
                 self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_admin")) document.getElementById("user_menu_admin").style.display="none";</script>'
 
         #Do not show the utilites button to ordinary users
         if 'roles' in self.session.data:
             if not self.g.isManager(self.session.data['roles']):
+                # Garantir que html_main é string antes de concatenar
+                if isinstance(self.html_main, bytes):
+                    self.html_main = self.html_main.decode('utf-8')
                 self.html_main += '<script type="text/javascript">if (document.getElementById("user_menu_utilities")) document.getElementById("user_menu_utilities").style.display="none";</script>'
 
         # Sempre enviar cabeçalhos HTTP primeiro
