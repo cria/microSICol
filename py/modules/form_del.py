@@ -129,9 +129,27 @@ class Delete(object):
             if 'error_info' not in self.html:
                 self.delete('delete_ref_security')
         elif who=='people':
-            self.delete('delete_person')
-            if 'error_info' not in self.html:
-                self.delete('delete_person_security')
+            # Verificar se a pessoa está sendo usada em distribuições
+            self.execute('exists_person_usage_in_distribution', {'id': self.data['id']})
+            distribution_count = self.fetch('one')
+            if distribution_count and int(distribution_count) > 0:
+                self.feedback(-1, _("This person cannot be deleted because they are associated with one or more distributions."))
+            else:
+                # Verificar se a pessoa está sendo usada em controle de qualidade
+                self.execute('exists_person_usage_in_quality', {'id': self.data['id']})
+                quality_count = self.fetch('one')
+                if quality_count and int(quality_count) > 0:
+                    self.feedback(-1, _("This person cannot be deleted because they are associated with one or more quality controls."))
+                else:
+                    # Verificar se a pessoa está sendo usada em preservações
+                    self.execute('exists_person_usage_in_preservation', {'id': self.data['id']})
+                    preservation_count = self.fetch('one')
+                    if preservation_count and int(preservation_count) > 0:
+                        self.feedback(-1, _("This person cannot be deleted because they are associated with one or more preservations."))
+                    else:
+                        self.delete('delete_person')
+                        if 'error_info' not in self.html:
+                            self.delete('delete_person_security')
         elif who=='institutions':
             self.delete('delete_institution')
             if 'error_info' not in self.html:

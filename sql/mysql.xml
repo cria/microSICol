@@ -2544,6 +2544,33 @@
                 strain.id_subcoll IN (%(subcolls)s);
         ]]></sql>
 
+        <sql name="exists_person_usage_in_distribution"><![CDATA[
+            SELECT
+                COUNT(*) as count
+            FROM
+                distribution
+            WHERE
+                id_user = %(id)s;
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_quality"><![CDATA[
+            SELECT
+                COUNT(*) as count
+            FROM
+                str_quality
+            WHERE
+                id_user = %(id)s;
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_preservation"><![CDATA[
+            SELECT
+                COUNT(*) as count
+            FROM
+                preservation
+            WHERE
+                id_user = %(id)s;
+        ]]></sql>
+
         <sql name="get_str_coll_event_log"><![CDATA[
                 SELECT
                     coll.id_person AS coll_id_person,
