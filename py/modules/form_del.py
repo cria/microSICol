@@ -91,28 +91,34 @@ class Delete(object):
                         self.delete('delete_sciname')
                     if 'error_info' not in self.html:
                         self.delete('delete_species_security')
-        elif who=='strains':
-            id_log_level = 1
-            id_log_entity = 1
-            id_log_operation = 3
+        elif who == 'strains':
+            # Verificar se a linhagem está sendo usada em lot_strain (preservações, distribuições, etc.)
+            self.execute('verify_lot_exist', {'id_strain': self.data['id']})
+            lot_count = self.fetch('one')
+            if lot_count and int(lot_count) > 0:
+                self.feedback(-1, _("This strain cannot be deleted because it has associated lots in preservation, distribution, or stock movement."))
+            else:
+                id_log_level = 1
+                id_log_entity = 1
+                id_log_operation = 3
 
-            if self.l.checkLogLevel(id_log_level):
-                return_sql = []
+                if self.l.checkLogLevel(id_log_level):
+                    return_sql = []
 
-                self.execute('get_str_general_log', self.data)
-                dict_temp = self.fetch('all')[0]
-                tmp = {'numeric_code': ''}
-                return_sql.extend(self.l.checkModifiedFields('', tmp, self.data['id'], dict_temp['code'], '', 'delete', id_log_operation, id_log_entity,''));
+                    self.execute('get_str_general_log', self.data)
+                    dict_temp = self.fetch('all')[0]
+                    tmp = {'numeric_code': ''}
+                    return_sql.extend(self.l.checkModifiedFields('', tmp, self.data['id'], dict_temp['code'], '', 'delete', id_log_operation, id_log_entity,''));
 
-                sql_final = "".join(return_sql)[0:len("".join(return_sql))-1]
+                    sql_final = "".join(return_sql)[0:len("".join(return_sql))-1]
 
-            self.delete('delete_strain')
-            if 'error_info' not in self.html:
-                self.delete('delete_strain_security')
+                self.delete('delete_strain')
+                if 'error_info' not in self.html:
+                    self.delete('delete_strain_security')
 
-            if 'error_info' not in self.html:
-                self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
-                self.db_log.connect.commit();
+                if 'error_info' not in self.html:
+                    self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
+                    self.db_log.connect.commit();
 
         elif who=='doc':
             self.del_doc()
