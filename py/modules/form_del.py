@@ -77,14 +77,20 @@ class Delete(object):
             if (len(alt_state) > 0):
                 self.feedback(-1, _("This taxon can not be deleted because this is alternate state of the other taxon."))
             else:
-                self.execute('get_sciname_for_species', {'id':self.data['id']})
-                self.data['id_sciname'] = self.fetch('one')
+                # Verificar se a espécie está sendo usada por alguma linhagem
+                self.execute('exists_sciname_usage_in_strain_general', {'id':self.data['id']})
+                strains_using_species = self.fetch('rows')
+                if (len(strains_using_species) > 0):
+                    self.feedback(-1, _("This species cannot be deleted because it is in use by some strains."))
+                else:
+                    self.execute('get_sciname_for_species', {'id':self.data['id']})
+                    self.data['id_sciname'] = self.fetch('one')
 
-                self.delete('delete_species')
-                if 'error_info' not in self.html:
-                    self.delete('delete_sciname')
-                if 'error_info' not in self.html:
-                    self.delete('delete_species_security')
+                    self.delete('delete_species')
+                    if 'error_info' not in self.html:
+                        self.delete('delete_sciname')
+                    if 'error_info' not in self.html:
+                        self.delete('delete_species_security')
         elif who=='strains':
             id_log_level = 1
             id_log_entity = 1
