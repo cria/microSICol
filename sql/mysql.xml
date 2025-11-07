@@ -4086,6 +4086,26 @@
           DELETE FROM contact_relations
         WHERE id_person = %(id)s;]]></sql>
 
+        <sql name="exists_institution_usage_in_distribution"><![CDATA[
+            SELECT COUNT(*) FROM distribution
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_coll_event"><![CDATA[
+            SELECT COUNT(*) FROM str_coll_event
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_deposit"><![CDATA[
+            SELECT COUNT(*) FROM str_deposit
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_identification"><![CDATA[
+            SELECT COUNT(*) FROM str_identification
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_isolation"><![CDATA[
+            SELECT COUNT(*) FROM str_isolation
+            WHERE id_institution = %(id)s;]]></sql>
+
         <sql name="delete_institution"><![CDATA[
             DELETE FROM institution
             WHERE id_institution = %(id)s;]]></sql>

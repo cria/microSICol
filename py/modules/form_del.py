@@ -151,9 +151,39 @@ class Delete(object):
                         if 'error_info' not in self.html:
                             self.delete('delete_person_security')
         elif who=='institutions':
-            self.delete('delete_institution')
-            if 'error_info' not in self.html:
-                self.delete('delete_institution_security')
+            # Verificar se a instituição está sendo usada em distribuições
+            self.execute('exists_institution_usage_in_distribution', {'id': self.data['id']})
+            distribution_count = self.fetch('one')
+            if distribution_count and int(distribution_count) > 0:
+                self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more distributions."))
+            else:
+                # Verificar se a instituição está sendo usada em eventos de coleta
+                self.execute('exists_institution_usage_in_str_coll_event', {'id': self.data['id']})
+                coll_event_count = self.fetch('one')
+                if coll_event_count and int(coll_event_count) > 0:
+                    self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain collection events."))
+                else:
+                    # Verificar se a instituição está sendo usada em depósitos
+                    self.execute('exists_institution_usage_in_str_deposit', {'id': self.data['id']})
+                    deposit_count = self.fetch('one')
+                    if deposit_count and int(deposit_count) > 0:
+                        self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain deposits."))
+                    else:
+                        # Verificar se a instituição está sendo usada em identificações
+                        self.execute('exists_institution_usage_in_str_identification', {'id': self.data['id']})
+                        identification_count = self.fetch('one')
+                        if identification_count and int(identification_count) > 0:
+                            self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain identifications."))
+                        else:
+                            # Verificar se a instituição está sendo usada em isolamentos
+                            self.execute('exists_institution_usage_in_str_isolation', {'id': self.data['id']})
+                            isolation_count = self.fetch('one')
+                            if isolation_count and int(isolation_count) > 0:
+                                self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain isolations."))
+                            else:
+                                self.delete('delete_institution')
+                                if 'error_info' not in self.html:
+                                    self.delete('delete_institution_security')
         elif who=='reports':
             self.delete('delete_reports')
             if 'error_info' not in self.html:
