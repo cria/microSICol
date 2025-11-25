@@ -13,20 +13,20 @@ def importSQLite(xml,sqlite_path='./db/sqlite.db'):
   sqlite_path = default is usually used
   '''
   from pysqlite2 import dbapi2 as sqlite
-  print "Connecting to SQLite database..."
+  print("Connecting to SQLite database...")
   if os.path.exists(sqlite_path):
     #Connect
     connect = sqlite.connect(sqlite_path,detect_types=sqlite.PARSE_COLNAMES,isolation_level=None)
     cursor = connect.cursor()
-    print "Loading SQLite XML..."
+    print("Loading SQLite XML...")
     doc = parse(xml)
     tables = doc.getElementsByTagName('table')
     for table in tables:
       tablename = table.getAttribute('name')
-      print "Emptying table '%s'..." % tablename
+      print("Emptying table '%s'..." % tablename)
       rows = table.getElementsByTagName('row')
       cursor.execute("DELETE FROM %s;" % tablename) #clear table first
-      print "Inserting values in table '%s'..." % tablename
+      print("Inserting values in table '%s'..." % tablename)
       ### INSERT ITEM ###
       for row in rows:
         fields = row.getElementsByTagName('field')
@@ -46,11 +46,11 @@ def importSQLite(xml,sqlite_path='./db/sqlite.db'):
     #Close
     cursor.close()
     connect.close()
-    print "*** Import Finished ***"
+    print("*** Import Finished ***")
     raw_input()
   else:
-    print "*** ERROR ***"
-    print "Unable to connect to SQLite database."
+    print("*** ERROR ***")
+    print("Unable to connect to SQLite database.")
     raw_input()
 
 def importData(xml,host,user,pwd,dbname,port):
@@ -64,9 +64,9 @@ def importData(xml,host,user,pwd,dbname,port):
   '''
   import MySQLdb as mysql
   #Load file to Python XML object
-  print "Loading XML..."
+  print("Loading XML...")
   doc = parse(xml)
-  print "Generating intermediate SQL import file..."
+  print("Generating intermediate SQL import file...")
   output = []
   #Connect to database
   output.append("USE %s;" % dbname)
@@ -83,7 +83,7 @@ def importData(xml,host,user,pwd,dbname,port):
   tables = doc.getElementsByTagName('table')
   for table in tables:
     tablename = table.getAttribute('name')
-    print "Reading table '%s'..." % tablename
+    print("Reading table '%s'..." % tablename)
     rows = table.getElementsByTagName('row')
     output.append("/*!40000 ALTER TABLE `%s` DISABLE KEYS */;" % tablename)
     output.append("TRUNCATE TABLE `%s`;" % tablename) #clear table first
@@ -115,7 +115,7 @@ def importData(xml,host,user,pwd,dbname,port):
   output.append("/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;")
   #Save SQL file
   open('import.sql','w').write("\n".join(output).encode('utf-8'))
-  print "Running SQL import..."
+  print("Running SQL import...")
   sicol_path  = os.getcwd()+os.sep+'db'+os.sep+'scripts'+os.sep
   import platform
   if platform.system() == "Windows" or platform.system() == "Microsoft":
@@ -124,8 +124,8 @@ def importData(xml,host,user,pwd,dbname,port):
     pipe = os.popen("which mysql") #grab where MySQL is installed
     mysql_path = pipe.read().strip() 
   if mysql_path == '' or mysql_path == []:
-    print "*********** ERROR ***********"
-    print "Please insert path to executable directory (mysql.exe) in OS 'PATH' variable."
+    print("*********** ERROR ***********")
+    print("Please insert path to executable directory (mysql.exe) in OS 'PATH' variable.")
     raw_input() #Wait for user input...
   else:
     if platform.system() == "Windows" or platform.system() == "Microsoft":
@@ -135,24 +135,24 @@ def importData(xml,host,user,pwd,dbname,port):
       mysql_path = '"' + mysql_path + 'mysql.exe"'
   try:
     bd_version = dbname.split("_")[1]
-  except Exception,e:
-    print "*********** ERROR ***********"
-    print "Please type \"sicol_v###\" where ### = version number."
+  except Exception as e:
+    print("*********** ERROR ***********")
+    print("Please type \"sicol_v###\" where ### = version number.")
     raw_input() #Wait for user input...
     return
   try:
     os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,os.getcwd()+os.sep+"import.sql") )
-  except Exception,e:
-    print "*********** ERROR ***********"
-    print str(e)
+  except Exception as e:
+    print("*********** ERROR ***********")
+    print(str(e))
     raw_input() #Wait for user input...
     return
-  print "*** Import Finished ***"
+  print("*** Import Finished ***")
   raw_input()
 
 #If this script is called locally...
 if __name__ == "__main__":
-  print "*** Import SICol Database ***"
+  print("*** Import SICol Database ***")
   opt = raw_input("Import MySQL data? (y/n)")[0].lower()
   if opt == 'y':
     import getpass
@@ -164,8 +164,8 @@ if __name__ == "__main__":
     dbname = raw_input("database name=")
     xml = raw_input("import XML filename=")
     while not os.path.exists(xml) and xml != '':
-      print "*** ERROR ***"
-      print "Specified file does not exist!"
+      print("*** ERROR ***")
+      print("Specified file does not exist!")
       xml = raw_input("import XML filename=")
     if xml != '':
       importData(xml,host,root_login,root_pwd,dbname,port)
@@ -173,8 +173,8 @@ if __name__ == "__main__":
   if opt == 'y':
     xml = raw_input("import XML filename=")
     while not os.path.exists(xml) and xml != '':
-      print "*** ERROR ***"
-      print "Specified file does not exist!"
+      print("*** ERROR ***")
+      print("Specified file does not exist!")
       xml = raw_input("import XML filename=")
     if xml != '':
       importSQLite(xml)

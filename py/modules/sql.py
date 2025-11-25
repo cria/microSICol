@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -6,8 +6,8 @@ from os import path
 from sys import exit
 
 #project imports
-from dom_xml import Xml
-from general import General
+from .dom_xml import Xml
+from .general import General
 
 class Sql( object ):
 

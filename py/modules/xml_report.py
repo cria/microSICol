@@ -1,25 +1,36 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 #from dbgp.client import brk
-from cgi import escape
-from urlparse import urljoin
+from urllib.parse import urljoin
 from re import findall
 from sys import exit
-from urllib import urlencode
+from urllib.parse import urlencode
 import cgi
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from reports_common import Reports_Common
-from labels import label_dict
-from dom_xml import Xml
-from label_values_reports import label_values_dict
-from label_values_reports import values_dict
+from .session import Session
+from .dbconnection import dbConnection
+from .reports_common import Reports_Common
+from .labels import label_dict
+from .dom_xml import Xml
+from .label_values_reports import label_values_dict
+from .label_values_reports import values_dict
 
 class XML_Report(Reports_Common):
+    
+    def xml_escape(self, text):
+        """Escape special XML characters"""
+        if text is None:
+            return ""
+        text = str(text)
+        text = text.replace("&", "&amp;")
+        text = text.replace("<", "&lt;")
+        text = text.replace(">", "&gt;")
+        text = text.replace('"', "&quot;")
+        text = text.replace("'", "&apos;")
+        return text
     
     def __init__(self, param, cookie_value, conn=None):
         
@@ -69,7 +80,7 @@ class XML_Report(Reports_Common):
                 
                 try:
                     list = self.get_data(select, param['filters'], append_where, group)
-                except Exception, err:
+                except Exception as err:
                     raise err
                 
                 #brk(host="localhost", port=9000)
@@ -77,10 +88,10 @@ class XML_Report(Reports_Common):
                     string = "<record>\n" + space
                     
                     if param['total']['function'] == 'count':
-                        string = string + "<field" + space + "name=\"" + self.ConvertStrUnicode(label_dict[self.fields_definition[param['total']['name']]['label']]) +"\"" + space + "value=\"" + self.process_field(param['total']['name'], line[param['total']['name']]) + "\"/>\n"
+                        string = string + "<field" + space + "name=\"" + self.xml_escape(self.ConvertStrUnicode(label_dict[self.fields_definition[param['total']['name']]['label']])) +"\"" + space + "value=\"" + self.xml_escape(self.process_field(param['total']['name'], line[param['total']['name']])) + "\"/>\n"
                         string = string + "<field" + space + "name=\"Total\"" + space + "value=\"" + str(line[aggr]) + "\"/>\n"
                     else:
-                        string = string + "<field" + space + "name=\"" + self.ConvertStrUnicode(label_dict[self.fields_definition[param['total']['name']]['label']]) +"\"" + space  + "aggregation=\"" + param['total']['function'] + "\"" + space + "value=\"" + str(line[aggr]) + "\"/>\n"
+                        string = string + "<field" + space + "name=\"" + self.xml_escape(self.ConvertStrUnicode(label_dict[self.fields_definition[param['total']['name']]['label']])) +"\"" + space  + "aggregation=\"" + param['total']['function'] + "\"" + space + "value=\"" + str(line[aggr]) + "\"/>\n"
                     
                     string = string + "</record>\n"     
                     output = output + string
@@ -88,13 +99,13 @@ class XML_Report(Reports_Common):
             else:
                 try:
                     list = self.get_data(param['select'], param['filters'], append_where, [])
-                except Exception, err:
+                except Exception as err:
                     raise err
                 
                 for line in list:
                     string = "<record>\n" + space            
                     for field in param['select']:
-                        string = string + "<field" + space + "name=\"" + field + "\"" + "label=\"" + label_dict[self.fields_definition[field]['label']] + "\"" + space + "value=\"" + self.process_field(field, line[field]) + "\"/>\n"
+                        string = string + "<field" + space + "name=\"" + self.xml_escape(field) + "\"" + space + "label=\"" + self.xml_escape(label_dict[self.fields_definition[field]['label']]) + "\"" + space + "value=\"" + self.xml_escape(self.process_field(field, line[field])) + "\"/>\n"
                             
                     string = string + "</record>\n"     
                     output = output + string
@@ -111,12 +122,12 @@ class XML_Report(Reports_Common):
                 if len(param.get('total','')) > 0:
                     colspan = colspan + 1
                 
-                output = output + "<group" + space + "field=\"" + param['group'][num_group_by] + "\"" + space + "value=\"" + self.process_field(param['group'][num_group_by], item[param['group'][num_group_by]]) + "\">\n"
+                output = output + "<group" + space + "field=\"" + self.xml_escape(param['group'][num_group_by]) + "\"" + space + "value=\"" + self.xml_escape(self.process_field(param['group'][num_group_by], item[param['group'][num_group_by]])) + "\">\n"
                 
                 group_value = ''
                 tmp = type(item[param['group'][num_group_by]]).__name__
                 if tmp != "str":
-                    group_value = param['group'][num_group_by] + " LIKE x'" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf-8").encode("hex") + "' "
+                    group_value = param['group'][num_group_by] + " LIKE x'" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf-8").hex() + "' "
                 else:
                     group_value = param['group'][num_group_by] + " IS NULL "
                     
@@ -182,19 +193,29 @@ class XML_Report(Reports_Common):
          
         try:       
             table = self.write_report(self.report_params, 0, "")
-        except Exception, err:
+        except Exception as err:
             raise err
         
         output = output + table
         
         output = output + "</report>\n"    
        
-        
         import sys
+        import os
         
-        sys.stdout.write("Content-Type: text/xml\n")
-        sys.stdout.write("Content-Length: " + str(len(output)) + "\n")
-        sys.stdout.write("Content-Disposition: attachment; filename=\"sicol_report.xml\"\r\n\n")
-        sys.stdout.write(output.encode("utf-8-sig"))
-       
-        return output
+        # Ensure all previous output is flushed and closed
+        sys.stdout.flush()
+        sys.stderr.flush()
+        
+        # Use print for CGI headers - this is the standard way
+        print("Content-Type: text/xml")
+        print(f"Content-Length: {len(output.encode('utf-8'))}")
+        print("Content-Disposition: attachment; filename=\"sicol_report.xml\"")
+        print()  # Empty line to end headers
+        
+        # Write the actual XML content using print to avoid encoding issues
+        print(output, end='')
+        
+        # Flush everything and exit
+        sys.stdout.flush()
+        sys.exit(0)

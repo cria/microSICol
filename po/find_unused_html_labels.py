@@ -64,13 +64,13 @@ def main(*argv):
                     out += l
             out += '\n'
 
-    arq = file("output.txt", 'wb')
+    arq = open("output.txt", 'wb')
     arq.write(out)
     arq.close()
 
 if __name__ == "__main__":
     if "help" in sys.argv:
-        print """\
+        print("""
         find_unused_html_labels [all] [reverse]
         Use this script to find out labels in py/modules/labels.py which are
         not used in the html templates under html/*html
@@ -79,6 +79,6 @@ if __name__ == "__main__":
         
         reverse: list exitng html labels wich do not have a counterpart 
                  in the labels.py file
-        """
+        """)
         sys.exit(0)
     main(*sys.argv)

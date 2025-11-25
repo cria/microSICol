@@ -434,7 +434,7 @@
             WHERE st.id_coll = '%(id_coll)s' AND st.id_subcoll = '%(id_subcoll)s' AND st.id_strain = (SELECT DISTINCT id_item FROM roles_permissions
             WHERE id_role IN %(roles_list)s AND id_item=st.id_strain AND id_area=2)
             %(condition)s
-            ORDER BY %(field_order)s
+            ORDER BY %(field_order)s, id_strain
             %(paging)s;]]></sql>
 
         <sql name="get_str_general_data"><![CDATA[
@@ -560,7 +560,7 @@
 
         <sql name="get_lot_usage_information"><![CDATA[
             SELECT
-                id_lot, id_strain, id_container_hierarchy, row, col
+                lsl.id_lot, lsl.id_strain, lsl.id_container_hierarchy, lsl.`row`, lsl.`col`
             FROM
                 lot_strain_location lsl
                 INNER JOIN (
@@ -1077,7 +1077,7 @@
         <sql name="get_str_quality_data"><![CDATA[
             SELECT str_quality.id_quality, str_quality.id_user, lot.name AS lot,
                 str_quality.date, SUM(ifnull(sqol.quantity,0)) AS quantity,
-                preservation_method_lang.unit_measure, str_quality.not_identified
+                MAX(preservation_method_lang.unit_measure) AS unit_measure, str_quality.not_identified
             FROM str_quality
             LEFT JOIN str_quality_origin_location sqol USING (id_quality)
             INNER JOIN lot ON (str_quality.id_lot = lot.id_lot)
@@ -1085,7 +1085,7 @@
             INNER JOIN preservation_method_lang ON (preservation.id_preservation_method = preservation_method_lang.id_preservation_method)
             WHERE str_quality.id_strain = %(id_strain)s
             AND preservation_method_lang.id_lang = %(id_lang)s
-            GROUP BY id_quality
+            GROUP BY str_quality.id_quality, str_quality.id_user, lot.name, str_quality.date, str_quality.not_identified
             ORDER BY str_quality.date DESC;]]></sql>
 
         <sql name="get_str_quality_tests_count"><![CDATA[
@@ -1674,7 +1674,7 @@
             LEFT JOIN lot_strain_stock ls ON (ls.id_lot = l.id_lot AND ls.id_strain = st.id_strain)
             WHERE id_lang = %(id_lang)s AND l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_preservation
+            GROUP BY p.id_preservation, l.name, pml.method, sc.sciname_no_auth, st.code, p.date
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
@@ -1712,7 +1712,7 @@
             WHERE id_lang = %(id_lang)s AND p.id_preservation = (SELECT DISTINCT id_item FROM roles_permissions
                                          WHERE id_role IN %(roles_list)s AND id_item=p.id_preservation AND id_area=7) AND l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_preservation
+            GROUP BY p.id_preservation, l.name, pml.method, sc.sciname_no_auth, st.code, p.date
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
@@ -1729,7 +1729,17 @@
             INNER JOIN scientific_names sc USING (id_sciname)
             WHERE l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_distribution
+            GROUP BY 
+                d.id_distribution,
+                d.date,
+                l.name,
+                i.name,
+                p.name,
+                sc.sciname,
+                st.code,
+                sc.sciname_no_auth,
+                sc.hi_tax,
+                st.infra_complement
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
@@ -1745,7 +1755,7 @@
             INNER JOIN scientific_names sc USING (id_sciname)
             WHERE l.id_subcoll = %(id_subcoll)s
             %(condition)s
-            GROUP BY id_distribution
+            GROUP BY d.id_distribution, sc.sciname_no_auth, l.name, i.name
             ORDER BY %(field_order)s
             %(paging)s;]]></sql>
 
@@ -1763,7 +1773,7 @@
               WHERE id_role IN %(roles_list)s AND id_item=d.id_distribution AND id_area=8)
             AND l.id_subcoll = %(id_subcoll)s
               %(condition)s
-            GROUP BY id_distribution
+            GROUP BY d.id_distribution, sc.sciname_no_auth, l.name, i.name
               ORDER BY %(field_order)s
               %(paging)s;]]></sql>
 
@@ -1782,7 +1792,7 @@
               WHERE id_role IN %(roles_list)s AND id_item=d.id_distribution AND id_area=8)
             AND l.id_subcoll = %(id_subcoll)s
               %(condition)s
-            GROUP BY id_distribution
+            GROUP BY d.id_distribution, d.date, l.name, i.name, p.name, sc.sciname, sc.sciname_no_auth, sc.hi_tax, st.code, st.infra_complement
               ORDER BY %(field_order)s
               %(paging)s;]]></sql>
 
@@ -1871,7 +1881,7 @@
       ORDER BY roles_permissions.permission DESC;]]></sql>
 
       <sql name="get_possible_data_langs"><![CDATA[
-            SELECT DISTINCT code FROM lang ORDER BY id_lang;]]></sql>
+            SELECT code FROM lang ORDER BY id_lang;]]></sql>
 
       <sql name="get_possible_start_pages"><![CDATA[
             SELECT id_area,name,description FROM system_areas ORDER BY id_area ASC;]]></sql>
@@ -1904,7 +1914,7 @@
 
        <sql name="get_sciname_builder_fields"><![CDATA[
            SELECT
-          id_hierarchy, seq, hi_tax, rank, has_author, use_author, in_sciname, required,
+          id_hierarchy, seq, hi_tax, `rank`, has_author, use_author, in_sciname, required,
           important, string_format, string_case, prefix, suffix, default_value, id_taxon_group
         FROM
           view_hierarchy
@@ -2068,11 +2078,11 @@
 
        <sql name="get_location_data"><![CDATA[
        SELECT
-           id_location, id_container_hierarchy, rows, cols, ini_row, ini_col, pattern
+           `id_location`, `id_container_hierarchy`, `rows`, `cols`, `ini_row`, `ini_col`, `pattern`
        FROM
-           location
+           `location`
        WHERE
-           id_container_hierarchy = %(id_container_hierarchy)s;
+           `id_container_hierarchy` = %(id_container_hierarchy)s;
        ]]></sql>
 
        <sql name="get_all_location_data"><![CDATA[
@@ -2088,7 +2098,7 @@
 
        <sql name="get_filtered_location_data"><![CDATA[
        SELECT
-           id_location, id_container_hierarchy, rows, cols, ini_row, ini_col, pattern
+           l.id_location, l.id_container_hierarchy, l.rows, l.cols, l.ini_row, l.ini_col, l.pattern
        FROM
            location l
            INNER JOIN container_hierarchy ch USING (id_container_hierarchy)
@@ -2099,12 +2109,12 @@
             cs.id_subcoll = %(id_subcoll)s
             AND cpm.id_preservation_method = %(id_preservation_method)s
        ORDER BY
-           id_container, rows, cols;
+           id_container, l.rows, l.cols;
        ]]></sql>
 
        <sql name="get_location_data_for_lot_strain"><![CDATA[
        SELECT
-           id_location, id_container_hierarchy, rows, cols, ini_row, ini_col, pattern
+           l.id_location, l.id_container_hierarchy, l.rows, l.cols, l.ini_row, l.ini_col, l.pattern
        FROM
            location l
            INNER JOIN container_hierarchy ch USING (id_container_hierarchy)
@@ -2115,7 +2125,7 @@
            ((lsl.id_strain = %(id_strain)s OR %(id_strain)s = '0')
            AND (lsl.id_lot = %(id_lot)s OR %(id_lot)s = '0')) AND cs.id_subcoll = %(id_subcoll)s
        ORDER BY
-           id_container, rows, cols;
+           id_container, l.rows, l.cols;
        ]]></sql>
        
        <sql name="get_location_data_for_stock_movement"><![CDATA[
@@ -2123,14 +2133,14 @@
 		lsal.id_container_hierarchy, lsal.row, lsal.col, lsal.available_qt AS quantity
         FROM lot_strain_available_locations lsal
         INNER JOIN lot_strain_location lsl ON (lsal.id_lot = lsl.id_lot AND lsal.id_strain = lsl.id_strain
-                AND lsal.id_container_hierarchy = lsl.id_container_hierarchy AND lsal.row = lsl.row AND lsal.col = lsl.col)
+                AND lsal.id_container_hierarchy = lsl.id_container_hierarchy AND lsal.`row` = lsl.`row` AND lsal.`col` = lsl.`col`)
         WHERE lsal.id_container_hierarchy = %(id_container_hierarchy)s
-            AND lsal.row = %(row)s AND lsal.col = %(col)s
+            AND lsal.`row` = %(row)s AND lsal.`col` = %(col)s
        ]]></sql>
 
         <sql name="get_available_locations"><![CDATA[
             SELECT
-                id_strain, id_lot, id_container_hierarchy, row, col, available_qt
+                id_strain, id_lot, id_container_hierarchy, `row`, `col`, available_qt
             FROM
                 lot_strain_available_locations
             WHERE
@@ -2139,7 +2149,7 @@
 
        <sql name="get_used_location_data"><![CDATA[
        SELECT
-           ch.id_container, id_container_hierarchy, row, col,
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`,
            id_lot, id_strain, lot.name, strain.code, sciname.sciname_no_auth,
            available_qt
        FROM
@@ -2157,12 +2167,12 @@
            AND cpm.id_preservation_method = %(id_preservation_method)s
            %(extra)s
        ORDER BY
-           ch.id_container, id_container_hierarchy, row, col;
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`;
        ]]></sql>
 
        <sql name="get_strain_locations"><![CDATA[
        SELECT
-           ch.id_container, id_container_hierarchy, row, col,
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`,
            id_lot, id_strain, lot.name, strain.code, sciname.sciname_no_auth,
            available_qt
        FROM
@@ -2179,38 +2189,38 @@
            ((strain.id_strain = %(id_strain)s OR %(id_strain)s = '0') AND
            (lsl.id_lot = %(id_lot)s OR %(id_lot)s = '0')) AND cs.id_subcoll = %(id_subcoll)s
        ORDER BY
-           ch.id_container, id_container_hierarchy, row, col;
+           ch.id_container, ch.id_container_hierarchy, lsl.`row`, lsl.`col`;
        ]]></sql>
 
        <sql name="get_lot_strain_location_data"><![CDATA[
        SELECT
-           id_lot_strain_location, id_lot, id_strain, id_container_hierarchy, row, col,
+           lsl.id_lot_strain_location, lsl.id_lot, lsl.id_strain, lsl.id_container_hierarchy, lsl.`row`, lsl.`col`,
            lot.name, strain.code, sciname.sciname_no_auth
        FROM
-           lot_strain_location
+           lot_strain_location lsl
            INNER JOIN lot USING (id_lot)
            INNER JOIN strain USING (id_strain)
            INNER JOIN species USING (id_species)
            INNER JOIN scientific_names sciname USING (id_sciname)
        WHERE
-           id_container_hierarchy = %(id_container_hierarchy)s;
+           lsl.id_container_hierarchy = %(id_container_hierarchy)s;
        ]]></sql>
 
        <sql name="get_lot_strain_location"><![CDATA[
        SELECT
-           id_lot_strain_location, id_lot, id_strain, id_container, id_container_hierarchy, row, col,
-           strain.code, sciname.sciname_no_auth, ini_row, ini_col, pattern, quantity, '0' as used
+           lsl.id_lot_strain_location, lsl.id_lot, lsl.id_strain, container.id_container, lsl.id_container_hierarchy, lsl.`row`, lsl.`col`,
+           strain.code, sciname.sciname_no_auth, l.ini_row, l.ini_col, l.pattern, lsl.quantity, '0' as used
        FROM
-           lot_strain_location
+           lot_strain_location lsl
            INNER JOIN strain USING (id_strain)
            INNER JOIN species USING (id_species)
            INNER JOIN scientific_names sciname USING (id_sciname)
            INNER JOIN container_hierarchy USING (id_container_hierarchy)
            INNER JOIN container USING (id_container)
-           INNER JOIN location USING (id_container_hierarchy)
+           INNER JOIN location l USING (id_container_hierarchy)
        WHERE
-           id_lot = %(id_lot)s AND
-           id_strain = %(id_strain)s
+           lsl.id_lot = %(id_lot)s AND
+           lsl.id_strain = %(id_strain)s
        ]]></sql>
 
        <sql name="get_container_hierarchy_tree_for_lot_strain"><![CDATA[
@@ -2374,7 +2384,7 @@
                 str_quality.id_quality,
                 str_quality.id_user as tec_resp,
                 str_quality.id_lot AS id_lot_qc,
-                str_quality.`date`
+                str_quality.`date` AS date_qc
             FROM
                 str_quality
             WHERE
@@ -2532,6 +2542,33 @@
             WHERE
                 str_deposit.aut_person = %(id)s AND
                 strain.id_subcoll IN (%(subcolls)s);
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_distribution"><![CDATA[
+            SELECT
+                COUNT(*) as count
+            FROM
+                distribution
+            WHERE
+                id_user = %(id)s;
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_quality"><![CDATA[
+            SELECT
+                COUNT(*) as count
+            FROM
+                str_quality
+            WHERE
+                id_user = %(id)s;
+        ]]></sql>
+
+        <sql name="exists_person_usage_in_preservation"><![CDATA[
+            SELECT
+                COUNT(*) as count
+            FROM
+                preservation
+            WHERE
+                id_user = %(id)s;
         ]]></sql>
 
         <sql name="get_str_coll_event_log"><![CDATA[
@@ -2842,24 +2879,24 @@
                 id_lot AS id_lot,
                 id_strain AS id_strain,
                 id_container_hierarchy AS id_container_hierarchy,
-                row as row,
-                col AS col,
+                `row` AS `row`,
+                `col` AS col,
                 cast((((lslm.quantity - ifnull(lslm.used_qt_pres, 0)) - ifnull(lslm.used_qt_dist, 0)) - ifnull(lslm.used_qt_qual, 0)) AS UNSIGNED) AS available_qt
             FROM
                 lot_strain_stock_data lslm
             WHERE
                 id_strain = %(id_strain)s AND
                 id_container_hierarchy = %(id_container_hierarchy)s AND
-                row = %(row)s AND
-                col = %(col)s;]]></sql>
+                `row` = %(row)s AND
+                `col` = %(col)s;]]></sql>
 
         <sql name="get_location_by_strain_log"><![CDATA[
             SELECT
                 id_lot AS id_lot,
                 id_strain AS id_strain,
                 id_container_hierarchy AS id_container_hierarchy,
-                row as row,
-                col AS col,
+                `row` AS `row`,
+                `col` AS col,
                 cast((((lslm.quantity - ifnull(lslm.used_qt_pres, 0)) - ifnull(lslm.used_qt_dist, 0)) - ifnull(lslm.used_qt_qual, 0)) AS UNSIGNED) AS available_qt
             FROM
                 lot_strain_stock_data lslm
@@ -3488,7 +3525,7 @@
             VALUES (%(inserted_lot_id)s,%(id_strain)s);]]></sql>
 
         <sql name="insert_lot_strain_location"><![CDATA[
-            INSERT INTO lot_strain_location (id_lot, id_strain, id_container_hierarchy, row, col, quantity)
+            INSERT INTO lot_strain_location (id_lot, id_strain, id_container_hierarchy, `row`, `col`, quantity)
             VALUES (%(id_lot)s, %(id_strain)s, %(id_container_hierarchy)s, %(row)s, %(col)s, %(quantity)s);]]></sql>
 
         <sql name="insert_preservation"><![CDATA[
@@ -3820,7 +3857,7 @@
             VALUES (%(id_container)s, %(id_parent)s, %(abbreviation)s, %(description)s);]]></sql>
 
         <sql name="insert_location"><![CDATA[
-            INSERT INTO location (id_container_hierarchy, rows, cols, ini_row, ini_col, pattern)
+            INSERT INTO location (`id_container_hierarchy`, `rows`, `cols`, `ini_row`, `ini_col`, `pattern`)
             VALUES (%(id_container_hierarchy)s, %(rows)s, %(cols)s, %(ini_row)s, %(ini_col)s, %(pattern)s);]]></sql>
 
         <sql name="insert_log"><![CDATA[
@@ -4048,6 +4085,26 @@
         <sql name="delete_all_contact_relations"><![CDATA[
           DELETE FROM contact_relations
         WHERE id_person = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_distribution"><![CDATA[
+            SELECT COUNT(*) FROM distribution
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_coll_event"><![CDATA[
+            SELECT COUNT(*) FROM str_coll_event
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_deposit"><![CDATA[
+            SELECT COUNT(*) FROM str_deposit
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_identification"><![CDATA[
+            SELECT COUNT(*) FROM str_identification
+            WHERE id_institution = %(id)s;]]></sql>
+
+        <sql name="exists_institution_usage_in_str_isolation"><![CDATA[
+            SELECT COUNT(*) FROM str_isolation
+            WHERE id_institution = %(id)s;]]></sql>
 
         <sql name="delete_institution"><![CDATA[
             DELETE FROM institution
