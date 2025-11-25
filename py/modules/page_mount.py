@@ -106,7 +106,7 @@ class Principal(object):
         versions = glob(work_dir)
         if versions:
             v = versions[0]
-            self.data['version'] = v[-3:-2] + '.' + v[-2:]
+            self.data['version'] = v[-3:-2] + '.' + v[-2:-1] + '.' + v[-1:]
         else:
             self.data['version'] = "desconhecida"
 
