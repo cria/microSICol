@@ -1023,6 +1023,12 @@ class Principal(object):
         g = General()
         debug_mode = g.get_config("debug_mode")
 
+        # Always add translation file first
+        js_line = '\n%s' % self.js_line
+        js_lang_code = self.get_label_code()
+        translation_js_path = 'js_i18n/translation_%s' % js_lang_code
+        self.data['js'] = js_line % translation_js_path  # add js_translator file FIRST
+
         if debug_mode.lower() == 'true':
             self.data['js'] += self.js_line % 'general_src'
         else:
@@ -1030,32 +1036,15 @@ class Principal(object):
 
         # JavaScript Inclusions
         if js:
-            js_line = '\n%s' % self.js_line
-            js_lang_code = self.get_label_code()
-            translation_js_path = 'js_i18n/translation_%s' % js_lang_code
             # one javascript file
             if isinstance(js, str):
-                self.data['js'] += js_line % translation_js_path  # add js_translator file
                 self.replace_externals(js, js_line, debug_mode)
 
             # many javascript files
             elif isinstance(js, tuple):
-                self.data['js'] += js_line % translation_js_path  # add js_translator file
                 for item in js:
                     self.replace_externals(item, js_line, debug_mode)
-        else:
-            js_line = self.js_line
-            js_lang_code = self.get_label_code()
-            translation_js_path = 'js_i18n/translation_%s' % js_lang_code
-            self.data['js'] += js_line % translation_js_path  # add js_translator file
-            """
-                                <script src="../../jquery-1.5.1.js"></script>
-                                <script src="../../ui/jquery.ui.core.js"></script>
-                                <script src="../../ui/jquery.ui.widget.js"></script>
-                                <script src="../../ui/jquery.ui.mouse.js"></script>
-                                <script src="../../ui/jquery.ui.sortable.js"></script>
-            """
-
+        
         # CSS Inclusions
         css_line = '\n%s' % self.css_line
         if (category == 'main'):
