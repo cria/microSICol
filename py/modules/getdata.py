@@ -1,22 +1,21 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
-from cgi import escape
-from urlparse import urljoin
+from urllib.parse import urljoin
 from re import findall
 from sys import exit
-from urllib import urlencode
+from urllib.parse import urlencode
 import cgi
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from general import General, DefDict
-from lists import Lists
-from textlinkfactory import TextLinkFactory
-from loghelper import Logging
-from location import LocationBuilder
+from .session import Session
+from .dbconnection import dbConnection
+from .general import General, DefDict
+from .lists import Lists
+from .textlinkfactory import TextLinkFactory
+from .loghelper import Logging
+from .location import LocationBuilder
 #from dbgp.client import brk
 
 class Getdata(object):
@@ -57,7 +56,7 @@ class Getdata(object):
         self.fields_definition = {}
         
         #check feedback parameter
-        if self.session.data.has_key('feedback') and self.session.data['feedback']:
+        if 'feedback' in self.session.data and self.session.data['feedback']:
             self.feedback_value = self.session.data['feedback']
             self.session.data['feedback'] = 0
             self.session.save()
@@ -99,13 +98,13 @@ class Getdata(object):
 		
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno	
 
@@ -176,24 +175,33 @@ class Getdata(object):
         
         if action in ('edit', 'new'):
             self.page_parts['submenu'] = self.g.read_html('submenu.form')
+            # Convert bytes to string if necessary
+            if isinstance(self.page_parts['submenu'], bytes):
+                self.page_parts['submenu'] = self.page_parts['submenu'].decode('utf-8')
             if self.session.data['date_input_mask'] is not None: date_format = self.session.data['date_input_mask']
             else: date_format = self.g.get_config('date_input_mask')
             #If we can't find date_format attribute in config.xml then use a default date format
             if date_format is None or date_format == '':
                 date_format = '%d/%m/%Y'
             self.data['date_format'] = date_format
-            self.data['data_langs'] = ','.join("%s" % (k.keys()[0]) for k in self.data_langs)
+            self.data['data_langs'] = ','.join("%s" % (list(k.keys())[0]) for k in self.data_langs)
             date_format = date_format.replace('%','%%') #avoid letting Python to decode string
             if (who != "people"):
                 validate = 'href="javascript:validate(\''+who+'\',\''+date_format+'\')"'
             else:
                 validate = 'href="javascript: if (!validateContact()) validate(\''+who+'\',\''+date_format+'\');"'
+            if isinstance(self.page_parts['submenu'], bytes):
+                self.page_parts['submenu'] = self.page_parts['submenu'].decode('utf-8')
             self.page_parts['submenu'] = self.page_parts['submenu'].replace('href=""', validate)
         elif action == 'view':
             if self.data['id']:
                 self.page_parts['submenu'] = self.g.read_html('submenu.detail')
                 #brk(host="localhost", port=9000)
                 self.page_parts['hidden_forms'] = self.g.read_html('hidden_forms.detail')
+                if isinstance(self.page_parts['submenu'], bytes):
+                    self.page_parts['submenu'] = self.page_parts['submenu'].decode('utf-8')
+                if isinstance(self.page_parts['hidden_forms'], bytes):
+                    self.page_parts['hidden_forms'] = self.page_parts['hidden_forms'].decode('utf-8')
                 if (who == 'strains'):
                     self.page_parts['submenu'] = self.page_parts['submenu'].replace("document.getElementById('edit').submit();", "document.getElementById('saveas').value = '0';document.getElementById('edit').submit();")
                     self.page_parts['submenu'] = "<a id=\"saveas_link\" href=\"javascript:document.getElementById('saveas').value = '1';document.getElementById('edit').action = setActiveTab(document.getElementById('edit').action);document.getElementById('edit').submit();\"><img src='../img/record_saveas.png' title=\"%(label_SaveAs)s\" alt=\"%(label_SaveAs)s\"></a>" + self.page_parts['submenu']
@@ -222,7 +230,9 @@ class Getdata(object):
                   if who == 'strains': #then don't show the "save as button" too
                     self.page_parts['submenu'] = re.sub('<a id="saveas_link" href="javascript:document.getElementById\(\'(saveas)\'.*?/a>','',self.page_parts['submenu'])
             else:
-                print self.g.redirect(self.list_page % who)
+                from . import exception
+                redirect_url = self.list_page % who
+                raise exception.SicolException("REDIRECT:" + redirect_url)
 
         if who in ('docpopup','refpopup'):
             self.page_parts['top'] = ''
@@ -270,18 +280,18 @@ class Getdata(object):
         else:
             if action == 'new': species_menu = '\n\t<option selected="selected" value="" group=""></option>'
             else: species_menu = '\n\t<option value="" group=""></option>'
-        #List sorting
-        species_list = sorted(species_list, lambda x, y: cmp(Lists.spe_fullname(x, use_author=False), Lists.spe_fullname(y, use_author=False)))
+        # List sorting
+        species_list = sorted(species_list, key=lambda x: Lists.spe_fullname(x, use_author=False))
         for species in species_list:
             species_menu += ('\n\t<option %%s value="%s" group="%s">%s</option>'
-                            % (species['id_species'], species['id_taxon_group'], Lists.spe_fullname(species, use_author=False).replace("%","%%") ) )
+                             % (species['id_species'], species['id_taxon_group'], Lists.spe_fullname(species, use_author=False).replace("%","%%") ) )
             if species['id_species'] == id_species:
-              species_menu = species_menu % self.opt_selected
+                species_menu = species_menu % self.opt_selected
             else:
-              species_menu = species_menu.replace("%s","")
+                species_menu = species_menu.replace("%s","")
         return species_menu
 
-    def species(self,action):
+    def species(self, action):
         '''
         Species == Taxa
         '''
@@ -308,10 +318,10 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
 
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'species', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -332,7 +342,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -340,16 +351,16 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
                 #Save filter on session
                 self.session.data['filter_species'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_species')):
+            elif ('filter_species' in self.session.data):
                 filter = self.session.data['filter_species']
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
             if (filter != ''):
                 words = [x for x in filter.split(" ") if x != '']
@@ -358,9 +369,9 @@ class Getdata(object):
                     #0x25 == '%'
                     #self.data['condition'].append("AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' OR sp.genus LIKE x'25" + word.encode("hex") + "25' OR sp.subgenus LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR sp.species LIKE x'25" + word.encode("hex") + "25' OR sub.subdiv LIKE x'25" + word.encode("hex") + "25' OR sp.infra_name LIKE x'25" + word.encode("hex") + "25' OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
                     self.data['condition'].append(
-                                                  "AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
+                                                  "AND (tgl.taxon_group LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR sp.hazard_group LIKE x'25" + word.encode("utf-8").hex() + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -426,8 +437,8 @@ class Getdata(object):
 
         is_first = True
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
             #Species Data
             self.execute('get_species_data', data)
             species_parts = self.fetch('columns')
@@ -509,7 +520,7 @@ class Getdata(object):
                 ''' %(classtyle, one_lang, one_lang, one_lang, data['comments_%s' %one_lang])
 
                 #Load scientific name builder
-                from sciname import SciNameBuilder
+                from .sciname import SciNameBuilder
                 sciname_builder = SciNameBuilder(self.cookie_value)
                 id_sciname = species_parts['id_sciname']
                 data['id_sciname'] = id_sciname
@@ -576,6 +587,9 @@ class Getdata(object):
             self.execute('get_field_type',{'table':'species','field':'hazard_group'})
             hgroups = self.fetch('columns')
             hgroups = hgroups['Type']
+            # Convert to string if it's bytes
+            if isinstance(hgroups, bytes):
+                hgroups = hgroups.decode('utf-8')
             hgroups = findall('\'.*?\'',hgroups)
             if action == 'new': hgroup_html = self.opt_html_selected
             else: hgroup_html = self.opt_html
@@ -654,10 +668,10 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
 
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'strains', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -678,26 +692,27 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
             data['id_subcoll'] = self.session.data['id_subcoll']
 
             filter = ''
-            if (self.session.data.has_key('filter_strains')):
+            if ('filter_strains' in self.session.data):
                 data['filter_strains'] = self.session.data['filter_strains']
 
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
                 #Save filter on session
                 self.session.data['filter_strains'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_strains')):
+            elif ('filter_strains' in self.session.data):
                 filter = self.session.data['filter_strains']
-                filter = self.ConvertStrUnicode(filter).encode("utf-8")
+                filter = self.ConvertStrUnicode(filter)
 
             if (filter != ''):
                 words = [x for x in filter.split(" ") if x != '']
@@ -710,11 +725,11 @@ class Getdata(object):
                 for word in words:
                     #0x25 == '%'
                     self.data['condition'].append(
-                                                  "AND (st.code LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR st.internal_code LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR ty.type LIKE x'25" + word.encode("hex") + "25' " +
-                                                  "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                                                  "AND (st.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR st.internal_code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR ty.type LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                                  "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 if (self.session.data['show_str_inactives'] == 0):
@@ -784,8 +799,8 @@ class Getdata(object):
 
         is_first = True
         for lang in self.data_langs:            
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
 
             #General Data
             self.execute('get_str_general_data', data)
@@ -1330,7 +1345,7 @@ class Getdata(object):
             data['type'] = "".join(type_menu)
 
             #Strain Division
-            from strain_formatter import StrainFormatter
+            from .strain_formatter import StrainFormatter
             s = StrainFormatter(self.cookie_value)
             data['division'] = s.division_select_options(self.session.data['id_subcoll'], general['id_division'])
 
@@ -1460,7 +1475,7 @@ class Getdata(object):
               # Save csc.js file to improve performance #
               ###########################################
               f = open(js_csc, 'w')
-              f.write(data['js_country_state_city'].encode('utf8'))
+              f.write(data['js_country_state_city'])
               f.close()
 
             #If we are on edit mode, make some adjustments
@@ -1580,7 +1595,7 @@ class Getdata(object):
               data['coll_hiv'] = _("Not Determined")
 
         if action in ('edit','new'):
-            from strain_formatter import StrainFormatter
+            from .strain_formatter import StrainFormatter
             s = StrainFormatter(self.cookie_value)
             data['js_strain_format'] = s.division_javascript_options(self.session.data['id_subcoll'])
 
@@ -1599,7 +1614,7 @@ class Getdata(object):
         table_stock = []
                 
 
-        if self.form.has_key("type") and self.form["type"].value == "other":
+        if "type" in self.form and self.form["type"].value == "other":
             self.execute('get_strain_stock_minimum',{'id_lang':self.session.data['id_lang'], 'id_subcoll':self.session.data['id_subcoll'], 'id_strain':data['id_strain']})
             methods = self.fetch('all')
 
@@ -1775,9 +1790,9 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'doc', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -1789,7 +1804,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -1797,14 +1813,14 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
                 #Save filter on session
                 self.session.data['filter_docs'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_docs')):
+            elif ('filter_docs' in self.session.data):
                 filter = self.session.data['filter_docs']
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -1813,7 +1829,11 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
-                    self.data['condition'].append("AND (q.qualifier LIKE x'25" + word.encode("hex") + "25' OR doc.code LIKE x'25" + word.encode("hex") + "25' OR t.title LIKE x'25" + word.encode("hex") + "25') ")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    self.data['condition'].append("AND (q.qualifier LIKE x'25" + hex_value + "25' OR doc.code LIKE x'25" + hex_value + "25' OR t.title LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -1879,8 +1899,8 @@ class Getdata(object):
 
         is_first = True
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
             self.execute('get_doc_data', data)
             docs = self.fetch('columns')
             num_fields = 6
@@ -1891,7 +1911,7 @@ class Getdata(object):
                 data['code'] = docs['code']
                 data['id_qualifier'] = docs['id_qualifier']
                 data['qualifier'] = docs['qualifier']
-                if(docs.has_key('go_catalog')):
+                if('go_catalog' in docs):
                     if (docs['go_catalog']):
                         data['label_go_catalog'] = _("This document goes to catalog")
                         data['is_go_catalog_check'] = "checked='checked'"
@@ -1911,10 +1931,10 @@ class Getdata(object):
             if data['file_name_%s'% one_lang]:
                 data['download_%s'% one_lang] = (' [<a href="./doc.download.py?%s&%s&%s&%s" class="tlink">%s</a>]'
                                             % (
-                                                urlencode({'file_name_%s' % one_lang: data['file_name_%s' % one_lang].encode('utf8')}),
+                                                urlencode({'file_name_%s' % one_lang: data['file_name_%s' % one_lang]}),
                                                 urlencode({'id': data['id']}),
                                                 urlencode({'code': one_lang}),
-                                                urlencode({'id_lang': lang.values()[0]}),
+                                                urlencode({'id_lang': list(lang.values())[0]}),
                                                 _("download")
                                                )
                                             )
@@ -1972,13 +1992,13 @@ class Getdata(object):
             is_first = False
         #Security Tab
         self.g.security_tab(self.cookie_value, action, data, 'doc')
-        
+
         if action in ('edit','new'):
             #Qualifier
             self.execute('get_all_from_table',{'table':'doc_qualifier'})
             qualifiers = self.fetch('all')
             #List sorting
-            qualifiers = sorted(qualifiers, lambda x, y: cmp(x['qualifier'], y['qualifier']))
+            qualifiers = sorted(qualifiers, key=lambda x: x['qualifier'])
             if action == 'new': qualifier_menu = self.opt_html_selected
             else: qualifier_menu = ''
             for qualifier in qualifiers:
@@ -2040,9 +2060,9 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'ref', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -2059,7 +2079,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2067,14 +2088,14 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
                 #Save filter on session
                 self.session.data['filter_refs'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_refs')):
+            elif ('filter_refs' in self.session.data):
                 filter = self.session.data['filter_refs']
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -2083,7 +2104,12 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
-                    self.data['condition'].append("AND (ref.id_ref LIKE x'25" + word.encode("hex") + "25' OR ref.author LIKE x'25" + word.encode("hex") + "25' OR ref.title LIKE x'25" + word.encode("hex") + "25' OR ref.year LIKE x'25" + word.encode("hex") + "25') ")
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    self.data['condition'].append("AND (ref.id_ref LIKE x'25" + hex_value + "25' OR ref.author LIKE x'25" + hex_value + "25' OR ref.title LIKE x'25" + hex_value + "25' OR ref.year LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -2147,8 +2173,8 @@ class Getdata(object):
 
         is_first = True
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
             self.execute('get_ref_data', data)
             refs = self.fetch('columns')
             num_fields = 5
@@ -2162,7 +2188,7 @@ class Getdata(object):
                 data['url'] = refs['url'].replace("<a","<a class=\"tlink\"")
                 data['message'] = '[%s] <b>%s</b> %s' % (data['id'], data['title'], data['author'])
 
-                if(refs.has_key('go_catalog')):
+                if('go_catalog' in refs):
                     if (refs['go_catalog']):
                         data['label_go_catalog'] = _("This reference goes to catalog")
                         data['is_go_catalog_check'] = "checked='checked'"
@@ -2213,9 +2239,9 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'people', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -2234,7 +2260,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2242,14 +2269,14 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
                 #Save filter on session
                 self.session.data['filter_people'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_people')):
+            elif ('filter_people' in self.session.data):
                 filter = self.session.data['filter_people']
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -2259,10 +2286,16 @@ class Getdata(object):
                 self.data['condition'] = []
                 for word in words:
                     #0x25 == '%'
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                        self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
                     else:
-                        self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                        hex_value = str(word).encode("utf-8").hex()
+                    
+                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager
+                        self.data['condition'].append("AND (p.name LIKE x'25" + hex_value + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + hex_value + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + hex_value + "25' OR institution.nickname LIKE x'25" + hex_value + "25')) > 0)) ")
+                    else:
+                        self.data['condition'].append("AND (p.name LIKE x'25" + hex_value + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + hex_value + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + hex_value + "25' OR institution.nickname LIKE x'25" + hex_value + "25')) > 0)) ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -2326,8 +2359,8 @@ class Getdata(object):
 
         is_first = True
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
             #SELECT name, nickname, address, phone, email, comments
             self.execute('get_person_data', data)
             person = self.fetch('columns')
@@ -2345,7 +2378,7 @@ class Getdata(object):
                 data['people_contacts'] = self.people_contacts(action)
                 data['message'] = '<b>%s</b><br />%s' % (data['nickname'], data['name'])
 
-                if(person.has_key('go_catalog')):
+                if('go_catalog' in person):
                     if (person['go_catalog']):
                         data['label_go_catalog'] = _("This people goes to catalog")
                         data['is_go_catalog_check'] = "checked='checked'"
@@ -2462,17 +2495,20 @@ class Getdata(object):
                 mapping = contacts
             ret_list = []
             for contact in mapping:
-                if isinstance(contact[key], unicode):
+                if isinstance(contact[key], str):
                     ret_list.append(self.g.escape_quote (contact[key]))
                 else:
-                    ret_list.append(str(contact[key]).decode('utf-8'))
-            return u"[%s]" % ", ".join(["'%s'" % element for element in ret_list])
+                    if isinstance(contact[key], bytes):
+                        ret_list.append(contact[key].decode('utf-8'))
+                    else:
+                        ret_list.append(str(contact[key]))
+            return "[%s]" % ", ".join(["'%s'" % element for element in ret_list])
             #return str([str(contact[key]) for contact in contacts])
 
         inst_ids = [int(el['id_institution']) for el in institutions_data]
         inst_names = js_list ('name', institutions_data)
         inst_nicks = js_list ('nickname', institutions_data)
-        javascript = (u"""
+        javascript = ("""
                         <script type="text/javascript">
                         var _last_ct_index = %s;
                         var _inst_ids = %s;
@@ -2545,9 +2581,9 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'inst', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -2561,7 +2597,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2569,14 +2606,14 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
                 #Save filter on session
                 self.session.data['filter_insts'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_insts')):
+            elif ('filter_insts' in self.session.data):
                 filter = self.session.data['filter_insts']
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -2585,10 +2622,16 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
-                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager:
-                        self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
                     else:
-                        self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                        hex_value = str(word).encode("utf-8").hex()
+                    
+                    if self.g.isManager(self.session.data['roles']): #Administrator or Manager:
+                        self.data['condition'].append("AND (nickname LIKE x'25" + hex_value + "25' OR name LIKE x'25" + hex_value + "25' OR complement LIKE x'25" + hex_value + "25') ")
+                    else:
+                        self.data['condition'].append("AND (nickname LIKE x'25" + hex_value + "25' OR name LIKE x'25" + hex_value + "25' OR complement LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -2653,8 +2696,8 @@ class Getdata(object):
 
         is_first = True
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
 
             self.execute('get_inst_data', data)
             inst_data = self.fetch('columns')
@@ -2675,7 +2718,7 @@ class Getdata(object):
                 data['website'] = inst_data['website']
                 data['message'] = '<b>%s</b><br />%s<br />' % (data['nickname'], data['name'])
 
-                if(inst_data.has_key('go_catalog')):
+                if('go_catalog' in inst_data):
                     if (inst_data['go_catalog']):
                         data['label_go_catalog'] = _("This institution goes to catalog")
                         data['is_go_catalog_check'] = "checked='checked'"
@@ -2721,7 +2764,7 @@ class Getdata(object):
         db.execute('get_all_users')
         users = db.fetch('all')
         #List sorting
-        users = sorted(users, lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
+        users = sorted(users, key=lambda x: x['name'].lower())
         users_opt = []
         for user in users:
             if user['id_user'] == id_user:
@@ -2785,7 +2828,7 @@ class Getdata(object):
         self.execute('get_preservation_method_subcoll',{'id_lang':self.session.data['id_lang'],'id_subcoll':self.session.data['id_subcoll']})
         methods = self.fetch('all')
         #List sorting
-        methods = sorted(methods, lambda x, y: cmp(x['method'].lower(), y['method'].lower()))
+        methods = sorted(methods, key=lambda x: x['method'].lower())
         method_opt = []
         for method in methods:
             selected = ''
@@ -2898,11 +2941,11 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             stripped_sciname = self.get_stripped("sciname_no_auth")
 
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'distribution', self.form['field_order'].value)
 
             isInstitution = False;
@@ -2927,7 +2970,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -2935,14 +2979,14 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
                 #Save filter on session
                 self.session.data['filter_distributions'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_distributions')):
+            elif ('filter_distributions' in self.session.data):
                 filter = self.session.data['filter_distributions']
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -2951,12 +2995,18 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    
                     self.data['condition'].append(
-                            "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' "
-                            "OR dol.quantity = '" + word + "' OR i.name LIKE x'25" + word.encode("hex") + "25' OR p.name LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                            "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + hex_value + "25' " +
+                            "OR l.name LIKE x'25" + hex_value + "25' " +
+                            "OR " + stripped_sciname + " LIKE x'25" + hex_value + "25' "
+                            "OR dol.quantity = '" + word + "' OR i.name LIKE x'25" + hex_value + "25' OR p.name LIKE x'25" + hex_value + "25' " +
+                            "OR st.infra_complement LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -3022,8 +3072,8 @@ class Getdata(object):
 
         is_first = True
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
             self.execute('get_distribution_data', data)
 
             distributions = self.fetch('columns')
@@ -3040,8 +3090,8 @@ class Getdata(object):
                 data['distribution_id_lot'] = distributions['id_lot']
                 data['distribution_lot'] = self.get_lot_select(distributions['id_lot'])
                 if data['distribution_lot'] == '' and action == 'new': #There are no Lots available yet
-                    import exception
-                    raise exception.SicolException,"no_lots_available"
+                    from . import exception
+                    raise exception.SicolException("no_lots_available")
                 data['distribution_lot_name'] = distributions['lot_name']
                 data['distribution_id_strain'] = distributions['id_strain']
                 data['distribution_strain'] = self.get_strains_select(distributions['id_strain'])
@@ -3054,7 +3104,7 @@ class Getdata(object):
                 data['distribution_user_name'] = self.get_person_name(distributions['id_user'])
                 data['distribution_quantity'] = distributions.get('quantity', 0)
 
-                from location import LocationHelper
+                from .location import LocationHelper
                 location_helper = LocationHelper(action=action,model='distribution', data=data,cookie_value=self.cookie_value, decrease_stock_optional=True)
 
                 if distributions['not_identified'] == 1:
@@ -3066,8 +3116,8 @@ class Getdata(object):
                 data['distribution_institution'] = self.get_inst_select(distributions['id_institution'])
                 data['distribution_institution_name'] = distributions['inst_name']
                 if data['distribution_institution'] == '': #There are no Institutions available yet
-                    import exception
-                    raise exception.SicolException,"no_inst_available"
+                    from . import exception
+                    raise exception.SicolException("no_inst_available")
                 data['distribution_id_person'] = distributions['id_person']
                 data['distribution_person'] = self.get_person_select(distributions['id_person'])
                 data['distribution_person_name'] = distributions['person_name']
@@ -3103,7 +3153,7 @@ class Getdata(object):
         return data
 
     def preservation(self, action):
-        from json import JsonBuilder
+        from .json import JsonBuilder
         self.logger.debug("PRESERVATION")
         data = self.data
         data['action'] = action
@@ -3131,9 +3181,9 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'preservation', self.form['field_order'].value)
 
             isTaxon = False;
@@ -3165,7 +3215,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -3175,14 +3226,14 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
                 #Save filter on session
                 self.session.data['filter_preservations'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_preservations')):
+            elif ('filter_preservations' in self.session.data):
                 filter = self.session.data['filter_preservations']
                 filter = self.ConvertStrUnicode(filter).encode("utf-8")
 
@@ -3191,20 +3242,26 @@ class Getdata(object):
                 self.data['condition']= []
                 for word in words:
                     #0x25 == '%'
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    
                     self.data['condition'].append(
-                            "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
+                            "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + hex_value + "25' " +
+                            "OR l.name LIKE x'25" + hex_value + "25' " +
                             "OR ((SELECT COUNT(preservation.id_preservation) " +
                             "FROM preservation " +
                             "INNER JOIN preservation_strain USING (id_preservation) " +
                             "INNER JOIN strain USING (id_strain) " +
                             "INNER JOIN species USING (id_species) " +
                             "WHERE preservation.id_preservation = p.id_preservation " +
-                            "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR strain.code LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25')) > 0) "
-                            "OR pml.method LIKE x'25" + word.encode("hex") + "25' " +
-                            "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                            "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + hex_value + "25' " +
+                            "OR strain.code LIKE x'25" + hex_value + "25' " +
+                            "OR " + stripped_sciname + " LIKE x'25" + hex_value + "25')) > 0) "
+                            "OR pml.method LIKE x'25" + hex_value + "25' " +
+                            "OR st.infra_complement LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
@@ -3269,7 +3326,13 @@ class Getdata(object):
 
 
         #Get Main Data
-        self.execute('get_preservation_data',data)
+        # Only pass the required parameters to avoid "Python type list cannot be converted" error
+        preservation_query_params = {
+            'id': data.get('id'),
+            'id_lang': data.get('id_lang'),
+            'id_subcoll': data.get('id_subcoll')
+        }
+        self.execute('get_preservation_data', preservation_query_params)
         preservation = self.fetch('columns')
 
         # marks all the strains that are reused on other
@@ -3319,7 +3382,9 @@ class Getdata(object):
             preservation = DefDict()
 
         #Get GLOBAL COUNTER
-        self.execute('get_preservation_strain_count',data)
+        # Only pass the required parameters to avoid "Python type list cannot be converted" error
+        count_query_params = {'id': data.get('id')}
+        self.execute('get_preservation_strain_count', count_query_params)
         global_counter = int(self.fetch('one')) + 1
 
         #Get Main Data
@@ -3328,7 +3393,7 @@ class Getdata(object):
         data['lot_number'] = preservation['lot_name']
         data['main_lot_id'] = preservation['id_lot']
         data['used_method'] = preservation['used_method']
-        data['data_lang'] = self.data_langs[0].values()[0]
+        data['data_lang'] = list(self.data_langs[0].values())[0]
         data['info'] = preservation['info']
         if action == 'view':
             textLinksStrain = TextLinkFactory(self.cookie_value, self.session.data['id_lang'], data['data_lang'])
@@ -3378,21 +3443,26 @@ class Getdata(object):
         data['message'] = '%s - <b>Lote %s</b><br />%s' % (data['date'], preservation['lot_name'], preservation['used_method'])
 
         #Get Data for each Strain
-        self.execute('get_preservation_strain_data',data,force_debug=False)
+        # Only pass the required parameters to avoid "Python type list cannot be converted" error
+        strain_query_params = {
+            'id': data.get('id'),
+            'id_lang': data.get('id_lang')
+        }
+        self.execute('get_preservation_strain_data', strain_query_params, force_debug=False)
         preservation_strain = self.fetch('all') #26 fields
 
         #Security tab
         self.g.security_tab(self.cookie_value, action, data, 'preservation')
 
         invalid_lots = {}
-        from labels import label_dict
+        from .labels import label_dict
         strain_data = []
         aux_dict = {}
 
         if (global_counter == 1):
             data['js_data'].append(' reused_strains = null; ')
 
-        for i in xrange(1,global_counter):
+        for i in range(1,global_counter):
             j = i - 1 #index for manipulation of "preservation_strain" dictionary
             aux_dict = preservation_strain[j]
 
@@ -3580,14 +3650,14 @@ class Getdata(object):
                         all_info.append("'origin_location_text':'%s'" %
                             self.l.get_incomplete_location(aux_dict['id_origin_container_hierarchy'], aux_dict['origin_row'], aux_dict['origin_col'], quantity=aux_dict['origin_quantity']))
                     #Update info about previously used ampoules for this lot-strain combination
-                    if not previously_used_amp.has_key(aux_dict["id_strain"]):
+                    if aux_dict["id_strain"] not in previously_used_amp:
                         previously_used_amp[aux_dict["id_strain"]] = {}
-                    if not previously_used_amp[aux_dict["id_strain"]].has_key(aux_dict["id_lot"]):
+                    if aux_dict["id_lot"] not in previously_used_amp[aux_dict["id_strain"]]:
                         previously_used_amp[aux_dict["id_strain"]][aux_dict["id_lot"]] = {'used':0,'prepared':0}
                     previously_used_amp[aux_dict["id_strain"]][aux_dict["id_lot"]]["used"] = aux_dict["used"]
-                if not previously_used_amp.has_key(aux_dict["id_strain"]):
+                if aux_dict["id_strain"] not in previously_used_amp:
                     previously_used_amp[aux_dict["id_strain"]] = {}
-                if not previously_used_amp[aux_dict["id_strain"]].has_key(data["main_lot_id"]):
+                if data["main_lot_id"] not in previously_used_amp[aux_dict["id_strain"]]:
                     previously_used_amp[aux_dict["id_strain"]][data["main_lot_id"]] = {'used':0,'prepared':0}
                 previously_used_amp[aux_dict["id_strain"]][data["main_lot_id"]]["prepared"] = aux_dict["prepared"]
 
@@ -3641,7 +3711,7 @@ class Getdata(object):
         output = '<select name="preservation_origin" id="preservation_origin" onchange="changedOrigin(this)">'
         output += '<option value="original" selected="selected">%s</option>' % _("Original Culture")
         #Create Global Javascript Variable to control ampoules stock within each lot-strain combination
-        if not aux_dict.has_key('id_lot'):
+        if 'id_lot' not in aux_dict:
             aux_dict['id_lot'] = 0
         data['js_global_lot_strain'] = self.get_lot_strain_ampoules(invalid_lots=invalid_lots,previously_used_amp=previously_used_amp,selected_id_lot=aux_dict["id_lot"])
         if data['js_global_lot_strain'] == 'global_strain_lot = null;': #special case: this is the first lot inserted
@@ -3664,7 +3734,7 @@ class Getdata(object):
         tabs_html = ' &nbsp; <span class="fieldstab" >'
         is_first = True
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
+            one_lang = list(lang.keys())[0]
             tab_style = 'inactive'
             if is_first:
                 tab_style = 'active'
@@ -3724,12 +3794,12 @@ class Getdata(object):
             prepared_amp = 0
             #Add "previously used amount of ampoules" if exists
             if previously_used_amp != {}:
-                if previously_used_amp.has_key(lsa['id_strain']):
-                    if previously_used_amp[lsa['id_strain']].has_key(lsa['id_lot']):
+                if lsa['id_strain'] in previously_used_amp:
+                    if lsa['id_lot'] in previously_used_amp[lsa['id_strain']]:
                         used_amp = previously_used_amp[lsa['id_strain']][lsa['id_lot']]['used']
                         prepared_amp = previously_used_amp[lsa['id_strain']][lsa['id_lot']]['prepared']
             #Ignore invalid lots
-            if invalid_lots == {} or (not invalid_lots.has_key(int(lsa['id_strain']))) or ( int(lsa['id_lot']) not in invalid_lots[int(lsa['id_strain'])] ):
+            if invalid_lots == {} or (int(lsa['id_strain']) not in invalid_lots) or ( int(lsa['id_lot']) not in invalid_lots[int(lsa['id_strain'])] ):
                 aux_js.append('%d:{"name":"%s","ampoules":%d,"used":%d,"prepared":%d,"unit_measure":"%s"}' % (lsa['id_lot'],lsa['name'],lsa['stock'],used_amp,prepared_amp,lsa['unit_measure']))
         if last_strain != 0:
             js.append(str(last_strain) + ':{' + ",".join(aux_js) + '}')
@@ -3845,9 +3915,9 @@ class Getdata(object):
         for member in members:
             #Get user name from his ID
             db.execute('get_user_name',{'id_user':member['id_user']})
-            group_members.append(str(db.fetch('one').encode('utf8')) + "," + str(member['id_user']))
+            group_members.append(str(db.fetch('one')) + "," + str(member['id_user']))
         group_members = ";".join(group_members)
-        return group_members.decode('utf8')
+        return group_members
 
     def subcoll_data_langs(self, id_subcoll):
         '''
@@ -3984,7 +4054,7 @@ class Getdata(object):
         alternate_states = []
         alternate_states.append("var alternate_states = new Array();\n")
         #List sorting
-        species_list = sorted(species_list, lambda x, y: cmp(Lists.spe_fullname(x), Lists.spe_fullname(y)))
+        species_list = sorted(species_list, key=lambda x: Lists.spe_fullname(x))
         for species in species_list:
             if (str(id_specie) != str(species['id_species'])):
                 alternate_states.append("alternate_states[alternate_states.length] = ")
@@ -4019,9 +4089,9 @@ class Getdata(object):
             data['back_where'] = 'list'
             data['form_action'] = '<input type="hidden" name="form_action" value="new">'
 
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'container', self.form['field_order'].value)
     
             #Get field and mode for order list
@@ -4034,7 +4104,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
                 
             data['id_lang'] = self.session.data['id_lang']
             data['id_subcoll'] = self.session.data['id_subcoll']
@@ -4135,7 +4206,7 @@ class Getdata(object):
         self.execute('get_container_top_hierarchy', {'id_container': id_container})
         parents = self.fetch('all')
         if len(parents) == 0:
-            return _(u"Structure not defined.")
+            return _("Structure not defined.")
         hierarchy = []
         
         for parent in parents:
@@ -4190,7 +4261,7 @@ class Getdata(object):
         #brk("localhost", 9000)
         for parent in parents:                        
                             
-            if (len(self.dic_positions) > 0 and self.dic_positions.has_key(parent['id_parent'])):
+            if (len(self.dic_positions) > 0 and parent['id_parent'] in self.dic_positions):
                 atual = self.dic_positions[parent['id_parent']]
                 self.hierarchy.append("$('#demo').jstree('select_one', 'Child_" + str(atual) + "');\n$('#add_folder').click();\n")
             else:
@@ -4218,7 +4289,7 @@ class Getdata(object):
             else:
                 self.hierarchy.append("$('#Node_" + str(self.num_items) + "abbreviation').val('" + parent['abbreviation'] + "');\n")
                 self.hierarchy.append("$('#Node_" + str(self.num_items) + "description').val('" + parent['description'] + "');\n")
-                if (location.has_key('rows')):
+                if ('rows' in location):
                     self.hierarchy.append("$('#Node_" + str(self.num_items) + "rows').val('" + str(location['rows']) + "');\n")
                     self.hierarchy.append("$('#Node_" + str(self.num_items) + "cols').val('" + str(location['cols']) + "');\n")
                     self.hierarchy.append("$('#Node_" + str(self.num_items) + "ini_row').val('" + str(location['ini_row']) + "');\n")
@@ -4416,7 +4487,7 @@ class Getdata(object):
         
         if (action == 'view'):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'doc', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -4428,7 +4499,8 @@ class Getdata(object):
             if (data['row_number'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row_number']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(data['row_number']) - 1)
+                offset = max(0, int(data['row_number']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
 
             data['id_lang'] = self.session.data['id_lang']
             data['id_coll'] = self.session.data['id_coll']
@@ -4436,22 +4508,22 @@ class Getdata(object):
 
             #Filter
             filter = ''
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
     
                 #Save filter on session
                 self.session.data['filter_reports'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_reports')):
+            elif ('filter_reports' in self.session.data):
                 filter = self.session.data['filter_reports']
 
-            if (self.form.has_key('filter')):
+            if ('filter' in self.form):
                 filter = str(self.form['filter'].value).strip()
 
                 #Save filter on session
                 self.session.data['filter_reports'] = filter
                 self.session.save()
-            elif (self.session.data.has_key('filter_reports')):
+            elif ('filter_reports' in self.session.data):
                 filter = self.session.data['filter_reports']
     
             self.data['condition'] = []            
@@ -4460,15 +4532,21 @@ class Getdata(object):
                 
                 for word in words:
                     #0x25 == '%'
+                    # Fix for Python 3: use bytes.hex() instead of encode("hex")
+                    if isinstance(word, str):
+                        hex_value = word.encode("utf-8").hex()
+                    else:
+                        hex_value = str(word).encode("utf-8").hex()
+                    
                     self.data['condition'].append(
-                                                  " AND (replang.type LIKE x'25" + word.encode("hex") + "25' " +
-                                                  " OR rep.description LIKE x'25" + word.encode("hex") + "25') ")
+                                                  " AND (replang.type LIKE x'25" + hex_value + "25' " +
+                                                  " OR rep.description LIKE x'25" + hex_value + "25') ")
                 self.data['condition']= "".join(self.data['condition'])
             else:
                 self.data['condition'] = ' '
 
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'reports', self.form['field_order'].value)
 
             #Get field and mode for order list
@@ -4537,8 +4615,8 @@ class Getdata(object):
 
         is_first = True        
         for lang in self.data_langs:
-            one_lang = lang.keys()[0]
-            data['data_lang'] = lang.values()[0]
+            one_lang = list(lang.keys())[0]
+            data['data_lang'] = list(lang.values())[0]
             data['id_report'] = self.form['id'].value            
             self.execute('get_report_data', data, True)
             reports = self.fetch('columns')
@@ -4555,10 +4633,15 @@ class Getdata(object):
                 from xml.dom.minidom import parse, parseString
 
                 #brk(host="localhost", port=9000)
-                dom = parseString(data['xml'].encode("utf8").replace('\r\n',"[_new_line_]").replace("\t","[_tab_]"))
+                # Handle both string and bytes data for Python 3 compatibility
+                xml_data = data['xml']
+                if isinstance(xml_data, bytes):
+                    xml_data = xml_data.decode("utf8")
+                xml_data = xml_data.replace('\r\n',"[_new_line_]").replace("\t","[_tab_]")
+                dom = parseString(xml_data.encode("utf8"))
                 
-                from labels import label_dict
-                from reports import Reports
+                from .labels import label_dict
+                from .reports import Reports
                 Rep = Reports(self.form, self.cookie_value)
                 Rep.get_fields_definition(reports['id_report_type'] )                
                 xml_dict = self.xml2dict(dom)
@@ -4580,7 +4663,7 @@ class Getdata(object):
                         data['group'] += label_dict[Rep.fields_definition[str(x)]['label']] + '<br />'
                     data['order'] += '</p>'
                     
-                if xml_dict.has_key('total'):
+                if 'total' in xml_dict:
                     data['total'] += '<p><label>' + label_dict['label_Rep_General_Totalizer'] + '</label><br />'
                     data['total'] += label_dict[Rep.fields_definition[str(xml_dict['total']['name'])]['label']]
                     data['total'] += '</p>'
@@ -4588,10 +4671,10 @@ class Getdata(object):
                 self.report_index_field = 0
                 
                 
-                from reports import Reports
-                from labels import label_dict
-                from label_values_reports import label_values_dict
-                from label_values_reports import values_dict
+                from .reports import Reports
+                from .labels import label_dict
+                from .label_values_reports import label_values_dict
+                from .label_values_reports import values_dict
                 
                 z = Reports(self.form, self.cookie_value)
                 z.get_fields_definition(reports['id_report_type'])
@@ -4606,8 +4689,8 @@ class Getdata(object):
                 
                 for key in self.order_keys:
                     data['arrayFieldsValues'].append(str(key))
-                    data['arrayFields'].append(str(label_dict[self.fields_definition[key]['label']].encode("utf8")))
-                    data['arrayFieldsDef'] += key + ": '" + str(self.fields_definition[key]['data_type'].encode("utf8")) +"', "
+                    data['arrayFields'].append(str(label_dict[self.fields_definition[key]['label']]))
+                    data['arrayFieldsDef'] += key + ": '" + str(self.fields_definition[key]['data_type']) +"', "
                 
                 data['arrayFieldsDef'] = data['arrayFieldsDef'][0:len(data['arrayFieldsDef'])-2] + "}";                    
                
@@ -4694,7 +4777,7 @@ class Getdata(object):
         return return_value
     
     def mount_filter(self, lista_filter):
-        from labels import label_dict
+        from .labels import label_dict
         
         retorno = ''
         if len(lista_filter) > 0:
@@ -4760,9 +4843,9 @@ class Getdata(object):
 
         data['row_number'] = self.data['row']
         
-        if (action == 'view' and self.form.has_key('row')):
+        if (action == 'view' and 'row' in self.form):
             #Verify field_order is changed
-            if self.form.has_key('field_order'):
+            if 'field_order' in self.form:
                 self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'stockmovement', self.form['field_order'].value)
     
             #Get field and mode for order list
@@ -4775,7 +4858,8 @@ class Getdata(object):
             if (data['row'] == '0'):
                 data['paging'] = ' LIMIT %s,2' % data['row']
             else:
-                data['paging'] = ' LIMIT %s,3' % str(int(self.data['row']) - 1)
+                offset = max(0, int(self.data['row']) - 1)
+                data['paging'] = ' LIMIT %s,3' % str(offset)
                 
             data['id_lang'] = self.session.data['id_lang']
             data['id_subcoll'] = self.session.data['id_subcoll']
@@ -4901,12 +4985,12 @@ class Getdata(object):
     
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno

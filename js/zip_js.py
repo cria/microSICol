@@ -25,11 +25,11 @@ for js_file in js_files:
     #Warn user that process has ended
     fsize = os.path.getsize(f.name)
     f2size = os.path.getsize(f2.name)
-    print "-------------------------------------"
-    print "Filename ["+js_file.replace("_src","")+"]"
-    print "Compressed File = ",str(f2size).rjust(10)," bytes"
-    print "    Source File = ",str(fsize).rjust(10)," bytes"
+    print("-------------------------------------")
+    print("Filename ["+js_file.replace("_src","")+"]")
+    print("Compressed File = ",str(f2size).rjust(10)," bytes")
+    print("    Source File = ",str(fsize).rjust(10)," bytes")
     if (fsize == 0): fsize = 1 #Avoiding ZeroDivisionError
-    print "New size is %.2f%% of original size." % ((float(f2size)/float(fsize))*100.0)
-print "-------------------------------------"
+    print("New size is %.2f%% of original size." % ((float(f2size)/float(fsize))*100.0))
+print("-------------------------------------")
 raw_input('Press Enter to quit...')

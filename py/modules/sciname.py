@@ -1,12 +1,23 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
-from session import Session
-from cookie import Cookie
-from general import General
-from dbconnection import dbConnection
-from loghelper import Logging
-from json import JsonBuilder
+from .session import Session
+from .cookie import Cookie
+from .general import General
+from .dbconnection import dbConnection
+from .loghelper import Logging
+from .json import JsonBuilder
+
+# Import translation function
+try:
+    from .i18n import I18n
+    # Create a temporary instance to initialize the global _
+    _temp_i18n = I18n()
+    from builtins import _
+except (ImportError, AttributeError):
+    # Fallback if translation is not available
+    def _(text):
+        return text
 
 class SciNameBuilder(object):
     g = General()
@@ -39,23 +50,46 @@ class SciNameBuilder(object):
         if not hi_tax:
             hi_tax = ''
         
-        id_sciname = str(id_sciname)
-        sciname_data = { 'compound_hitax_sciname': '%s|%s' % (hi_tax, sciname)}
-        self.execute('check_sciname', sciname_data)
-        current_id_sciname = str(self.fetch('one'))
-        self.logger.debug("current id: %s" % (current_id_sciname))
+        if id_sciname is not None:
+            id_sciname = str(id_sciname)
+        
+        # Escapar caracteres especiais e garantir que os valores sejam strings válidas
+        if sciname is None:
+            sciname = ''
+        if hi_tax is None:
+            hi_tax = ''
+            
+        # Limpar e validar os dados de entrada
+        sciname = str(sciname).strip()
+        hi_tax = str(hi_tax).strip()
+        
+        # Criar o valor composto de forma segura
+        compound_value = '%s|%s' % (hi_tax, sciname)
+        sciname_data = {'compound_hitax_sciname': compound_value}
+        
+        self.logger.debug("Checking for existing sciname with compound value: %s" % compound_value)
+        
+        try:
+            self.execute('check_sciname', sciname_data)
+            result = self.fetch('one')
+            current_id_sciname = str(result) if result is not None else None
+            self.logger.debug("current id: %s" % (current_id_sciname))
+        except Exception as e:
+            self.logger.error("Error in check_existing: %s" % str(e))
+            self.logger.error("compound_value: %s" % compound_value)
+            return False
         
         # if nothing was returned from the database, there isn't such sciname
-        if not current_id_sciname:
+        if not current_id_sciname or current_id_sciname == 'None':
             self.logger.debug("not found - False")
             return False
         
         # if a specific id was passed, it only "exists" if it's another sciname
         # or in other words, if the id of the existing item is different from the
         # one we are probably updating
-        if id_sciname:
-            self.logger.debug("found: %s <> %s = %s" % (id_sciname, current_id_sciname, id_sciname <> current_id_sciname))
-            return id_sciname <> current_id_sciname
+        if id_sciname is not None:
+            self.logger.debug("found: %s <> %s = %s" % (id_sciname, current_id_sciname, id_sciname != current_id_sciname))
+            return id_sciname != current_id_sciname
         
         # if id_sciname was not passed and there is such a sciname on the datbase,
         # we consider it exists 
@@ -63,23 +97,28 @@ class SciNameBuilder(object):
         return True         
         
     def update(self, id_subcoll, id_lang, id_sciname, form):
-        hi_tax = form.getvalue('higher_taxa_html')
-        sciname = form.getvalue('sciname_html')
+        hi_tax = form.getvalue('higher_taxa_html') or ''
+        sciname = form.getvalue('sciname_html') or ''
         if self.check_existing(hi_tax, sciname, id_sciname):
-            import exception
+            from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
 
-        sciname_data = { 'id_sciname': id_sciname, 'hi_tax': hi_tax, 'sciname': sciname, 'sciname_no_auth': form.getvalue('sciname_no_auth') }
+        sciname_data = { 
+            'id_sciname': id_sciname, 
+            'hi_tax': hi_tax, 
+            'sciname': sciname, 
+            'sciname_no_auth': form.getvalue('sciname_no_auth') or ''
+        }
         self.execute('update_sciname', sciname_data)
         
         self.execute('delete_sciname_hierarchy', {'id_sciname': id_sciname})
         self.insert_hierarchy(id_subcoll, id_lang, id_sciname, form)
         
     def insert(self, id_subcoll, id_lang, form):
-        hi_tax = form.getvalue('higher_taxa_html')
-        sciname = form.getvalue('sciname_html')
+        hi_tax = form.getvalue('higher_taxa_html') or ''
+        sciname = form.getvalue('sciname_html') or ''
         if self.check_existing(hi_tax, sciname):
-            import exception
+            from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
 
         self.logger.debug('form: %s' % (str(form)))
@@ -89,7 +128,11 @@ class SciNameBuilder(object):
         self.logger.debug('id_taxon_group: %s' % (id_taxon_group))
 
         #creates the sciname record
-        sciname_data = { 'hi_tax': form.getvalue('higher_taxa_html'), 'sciname': form.getvalue('sciname_html'), 'sciname_no_auth': form.getvalue('sciname_no_auth') }
+        sciname_data = { 
+            'hi_tax': form.getvalue('higher_taxa_html') or '', 
+            'sciname': form.getvalue('sciname_html') or '', 
+            'sciname_no_auth': form.getvalue('sciname_no_auth') or ''
+        }
         self.logger.debug('sciname_data: %s' % (str(sciname_data)))
         
         self.execute('insert_sciname', sciname_data)
@@ -128,7 +171,7 @@ class SciNameBuilder(object):
                 self.execute('insert_sciname_hierarchy', sciname_detail_data)
         
     def html(self, id_subcoll, id_lang, id_sciname, id_taxon_group = None, sciname_hierarchy = None):
-        from labels import label_dict
+        from .labels import label_dict
         dict = {}
         
         #retrieves all scientific name fields for this subcoll and language
@@ -195,7 +238,7 @@ class SciNameBuilder(object):
         for row in rows:
             
             # check if new taxon_group
-            if not current_taxon_group or current_taxon_group <> row['id_taxon_group']:
+            if not current_taxon_group or current_taxon_group != row['id_taxon_group']:
                 self.add_sciname_block(dict, html_template, html_body, hitax_html, sciname_html, current_taxon_group, prev_row, id_taxon_group)
 
                 # reset variables
@@ -209,7 +252,7 @@ class SciNameBuilder(object):
             
             #if sciname_hierarchy was passed, we fill the fields with saved values
             id_hierarchy = row['id_hierarchy']
-            if sciname_hierarchy and id_taxon_group and sciname_hierarchy.has_key(id_hierarchy) and current_taxon_group == id_taxon_group:
+            if sciname_hierarchy and id_taxon_group and id_hierarchy in sciname_hierarchy and current_taxon_group == id_taxon_group:
                 this_dict = sciname_hierarchy[id_hierarchy] 
                 row['value'] = this_dict['value']
                 row['author'] = this_dict['author']
@@ -246,11 +289,11 @@ class SciNameBuilder(object):
             seq = row['seq']
             
             #if the dict doesn't have this taxon_group yet, add it
-            if not js_data.has_key(taxon_group):
+            if taxon_group not in js_data:
                 js_data[taxon_group] = {}
                 
             #if the dict doesn't have this seq on this taxon_group yet, add it
-            if not js_data[taxon_group].has_key(seq):
+            if seq not in js_data[taxon_group]:
                 js_data[taxon_group][seq] = {}
                 
             #add the field to the correct taxon_group and seq
@@ -269,7 +312,20 @@ class SciNameBuilder(object):
         html = "\n".join(html_body) % label_dict
 
         #transfer the javascript and the html to the html template file
-        template = self.g.read_html('sciname.form') % { 'sciname_builder_js': js, 'sciname_builder_html' : html }
+        if isinstance(js, bytes):
+            js = js.decode('utf-8')
+        if isinstance(html, bytes):
+            html = html.decode('utf-8')
+
+        # Garantir que o template seja string
+        template_content = self.g.read_html('sciname.form')
+        if isinstance(template_content, bytes):
+            template_content = template_content.decode('utf-8')
+
+        template = template_content % { 
+            'sciname_builder_js': js, 
+            'sciname_builder_html': html 
+        }
         
         #and returns it
         return template

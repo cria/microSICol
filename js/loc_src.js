@@ -232,9 +232,13 @@ function LocationPicker(data)
                 quantity_used = parseInt(quantity_used, 10);
                 if(click)
                 {
-                    if (isNaN($("#txtQtdClick").val()))
+                    if (!isNaN($("#txtQtdClick").val()))
                     {
-                        quantity_used += parseInt($("#txtQtdClick").val(), 10);
+                        if(parseInt($("#txtQtdClick").val(), 10) < 0)
+                        {                         
+                            $("#txtQtdClick").val("1");
+                        }
+                        quantity_used += parseInt($("#txtQtdClick").val(), 10);                        
                     }
                     else
                     {
@@ -266,14 +270,39 @@ function LocationPicker(data)
             if (td.is(".selectedCell")) {
                 quantity_total = parseInt(quantity_total, 10);
                 quantity_used = parseInt(quantity_used, 10);
+                if(click)
+                {
+                    if (!isNaN($("#txtQtdClick").val()))
+                    {
+                        if(parseInt($("#txtQtdClick").val(), 10) < 0)
+                        {                         
+                            $("#txtQtdClick").val("1");
+                        }
+                        quantity_used += parseInt($("#txtQtdClick").val(), 10);                        
+                    }
+                    else
+                    {
+                        quantity_used += 1;
+                        $("#txtQtdClick").val("1")
+                    }
+                }
+                else
+                {
+                    quantity_used += 1;
+                }
                 
                 if (quantity_used + 1 <= quantity_total) {
-                    if (this.module != "stock_movement")
-                        quantity_used += 1;
-                    else
+                    if (this.module == "stock_movement")
+                    {
                         quantity_used = quantity_total;
+                    }
                     td.attr('quantity_used', quantity_used);
                     this.addSelectedLocation(hierarchy, row, col, quantity_used, quantity_total);
+                }
+                else
+                {
+                    td.attr('quantity_used', quantity_total);
+                    this.addSelectedLocation(hierarchy, row, col, quantity_total, quantity_total);
                 }
                 
                 if (quantity_used >= quantity_total) {

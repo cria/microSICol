@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -9,7 +9,7 @@ except ImportError:
     from sha import new as new_sha
 
 #project imports
-from general import General
+from .general import General
 
 class Download(object):
 
@@ -33,7 +33,7 @@ Content-Disposition: attachment; filename="%s"\n\n'''
         code = self.form.getvalue('code')
         #Generate file_code
         file_code = str(id) + str(id_lang)
-        file_code = new_sha(file_code).hexdigest()
+        file_code = new_sha(file_code.encode('utf-8')).hexdigest()
 
         #Set Document variables
         file_name = self.form.getvalue('file_name_%s' %code)
@@ -41,7 +41,7 @@ Content-Disposition: attachment; filename="%s"\n\n'''
         doc_dir = path.join(self.root_dir, 'doc_file')
         #Open and Read the File
         try:
-            arq = file(path.join(doc_dir, file_code), 'rb')
+            arq = open(path.join(doc_dir, file_code), 'rb')
             data = arq.read()
             arq.close()
         except: data = ''

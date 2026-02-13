@@ -1,29 +1,28 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 #from dbgp.client import brk
-from cgi import escape
-from urlparse import urljoin
+from urllib.parse import urljoin
 from re import findall
 from sys import exit
-from urllib import urlencode
+from urllib.parse import urlencode
 import cgi
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from general import General, DefDict
-from lists import Lists
-from textlinkfactory import TextLinkFactory
-from loghelper import Logging
-from location import LocationBuilder
+from .session import Session
+from .dbconnection import dbConnection
+from .general import General, DefDict
+from .lists import Lists
+from .textlinkfactory import TextLinkFactory
+from .loghelper import Logging
+from .location import LocationBuilder
 from os import path
 from datetime import datetime
-from labels import label_dict
-from dom_xml import Xml
-from label_values_reports import label_values_dict
-from label_values_reports import values_dict
+from .labels import label_dict
+from .dom_xml import Xml
+from .label_values_reports import label_values_dict
+from .label_values_reports import values_dict
 
 
 class Reports_Common(object):
@@ -65,13 +64,13 @@ class Reports_Common(object):
     
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno
     
@@ -245,10 +244,10 @@ class Reports_Common(object):
         select = select + order[0:len(order)-2] + " "                
         
         import time
-        start = time.clock()        
+        start = time.perf_counter()
         self.execute("", fixed_sql = select)
                 
-        elapsed = (time.clock() - start)
+        elapsed = (time.perf_counter() - start)
         
         
         self.timeout = self.timeout + elapsed
@@ -258,9 +257,7 @@ class Reports_Common(object):
         
         if self.timeout > self.maxTime:            
             import sys            
-            err = Exception()
-            err.message = "Timeout: " + str(self.timeout)
-            raise err
+            raise Exception("Timeout: " + str(self.timeout))
                        
         
         
@@ -402,7 +399,7 @@ class Reports_Common(object):
         template = template.replace("[FIELD:date]", self.get_atual_date())
         template = template.replace("[FIELD:time]", self.get_atual_time())        
         
-        for key in self.reserved_fields.keys():
+        for key in list(self.reserved_fields.keys()):
             template = template.replace("[FIELD:" + key + "]", self.ConvertStrUnicode(self.reserved_fields[key]))
         
         return template
@@ -584,13 +581,13 @@ class Reports_Common(object):
     def process_field(self, field_name, value):
         #brk(host="localhost", port=9000)
                
-        if not self.fields_definition.has_key(field_name):
+        if field_name not in self.fields_definition:
             return str(value)
             
-        if self.fields_definition[field_name].has_key('function_lookup'):
+        if 'function_lookup' in self.fields_definition[field_name]:
             return getattr(self, self.fields_definition[field_name]['function_lookup'])(value)
         
-        if self.fields_definition[field_name].has_key('label_value_lookup'):
+        if 'label_value_lookup' in self.fields_definition[field_name]:
             if self.fields_definition[field_name]['label_value_lookup'] == 'true':
                 tmp = values_dict[label_values_dict[field_name][value]]
                 return tmp

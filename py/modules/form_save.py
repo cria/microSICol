@@ -1,25 +1,36 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 from sys import exit
-from os import path, rename,sep
-from cPickle import dump
+from os import path, rename, sep
+from pickle import dump
 from glob import glob
 try:
     from hashlib import sha1 as new_sha
 except ImportError:
     from sha import new as new_sha
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from general import General
-from sciname import SciNameBuilder
-from loghelper import Logging
-from log import Log
-import exception
+from .session import Session
+from .dbconnection import dbConnection
+from .general import General
+from .sciname import SciNameBuilder
+from .loghelper import Logging
+from .log import Log
+from . import exception
+
+# Initialize internationalization
+try:
+    from .i18n import I18n
+    # Create a temporary instance to initialize the global _
+    _temp_i18n = I18n()
+    from builtins import _
+except (ImportError, AttributeError):
+    # Fallback if i18n is not available
+    def _(text):
+        return text
 #from dbgp.client import brk
 
 class Save(object):
@@ -101,14 +112,14 @@ class Save(object):
         If who is 'ref' or 'doc' then at least one 'title' must be found
         '''
         error = False
-        import config
+        from . import config
         out = config.http_header+'\n\n'
         out += '<b>%s</b>: %s:<br>\n' % (_("Error"), _("Obrigatory fields left blank"))
         main_title = '' #To be used when there is no other title in other languages
         for field in fields:
             if (who == 'doc' and field == 'title'):
                 for lang in self.data_lang:
-                    fields.append("%s_%s" %(field,lang.keys()[0]))
+                    fields.append("%s_%s" %(field,list(lang.keys())[0]))
             elif (who == 'doc') and main_title == '' and field.startswith('title_') and self.form.getvalue(field):
                 main_title = self.form.getvalue(field)
             elif self.form.getvalue(field) == None and who == '':
@@ -126,7 +137,8 @@ class Save(object):
             else:
                 return main_title
         if error:
-            print out.encode('utf8')
+            import sys
+            sys.stdout.buffer.write(out.encode('utf8'))
             exit(1)
 
     def get_dateformat(self, act):
@@ -148,7 +160,7 @@ class Save(object):
             else:
                 return '%d/%m/%Y'
         else:
-            raise Exception, _("Argument is invalid.")
+            raise Exception(_("Argument is invalid."))
 
 
     def format_date(self,action,field):
@@ -194,20 +206,40 @@ class Save(object):
     def feedback(self, value, id_ok=None):
         if value == -1: #Errors
             import sys
-            file_name = sys.exc_traceback.tb_frame.f_code.co_filename
-            file_name = file_name[file_name.rfind(sep)+1:] #sep == os.sep - Operational System Separator '/' or '\\'
-            ex_type = str(sys.exc_type).strip("'>").split('.')
-            ex_type = str(ex_type[1])
-            str_error = '<div class="user_error"><b>'+_("File")+'</b>: '+file_name+'<br />'
-            str_error += '<b>'+_("Line")+'</b>: '+str(sys.exc_traceback.tb_lineno)+'<br />'
-            str_error += '<b>'+_("Type")+'</b>: '+ex_type+'<br />'
-            if not sys.exc_value.args:
-                ex_error = "None"
-            elif isinstance(sys.exc_value.args[0],int):
-                ex_error = str(sys.exc_value.args[0])
+            import traceback
+            
+            # Get current exception info (Python 3 compatible way)
+            ex_type, ex_value, ex_traceback = sys.exc_info()
+            
+            if ex_traceback:
+                file_name = ex_traceback.tb_frame.f_code.co_filename
+                file_name = file_name[file_name.rfind(sep)+1:] #sep == os.sep - Operational System Separator '/' or '\\'
+                line_no = ex_traceback.tb_lineno
             else:
-                ex_error = sys.exc_value.args[0].encode('utf8')
-            str_error += '<b>'+_("Value")+'</b>: %s</div>' % ex_error.decode('utf8')
+                file_name = "unknown"
+                line_no = 0
+            
+            if ex_type:
+                ex_type_str = str(ex_type).strip("'>").split('.')
+                ex_type_str = str(ex_type_str[-1]) if ex_type_str else "UnknownError"
+            else:
+                ex_type_str = "UnknownError"
+            
+            str_error = '<div class="user_error"><b>'+_("File")+'</b>: '+file_name+'<br />'
+            str_error += '<b>'+_("Line")+'</b>: '+str(line_no)+'<br />'
+            str_error += '<b>'+_("Type")+'</b>: '+ex_type_str+'<br />'
+            
+            if not ex_value or not ex_value.args:
+                ex_error = "None"
+            elif isinstance(ex_value.args[0], int):
+                ex_error = str(ex_value.args[0])
+            else:
+                try:
+                    ex_error = str(ex_value.args[0])
+                except UnicodeDecodeError:
+                    ex_error = repr(ex_value.args[0])
+            
+            str_error += '<b>'+_("Value")+'</b>: %s</div>' % ex_error
             self.html['error_info'] = str_error
         elif value == 1: #Success
             self.session.data['feedback'] = 1
@@ -215,24 +247,25 @@ class Save(object):
 
             data = self.data
 
-            if (data.has_key('row') and data['row'] != ''):
+            if ('row' in data and data['row'] != ''):
                 str_row = '&row=' + data['row']
             else:
                 str_row = ''
 
-            
-            print self.g.redirect(urljoin(self.index_url, self.who_detail + str(id_ok) + str_row))
+            from . import exception
+            redirect_url = urljoin(self.index_url, self.who_detail + str(id_ok) + str_row)
+            raise exception.SicolException("REDIRECT:" + redirect_url)
 
     def supportMultiLanguage(self, field_names):
         data_lang = self.data_lang
         form = self.form
         dataObject = {}
         for language in data_lang:
-            lang = language.keys()[0]
+            lang = list(language.keys())[0]
             for field_name in field_names:
-                if not dataObject.has_key(lang):
+                if lang not in dataObject:
                     dataObject.update({lang:{}})
-                if form.has_key("%s_%s"%(field_name,lang)):
+                if "%s_%s"%(field_name,lang) in form:
                     dataObject[lang].update({field_name:form.getvalue("%s_%s"%(field_name,lang))})
                 else:
                     dataObject[lang].update({field_name:''})
@@ -376,7 +409,7 @@ class Save(object):
                     if (data['id_alt_states'] != None):
                         self.execute('update_alt_state', {'id_alt_states': None, 'alt_states_type': None, 'id_species': data['id_alt_states']})
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             if return_sql: self.db_log.connect.rollback()
             self.feedback(-1)
@@ -463,7 +496,7 @@ class Save(object):
                     if count > 0:
                         raise Exception(_("This numeric code already exists in database."))
 
-                from strain_formatter import StrainFormatter
+                from .strain_formatter import StrainFormatter
                 s = StrainFormatter(self.cookie_value)
                 data['code'] = s.format_strain_code_with_division(general['numeric_code'],
                                                                   general['id_division'])
@@ -473,11 +506,11 @@ class Save(object):
                 general['id_species'] = form.getvalue('id_species')
                 general['infra_complement'] = form.getvalue('infra_complement')
                 general['id_type'] = form.getvalue('id_type')
-                if form.has_key('is_ogm'):
+                if 'is_ogm' in form:
                   general['is_ogm'] = 1
                 else:
                   general['is_ogm'] = 0
-                if form.has_key('go_catalog'):
+                if 'go_catalog' in form:
                   general['go_catalog'] = 1
                 else:
                   general['go_catalog'] = 0
@@ -527,14 +560,24 @@ class Save(object):
                 coll['coll_id_state'] = ''
                 if (coll['coll_state'] is not None):
                     #Erase csc.js (in order to force it to be updated when needed)
-                    from os import path,unlink
-                    js_csc = path.join(self.g.get_config("root_dir"),self.g.get_config("js_dir"),"csc_%s.js" % self.session.data['db_name'])
-                    if (path.exists(js_csc)): unlink(js_csc)
+                    from os import path
+                    from os import unlink
+                    js_csc = path.join(self.g.get_config("root_dir"), self.g.get_config("js_dir"), "csc_%s.js" % self.session.data['db_name'])
+                    if (path.exists(js_csc)):
+                        unlink(js_csc)
                     #Get state name and state code
                     v_state = coll['coll_state'].rsplit('(',1)
-                    v_code = v_state[1].split(')')
-                    coll['coll_state'] = v_state[0]+v_code[1]
-                    coll['coll_code'] = v_code[0]
+                    if len(v_state) > 1:
+                        v_code = v_state[1].split(')')
+                        if len(v_code) > 1:
+                            coll['coll_state'] = v_state[0]+v_code[1]
+                            coll['coll_code'] = v_code[0]
+                        else:
+                            # Handle case where there's no closing parenthesis
+                            coll['coll_code'] = v_state[1]
+                    else:
+                        # Handle case where there's no opening parenthesis
+                        coll['coll_code'] = ''
                     self.execute('get_state_id',coll)
                     state_id = self.dbconnection.fetch('one')
                     if (state_id == ''):
@@ -555,7 +598,8 @@ class Save(object):
                     #Erase csc.js (in order to force it to be updated when needed)
                     from os import path,unlink
                     js_csc = path.join(self.g.get_config("root_dir"),self.g.get_config("js_dir"),"csc.js")
-                    if (path.exists(js_csc)): unlink(js_csc)
+                    if (path.exists(js_csc)):
+                        unlink(js_csc)
                     #Get city info
                     self.execute('get_city_id',coll)
                     city_id = self.dbconnection.fetch('one')
@@ -797,7 +841,7 @@ class Save(object):
                 pro = self.verify_data(pro)
                 data.update(pro)
 
-                #Stock                
+                #Stock
                 string_stock_minimum_list = form.getvalue('stock_minimum_list')
                 if string_stock_minimum_list:
                     try:
@@ -1045,7 +1089,7 @@ class Save(object):
                         self.execute("delete_str_stock_minimum",data)
 
                         # now we insert the new values
-                        for id_preservation_method, quantity in stock_minimum_list.iteritems():
+                        for id_preservation_method, quantity in stock_minimum_list.items():
                             d = {}
                             d["id_strain"] = data['id']
                             d["id_preservation_method"] = id_preservation_method
@@ -1092,7 +1136,7 @@ class Save(object):
 
                 self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             self.db_log.connect.rollback()
             self.feedback(-1)
@@ -1142,7 +1186,7 @@ class Save(object):
 
                 global_counter = int(form.getvalue('global_counter_total'))
                 if global_counter < 2:
-                    raise Exception, _("Please, choose at least one test.")
+                    raise Exception(_("Please, choose at least one test."))
 
                 #Quality Data
                 data['id_lot'] = form.getvalue('lot')
@@ -1171,7 +1215,7 @@ class Save(object):
                 strain_code = self.fetch('one', 'code')
 
                 id_log_operation = ''
-                
+
                 if save_log:
                     if self.action == 'insert':
                         id_log_operation = 14
@@ -1186,7 +1230,7 @@ class Save(object):
                     self.execute('last_insert_id')
                     data['id_quality'] = self.dbconnection.fetch('one')
 
-                    from location import LocationHelper
+                    from .location import LocationHelper
                     self.d(form)
                     self.d(form.getvalue('locations_data'))
                     origin_data_list = LocationHelper.parseLocations(form.getvalue('locations_data'))
@@ -1196,7 +1240,7 @@ class Save(object):
                         origin_data['id_origin_lot'] = data['id_lot']
                         self.execute('insert_str_quality_origin_location', origin_data)
 
-                        from location import LocationBuilder
+                        from .location import LocationBuilder
                         self.location = LocationBuilder(self.cookie_value)
 
                         dic_qt = {}
@@ -1252,8 +1296,8 @@ class Save(object):
                     str_tests += str(test['id_doc_qc']) + str(test['purity']) + self.ConvertStrUnicode(test['counting']) + str(test['counting_not_apply']) + self.ConvertStrUnicode(test['result']) + self.ConvertStrUnicode(test['comments'])
 
                 #Get Data related to each test
-                for i in xrange(1,global_counter):
-                    if not form.has_key('test_'+str(i)): continue #Ignore this test, was removed by user
+                for i in range(1,global_counter):
+                    if 'test_'+str(i) not in form: continue #Ignore this test, was removed by user
                     data['id_quality'] = data['id_quality']
                     data['id_doc'] = form.getvalue('test_'+str(i))
 
@@ -1274,7 +1318,7 @@ class Save(object):
                     data['result'] = form.getvalue('result_'+str(i))
                     data['comments'] = form.getvalue('comments_'+str(i))
                     self.execute('insert_str_quality_test', data)
-                    
+
                     #brk(host="localhost", port=9000)
                     data_db_tests += str(data['id_doc']) + str(data['purity']) + str(data['counting']) + str(data['counting_not_apply']) + str(data['result']) + str(data['comments'])
 
@@ -1320,7 +1364,7 @@ class Save(object):
                         self.execute('get_quality_origin_location', {'id' : self.data['id_quality']})
                         locations = self.fetch('all')
 
-                    from quality import Quality
+                    from .quality import Quality
                     quality = Quality('delete', self.cookie_value, self.form)
                     #Update ampoules for this lot
                     self.execute('delete_str_quality_origin', {'id_quality': data['id_quality']})
@@ -1328,7 +1372,7 @@ class Save(object):
 
                     if save_log:
                         return_sql = []
-                        from location import LocationBuilder
+                        from .location import LocationBuilder
                         self.location = LocationBuilder(self.cookie_value)
 
                         id_log_operation = 16
@@ -1370,7 +1414,7 @@ class Save(object):
                     if save_log:
                         self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             self.db_log.connect.rollback()
             self.feedback(-1)
@@ -1414,7 +1458,7 @@ class Save(object):
                 else:
                     data['id_category'] = None
 
-                if form.has_key('go_catalog'):
+                if 'go_catalog' in form:
                     data['go_catalog'] = 1
                 else:
                     data['go_catalog'] = 0
@@ -1425,7 +1469,7 @@ class Save(object):
                 data_mlang['description'] = data_fields[lang]['description']
                 data.update(data_mlang)
 
-                if form.has_key('new_file_%s'%lang):
+                if 'new_file_%s'%lang in form:
                     #Get file_name if 'new_file' or same file
                     if form['new_file_%s'%lang].filename:
                         #fix bug for IE 6.0 or less, because it sends the complete path of file
@@ -1437,6 +1481,32 @@ class Save(object):
 
                     #Doc File
                     doc_file = form['new_file_%s'%lang].file
+
+                    # Verify if file object is valid
+                    if not doc_file:
+                        raise Exception(_("No file was uploaded or file is empty"))
+
+                    # Reset file pointer to beginning
+                    if hasattr(doc_file, 'seek'):
+                        doc_file.seek(0)
+
+                    # Verify if document directory exists and is writable
+                    if not path.exists(self.doc_dir):
+                        raise Exception(_("Document directory does not exist") + ": " + self.doc_dir)
+
+                    # Test if directory is actually writable by creating a temporary file
+                    import tempfile
+                    try:
+                        with tempfile.NamedTemporaryFile(dir=self.doc_dir, delete=True):
+                            pass  # Directory is writable
+                    except (OSError, IOError, PermissionError) as e:
+                        import getpass
+                        current_user = getpass.getuser()
+                        error_msg = _("Document directory is not writable") + ": " + self.doc_dir + "<br/>"
+                        error_msg += _("Error") + ": " + str(e) + "<br/>"
+                        error_msg += _("Current user") + ": " + current_user + "<br/>"
+                        error_msg += _("Solution") + ": " + _("Contact administrator to fix directory permissions")
+                        raise Exception(error_msg)
 
                     if is_first:
                         if self.action == 'insert':
@@ -1483,20 +1553,27 @@ class Save(object):
 
                             #Generate internal file code
                             file_code = str(data['id']) + str(data['data_lang'])
-                            file_code = new_sha(file_code).hexdigest()
+                            file_code = new_sha(file_code.encode('utf-8')).hexdigest()
 
                             #Make and Open File
                             file_dir = path.join(self.doc_dir, file_code)
-                            file_open = file(file_dir, "wb")
+                            file_open = None
+                            try:
+                                file_open = open(file_dir, "wb")
 
-                            #Update Data from File and close
-                            max_file_size = self.g.get_config('upload_limit')
-                            while True:
-                                chunk = doc_file.read()
-                                if not chunk: break
-                                if max_file_size != '' and (int(len(chunk)) > int(max_file_size)): raise Exception,_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes")
-                                file_open.write(chunk)
-                            file_open.close()
+                                max_file_size = self.g.get_config('upload_limit')
+                                chunk_size = 8192000  # Read in 8MB chunks
+                                total_size = 0
+                                while True:
+                                    chunk = doc_file.read(chunk_size)
+                                    if not chunk: break
+                                    total_size += len(chunk)
+                                    if max_file_size != '' and total_size > int(max_file_size):
+                                        raise Exception(_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes"))
+                                    file_open.write(chunk)
+                            finally:
+                                if file_open:
+                                    file_open.close()
 
                     elif (self.action == 'insert'):
                             if data_mlang['title']: self.execute('insert_doc_title_multilanguage', data)
@@ -1508,23 +1585,31 @@ class Save(object):
                             #Generate internal file code
                             #file_code = str(data['id']) + str(data['id_lang'])
                             file_code = str(data['id']) + str(data['data_lang'])
-                            file_code = new_sha(file_code).hexdigest()
+                            file_code = new_sha(file_code.encode('utf-8')).hexdigest()
 
                             #Make and Open File
                             file_dir = path.join(self.doc_dir, file_code)
-                            file_open = file(file_dir, "wb")
+                            file_open = None
+                            try:
+                                file_open = open(file_dir, "wb")
 
-                            #Save data in File and close
-                            max_file_size = self.g.get_config('upload_limit')
-                            while True:
-                                chunk = doc_file.read()
-                                if not chunk: break #could not read file
-                                if max_file_size != '' and (int(len(chunk)) > int(max_file_size)): raise Exception,_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes")
-                                file_open.write(chunk)
-                            file_open.close()
+                                #Save data in File and close
+                                max_file_size = self.g.get_config('upload_limit')
+                                chunk_size = 8192000  # Read in 8MB chunks
+                                total_size = 0
+                                while True:
+                                    chunk = doc_file.read(chunk_size)
+                                    if not chunk: break #could not read file
+                                    total_size += len(chunk)
+                                    if max_file_size != '' and total_size > int(max_file_size):
+                                        raise Exception(_("Exceeded maximum size limit of")+" "+str(max_file_size)+" "+_("bytes"))
+                                    file_open.write(chunk)
+                            finally:
+                                if file_open:
+                                    file_open.close()
 
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             self.feedback(-1)
         else:
@@ -1560,7 +1645,7 @@ class Save(object):
                 data['year'] = form.getvalue('year')
                 data['url'] = form.getvalue('url')
 
-                if form.has_key('go_catalog'):
+                if 'go_catalog' in form:
                     data['go_catalog'] = 1
                 else:
                     data['go_catalog'] = 0
@@ -1594,7 +1679,7 @@ class Save(object):
 
                     if data_mlang['comments']: self.execute('insert_ref_comments_multilanguage',data)
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             self.feedback(-1)
         else:
@@ -1632,7 +1717,7 @@ class Save(object):
                 data['email'] = form.getvalue('email')
                 #last_update updated by sql function "NOW()"
 
-                if form.has_key('go_catalog'):
+                if 'go_catalog' in form:
                     data['go_catalog'] = 1
                 else:
                     data['go_catalog'] = 0
@@ -1658,10 +1743,10 @@ class Save(object):
                     contacts = []
                     #Input name prefixes: select_inst_, check_contact_, text_dep_, text_email_
                     index = None
-                    for key in form.keys():
+                    for key in list(form.keys()):
                         if not key.startswith('select_inst_'): continue
                         index = int (key.split('_')[-1])
-                        if form.has_key ('check_contact_%d' % index): is_contact = 'yes'
+                        if 'check_contact_%d' % index in form: is_contact = 'yes'
                         else: is_contact = None
                         contacts.append ({'id':             data['id'],
                                           'id_institution': form.getvalue('select_inst_%d' % index),
@@ -1711,7 +1796,7 @@ class Save(object):
                                 #Deposit - responsible for authentication
                                 self.execute('exists_responsible_usage_in_strain_deposit', data, raw_mode = True)
                                 responsibles = self.fetch('all')
-                                
+
                                 if origins or isolations or identifications or deposits or responsibles:
                                     log = True
 
@@ -1788,7 +1873,7 @@ class Save(object):
 
                     if data_mlang['comments']: self.execute('insert_person_comments_multilanguage', data)
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             if return_sql: self.db_log.connect.rollback()
             self.feedback(-1)
@@ -1832,7 +1917,7 @@ class Save(object):
                 data['email'] = form.getvalue('email')
                 data['website'] = form.getvalue('website')
 
-                if form.has_key('go_catalog'):
+                if 'go_catalog' in form:
                     data['go_catalog'] = 1
                 else:
                     data['go_catalog'] = 0
@@ -1948,7 +2033,7 @@ class Save(object):
 
                     if data_mlang['comments']: self.execute('insert_inst_comments_multilanguage', data)
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             if return_sql: self.db_log.connect.rollback()
             self.feedback(-1)
@@ -2036,12 +2121,12 @@ class Save(object):
                     self.execute('last_insert_id')
                     data['id'] = self.dbconnection.fetch('one')
 
-                    from location import LocationHelper
+                    from .location import LocationHelper
                     self.d(data['locations_data'])
                     origin_data_list = LocationHelper.parseLocations(data['locations_data'])
 
                     for origin_data in origin_data_list:
-                        from location import LocationBuilder
+                        from .location import LocationBuilder
                         self.location = LocationBuilder(self.cookie_value)
 
                         self.logger.debug('**** Origin lot: %s', origin_data)
@@ -2083,7 +2168,7 @@ class Save(object):
 
                 is_first = False
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             if save_log:
                 self.db_log.connect.rollback()
@@ -2123,7 +2208,7 @@ class Save(object):
         
         #brk("localhost", 9000)        
         
-        from location import LocationBuilder
+        from .location import LocationBuilder
         self.location = LocationBuilder(self.cookie_value)
                
         
@@ -2135,13 +2220,13 @@ class Save(object):
             if self.action == 'insert':                
                 global_counter = int(form.getvalue('global_counter_total'))
                 if global_counter < 2:
-                    raise Exception, _("At least one stock position must me chosen.")
+                    raise Exception(_("At least one stock position must me chosen."))
                 
                 self.execute('insert_stock_movement', data)
                 self.execute('last_insert_id')
                 data['id'] = self.fetch('one')
                 return_sql = []
-                for i in xrange(1, global_counter):
+                for i in range(1, global_counter):
                     origin_form = form.getvalue('stockmovement_origin_location_' + str(i))
                     if (origin_form is not None and origin_form != ""):
                         origin = origin_form.split('_')
@@ -2209,7 +2294,7 @@ class Save(object):
 
             elif self.action == 'update':
                 self.execute('update_stock_movement', data)
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             self.db_log.connect.rollback()
             self.feedback(-1)
@@ -2234,7 +2319,7 @@ class Save(object):
             dic_temp['cryo'] = form.getvalue('preservation_cryo_'+str(n))
             dic_temp['type'] = form.getvalue('preservation_type_'+str(n))
             dic_temp['purity'] = form.getvalue('preservation_purity_'+str(n))
-            if form.getvalue('hdnReusedStrain') <> "[]" and form.getvalue('hdnReusedStrain') <> None:
+            if form.getvalue('hdnReusedStrain') != "[]" and form.getvalue('hdnReusedStrain') != None:
                 dic_temp['hdnReusedStrain'] = eval(form.getvalue('hdnReusedStrain'))
             else:
                 dic_temp['hdnReusedStrain'] = []
@@ -2273,7 +2358,7 @@ class Save(object):
         self.db_log = dbConnection(base_descr = dict_db_log)
         self.execute_log = self.db_log.execute
 
-        from location import LocationBuilder
+        from .location import LocationBuilder
         self.location = LocationBuilder(self.cookie_value)
 
         id_log_level = 3
@@ -2288,7 +2373,7 @@ class Save(object):
         try:
             global_counter = int(form.getvalue('global_counter_total'))
             if global_counter < 2:
-                raise Exception, _("At least one strain must me chosen.")
+                raise Exception(_("At least one strain must me chosen."))
             #Transform string in data structure
             aux = form.getvalue('global_lot_strain_values')
             lot_strain_ampoules = {}
@@ -2364,20 +2449,20 @@ class Save(object):
                 #Check which Strains were removed
                 #####
                 removed_combo = {}
-                for i in old_combo.keys():
+                for i in list(old_combo.keys()):
                     if i not in new_combo:
                         removed_combo[i] = old_combo[i]
                 #####
                 #Check which Strains were added
                 #####
-                for i in new_combo.keys():
+                for i in list(new_combo.keys()):
                     if i not in old_combo:
                         added_combo[i] = new_combo[i]
                 #####
                 #Check which Strains had their origin changed
                 #####
                 changed_combo = {}
-                for i in old_combo.keys():
+                for i in list(old_combo.keys()):
                     if (i in new_combo) and (old_combo[i] != new_combo[i]):
                         changed_combo[i] = {'old':old_combo[i],'new':new_combo[i]}
 
@@ -2450,8 +2535,8 @@ class Save(object):
                         self.delete_preservation_strain(True,i,data['inserted_lot_id'])
 
             #Get Data related to each strain
-            for i in xrange(1,global_counter):
-                if not form.has_key('preservation_strain_'+str(i)):
+            for i in range(1,global_counter):
+                if 'preservation_strain_'+str(i) not in form:
                     continue #Ignore this strain, was removed by user
                 
                 data['id_strain'] = form.getvalue('preservation_strain_'+str(i))
@@ -2521,8 +2606,8 @@ class Save(object):
                         id_log_operation = 9
 
                         #check changed data strain in preservation (used in log)
-                        for n in xrange(1,global_counter):
-                            if not form.has_key('preservation_strain_'+str(n)):
+                        for n in range(1,global_counter):
+                            if 'preservation_strain_'+str(n) not in form:
                                     continue
 
                             id_strain = form.getvalue('preservation_strain_'+str(n))
@@ -2566,8 +2651,8 @@ class Save(object):
                         data['id'] = self.dbconnection.fetch('one')
 
                         #check changed data strain in preservation
-                        for n in xrange(1,global_counter):
-                            if not form.has_key('preservation_strain_'+str(n)):
+                        for n in range(1,global_counter):
+                            if 'preservation_strain_'+str(n) not in form:
                                     continue
 
                             id_strain = form.getvalue('preservation_strain_'+str(n))
@@ -2600,7 +2685,7 @@ class Save(object):
                 
                 location_data_del = {}
 
-                if self.action == 'update' and old_prepared_amps.has_key(int(data['id_strain'])):
+                if self.action == 'update' and int(data['id_strain']) in old_prepared_amps:
                     #Amount of prepared ampoules changed for this Strain
                     old_val = int(old_prepared_amps[int(data['id_strain'])])
                     new_val = int(data['prepared'])
@@ -2609,7 +2694,7 @@ class Save(object):
                     if old_val != new_val:
                         #raise error if count is negative
                         if num_ampoules + (new_val - old_val) < 0:
-                            raise Exception, _("The preservation has less than ampoules has already been used.")
+                            raise Exception(_("The preservation has less than ampoules has already been used."))
 
                 new_strain = False
                 #Verify if lot-strain combination already exists
@@ -2640,7 +2725,7 @@ class Save(object):
                         self.execute('delete_lot_strain_location', lsl_data)
 
                 #Retrieve stock location data
-                from json import JsonBuilder
+                from .json import JsonBuilder
                 self.logger.debug(data)
                 locations = JsonBuilder.parse(form.getvalue('current_locations_'+str(i)))
                 loc_pos = -1
@@ -2735,7 +2820,7 @@ class Save(object):
                 self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
 
 
-        except Exception, e:
+        except Exception as e:
             #self.session.data['preservation_form_data'] = form
             self.dbconnection.connect.rollback()
             self.db_log.connect.rollback()
@@ -2798,7 +2883,7 @@ class Save(object):
                 qt = self.fetch('one')
                 
                 if (qt > 0):
-                    raise Exception, _("A container with the same abbreviation already exists.")
+                    raise Exception(_("A container with the same abbreviation already exists."))
                 
                 self.execute('insert_container', data)
                 self.execute('last_insert_id')
@@ -2811,10 +2896,11 @@ class Save(object):
                 #brk("localhost", 9000)
                 complete_structure = eval(form.getvalue('complete_structure')[:-2])
                 if type(complete_structure) != tuple:
-                    import config
+                    from . import config
                     out = config.http_header+'\n\n'
                     out += ' - %s <b>%s</b> %s<br>\n' % (_("field"), _('structure'), _("must not be empty."))
-                    print out.encode('utf8')
+                    import sys
+                    sys.stdout.buffer.write(out.encode('utf8'))
                     exit(1)
  
                 for node in complete_structure:
@@ -2828,7 +2914,7 @@ class Save(object):
                 qt = self.fetch('one')
                 
                 if (qt > 0):
-                    raise Exception, _("A container with the same abbreviation already exists.")
+                    raise Exception(_("A container with the same abbreviation already exists."))
                     
                 self.execute('update_container', data)
                 
@@ -2844,16 +2930,17 @@ class Save(object):
                 
                 complete_structure = eval(form.getvalue('complete_structure')[:-2])
                 if type(complete_structure) != tuple:
-                    import config
+                    from . import config
                     out = config.http_header+'\n\n'
                     out += ' - %s <b>%s</b> %s<br>\n' % (_("field"), _('structure'), _("must not be empty."))
-                    print out.encode('utf8')
+                    import sys
+                    sys.stdout.buffer.write(out.encode('utf8'))
                     exit(1)
  
                 for node in complete_structure:
                     self.logger.debug(node)
                     self._insert_node(node, data['id'])
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             self.feedback(-1)
         else:
@@ -2934,17 +3021,17 @@ class Save(object):
             xml += '</filters>'
             
             xml += '<format '
-            if new_report.has_key('format'):
+            if 'format' in new_report:
                 xml += 'type="' + str(new_report['format']) + '" '
-            if new_report.has_key('header_position'):
+            if 'header_position' in new_report:
                 xml += 'header_position="' + str(new_report['header_position']) + '" '
-            if new_report.has_key('append_subcoll_templates'):
+            if 'append_subcoll_templates' in new_report:
                 xml += 'append_subcoll_templates="' + str(new_report['append_subcoll_templates']) + '" '
-            if new_report.has_key('separator'):
+            if 'separator' in new_report:
                 xml += 'separator="' + str(new_report['separator']) + '" '
-            if new_report.has_key('header'):
+            if 'header' in new_report:
                 xml += 'header="' + str(new_report['header']) + '" '
-            if new_report.has_key('chart_type'):
+            if 'chart_type' in new_report:
                 xml += 'chart_type="' + str(new_report['chart_type']) + '" '
             xml += '/>'
             
@@ -2977,7 +3064,7 @@ class Save(object):
             data['description'] = new_report['name']
             data['definition'] = xml
             
-            if self.session.data.get('new_report', {'action':''}).has_key('action') == False:
+            if ('action' in self.session.data.get('new_report', {'action':''})) == False:
                 self.execute('insert_report_xml', data)
                 
                 self.execute('last_insert_id')
@@ -2998,7 +3085,7 @@ class Save(object):
                 self.session.data['new_report'] = {}
                 self.session.save()
 
-        except Exception, e:
+        except Exception as e:
             self.dbconnection.connect.rollback()
             self.feedback(-1)
         else:
@@ -3007,17 +3094,17 @@ class Save(object):
             
     def mount_filter_xml(self, item):
         xml = '<filter '
-        if item.has_key('field'):
+        if 'field' in item:
             xml += 'field="'        + item['field']        + '" '
-        if item.has_key('condition'):
+        if 'condition' in item:
             xml += 'condition="'    + item['condition']    + '" '
-        if item.has_key('value'):
+        if 'value' in item:
             xml += 'value="'        + item['value']        + '" '
-        if item.has_key('user_defined'):
+        if 'user_defined' in item:
             xml += 'user_defined="' + item['user_defined'] + '" '
-        if item.has_key('connector'):
+        if 'connector' in item:
             xml += 'connector="'    + item['connector']    + '" '
-        if item.has_key('field_lookup'):
+        if 'field_lookup' in item:
             xml += 'field_lookup="' + item['field_lookup'] + '" '
         if item['childs'] == []:
             xml += '/>'
@@ -3033,12 +3120,12 @@ class Save(object):
     
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno

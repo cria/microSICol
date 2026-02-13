@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 from types import *
@@ -8,8 +8,8 @@ class JsonBuilder:
     @classmethod
     def createJson(cls, dictionary):
         json = []
-        keys = dictionary.keys();
-        from loghelper import Logging
+        keys = list(dictionary.keys());
+        from .loghelper import Logging
         keys.sort();
         
         for key in keys:
@@ -27,7 +27,7 @@ class JsonBuilder:
             #    item = "[%s]" % (", ".join(item)) 
 
             # if type is numeric, use raw value, without scaping
-            if type(item) in (IntType, LongType, FloatType):
+            if isinstance(item, (int, float)):
                 format = "'%s': %s"
                 
             json.append(format % (key, item))
@@ -36,10 +36,10 @@ class JsonBuilder:
     
     @classmethod
     def parse(cls, jsonString):
-        import simplejson
-        return simplejson.loads(jsonString)
+        import json
+        return json.loads(jsonString)
     
     @classmethod
     def dump(cls, obj):
-        import simplejson
-        return simplejson.dumps(obj)
+        import json
+        return json.dumps(obj)

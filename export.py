@@ -45,16 +45,16 @@ def exportData(host,user,pwd,dbname,port):
   doc.appendChild(doc_db)
   try:
     #Connect to database
-    print "Connecting to database..."
+    print("Connecting to database...")
     connect = mysql.connect(host, user, pwd, dbname, int(port), use_unicode=True, charset='utf8')
     cursor = mysql.cursors.DictCursor(connect)
     #Get all available TABLES
     cursor.execute("SHOW TABLES")
     all_tables = cursor.fetchall() #Returns ({'Tables_in_sicol_v123':...},{'...':'...'},{...},...)
-    print "Creating XML from all " + str(len(all_tables)) + " tables..."
+    print("Creating XML from all " + str(len(all_tables)) + " tables...")
     for one_table in all_tables:
       tablename = one_table.values()[0]
-      print "Parsing table '%s'..." % tablename
+      print("Parsing table '%s'..." % tablename)
       doc_table = doc.createElement("table")
       doc_table.setAttribute("name",tablename)
       doc_db.appendChild(doc_table)
@@ -87,20 +87,20 @@ def exportData(host,user,pwd,dbname,port):
     cursor.close()
     connect.close()
     #Save XML
-    print "Saving XML..."
+    print("Saving XML...")
     import datetime
     today_str = str(datetime.datetime.today())[:-7].replace(":","").replace(" ","_").replace("-","_") + '.xml'
     xml = doc.toprettyxml().encode('utf-8')
     f = open(today_str,'w')
     f.write(xml)
     f.close()
-  except mysql.Error, e:
-    print str(e)
+  except mysql.Error as e:
+    print(str(e))
     return
-  except Exception,e:
-    print str(e)
+  except Exception as e:
+    print(str(e))
     return
-  print "*** Export Finished ***"
+  print("*** Export Finished ***")
   return today_str
 
 def exportSQLite():
@@ -110,7 +110,7 @@ def exportSQLite():
   import os
   from pysqlite2 import dbapi2 as sqlite
   sqlitedb = os.path.join(os.curdir,'db','sqlite.db')
-  print "Connecting to SQLite database..."
+  print("Connecting to SQLite database...")
   if os.path.exists(sqlitedb):
     doc = Document()
     doc_db = doc.createElement("database")
@@ -123,7 +123,7 @@ def exportSQLite():
     all_tables = cursor.fetchall()
     for table in all_tables:
       table = table[0] #items are inside a tuple
-      print "Parsing table '%s'..." % table
+      print("Parsing table '%s'..." % table)
       cursor.execute('SELECT * FROM %s' % table)
       rows = cursor.fetchall()
       cols = [x[0] for x in cursor.description]
@@ -160,7 +160,7 @@ def exportSQLite():
     cursor.close()
     connect.close()
     #Save XML
-    print "Saving SQLite XML..."
+    print("Saving SQLite XML...")
     import datetime
     today_str = str(datetime.datetime.today())[:-7].replace(":","").replace(" ","_").replace("-","_") + '_sqlite.xml'
     xml = doc.toprettyxml().encode('utf-8')
@@ -168,16 +168,16 @@ def exportSQLite():
     f.write(xml)
     f.close()
   else:
-    print "*** ERROR ***"
-    print "Could not connect to SQLite database"
+    print("*** ERROR ***")
+    print("Could not connect to SQLite database")
     raw_input()
     return
-  print "*** Export Finished ***"
+  print("*** Export Finished ***")
   return today_str
 
 #If this script is called locally...
 if __name__ == "__main__":
-  print "*** Export SICol Database ***"
+  print("*** Export SICol Database ***")
   opt = raw_input("Export MySQL data? (y/n)")[0].lower()
   if opt == 'y':
     import getpass
