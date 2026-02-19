@@ -1933,8 +1933,8 @@
           id_sciname = %(id_sciname)s
         ORDER BY id_hierarchy;]]></sql>
 
-       <sql name="check_sciname"><![CDATA[
-       SELECT id_sciname FROM scientific_names WHERE CONCAT(COALESCE(hi_tax, ''),'|',sciname)=%(compound_hitax_sciname)s;]]></sql>
+       <sql name="check_sciname"><![CDATA[SELECT * FROM scientific_names INNER JOIN species ON (scientific_names.id_sciname = species.id_sciname) 
+        WHERE CONCAT(COALESCE(hi_tax, ''),'|',sciname)=%(compound_hitax_sciname)s AND id_subcoll = %(id_subcoll)s and scientific_names.id_sciname <> %(id_sciname)s]]></sql>
 
         <sql name="get_sciname_for_species"><![CDATA[
           SELECT id_sciname FROM species WHERE id_species=%(id)s;]]></sql>
