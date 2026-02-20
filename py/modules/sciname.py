@@ -46,7 +46,7 @@ class SciNameBuilder(object):
         self.cursor = self.dbconnection.cursor
         self.fetch = self.dbconnection.fetch
 
-    def check_existing(self, hi_tax, sciname, id_sciname=None):
+    def check_existing(self, hi_tax, sciname,id_subcoll, id_sciname=None):
         if not hi_tax:
             hi_tax = ''
         
@@ -65,7 +65,7 @@ class SciNameBuilder(object):
         
         # Criar o valor composto de forma segura
         compound_value = '%s|%s' % (hi_tax, sciname)
-        sciname_data = {'compound_hitax_sciname': compound_value}
+        sciname_data = {'compound_hitax_sciname': compound_value, 'id_subcoll':id_subcoll, 'id_sciname':id_sciname }
         
         self.logger.debug("Checking for existing sciname with compound value: %s" % compound_value)
         
@@ -74,6 +74,9 @@ class SciNameBuilder(object):
             result = self.fetch('one')
             current_id_sciname = str(result) if result is not None else None
             self.logger.debug("current id: %s" % (current_id_sciname))
+            
+            self.logger.debug("sciname_data leo: %s" % (sciname_data))
+
         except Exception as e:
             self.logger.error("Error in check_existing: %s" % str(e))
             self.logger.error("compound_value: %s" % compound_value)
@@ -99,7 +102,7 @@ class SciNameBuilder(object):
     def update(self, id_subcoll, id_lang, id_sciname, form):
         hi_tax = form.getvalue('higher_taxa_html') or ''
         sciname = form.getvalue('sciname_html') or ''
-        if self.check_existing(hi_tax, sciname, id_sciname):
+        if self.check_existing(hi_tax, sciname, id_subcoll, id_sciname):
             from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
 
@@ -117,7 +120,7 @@ class SciNameBuilder(object):
     def insert(self, id_subcoll, id_lang, form):
         hi_tax = form.getvalue('higher_taxa_html') or ''
         sciname = form.getvalue('sciname_html') or ''
-        if self.check_existing(hi_tax, sciname):
+        if self.check_existing(hi_tax, sciname, id_subcoll, 0):
             from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
 
