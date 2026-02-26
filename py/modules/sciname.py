@@ -75,7 +75,7 @@ class SciNameBuilder(object):
             current_id_sciname = str(result) if result is not None else None
             self.logger.debug("current id: %s" % (current_id_sciname))
             
-            self.logger.debug("sciname_data leo: %s" % (sciname_data))
+            self.logger.debug("sciname_data: %s" % (sciname_data))
 
         except Exception as e:
             self.logger.error("Error in check_existing: %s" % str(e))
