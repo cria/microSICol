@@ -81,7 +81,12 @@ class dbConnection(object):
                     if isinstance(login_check, bytes):
                         login_check = login_check.decode('utf-8')
                     out += login_check % -3
-                if (e.args[0] == 1044):  # Error - Access denied for user 'sicol'@'%' to database 'sicol_v100'
+                elif (e.args[0] == 1130):  # Error - Host is not allowed to connect
+                    out += '<br /><br /><strong>%s</strong><br />' % _('Solution:')
+                    out += '%s<br /><br />' % _('Your machine IP is not authorized to connect to the MySQL database.')
+                    out += '<code>python3 setup_mysql_permissions.py</code><br />'
+                    out += '%s<br /><br />' % _('Run this command from the microSICol root directory to configure automatic permissions.')
+                elif (e.args[0] == 1044):  # Error - Access denied for user 'sicol'@'%' to database 'sicol_v100'
                     login_check = self.g.read_html('login_check')
                     if isinstance(login_check, bytes):
                         login_check = login_check.decode('utf-8')
