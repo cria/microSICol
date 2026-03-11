@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import mysql.connector as mysql
+import socket
 from sys import exit
 
 
@@ -10,11 +11,27 @@ class Test(object):
     def __init__(self):
         pass
 
+    def get_local_ip(self):
+        """Obtém o IP real da máquina"""
+        try:
+            # Conecta a um socket UDP externo para descobrir o IP local
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(('8.8.8.8', 80))  # Google DNS
+            ip = s.getsockname()[0]
+            s.close()
+            return ip
+        except:
+            # Fallback para gethostbyname se o método anterior falhar
+            return socket.gethostbyname(socket.gethostname())
+
     def conexao(self):
         connect = None
         try:
+            local_ip = self.get_local_ip()
+            print(f'IP real detectado: {local_ip}')
+
             connect = mysql.connect(
-                    host='localhost',
+                    host=local_ip,
                     user='sicol',
                     password='sicol',
                     database='sicol_v110',
