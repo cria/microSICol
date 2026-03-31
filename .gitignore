@@ -1,0 +1,5 @@
+*.pyc
+session/*.ini
+db/sqlite.db
+config.xml
+py/sicol.log

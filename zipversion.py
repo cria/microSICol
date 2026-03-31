@@ -11,9 +11,9 @@ import sys
 try:
   sys_version = str(int(raw_input("System Version number = ")))
   db_version = str(int(raw_input("Database Version number = ")))
-except Exception,e:
-  print "*********** ERROR ***********"
-  print "Please type only numbers."
+except Exception as e:
+  print("*********** ERROR ***********")
+  print("Please type only numbers.")
   raw_input()
   sys.exit(0)
 #Create Empty Zip File (ZIP_STORED = no compression, ZIP_DEFLATED = compressed)
@@ -39,10 +39,10 @@ try:
     for name in files:
       if name[-4:] != '.zip': #Don't get recursively any zip file!
         zip.write(os.path.join(root,name).replace('\\','/')[2:])
-except Exception,e:
-  print str(e)
+except Exception as e:
+  print(str(e))
   raw_input()
 zip.close()
 #Script finished
-print "Zip completed."
+print("Zip completed.")
 raw_input()

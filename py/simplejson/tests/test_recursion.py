@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
@@ -58,7 +58,7 @@ class TestRecursion(TestCase):
 
     def test_defaultrecursion(self):
         enc = RecursiveJSONEncoder()
-        self.assertEquals(enc.encode(JSONTestObject), '"JSONTestObject"')
+        self.assertEqual(enc.encode(JSONTestObject), '"JSONTestObject"')
         enc.recurse = True
         try:
             enc.encode(JSONTestObject)

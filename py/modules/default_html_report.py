@@ -1,23 +1,22 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 #from dbgp.client import brk
-from cgi import escape
-from urlparse import urljoin
+from urllib.parse import urljoin
 from re import findall
 from sys import exit
-from urllib import urlencode
+from urllib.parse import urlencode
 import cgi
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from reports_common import Reports_Common
-from labels import label_dict
-from dom_xml import Xml
-from label_values_reports import label_values_dict
-from label_values_reports import values_dict
+from .session import Session
+from .dbconnection import dbConnection
+from .reports_common import Reports_Common
+from .labels import label_dict
+from .dom_xml import Xml
+from .label_values_reports import label_values_dict
+from .label_values_reports import values_dict
 
 class Default_Html_Report(Reports_Common):    
     
@@ -81,7 +80,7 @@ class Default_Html_Report(Reports_Common):
                 
                 try:
                     list = self.get_data(select, param['filters'], append_where, group)
-                except Exception, err:
+                except Exception as err:
                     raise err
                 
                 if param['header_position'] == 'internal':
@@ -106,7 +105,7 @@ class Default_Html_Report(Reports_Common):
             else:
                 try:
                     list = self.get_data(param['select'], param['filters'], append_where, [])
-                except Exception, err:
+                except Exception as err:
                     raise err
                 
                 if param['header_position'] == 'internal':
@@ -131,7 +130,7 @@ class Default_Html_Report(Reports_Common):
             #brk(host="localhost", port=9000)
             try:
                 list_group = self.get_data(select, param['filters'], append_where, group, True)
-            except Exception, err:
+            except Exception as err:
                     raise err
             
             
@@ -147,7 +146,12 @@ class Default_Html_Report(Reports_Common):
                 #group_value = param['group'][num_group_by] + " = '" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf8") + "' "
                 tmp = type(item[param['group'][num_group_by]]).__name__
                 if tmp != "str":
-                    group_value = param['group'][num_group_by] + " LIKE x'" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf-8").encode("hex") + "' "
+                    converted_value = self.ConvertStrUnicode(item[param['group'][num_group_by]])
+                    if isinstance(converted_value, str):
+                        hex_value = converted_value.encode("utf-8").hex()
+                    else:
+                        hex_value = str(converted_value).encode("utf-8").hex()
+                    group_value = param['group'][num_group_by] + " LIKE x'" + hex_value + "' "
                 else:
                     group_value = param['group'][num_group_by] + " IS NULL "
                     
@@ -250,7 +254,7 @@ class Default_Html_Report(Reports_Common):
         
         try:
             table = self.write_report(self.report_params, 0, "")
-        except Exception, err:
+        except Exception as err:
                     raise err
         
         output = output + table

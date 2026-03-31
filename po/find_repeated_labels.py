@@ -37,9 +37,9 @@ def main():
         count += 1
         if len(labels[label]) > 1:
             for l in labels[label]:
-                print l
-            print
-    print "Unique Count: %i" % count
+                print(l)
+            print()
+    print("Unique Count: %i" % count)
 
 if __name__ == "__main__":
     main()

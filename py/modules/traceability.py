@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 # Python imports
@@ -6,16 +6,16 @@ from time import strftime, strptime
 import math
 
 # Project imports
-from dbconnection import dbConnection
-from general import General
-from getdata import Getdata
-from log import Log
-from loghelper import Logging
+from .dbconnection import dbConnection
+from .general import General
+from .getdata import Getdata
+from .log import Log
+from .loghelper import Logging
 from os import environ
-from session import Session
-from labels_traceability import label_trace
-from labels_traceability import label_values_dict
-from labels_traceability import values_dict
+from .session import Session
+from .labels_traceability import label_trace
+from .labels_traceability import label_values_dict
+from .labels_traceability import values_dict
 
 
 class Traceability(object):
@@ -46,6 +46,8 @@ class Traceability(object):
             data['id_subcoll'] = self.session.data['id_subcoll']
             # Non-Admin users are not allowed here
             data['page'] = self.g.read_html('access.denied')
+            if isinstance(data['page'], bytes):
+                data['page'] = data['page'].decode('utf-8')
             self.data = data
 
             self.form = form
@@ -81,6 +83,9 @@ class Traceability(object):
     def check_permissions(self):
         if (self.g.isManager(self.session.data['roles'])):  # Admin or Manager
             self.data['page'] = self.g.read_html('traceability')
+            # Convert bytes to string if necessary
+            if isinstance(self.data['page'], bytes):
+                self.data['page'] = self.data['page'].decode('utf-8')
 
     def render_page(self):
         self.check_permissions()
@@ -262,7 +267,10 @@ class Traceability(object):
         self.execute_log('log_log_list', query_data)
 
         # Calculate how many pages are
-        lines = float(self.dbconnection_log.getrows())
+        rowscount = self.dbconnection_log.getrows()
+        if rowscount is None:
+            rowscount = 0
+        lines = float(rowscount)
         lines_per_page = int(self.session.data['lines_per_page'])
         total_pages = int(math.ceil(lines / lines_per_page))
 
@@ -315,7 +323,8 @@ class Traceability(object):
             return ""
 
     def user_condition(self, filter_value):
-        return "AND user LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND user LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 
     def operation_condition(self, filter_value):
         return "AND id_log_operation = '%s'" % filter_value
@@ -324,16 +333,19 @@ class Traceability(object):
         return "AND id_entity LIKE '%%%s%%'" % filter_value
 
     def strain_code_condition(self, filter_value):
-        return "AND code_entity LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND code_entity LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 		
     def lot_condition(self, filter_value):
-        return "AND lot LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND lot LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 
     def field_condition(self, filter_value):
         return "AND id_log_field = '%s'" % filter_value
 
     def value_condition(self, filter_value):
-        return "AND value LIKE '%%%s%%'" % filter_value
+        g = General()
+        return "AND value LIKE '%%%s%%'" % g.ConvertStrUnicode(filter_value)
 
     def users_list_as_options(self, selected_value):
         return self.anything_list_as_options(
@@ -365,6 +377,8 @@ class Traceability(object):
         selected_value=None,
         translate=False):
 
+        g = General()
+
         option_template = '<option value="%s">%s</option>'
         selected_option_template = '<option value="%s" selected>%s</option>'
 
@@ -382,7 +396,7 @@ class Traceability(object):
         options = [empty_option]
 
         for row in rows:
-            if str(row[value_field]) == str(selected_value):
+            if g.ConvertStrUnicode(row[value_field]) == g.ConvertStrUnicode(selected_value):
                 template = selected_option_template
             else:
                 template = option_template
