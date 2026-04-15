@@ -282,14 +282,14 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_species'] = filter
             self.session.save()
         elif ('filter_species' in self.session.data):
             filter = self.session.data['filter_species']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -298,9 +298,9 @@ class Lists(object):
                 #0x25 == '%'
                 #self.data['condition'].append("AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' OR sp.genus LIKE x'25" + word.encode("hex") + "25' OR sp.subgenus LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR sp.species LIKE x'25" + word.encode("hex") + "25' OR sub.subdiv LIKE x'25" + word.encode("hex") + "25' OR sp.infra_name LIKE x'25" + word.encode("hex") + "25' OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
                 self.data['condition'].append(
-                                              "AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' " +
-                                              "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                              "OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
+                                              "AND (tgl.taxon_group LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                              "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                              "OR sp.hazard_group LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
@@ -438,14 +438,14 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_strains'] = filter
             self.session.save()
         elif ('filter_strains' in self.session.data):
             filter = self.session.data['filter_strains']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         filter_temp = filter
 
@@ -461,11 +461,11 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 aux_condition.append(
-                                        "AND (st.code LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR st.internal_code LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR ty.type LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                                        "AND (st.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR st.internal_code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR ty.type LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(aux_condition)
         else:
             if (self.session.data['show_str_inactives'] == 0):
@@ -659,21 +659,21 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_docs'] = filter
             self.session.save()
         elif ('filter_docs' in self.session.data):
             filter = self.session.data['filter_docs']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
             self.data['condition']= []
             for word in words:
                 #0x25 == '%'
-                self.data['condition'].append("AND (q.qualifier LIKE x'25" + word.encode("hex") + "25' OR doc.code LIKE x'25" + word.encode("hex") + "25' OR t.title LIKE x'25" + word.encode("hex") + "25') ")
+                self.data['condition'].append("AND (q.qualifier LIKE x'25" + word.encode("utf-8").hex() + "25' OR doc.code LIKE x'25" + word.encode("utf-8").hex() + "25' OR t.title LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
@@ -796,21 +796,21 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_refs'] = filter
             self.session.save()
         elif ('filter_refs' in self.session.data):
             filter = self.session.data['filter_refs']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
             self.data['condition']= []
             for word in words:
                 #0x25 == '%'
-                self.data['condition'].append("AND (ref.id_ref LIKE x'25" + word.encode("hex") + "25' OR ref.author LIKE x'25" + word.encode("hex") + "25' OR ref.title LIKE x'25" + word.encode("hex") + "25' OR ref.year LIKE x'25" + word.encode("hex") + "25') ")
+                self.data['condition'].append("AND (ref.id_ref LIKE x'25" + word.encode("utf-8").hex() + "25' OR ref.author LIKE x'25" + word.encode("utf-8").hex() + "25' OR ref.title LIKE x'25" + word.encode("utf-8").hex() + "25' OR ref.year LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
@@ -937,14 +937,14 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_people'] = filter
             self.session.save()
         elif ('filter_people' in self.session.data):
             filter = self.session.data['filter_people']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -953,9 +953,9 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("utf-8").hex() + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("utf-8").hex() + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("utf-8").hex() + "25' OR institution.nickname LIKE x'25" + word.encode("utf-8").hex() + "25')) > 0)) ")
                 else:
-                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("utf-8").hex() + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("utf-8").hex() + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("utf-8").hex() + "25' OR institution.nickname LIKE x'25" + word.encode("utf-8").hex() + "25')) > 0)) ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
@@ -1110,14 +1110,14 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_insts'] = filter
             self.session.save()
         elif ('filter_insts' in self.session.data):
             filter = self.session.data['filter_insts']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -1125,9 +1125,9 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 if self.g.isManager(self.session.data['roles']): #Administrator or Manager:
-                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("utf-8").hex() + "25' OR name LIKE x'25" + word.encode("utf-8").hex() + "25' OR complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
                 else:
-                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("utf-8").hex() + "25' OR name LIKE x'25" + word.encode("utf-8").hex() + "25' OR complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
@@ -1254,14 +1254,14 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_preservations'] = filter
             self.session.save()
         elif ('filter_preservations' in self.session.data):
             filter = self.session.data['filter_preservations']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -1269,19 +1269,19 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 self.data['condition'].append(
-                        "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
+                        "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR l.name LIKE x'25" + word.encode("utf-8").hex() + "25' " +
                         "OR ((SELECT COUNT(preservation.id_preservation) " +
                         "FROM preservation " +
                         "INNER JOIN preservation_strain USING (id_preservation) " +
                         "INNER JOIN strain USING (id_strain) " +
                         "INNER JOIN species USING (id_species) " +
                         "WHERE preservation.id_preservation = p.id_preservation " +
-                        "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR strain.code LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25')) > 0) "
-                        "OR pml.method LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                        "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR strain.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25')) > 0) "
+                        "OR pml.method LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
@@ -1460,15 +1460,14 @@ class Lists(object):
         filter = ''
         if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_distributions'] = filter
             self.session.save()
         elif ('filter_distributions' in self.session.data):
             filter = self.session.data['filter_distributions']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
-			
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -1476,12 +1475,12 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 self.data['condition'].append(
-                        "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR st.code LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' "
-                        "OR dol.quantity = x'" + word.encode("hex") + "' OR i.name LIKE x'25" + word.encode("hex") + "25' OR p.name LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                        "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR l.name LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR st.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' "
+                        "OR dol.quantity = x'" + word.encode("utf-8").hex() + "' OR i.name LIKE x'25" + word.encode("utf-8").hex() + "25' OR p.name LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
@@ -1655,8 +1654,8 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 self.data['condition'].append(
-                                              "AND (replang.type LIKE x'25" + word.encode("hex") + "25' " +
-                                              "OR rep.description LIKE x'25" + word.encode("hex") + "25') ")
+                                              "AND (replang.type LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                              "OR rep.description LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
