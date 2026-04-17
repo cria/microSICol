@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 import os, re
@@ -17,7 +17,7 @@ def main():
     count = 0
 
     for file_name in file_list:
-        file_content = open(os.path.join("..", file_name), "rt").read().decode("utf-8")
+        file_content = open(os.path.join("..", file_name), "r", encoding="utf-8").read()
         
         for  match in regexp.finditer(file_content):
             #Verify if this line is comented out:
@@ -29,7 +29,7 @@ def main():
                 continue
             label = match.groups()[0]
             line_number = file_content.count("\n", 0, match.start()) + 1
-            if not labels.has_key(label):
+            if label not in labels:
                 labels[label] = []
             labels[label].append("%s:%d\t\t_(\"%s\")" % (file_name, line_number, label))
 

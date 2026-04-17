@@ -1079,15 +1079,15 @@ class Reports(object):
     def decodeTemplates(self, dict):
         import base64
 
-        dict['templates']['main']['header'] = base64.b64decode(dict['templates']['main']['header'])
-        dict['templates']['main']['data'] = base64.b64decode(dict['templates']['main']['data'])
-        dict['templates']['main']['footer'] = base64.b64decode(dict['templates']['main']['footer'])
-        dict['templates']['main']['css'] = base64.b64decode(dict['templates']['main']['css'])
+        dict['templates']['main']['header'] = base64.b64decode(dict['templates']['main']['header']).decode('utf-8')
+        dict['templates']['main']['data'] = base64.b64decode(dict['templates']['main']['data']).decode('utf-8')
+        dict['templates']['main']['footer'] = base64.b64decode(dict['templates']['main']['footer']).decode('utf-8')
+        dict['templates']['main']['css'] = base64.b64decode(dict['templates']['main']['css']).decode('utf-8')
 
         group_list = list(dict['templates']['group'].keys())
         for field in group_list:
-            dict['templates']['group'][field]['header'] =  base64.b64decode(dict['templates']['group'][field]['header'])
-            dict['templates']['group'][field]['footer'] =  base64.b64decode(dict['templates']['group'][field]['footer'])
+            dict['templates']['group'][field]['header'] =  base64.b64decode(dict['templates']['group'][field]['header']).decode('utf-8')
+            dict['templates']['group'][field]['footer'] =  base64.b64decode(dict['templates']['group'][field]['footer']).decode('utf-8')
 
 
     def decodeFilters(self, filters):

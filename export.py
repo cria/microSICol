@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Author:Renato Arnellas Coelho renatoac at gmail dot com
 #
@@ -53,7 +53,7 @@ def exportData(host,user,pwd,dbname,port):
     all_tables = cursor.fetchall() #Returns ({'Tables_in_sicol_v123':...},{'...':'...'},{...},...)
     print("Creating XML from all " + str(len(all_tables)) + " tables...")
     for one_table in all_tables:
-      tablename = one_table.values()[0]
+      tablename = list(one_table.values())[0]
       print("Parsing table '%s'..." % tablename)
       doc_table = doc.createElement("table")
       doc_table.setAttribute("name",tablename)
@@ -70,10 +70,10 @@ def exportData(host,user,pwd,dbname,port):
             #NULL pointer
             doc_field.setAttribute("type","NULL")
             fieldvalue = "NULL"
-          elif isinstance(fieldvalue,basestring):
+          elif isinstance(fieldvalue,str):
             #String or Unicode
             doc_field.setAttribute("type","string") 
-          elif isinstance(fieldvalue,int) or isinstance(fieldvalue,long):
+          elif isinstance(fieldvalue,int) or isinstance(fieldvalue,int):
             #Integer
             doc_field.setAttribute("type","integer") 
             fieldvalue = str(fieldvalue)
@@ -142,10 +142,10 @@ def exportSQLite():
             #NULL pointer
             doc_field.setAttribute("type","NULL")
             col_value = "NULL"
-          elif isinstance(col_value,basestring):
+          elif isinstance(col_value,str):
             #String or Unicode
             doc_field.setAttribute("type","string") 
-          elif isinstance(col_value,int) or isinstance(col_value,long):
+          elif isinstance(col_value,int) or isinstance(col_value,int):
             #Integer
             doc_field.setAttribute("type","integer") 
             col_value = str(col_value)
@@ -164,13 +164,13 @@ def exportSQLite():
     import datetime
     today_str = str(datetime.datetime.today())[:-7].replace(":","").replace(" ","_").replace("-","_") + '_sqlite.xml'
     xml = doc.toprettyxml().encode('utf-8')
-    f = open(today_str,'w')
+    f = open(today_str,'wb')
     f.write(xml)
     f.close()
   else:
     print("*** ERROR ***")
     print("Could not connect to SQLite database")
-    raw_input()
+    input()
     return
   print("*** Export Finished ***")
   return today_str
@@ -178,15 +178,15 @@ def exportSQLite():
 #If this script is called locally...
 if __name__ == "__main__":
   print("*** Export SICol Database ***")
-  opt = raw_input("Export MySQL data? (y/n)")[0].lower()
+  opt = input("Export MySQL data? (y/n)")[0].lower()
   if opt == 'y':
     import getpass
-    host = raw_input("host=")
-    port = raw_input("port=")
-    root_login = raw_input("administrator login=")
+    host = input("host=")
+    port = input("port=")
+    root_login = input("administrator login=")
     root_pwd = getpass.getpass("administrator password=")
-    dbname = raw_input("database name=")
+    dbname = input("database name=")
     exportData(host,root_login,root_pwd,dbname,port)
-  opt = raw_input("Export SQLite data? (y/n)")[0].lower()
+  opt = input("Export SQLite data? (y/n)")[0].lower()
   if opt == 'y':
     exportSQLite()

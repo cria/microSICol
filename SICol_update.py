@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import zipfile
 import os
 import sys
 import glob
-import urllib2
+import urllib.request
 
 class SicolUpdate(object):
   '''
@@ -34,7 +34,7 @@ class SicolUpdate(object):
     print("***** SICOL UPDATE *****")
     print("Default Server Path = '%s'" % self.SICOL_SERVER)
     if self.ask("Do you want to change server path?"):
-      self.SICOL_SERVER = raw_input("Type path:")
+      self.SICOL_SERVER = input("Type path:")
       #User may forget ending question mark
       if self.SICOL_SERVER[-1] != '?': self.SICOL_SERVER += '?'
       self.SICOL_VERSION = self.SICOL_SERVER + "action=get_version_number"
@@ -44,7 +44,7 @@ class SicolUpdate(object):
     '''
     Ask user a yes/no question
     '''
-    opt = raw_input(msg+" (y/n)\n")
+    opt = input(msg+" (y/n)\n")
     if opt == '': return False
     opt = opt[0].lower()
     if opt == 'y': return True
@@ -58,7 +58,7 @@ class SicolUpdate(object):
     print(msg)
     #Wait for user response
     print("Press [Enter] to continue...")
-    raw_input()
+    input()
     
   def getLocalVersion(self):
     '''
@@ -77,9 +77,9 @@ class SicolUpdate(object):
     Get latest version from SICOL SERVER
     '''
     try:
-      f = urllib2.urlopen(self.SICOL_VERSION)
+      f = urllib.request.urlopen(self.SICOL_VERSION)
       #Download
-      self.external_version = int(f.read().strip())
+      self.external_version = int(f.read().strip().decode('utf-8'))
     except Exception as e:
       self.error("Connection to Remote Server failed.")
       return False
@@ -90,7 +90,7 @@ class SicolUpdate(object):
     Download Zip File
     '''
     try:
-      f = urllib2.urlopen(self.SICOL_ZIPFILE)
+      f = urllib.request.urlopen(self.SICOL_ZIPFILE)
       #Save on currect directory
       open('latest_version.zip','wb').write(f.read().strip())
     except Exception as e:
@@ -190,9 +190,9 @@ class SicolUpdate(object):
                     import getpass
                     print("Default Local Host / Port number = '%s' / %s" % (self.LOCAL_HOST,self.LOCAL_PORT))
                     if self.ask("Do you want to change local host / port number?"):
-                      self.LOCAL_HOST = raw_input("HOST=")
-                      self.LOCAL_PORT = raw_input("PORT=")
-                    root_login = raw_input("Administrator Login=")
+                      self.LOCAL_HOST = input("HOST=")
+                      self.LOCAL_PORT = input("PORT=")
+                    root_login = input("Administrator Login=")
                     root_pwd = getpass.getpass("Administrator Password=")
                     dbname = 'sicol_v'+str(self.my_db_version)
                     import export as exp
@@ -207,20 +207,20 @@ class SicolUpdate(object):
                     import os.path
                     print("Default Local Host / Port number = '%s' / %s" % (self.LOCAL_HOST,self.LOCAL_PORT))
                     if self.ask("Do you want to change local host / port number?"):
-                      self.LOCAL_HOST = raw_input("HOST=")
-                      self.LOCAL_PORT = raw_input("PORT=")
-                    root_login = raw_input("Administrator Login=")
+                      self.LOCAL_HOST = input("HOST=")
+                      self.LOCAL_PORT = input("PORT=")
+                    root_login = input("Administrator Login=")
                     root_pwd = getpass.getpass("Administrator Password=")
-                    dbname = raw_input("Database name (e.g. 'sicol_v101')=")
+                    dbname = input("Database name (e.g. 'sicol_v101')=")
                     if self.mysql_backup != '':
                       if self.ask("Do you want to use recently created '%s' file?" % self.mysql_backup):
                         xml = self.mysql_backup
                       else:
-                        xml = raw_input("XML filename=")
+                        xml = input("XML filename=")
                     while not os.path.exists(xml) and xml != '':
                       print("*** ERROR ***")
                       print("Specified file does not exist!")
-                      xml = raw_input("XML filename=")
+                      xml = input("XML filename=")
                     if xml != '':
                       imp.importData(xml,self.LOCAL_HOST,root_login,root_pwd,dbname,self.LOCAL_PORT)
                   if self.ask("Do you want to import SQLite data from a XML backup?"):
@@ -229,16 +229,16 @@ class SicolUpdate(object):
                       if self.ask("Do you want to use recently created '%s' file?" % self.protect_file):
                         xml = self.protect_file
                       else:
-                        xml = raw_input("XML filename=")
+                        xml = input("XML filename=")
                     while not os.path.exists(xml) and xml != '':
                       print("*** ERROR ***")
                       print("Specified file does not exist!")
-                      xml = raw_input("XML filename=")
+                      xml = input("XML filename=")
                     if xml != '':
                       imp.importSQLite(xml)
           print("***** EXECUTION FINISHED *****")
           print("Press [Enter] to continue...")
-          raw_input()
+          input()
 
 #If this script is called locally...
 if __name__ == "__main__":

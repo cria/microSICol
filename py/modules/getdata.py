@@ -4361,9 +4361,9 @@ class Getdata(object):
                     
                     dict_xml['templates']['group'][node.attributes['name'].value] = {'header':'', 'footer':''}
                     if (node.getElementsByTagName('header')[0].firstChild != None):
-                        dict_xml['templates']['group'][node.attributes['name'].value]['header'] = base64.b64encode(node.getElementsByTagName('header')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8"))
+                        dict_xml['templates']['group'][node.attributes['name'].value]['header'] = base64.b64encode(node.getElementsByTagName('header')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8")).decode('utf-8')
                     if (node.getElementsByTagName('footer')[0].firstChild != None):
-                        dict_xml['templates']['group'][node.attributes['name'].value]['footer'] = base64.b64encode(node.getElementsByTagName('footer')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8"))
+                        dict_xml['templates']['group'][node.attributes['name'].value]['footer'] = base64.b64encode(node.getElementsByTagName('footer')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8")).decode('utf-8')
         
         return  dict_xml    
    
@@ -4373,25 +4373,25 @@ class Getdata(object):
         
         if len(main.getElementsByTagName('header')) > 0:
             if main.getElementsByTagName('header')[0].firstChild != None:                
-                dict_xml['templates']['main']['header'] = base64.b64encode(main.getElementsByTagName('header')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8"))
+                dict_xml['templates']['main']['header'] = base64.b64encode(main.getElementsByTagName('header')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8")).decode('utf-8')
             else:
                 dict_xml['templates']['main']['header'] = ""
         
         if len(main.getElementsByTagName('footer')) > 0:
             if main.getElementsByTagName('footer')[0].firstChild != None:
-                dict_xml['templates']['main']['footer'] = base64.b64encode(main.getElementsByTagName('footer')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8"))
+                dict_xml['templates']['main']['footer'] = base64.b64encode(main.getElementsByTagName('footer')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8")).decode('utf-8')
             else:
                 dict_xml['templates']['main']['footer'] = ""
                 
         if len(main.getElementsByTagName('css')) > 0:
             if main.getElementsByTagName('css')[0].firstChild != None:                
-                dict_xml['templates']['main']['css'] = base64.b64encode(main.getElementsByTagName('css')[0].firstChild.data.replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8"))
+                dict_xml['templates']['main']['css'] = base64.b64encode(main.getElementsByTagName('css')[0].firstChild.data.replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8")).decode('utf-8')
             else:
                 dict_xml['templates']['main']['css'] = ""         
              
         if len(main.getElementsByTagName('data')) > 0:
             if main.getElementsByTagName('data')[0].firstChild != None:
-                dict_xml['templates']['main']['data'] = base64.b64encode(main.getElementsByTagName('data')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8"))
+                dict_xml['templates']['main']['data'] = base64.b64encode(main.getElementsByTagName('data')[0].firstChild.data.strip().replace("[_new_line_]", '\r\n').replace("[_tab_]", "\t").encode("utf-8")).decode('utf-8')
             else:
                 dict_xml['templates']['main']['data'] = ""
         
@@ -4437,7 +4437,7 @@ class Getdata(object):
         
         if (node.hasAttribute('value')):
             import base64
-            dict_tmp['value'] = base64.b64encode(self.ConvertStrUnicode(node.attributes['value'].value).encode('utf-8'))
+            dict_tmp['value'] = base64.b64encode(self.ConvertStrUnicode(node.attributes['value'].value).encode('utf-8')).decode('utf-8')
         
         if (node.hasAttribute('connector')):
             dict_tmp['connector'] = node.attributes['connector'].value

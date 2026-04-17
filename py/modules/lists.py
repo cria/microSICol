@@ -3,6 +3,7 @@
 
 #python imports
 from sys import exit
+from functools import cmp_to_key
 #from dbgp.client import brk
 
 #project imports
@@ -1065,9 +1066,9 @@ class Lists(object):
         #If order is institution use ins_people_cmp
         if isInstitution:
             if self.data['field_order'][-3:] == 'ASC':
-                list_people2.sort(self.ins_people_cmp)
+                list_people2.sort(key=cmp_to_key(self.ins_people_cmp))
             elif self.data['field_order'][-4:] == 'DESC':
-                list_people2.sort(cmp=self.ins_people_cmp, reverse=True)
+                list_people2.sort(key=cmp_to_key(self.ins_people_cmp), reverse=True)
 
         i = 0
 
@@ -1409,9 +1410,9 @@ class Lists(object):
         #If order is taxon use preserv_strain_cmp
         if isTaxon:
             if self.data['field_order'][-3:] == 'ASC':
-                strain_list.sort(self.preserv_strain_cmp)
+                strain_list.sort(key=cmp_to_key(self.preserv_strain_cmp))
             elif self.data['field_order'][-4:] == 'DESC':
-                strain_list.sort(cmp=self.preserv_strain_cmp, reverse=True)
+                strain_list.sort(key=cmp_to_key(self.preserv_strain_cmp), reverse=True)
 
         i = 0
 
@@ -1591,9 +1592,9 @@ class Lists(object):
         #If order is institution use ins_people_cmp
         if isInstitution:
             if self.data['field_order'][-3:] == 'ASC':
-                distributions2.sort(self.ins_people_cmp)
+                distributions2.sort(key=cmp_to_key(self.ins_people_cmp))
             elif self.data['field_order'][-4:] == 'DESC':
-                distributions2.sort(cmp=self.ins_people_cmp, reverse=True)
+                distributions2.sort(key=cmp_to_key(self.ins_people_cmp), reverse=True)
 
         i = 0
 

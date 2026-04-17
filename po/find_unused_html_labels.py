@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 import sys, os
@@ -19,52 +19,52 @@ def main(*argv):
     else:
         mode = "normal"
     file_list = get_file_list(search_dirs, exclude_dirs, extensions, sep= os.path.sep, append_nl = False)
-    python_labels_text = open(python_file, "rt").read().decode("utf-8")
+    python_labels_text = open(python_file, "r", encoding="utf-8").read()
     python_labels = {}
     out = ''
 
     for match in python_regexp.finditer(python_labels_text):
         label = match.groups()[0]
         line_number = python_labels_text.count("\n", 0, match.start()) + 1
-        if not python_labels.has_key (label):
+        if label not in python_labels:
             python_labels[label] = []
         python_labels[label].append("Python Labels: %d - %s" % (line_number, label))
     
     html_labels = {}
     
     for html_file in file_list:
-        file_content = open(os.path.join("..", html_file), "rt").read().decode("utf-8")
+        file_content = open(os.path.join("..", html_file), "r", encoding="utf-8").read()
             
         for match in html_regexp.finditer(file_content):
             label = match.groups()[0]
             line_number = file_content.count("\n", 0, match.start()) + 1
-            if not html_labels.has_key (label):
+            if label not in html_labels:
                 html_labels[label] = []
             html_labels[label].append("\t%s:%d" % (html_file, line_number))
     
     if not "reverse" in argv:
         for label in sorted(python_labels.keys()):
-            if mode == "all" or (mode=="normal" and not html_labels.has_key(label)) or len(python_labels[label]) > 1:
+            if mode == "all" or (mode=="normal" and label not in html_labels) or len(python_labels[label]) > 1:
                 if len(python_labels[label]) > 1:
                     out += "DUPLICATE LABEL on python side:"
                 for l in python_labels[label]:
                     out += l
-                if html_labels.has_key(label):
+                if label in html_labels:
                     for l in html_labels[label]:
                         out += l
                 out += '\n'
     else:
         for label in sorted(html_labels.keys()):
-            if mode == "all" or not python_labels.has_key(label):
+            if mode == "all" or label not in python_labels:
                 out += "%s:" % label
-                if python_labels.has_key(label):
+                if label in python_labels:
                     for l in python_labels[label]:
                         out += l
                 for l in html_labels[label]:
                     out += l
             out += '\n'
 
-    arq = open("output.txt", 'wb')
+    arq = open("output.txt", 'w')
     arq.write(out)
     arq.close()
 

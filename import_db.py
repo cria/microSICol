@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Script to import XML data to current SICol database
@@ -47,11 +47,11 @@ def importSQLite(xml,sqlite_path='./db/sqlite.db'):
     cursor.close()
     connect.close()
     print("*** Import Finished ***")
-    raw_input()
+    input()
   else:
     print("*** ERROR ***")
     print("Unable to connect to SQLite database.")
-    raw_input()
+    input()
 
 def importData(xml,host,user,pwd,dbname,port):
   '''
@@ -126,7 +126,7 @@ def importData(xml,host,user,pwd,dbname,port):
   if mysql_path == '' or mysql_path == []:
     print("*********** ERROR ***********")
     print("Please insert path to executable directory (mysql.exe) in OS 'PATH' variable.")
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
   else:
     if platform.system() == "Windows" or platform.system() == "Microsoft":
       #Ignore whether PATH ends with '\' or not
@@ -138,43 +138,43 @@ def importData(xml,host,user,pwd,dbname,port):
   except Exception as e:
     print("*********** ERROR ***********")
     print("Please type \"sicol_v###\" where ### = version number.")
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
     return
   try:
     os.system("%s -h%s -u%s -p%s < %s"  % (mysql_path,host,user,pwd,os.getcwd()+os.sep+"import.sql") )
   except Exception as e:
     print("*********** ERROR ***********")
     print(str(e))
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
     return
   print("*** Import Finished ***")
-  raw_input()
+  input()
 
 #If this script is called locally...
 if __name__ == "__main__":
   print("*** Import SICol Database ***")
-  opt = raw_input("Import MySQL data? (y/n)")[0].lower()
+  opt = input("Import MySQL data? (y/n)")[0].lower()
   if opt == 'y':
     import getpass
     import os.path
-    host = raw_input("host=")
-    port = raw_input("port=")
-    root_login = raw_input("administrator login=")
+    host = input("host=")
+    port = input("port=")
+    root_login = input("administrator login=")
     root_pwd = getpass.getpass("administrator password=")
-    dbname = raw_input("database name=")
-    xml = raw_input("import XML filename=")
+    dbname = input("database name=")
+    xml = input("import XML filename=")
     while not os.path.exists(xml) and xml != '':
       print("*** ERROR ***")
       print("Specified file does not exist!")
-      xml = raw_input("import XML filename=")
+      xml = input("import XML filename=")
     if xml != '':
       importData(xml,host,root_login,root_pwd,dbname,port)
-  opt = raw_input("Import SQLite data? (y/n)")[0].lower()
+  opt = input("Import SQLite data? (y/n)")[0].lower()
   if opt == 'y':
-    xml = raw_input("import XML filename=")
+    xml = input("import XML filename=")
     while not os.path.exists(xml) and xml != '':
       print("*** ERROR ***")
       print("Specified file does not exist!")
-      xml = raw_input("import XML filename=")
+      xml = input("import XML filename=")
     if xml != '':
       importSQLite(xml)

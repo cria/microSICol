@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Author:Renato Arnellas Coelho renatoac at gmail dot com
 #
@@ -24,10 +24,10 @@ def updateDB(full_mode=True):
   # User data
   ####################
   dados = {}
-  dados['mysql_login']  = raw_input("MySQL administrator login: ")
+  dados['mysql_login']  = input("MySQL administrator login: ")
   dados['mysql_pwd']    = getpass.getpass("MySQL administrator password: ")
-  dados['mysql_bd']     = raw_input("MySQL Database (e.g. 'sicol_v123'): ")
-  dados['mysql_user']   = raw_input("Sicol login to MySQL (e.g. 'sicol'): ")
+  dados['mysql_bd']     = input("MySQL Database (e.g. 'sicol_v123'): ")
+  dados['mysql_user']   = input("Sicol login to MySQL (e.g. 'sicol'): ")
   ####################
   # Internal data
   ####################
@@ -46,7 +46,7 @@ def updateDB(full_mode=True):
   if mysql_path == '' or mysql_path == []:
     print("*********** ERROR ***********")
     print("Please insert path to executable directory (mysql.exe) in OS 'PATH' variable.")
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
     return False
   else:
     if platform.system() == "Windows" or platform.system() == "Microsoft":
@@ -59,7 +59,7 @@ def updateDB(full_mode=True):
   except Exception as e:
     print("*********** ERROR ***********")
     print("Please type \"sicol_v###\" where ### = version number.")
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
     return False
   path_to_db = sicol_path + bd_version + os.sep
   # Load mysql_script_empty.sql
@@ -70,7 +70,7 @@ def updateDB(full_mode=True):
   except Exception as e:
     print("*********** ERROR ***********")
     print(str(e))
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
     
     #return False
   # Load mysql_start_dump.sql
@@ -81,7 +81,7 @@ def updateDB(full_mode=True):
   except Exception as e:
     print("*********** ERROR ***********")
     print(str(e))
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
     return False
   ######################
   # Load additional data
@@ -89,7 +89,7 @@ def updateDB(full_mode=True):
   if full_mode:
     if platform.system() == "Windows" or platform.system() == "Microsoft":
       winsound.MessageBeep(winsound.MB_ICONASTERISK)
-    opt = raw_input("Do you want to load test data? (y/n)\n")[0].lower()
+    opt = input("Do you want to load test data? (y/n)\n")[0].lower()
     if opt == 'y':
       # Load mysql_testdata_dump.sql
       dump_file = "dump"+os.sep+"mysql_testdata_dump.sql"
@@ -99,11 +99,11 @@ def updateDB(full_mode=True):
       except Exception as e:
         print("*********** ERROR ***********")
         print(str(e))
-        raw_input() #Wait for user input...
+        input() #Wait for user input...
         return
     if platform.system() == "Windows" or platform.system() == "Microsoft":
       winsound.MessageBeep(winsound.MB_ICONASTERISK)
-    opt = raw_input("Do you want to load all Brazilian cities name to database? (y/n)\n")[0].lower()
+    opt = input("Do you want to load all Brazilian cities name to database? (y/n)\n")[0].lower()
     if opt == 'y':
       # Load mysql_cities_dump.sql
       dump_file = "dump"+os.sep+"mysql_cities_dump.sql"
@@ -113,11 +113,11 @@ def updateDB(full_mode=True):
       except Exception as e:
         print("*********** ERROR ***********")
         print(str(e))
-        raw_input() #Wait for user input...
+        input() #Wait for user input...
         return
     if platform.system() == "Windows" or platform.system() == "Microsoft":
       winsound.MessageBeep(winsound.MB_ICONASTERISK)
-    opt = raw_input("Do you want to load debug data? (y/n)\n")[0].lower()
+    opt = input("Do you want to load debug data? (y/n)\n")[0].lower()
     if opt == 'y':
       # Load mysql_cities_dump.sql
       dump_file = "dump"+os.sep+"mysql_debug_dump.sql"
@@ -127,7 +127,7 @@ def updateDB(full_mode=True):
       except Exception as e:
         print("*********** ERROR ***********")
         print(str(e))
-        raw_input() #Wait for user input...
+        input() #Wait for user input...
         return
   ########################
   # End of additional data
@@ -144,7 +144,7 @@ def updateDB(full_mode=True):
   except Exception as e:
     print("*********** ERROR ***********")
     print(str(e))
-    raw_input() #Wait for user input...
+    input() #Wait for user input...
     return
   ####################
   # End of update
@@ -152,7 +152,7 @@ def updateDB(full_mode=True):
   if platform.system() == "Windows" or platform.system() == "Microsoft":
     winsound.MessageBeep(winsound.MB_ICONEXCLAMATION)
   print("****************************")
-  raw_input("Update finished. Press [ENTER] to continue.")
+  input("Update finished. Press [ENTER] to continue.")
 
 #If this script is called locally...
 if __name__ == "__main__":
