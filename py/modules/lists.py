@@ -557,6 +557,39 @@ class Lists(object):
           self.execute('get_strain_list_restrict', self.data,raw_mode = True)
         list_strains = list(self.fetch('all'))
 
+        # OTIMIZACAO
+        from .labels import label_dict
+        critical_preservation_dict = {}
+        critical_lots_dict = {}
+
+        if list_strains:
+            strain_ids_tuple = tuple([strain['id_strain'] for strain in list_strains])
+            strain_ids = ','.join(str(x) for x in strain_ids_tuple)
+
+            self.execute('get_strain_critical_stock_preservation_method_batch', {
+                'strain_ids': strain_ids,
+                'id_lang': self.session.data['id_lang'],
+                'id_subcoll': self.session.data['id_subcoll']
+            })
+            batch_results = self.fetch('all')
+
+            for result in batch_results:
+                id_strain = result['id_strain']
+                if id_strain not in critical_preservation_dict:
+                    critical_preservation_dict[id_strain] = []
+                critical_preservation_dict[id_strain].append(result)
+
+            self.execute('get_strain_critical_stock_batch', {
+                'strain_ids': strain_ids
+            })
+            batch_results = self.fetch('all')
+
+            for result in batch_results:
+                id_strain = result['id_strain']
+                if id_strain not in critical_lots_dict:
+                    critical_lots_dict[id_strain] = []
+                critical_lots_dict[id_strain].append(result)
+
         i = 0
 
         for strain in list_strains:
@@ -580,12 +613,14 @@ class Lists(object):
             else:
                 style_tr = 'color:#A2A2A2'
 
-            from .labels import label_dict
             has_critical = False
             critical_stock_html = []
+
+            # Use batch results from lookup dictionaries instead of executing queries per strain
+            id_strain = strain['id_strain']
+
             #Check critical stock for this strain by preservation method
-            self.execute('get_strain_critical_stock_preservation_method', {'id_strain':strain['id_strain'],'id_lang':self.session.data['id_lang'],'id_subcoll':self.session.data['id_subcoll']})
-            all_lots = self.fetch('all')
+            all_lots = critical_preservation_dict.get(id_strain, [])
             if all_lots:
                 critical_stock_html += ['<table class=''popup_table'' width=''100%%'' cellpadding=2 cellspacing=2 border=0><tr class=''popup_table'' font-weight: bold;''><th class=''popup_table'' width=''131px''>%(label_Strains_Stock_Preservation_Method)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_Minimum)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_In_Stock)s</th></tr>' % label_dict]
                 has_critical = True
@@ -595,8 +630,7 @@ class Lists(object):
                 critical_stock_html.append('</table>')
 
             #Check critical stock for this strain
-            self.execute('get_strain_critical_stock', {'id':strain['id_strain']})
-            all_lots = self.fetch('all')
+            all_lots = critical_lots_dict.get(id_strain, [])
             if all_lots:
                 critical_stock_html += ['<table class=''popup_table'' width=''100%%'' cellpadding=2 cellspacing=2 border=0><tr class=''popup_table'' font-weight: bold;''><th class=''popup_table'' width=''131px''>%(label_Strains_Stock_Lot_Number)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_Minimum)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_In_Stock)s</th></tr>' % label_dict]
                 has_critical = True
@@ -752,12 +786,29 @@ class Lists(object):
           self.execute('get_doc_list_restrict',self.data,raw_mode = True)
         list_doc = self.fetch('all')
 
+        # OPTIMIZATION: For docs with missing titles, use batch query instead of per-doc queries
+        missing_titles_dict = {}  # {id_doc: fallback_title}
+
+        # Find docs that need fallback titles
+        docs_needing_titles = [doc['id_doc'] for doc in list_doc if doc['title'] == '']
+
+        if docs_needing_titles:
+            # Execute batch query to get first title for all docs needing it
+            # Convert list to SQL-compatible string format: (1,2,3)
+            doc_ids = ','.join(str(x) for x in docs_needing_titles)
+            self.execute('get_first_doc_title_found_batch', {'doc_ids': doc_ids})
+            batch_results = self.fetch('all')
+
+            # Build lookup dictionary
+            for result in batch_results:
+                missing_titles_dict[result['id_doc']] = result['title']
+
         i = 0
 
         for doc in list_doc:
-            if doc['title'] == '': #Get first title found by id_lang (usually English)
-              self.execute('get_first_doc_title_found',{'id_doc':doc['id_doc']})
-              doc['title'] = self.fetch('one')
+            # Use batch results for missing titles instead of per-doc queries
+            if doc['title'] == '' and doc['id_doc'] in missing_titles_dict:
+                doc['title'] = missing_titles_dict[doc['id_doc']]
 
             #Class of row
             if ((i % 2) == 0): css_class = "row1"
@@ -1042,23 +1093,36 @@ class Lists(object):
         list_people = self.fetch('all')
         list_people2 = list()
 
-        for person in list_people:
-            #Name + Nickname
-            if person['nickname']:
-                person['name'] += ' (%s)' % person['nickname']
+        # OTIMIZACAO
+        person_institutions_dict = {}
 
-            #SELECT id_institution, complement, nickname, contact, department, email
-            self.execute ("get_person_contact_relations", {'id':person['id_person']})
-            list_inst = self.fetch("all")
-            institutions = []
-            for inst in list_inst:
+        if list_people:
+            person_ids_tuple = tuple([person['id_person'] for person in list_people])
+            person_ids = ','.join(str(x) for x in person_ids_tuple)
+
+            self.execute("get_person_contact_relations_batch", {'person_ids': person_ids})
+            batch_results = self.fetch("all")
+
+            for inst in batch_results:
+                id_person = inst['id_person']
+                if id_person not in person_institutions_dict:
+                    person_institutions_dict[id_person] = []
+
                 str_inst = inst['complement']
                 if inst['nickname']:
                     str_inst += " (%s)" % inst['nickname']
                 if inst['contact']:
-                    str_inst += " [%s]" % _('contact');
-                institutions.append(str_inst)
-            institutions.sort()
+                    str_inst += " [%s]" % _('contact')
+                person_institutions_dict[id_person].append(str_inst)
+
+            for id_person in person_institutions_dict:
+                person_institutions_dict[id_person].sort()
+
+        for person in list_people:
+            if person['nickname']:
+                person['name'] += ' (%s)' % person['nickname']
+
+            institutions = person_institutions_dict.get(person['id_person'], [])
             person['institution'] = "<br />".join(institutions)
 
             list_people2.append(person)
@@ -2018,15 +2082,33 @@ class Lists(object):
         self.execute('get_container_list', self.data, True)
         list_container = self.fetch('all')
 
+        # OPTIMIZATION: Batch query for container preservation methods - instead of N queries, execute 1 batch query
+        container_methods_dict = {}  # {id_container: [methods]}
+
+        if list_container:
+            # Collect all container IDs for batch query
+            container_ids_tuple = tuple([container['id_container'] for container in list_container])
+            # Convert tuple to SQL-compatible string format: (1,2,3)
+            container_ids = ','.join(str(x) for x in container_ids_tuple)
+
+            # Execute batch query for all container preservation methods
+            self.execute('get_container_preservation_methods_batch', {
+                'container_ids': container_ids,
+                'id_lang': self.session.data['id_lang']
+            }, True)
+            batch_results = self.fetch('all')
+
+            # Build lookup dictionary
+            for method in batch_results:
+                id_container = method['id_container']
+                if id_container not in container_methods_dict:
+                    container_methods_dict[id_container] = []
+                container_methods_dict[id_container].append(method['method'])
+
         for line, container in enumerate(list_container):
 
-            self.data['id_container'] = container['id_container']
-            self.execute('get_container_preservation_methods', self.data, True)
-
-            preservation_methods = []
-            list_methods = self.fetch('all')
-            for method in list_methods:
-                preservation_methods.append(method['method'])
+            # Use batch results from lookup dictionary instead of executing query per container
+            preservation_methods = container_methods_dict.get(container['id_container'], [])
 
             #Class of row
             if ((line % 2) == 0): css_class = "row1"

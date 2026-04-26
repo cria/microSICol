@@ -868,6 +868,116 @@
 		    WHERE ps.id_strain = %(id)s AND ls.id_strain = %(id)s AND ifnull(ls.stock,0) <= ps.stock_minimum AND ps.stock_minimum <> 0;
         ]]></sql>
 
+        <sql name="get_strain_critical_stock_preservation_method_batch"><![CDATA[
+            SELECT
+                strain_list.id_strain,
+                pml.method, ssm.quantity,
+                IFNULL((SELECT
+                    CAST(SUM(lss.stock) AS UNSIGNED INTEGER)
+                 FROM preservation
+                 INNER JOIN preservation_strain ON
+                   (preservation.id_preservation = preservation_strain.id_preservation)
+                 INNER JOIN lot ON (preservation.id_lot = lot.id_lot)
+                 INNER JOIN (select
+			`lslm`.`id_lot` AS `id_lot`,
+			`lslm`.`id_strain` AS `id_strain`,
+			cast((((sum(`lslm`.`quantity`) - sum(ifnull(`lslm`.`used_qt_pres`,0))) - sum(ifnull(`lslm`.`used_qt_dist`,0))) - sum(ifnull(`lslm`.`used_qt_qual`,0))) as unsigned) AS `stock`
+		      from
+			(select
+			`lsl`.`id_lot` AS `id_lot`,
+			`lsl`.`id_strain` AS `id_strain`,
+			`lsl`.`id_container_hierarchy` AS `id_container_hierarchy`,
+			`lsl`.`row` AS `row`,
+			`lsl`.`col` AS `col`,
+			`lsl`.`quantity` AS `quantity`,
+			cast((
+		      select
+			sum(`ps`.`quantity`) AS `sum(quantity)`
+		      from
+			`preservation_strain` `ps`
+		      where
+			((`ps`.`id_lot` = `lsl`.`id_lot`) and (`ps`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`ps`.`origin_row` = `lsl`.`row`) and (`ps`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_pres`,cast((
+		      select
+			sum(`dol`.`quantity`) AS `sum(quantity)`
+		      from
+			`distribution_origin_location` `dol`
+		      where
+			((`dol`.`id_origin_lot` = `lsl`.`id_lot`) and (`dol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`dol`.`origin_row` = `lsl`.`row`) and (`dol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_dist`,cast((
+		      select
+			sum(`qol`.`quantity`) AS `sum(quantity)`
+		      from
+			`str_quality_origin_location` `qol`
+		      where
+			((`qol`.`id_origin_lot` = `lsl`.`id_lot`) and (`qol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`qol`.`origin_row` = `lsl`.`row`) and (`qol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_qual`
+		      from
+			`lot_strain_location` `lsl`
+		      where `lsl`.`id_strain` IN (%(strain_ids)s)) `lslm`
+		      group by
+			`lslm`.`id_lot`,`lslm`.`id_strain`) lss ON
+				       (lot.id_lot = lss.id_lot and
+				       preservation_strain.id_strain = lss.id_strain)
+                 WHERE
+                    preservation.id_preservation_method = pml.id_preservation_method
+                    AND preservation_strain.id_strain = strain_list.id_strain), 0) as in_stock
+            FROM preservation_method_lang pml
+            CROSS JOIN (SELECT DISTINCT id_strain FROM lot_strain_location WHERE id_strain IN (%(strain_ids)s)) strain_list
+            INNER JOIN preservation_method_subcoll pms ON
+                (pms.id_preservation_method = pml.id_preservation_method)
+            LEFT JOIN str_stock_minimum ssm ON
+                (ssm.id_preservation_method = pml.id_preservation_method
+                and ssm.id_strain = strain_list.id_strain)
+            WHERE
+                pml.id_lang = %(id_lang)s and pms.id_subcoll = %(id_subcoll)s
+                and quantity IS NOT NULL
+            HAVING
+                in_stock <= quantity
+            ORDER BY strain_list.id_strain, pml.method;
+        ]]></sql>
+
+        <sql name="get_strain_critical_stock_batch"><![CDATA[
+		SELECT ps.id_strain, pr.id_preservation, lot.name as lot_name, ps.stock_minimum, ifnull(ls.stock,0) as stock FROM lot
+		INNER JOIN preservation pr ON lot.id_lot = pr.id_lot
+		INNER JOIN preservation_strain ps ON ps.id_preservation = pr.id_preservation
+		LEFT JOIN (select
+			`lslm`.`id_lot` AS `id_lot`,
+			`lslm`.`id_strain` AS `id_strain`,
+			cast((((sum(`lslm`.`quantity`) - sum(ifnull(`lslm`.`used_qt_pres`,0))) - sum(ifnull(`lslm`.`used_qt_dist`,0))) - sum(ifnull(`lslm`.`used_qt_qual`,0))) as unsigned) AS `stock`
+		      from
+		       (select
+			`lsl`.`id_lot` AS `id_lot`,
+			`lsl`.`id_strain` AS `id_strain`,
+			`lsl`.`id_container_hierarchy` AS `id_container_hierarchy`,
+			`lsl`.`row` AS `row`,
+			`lsl`.`col` AS `col`,
+			`lsl`.`quantity` AS `quantity`,
+			cast((
+		      select
+			sum(`ps`.`quantity`) AS `sum(quantity)`
+		      from
+			`preservation_strain` `ps`
+		      where
+			((`ps`.`id_lot` = `lsl`.`id_lot`) and (`ps`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`ps`.`origin_row` = `lsl`.`row`) and (`ps`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_pres`,cast((
+		      select
+			sum(`dol`.`quantity`) AS `sum(quantity)`
+		      from
+			`distribution_origin_location` `dol`
+		      where
+			((`dol`.`id_origin_lot` = `lsl`.`id_lot`) and (`dol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`dol`.`origin_row` = `lsl`.`row`) and (`dol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_dist`,cast((
+		      select
+			sum(`qol`.`quantity`) AS `sum(quantity)`
+		      from
+			`str_quality_origin_location` `qol`
+		      where
+			((`qol`.`id_origin_lot` = `lsl`.`id_lot`) and (`qol`.`id_origin_container_hierarchy` = `lsl`.`id_container_hierarchy`) and (`qol`.`origin_row` = `lsl`.`row`) and (`qol`.`origin_col` = `lsl`.`col`))) as unsigned) AS `used_qt_qual`
+		      from
+			`lot_strain_location` `lsl`
+			where `lsl`.`id_strain` IN (%(strain_ids)s)) `lslm`
+		      group by
+			`lslm`.`id_lot`,`lslm`.`id_strain`) ls ON lot.id_lot = ls.id_lot
+		    WHERE ps.id_strain IN (%(strain_ids)s) AND ls.id_strain IN (%(strain_ids)s) AND ifnull(ls.stock,0) <= ps.stock_minimum AND ps.stock_minimum <> 0
+		    ORDER BY ps.id_strain, lot.name;
+        ]]></sql>
+
         <sql name="get_last_id_dep_reason"><![CDATA[
             SELECT id_dep_reason
             FROM str_dep_reason
@@ -1536,6 +1646,13 @@
         WHERE cr.id_person = %(id)s
         ORDER BY i.complement, cr.department;]]></sql>
 
+        <sql name="get_person_contact_relations_batch"><![CDATA[
+        SELECT cr.id_person, id_institution as institution, i.complement as complement, i.nickname as nickname, cr.contact as contact, cr.department as department, cr.email as email
+        FROM institution i
+        LEFT JOIN contact_relations cr USING(id_institution)
+        WHERE cr.id_person IN (%(person_ids)s)
+        ORDER BY cr.id_person, i.complement, cr.department;]]></sql>
+
         <sql name="count_person_parts_multilanguage"><![CDATA[
             SELECT COUNT(p.id_person) as count_person, COUNT(c.id_person) count_comments
             FROM person p
@@ -1613,6 +1730,15 @@
 
         <sql name="get_first_doc_title_found"><![CDATA[
                 SELECT title FROM doc_title    WHERE id_doc = %(id_doc)s ORDER BY id_lang ASC;]]></sql>
+
+        <sql name="get_first_doc_title_found_batch"><![CDATA[
+                SELECT DISTINCT id_doc, title 
+                FROM (
+                    SELECT id_doc, title, ROW_NUMBER() OVER (PARTITION BY id_doc ORDER BY id_lang ASC) as rn
+                    FROM doc_title 
+                    WHERE id_doc IN (%(doc_ids)s)
+                ) ranked
+                WHERE rn = 1;]]></sql>
 
         <sql name="get_doc_title_by_id"><![CDATA[
                 SELECT title FROM doc_title WHERE id_doc = %(id_doc)s ORDER BY id_lang ASC;]]></sql>
@@ -2261,6 +2387,17 @@
             cpm.id_container = %(id_container)s AND pml.id_lang = %(id_lang)s
         ORDER BY
             pml.method;]]></sql>
+
+        <sql name="get_container_preservation_methods_batch"><![CDATA[
+        SELECT
+            cpm.id_container, pml.method, pml.id_preservation_method 
+        FROM
+            container_preservation_method cpm
+                INNER JOIN preservation_method_lang pml ON (cpm.id_preservation_method = pml.id_preservation_method)
+        WHERE
+            cpm.id_container IN (%(container_ids)s) AND pml.id_lang = %(id_lang)s
+        ORDER BY
+            cpm.id_container, pml.method;]]></sql>
 
        <sql name="get_stock_movement_list"><![CDATA[
             SELECT sm.id_stock_movement, sm.date, sm.description, pml.method
