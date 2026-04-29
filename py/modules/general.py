@@ -111,6 +111,13 @@ class General( object ):
         area = 'species' | 'strains' | 'people' | 'institutions' | 'doc' | 'ref' | 'preservation' | 'distribution'
         permission_type = 'allow_create' | 'allow_delete'
         '''
+        # Cache by (cookie_value, area, permission_type)
+        if not hasattr(self, '_area_perm_cache'):
+            self._area_perm_cache = {}
+        cache_key = (cookie_value, area, permission_type)
+        if cache_key in self._area_perm_cache:
+            return self._area_perm_cache[cache_key]
+
         from .dbconnection import dbConnection
         #Define Database
         self.dbconnection = dbConnection(cookie_value)
@@ -122,7 +129,9 @@ class General( object ):
         roles = roles.replace("[","(")
         roles = roles.replace("]",")")
         self.execute('allow_area',{'allow':permission_type,'areaname':"'"+area+"'",'roles_list':roles},raw_mode = True)
-        return self.fetch('one')
+        result = self.fetch('one')
+        self._area_perm_cache[cache_key] = result
+        return result
 
     def get_item_permission(self, cookie_value, session, area, id_item):
         '''

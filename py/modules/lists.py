@@ -503,24 +503,27 @@ class Lists(object):
         #Define field_order with mode
         self.data['field_order'] = field
 
-        #Disable paging
+        #Disable paging (placeholder used by the listing query below)
         self.data['paging'] = ';'
 
-        #Execute again for rows count
+        #Count rows with a dedicated COUNT(*) query (cheap) instead of running
+        #the heavy listing query without LIMIT just to get the total.
         if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-          self.execute('get_strain_list', self.data, True)
+          self.execute('get_strain_list_count', self.data, True)
         else:
           roles = str(self.session.data['roles']).replace("L","")
           roles = roles.replace("[","(")
           roles = roles.replace("]",")")
           self.data['roles_list'] = roles
-          self.execute('get_strain_list_restrict', self.data,raw_mode = True)
+          self.execute('get_strain_list_count_restrict', self.data, raw_mode=True)
 
         #Define totalpages
-        rowscount = self.getrowscount()
-        if rowscount is None:
+        rowscount = self.fetch('one')
+        try:
+            rowscount = int(rowscount)
+        except (TypeError, ValueError):
             rowscount = 0
-        
+
         totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
@@ -557,6 +560,47 @@ class Lists(object):
           self.execute('get_strain_list_restrict', self.data,raw_mode = True)
         list_strains = list(self.fetch('all'))
 
+        #Security: compute "new" button visibility ONCE per request (does not
+        #depend on the strain row). Previously this was inside the per-strain
+        #loop, which opened a fresh MySQL connection on every iteration.
+        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'strains', 'allow_create')
+        if self.g.isManager(self.session.data['roles']):
+            allow_create = 'y'
+        if allow_create != 'y':
+            import re
+            self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+
+        # Batch fetch of critical stock data for ALL strains in the current page,
+        # indexed by id_strain. Replaces 2 N+1 queries per strain (which were
+        # heavy nested-aggregation queries) with 2 round-trips total per page.
+        # SQL templates use "IN (%(strain_ids)s)" — parentheses are in the
+        # template, so the value is just a comma-joined list of ids.
+        pres_method_critical = {}
+        lot_critical = {}
+        if list_strains:
+            strain_ids_tuple = tuple([s['id_strain'] for s in list_strains])
+            strain_ids = ','.join(str(x) for x in strain_ids_tuple)
+
+            self.execute(
+                'get_strain_critical_stock_preservation_method_batch',
+                {
+                    'strain_ids': strain_ids,
+                    'id_lang': self.session.data['id_lang'],
+                    'id_subcoll': self.session.data['id_subcoll'],
+                },
+                raw_mode=True,
+            )
+            for row in self.fetch('all'):
+                pres_method_critical.setdefault(row['id_strain'], []).append(row)
+
+            self.execute(
+                'get_strain_critical_stock_batch',
+                {'strain_ids': strain_ids},
+                raw_mode=True,
+            )
+            for row in self.fetch('all'):
+                lot_critical.setdefault(row['id_strain'], []).append(row)
+
         i = 0
 
         for strain in list_strains:
@@ -584,8 +628,8 @@ class Lists(object):
             has_critical = False
             critical_stock_html = []
             #Check critical stock for this strain by preservation method
-            self.execute('get_strain_critical_stock_preservation_method', {'id_strain':strain['id_strain'],'id_lang':self.session.data['id_lang'],'id_subcoll':self.session.data['id_subcoll']})
-            all_lots = self.fetch('all')
+            #(data was batch-fetched once before the loop; now just a dict lookup)
+            all_lots = pres_method_critical.get(strain['id_strain'], [])
             if all_lots:
                 critical_stock_html += ['<table class=''popup_table'' width=''100%%'' cellpadding=2 cellspacing=2 border=0><tr class=''popup_table'' font-weight: bold;''><th class=''popup_table'' width=''131px''>%(label_Strains_Stock_Preservation_Method)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_Minimum)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_In_Stock)s</th></tr>' % label_dict]
                 has_critical = True
@@ -595,8 +639,7 @@ class Lists(object):
                 critical_stock_html.append('</table>')
 
             #Check critical stock for this strain
-            self.execute('get_strain_critical_stock', {'id':strain['id_strain']})
-            all_lots = self.fetch('all')
+            all_lots = lot_critical.get(strain['id_strain'], [])
             if all_lots:
                 critical_stock_html += ['<table class=''popup_table'' width=''100%%'' cellpadding=2 cellspacing=2 border=0><tr class=''popup_table'' font-weight: bold;''><th class=''popup_table'' width=''131px''>%(label_Strains_Stock_Lot_Number)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_Minimum)s</th><th class=''popup_table'' width=''90px''>%(label_Strains_Stock_In_Stock)s</th></tr>' % label_dict]
                 has_critical = True
@@ -637,15 +680,6 @@ class Lists(object):
                                  self.indent_size, strain['type'],
                                  self.indent_size)
             i += 1
-
-            #Security
-            #If user does not have permission to create then don't show the "new" button
-            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'strains', 'allow_create')
-            if self.g.isManager(self.session.data['roles']):
-                allow_create = 'y'
-            if allow_create != 'y':
-                import re
-                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
         return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter
 
