@@ -1788,8 +1788,8 @@ class Lists(object):
             return base_foot % {'number_columns':number_columns, 'li_html':li_html}
         #Numbers and special pages
         else:
-            num_pages_left = ((max_numberpages-1)/2)
-            num_pages_right = (max_numberpages/2)
+            num_pages_left = ((max_numberpages-1)//2)
+            num_pages_right = (max_numberpages//2)
 
             if ((current - num_pages_left) > 0) and ((current + num_pages_right < total)):
                 if (current - num_pages_left != 1):
