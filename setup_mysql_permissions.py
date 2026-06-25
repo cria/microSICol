@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Script para auto configurar permissões do usuário MySQL com base no IP real da máquina.
+Script para auto configurar permissões do MySQL com base no IP real da máquina.
 Isso resolve o erro "Host 'X.X.X.X' is not allowed to connect".
+
+Configura:
+  - o usuário 'sicol'@'<ip>' com acesso às bases da aplicação;
+  - o usuário 'root'@'<ip>' com ALL PRIVILEGES ON *.* WITH GRANT OPTION, para que o
+    root também possa conectar/administrar a partir do IP da máquina (caso em que o
+    root só estava autorizado em 'localhost').
 
 Autor: microSICol Setup
 Uso: python3 setup_mysql_permissions.py
@@ -14,7 +20,7 @@ from sys import exit
 
 
 class MySQLPermissionSetup:
-    """Configura as permissões MySQL na máquina com o IP real para o usuário sicol"""
+    """Configura as permissões MySQL na máquina com o IP real para os usuários sicol e root"""
 
     def __init__(self):
         self.local_ip = self.get_local_ip()
@@ -61,8 +67,14 @@ class MySQLPermissionSetup:
             print("✅ Conectado como root (usando autenticação unix_socket)")
             return connection
         except mysql.Error as e:
-            if e.args[0] == 1045:  # Acesso negado - tenta com senha
-                print("⚠️  Autenticação unix_socket falhou, solicitando senha...")
+            # 1045 = acesso negado por senha; 1698 = root configurado com auth via
+            # unix_socket (precisa rodar com 'sudo'). Em ambos tentamos com senha.
+            if e.args[0] in (1045, 1698):
+                if e.args[0] == 1698:
+                    print("⚠️  O root usa autenticação via socket (unix_socket).")
+                    print("   Dica: rode com elevação -> sudo python3 setup_mysql_permissions.py")
+                else:
+                    print("⚠️  Autenticação sem senha falhou, solicitando senha...")
                 self.mysql_root_password = self.get_mysql_root_password()
                 try:
                     connection = mysql.connect(
@@ -77,7 +89,10 @@ class MySQLPermissionSetup:
                     return connection
                 except mysql.Error as e2:
                     print(f"❌ Erro ao conectar com senha: {e2.args[0]}: {e2.args[1]}")
-                    print("   Verifique sua senha do root do MySQL.")
+                    if e2.args[0] == 1698:
+                        print("   O root só aceita conexão via socket: rode 'sudo python3 setup_mysql_permissions.py'.")
+                    else:
+                        print("   Verifique sua senha do root do MySQL.")
                     exit(1)
             else:
                 print(f"❌ Erro ao conectar ao MySQL como root: {e.args[0]}: {e.args[1]}")
@@ -130,6 +145,35 @@ class MySQLPermissionSetup:
                 cursor.execute(sql)
                 print(f"   ✅ Permissão concedida para {self.sicol_user}@{self.local_ip}")
 
+            # Garante que o root também conecte/administre a partir do IP da máquina
+            # (resolve casos em que o root só está autorizado em 'localhost').
+            cursor.execute(
+                f"SELECT user FROM mysql.user "
+                f"WHERE user='{self.mysql_root_user}' AND host='{self.local_ip}'"
+            )
+            if not cursor.fetchone():
+                # '' quando o root atual conecta via unix_socket (sem senha)
+                root_pwd = self.mysql_root_password or ''
+                create_root_sql = (
+                    f"CREATE USER `{self.mysql_root_user}`@'{self.local_ip}' "
+                    f"IDENTIFIED BY '{root_pwd}'"
+                )
+                print(f"\n⏳ Criando usuário {self.mysql_root_user}@{self.local_ip}...")
+                print(f"   SQL: CREATE USER `{self.mysql_root_user}`@'{self.local_ip}' IDENTIFIED BY '***'")
+                cursor.execute(create_root_sql)
+                print(f"   ✅ Usuário criado com sucesso")
+            else:
+                print(f"\n✅ Usuário {self.mysql_root_user}@{self.local_ip} já existe")
+
+            grant_root_sql = (
+                f"GRANT ALL PRIVILEGES ON *.* "
+                f"TO `{self.mysql_root_user}`@'{self.local_ip}' WITH GRANT OPTION"
+            )
+            print(f"\n⏳ Concedendo ALL PRIVILEGES (WITH GRANT OPTION) ao root...")
+            print(f"   SQL: {grant_root_sql}")
+            cursor.execute(grant_root_sql)
+            print(f"   ✅ Permissão concedida para {self.mysql_root_user}@{self.local_ip}")
+
             # Flushes privileges
             print("\n⏳ Aplicando privilégios...")
             cursor.execute("FLUSH PRIVILEGES")
@@ -137,10 +181,14 @@ class MySQLPermissionSetup:
 
             # Verifica os grants
             print("🔍 Verificando permissões...")
-            cursor.execute(f"SHOW GRANTS FOR `{self.sicol_user}`@'{self.local_ip}'")
-            grants = cursor.fetchall()
-            for grant in grants:
-                print(f"   ✅ {grant[0]}")
+            for who in (
+                f"`{self.sicol_user}`@'{self.local_ip}'",
+                f"`{self.mysql_root_user}`@'{self.local_ip}'",
+            ):
+                print(f"   • {who}:")
+                cursor.execute(f"SHOW GRANTS FOR {who}")
+                for grant in cursor.fetchall():
+                    print(f"       ✅ {grant[0]}")
 
         except mysql.Error as e:
             print(f"\n❌ Erro ao executar SQL: {e.args[0]}: {e.args[1]}")
@@ -153,7 +201,7 @@ class MySQLPermissionSetup:
         print("\n" + "="*70)
         print("✅ Configuração concluída com sucesso!")
         print("="*70)
-        print(f"\nO usuário '{self.sicol_user}' agora tem acesso a partir do IP: {self.local_ip}")
+        print(f"\nOs usuários '{self.sicol_user}' e '{self.mysql_root_user}' agora têm acesso a partir do IP: {self.local_ip}")
         print("Você pode executar sua aplicação sem o erro 1130.\n")
 
 
