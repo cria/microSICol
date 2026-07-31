@@ -500,8 +500,9 @@ class Save(object):
                 s = StrainFormatter(self.cookie_value)
                 data['code'] = s.format_strain_code_with_division(general['numeric_code'],
                                                                   general['id_division'])
-
+                                                                
                 general['internal_code'] = form.getvalue('internal_code')
+                general['strain_subcoll_code'] = form.getvalue('strain_subcoll_code')
                 general['status'] = form.getvalue('status')
                 general['id_species'] = form.getvalue('id_species')
                 general['infra_complement'] = form.getvalue('infra_complement')
@@ -795,6 +796,8 @@ class Save(object):
                 cha['cha_molecular'] = form.getvalue('cha_molecular')
                 cha['cha_pathogenic'] = form.getvalue('cha_pathogenic')
                 cha['cha_genotypic'] = form.getvalue('cha_genotypic')
+                cha['cha_genomic'] = form.getvalue('cha_genomic')
+                cha['cha_metabolomic'] = form.getvalue('cha_metabolomic')
                 cha['cha_ogm'] = form.getvalue('cha_ogm')
                 cha['id'] = data['id']
                 cha = self.verify_data(cha)

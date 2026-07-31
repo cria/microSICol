@@ -1,119 +1,117 @@
-# SICol Label Translation File (pt_BR). 
+# SICol Label Translation File (pt_BR).
 # Copyright (C) Linear Softwares Matematicos.
 # Flavio Henrique Sestari <flavio@linearsm.com.br>, 2006.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: SICOL 0.86 Beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-06 16:54-0200\n"
+"POT-Creation-Date: 2026-07-08 10:54-0300\n"
 "PO-Revision-Date: 2007-02-27 15:18-0300\n"
 "Last-Translator: Flávio Henrique Sestari <flavio@linearsm.com.br>\n"
+"Language: pt_BR\n"
 "Language-Team: Linear <flavio@linearsm.com.br>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
-"X-Poedit-Language: Portuguese\n"
-"X-Poedit-Country: Brazil\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: py/modules/session.py:84
+#: py/modules/session.py:86
 msgid "Permission denied to read in"
 msgstr "Permissão negada para ler "
 
-#: py/modules/session.py:105
+#: py/modules/session.py:106
 msgid "Permission denied to write in"
 msgstr "Permissão negaga para escrever "
 
-#: py/modules/session.py:122
+#: py/modules/session.py:123
 msgid "Permission denied to delete in"
 msgstr "Permissão negada para apagar "
 
-#: py/modules/general.py:161
+#: py/modules/general.py:167
 msgid "Unknown action trying to execute apply_item_permission: "
 msgstr "Ação desconhecida ao executar apply_item_permission: "
 
-#: py/modules/general.py:284 py/modules/general.py:314
-#: py/modules/configuration.py:1039 py/modules/labels.py:122
-#: py/modules/labels.py:269 py/modules/labels.py:656
+#: py/modules/configuration.py:1050 py/modules/general.py:290
+#: py/modules/general.py:320 py/modules/labels.py:125 py/modules/labels.py:272
+#: py/modules/labels.py:660
 msgid "Group"
 msgstr "Grupo"
 
-#: py/modules/general.py:285 py/modules/general.py:315
-#: py/modules/labels.py:248 py/modules/labels.py:358 py/modules/labels.py:369
-#: py/modules/labels.py:408
+#: py/modules/general.py:291 py/modules/general.py:321 py/modules/labels.py:251
+#: py/modules/labels.py:361 py/modules/labels.py:372 py/modules/labels.py:411
 msgid "User"
 msgstr "Usuário"
 
-#: py/modules/general.py:291 py/modules/general.py:293
-#: py/modules/general.py:297 py/modules/general.py:335
-#: py/modules/general.py:336 py/modules/general.py:349
+#: py/modules/general.py:297 py/modules/general.py:299
+#: py/modules/general.py:303 py/modules/general.py:341
+#: py/modules/general.py:342 py/modules/general.py:355
 msgid "Read"
 msgstr "Visualizar"
 
-#: py/modules/general.py:293 py/modules/general.py:297
-#: py/modules/general.py:336 py/modules/general.py:349
+#: py/modules/general.py:299 py/modules/general.py:303
+#: py/modules/general.py:342 py/modules/general.py:355
 msgid "Write"
 msgstr "Editar"
 
-#: py/modules/general.py:294 py/modules/general.py:339
+#: py/modules/general.py:300 py/modules/general.py:345
 msgid "All"
 msgstr "Geral"
 
-#: py/modules/general.py:320 py/modules/labels.py:592
+#: py/modules/general.py:326 py/modules/labels.py:596
 msgid "None"
 msgstr "Nenhuma"
 
-#: py/modules/configuration.py:930 py/modules/labels.py:477
+#: py/modules/configuration.py:941 py/modules/labels.py:481
 msgid "plural|Species"
 msgstr "Taxa"
 
-#: py/modules/configuration.py:931 py/modules/labels.py:476
+#: py/modules/configuration.py:942 py/modules/labels.py:480
 msgid "Strains"
 msgstr "Linhagens"
 
-#: py/modules/configuration.py:932 py/modules/labels.py:478
+#: py/modules/configuration.py:943 py/modules/labels.py:482
 msgid "People"
 msgstr "Pessoas"
 
-#: py/modules/configuration.py:933 py/modules/labels.py:479
+#: py/modules/configuration.py:944 py/modules/labels.py:483
 msgid "Institutions"
 msgstr "Instituições"
 
-#: py/modules/configuration.py:934 py/modules/labels.py:480
+#: py/modules/configuration.py:945 py/modules/labels.py:484
 msgid "Documents"
 msgstr "Documentos"
 
-#: py/modules/configuration.py:935 py/modules/labels.py:481
+#: py/modules/configuration.py:946 py/modules/labels.py:485
 msgid "References"
 msgstr "Referências"
 
-#: py/modules/configuration.py:936 py/modules/labels.py:482
+#: py/modules/configuration.py:947 py/modules/labels.py:486
 msgid "Preservation"
 msgstr "Preservação"
 
-#: py/modules/configuration.py:937 py/modules/labels.py:483
+#: py/modules/configuration.py:948 py/modules/labels.py:487
 msgid "Distribution"
 msgstr "Distribuição"
 
-#: py/modules/configuration.py:1041
+#: py/modules/configuration.py:1052
 msgid "Level "
 msgstr "Nível "
 
-#: py/modules/configuration.py:1054
+#: py/modules/configuration.py:1065
 msgid "Unable to edit special groups"
 msgstr "Não é possível editar estes grupos especiais."
 
-#: py/modules/configuration.py:1160
+#: py/modules/configuration.py:1171
 msgid "Unit of Measure"
 msgstr "Unidade de Medida"
 
-#: py/modules/configuration.py:1282
+#: py/modules/configuration.py:1293
 msgid "Unable to edit current database."
 msgstr "Não é possível editar o banco de dados em uso."
 
-#: py/modules/configuration.py:1290
+#: py/modules/configuration.py:1301
 msgid "Unable to find the log database of this database."
 msgstr "Não foi possível encontrar o banco de dados de rastreabilidade."
 
@@ -125,120 +123,207 @@ msgstr "Não foi possível encontrar o banco de dados de rastreabilidade."
 msgid "Invalid value type."
 msgstr "Tipo de valor inválido."
 
-#: py/modules/reports_common.py:581 py/modules/form_save.py:151
-#: py/modules/lists.py:224 py/modules/getdata.py:2873
+#: py/modules/form_save.py:164 py/modules/getdata.py:2922
+#: py/modules/lists.py:229 py/modules/reports_common.py:578
 msgid "Argument is invalid."
 msgstr "Argumento inválido."
 
-#: py/modules/page_mount.py:258
+#: py/modules/page_mount.py:277
 msgid "Invalid"
 msgstr "Inválido"
 
-#: py/modules/page_mount.py:258
+#: py/modules/page_mount.py:277
 msgid "entry in config.xml."
 msgstr "entrada em config.xml"
 
-#: py/modules/page_mount.py:259
+#: py/modules/page_mount.py:278
 msgid "Check field \"code\" of table \"lang\" in main database."
-msgstr ""
-"Verifique o campo \"code\" da tabela \"lang\" no banco de dados principal."
+msgstr "Verifique o campo \"code\" da tabela \"lang\" no banco de dados principal."
 
-#: py/modules/page_mount.py:283
+#: py/modules/page_mount.py:306
 msgid "Login already exists!"
 msgstr "Login já existe!"
 
-#: py/modules/page_mount.py:290
+#: py/modules/page_mount.py:313
 msgid "There are currently no lots available for distribution!"
 msgstr "Atualmente não há lotes disponíveis para distribuição!"
 
-#: py/modules/page_mount.py:290
+#: py/modules/page_mount.py:313
 msgid "Please insert a lot in the Preservation screen."
 msgstr "Favor inserir um lote na tela de Preservação."
 
-#: py/modules/page_mount.py:297
+#: py/modules/page_mount.py:320
 msgid "There are currently no institutions available in the system!"
 msgstr "Atualmente não há instituições disponíveis para distribuição!"
 
-#: py/modules/page_mount.py:297
+#: py/modules/page_mount.py:320
 msgid "Please insert an institution."
 msgstr "Por favor, coloque uma Instituição válida."
 
-#: py/modules/page_mount.py:304
+#: py/modules/page_mount.py:332
 msgid "Generation Timeout"
 msgstr "Tempo Limite de Geração Excedido"
 
-#: py/modules/page_mount.py:304
+#: py/modules/page_mount.py:332
 msgid ""
 "Please change the fields in your report or change the 'report_timeout' "
 "parameter in the config.xml file."
 msgstr ""
-"Por favor, altere os campos do seu relatório ou altere o valor do parâmetro "
-"'report_time' no arquivo config.xml"
+"Por favor, altere os campos do seu relatório ou altere o valor do "
+"parâmetro 'report_time' no arquivo config.xml"
 
-#: py/modules/page_mount.py:1064
+#: py/modules/page_mount.py:1143
 msgid "KeyError when assembling final html"
 msgstr "KeyError ao compilar html final"
 
-#: py/modules/page_mount.py:1064
+#: py/modules/page_mount.py:1143
 msgid "Data"
 msgstr "Dados"
 
-#: py/modules/page_mount.py:1083
+#: py/modules/page_mount.py:1163
 msgid "Missing keys"
 msgstr "Faltam as chaves"
 
-#: py/modules/form_del.py:66
+#: py/modules/form_del.py:78
 msgid ""
-"This taxon can not be deleted because this is alternate state of the other "
-"taxon."
+"This taxon can not be deleted because this is alternate state of the "
+"other taxon."
 msgstr ""
-"Esta taxon não pode ser excluída porque ela é estado alternativo de outra "
-"taxon."
+"Esta taxon não pode ser excluída porque ela é estado alternativo de outra"
+" taxon."
 
-#: py/modules/form_del.py:123
-msgid ""
-"This distribution can not be deleted because the original positions are "
-"taken by another preservation or stock movement."
+#: py/modules/form_del.py:84
+#, fuzzy
+msgid "This species cannot be deleted because it is in use by some strains."
 msgstr ""
-"Esta distribuição não pode ser excluída porque estas posições de origem já "
-"foram utilizadas em outra preservação ou movimentação de estoque."
+"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou"
+" mais linhagens."
 
-#: py/modules/form_del.py:205 py/modules/form_del.py:210
-#: py/modules/form_del.py:215 py/modules/form_del.py:220
-#: py/modules/form_del.py:225 js/form.preservation_src.js:989
-#: js/form.preservation_src.js:998 js/form.preservation.js:130
-#: js/form.preservation.js:131
+#: py/modules/form_del.py:99
+#, fuzzy
 msgid ""
-"This preservation can not be deleted because it has been used as origin of "
-"another preservation, a quality control, a distribution, or a stock movement."
+"This strain cannot be deleted because it has associated lots in "
+"preservation, distribution, or stock movement."
 msgstr ""
 "Esta preservação não pode ser excluída por que ela está sendo usada como "
 "origem de outra preservação, controle de qualidade, distribuição, ou "
 "movimentação de estoque."
 
-#: py/modules/form_del.py:312
+#: py/modules/form_del.py:136
+#, fuzzy
+msgid ""
+"This person cannot be deleted because they are associated with one or "
+"more distributions."
+msgstr ""
+"Esta taxon não pode ser excluída porque ela é estado alternativo de outra"
+" taxon."
+
+#: py/modules/form_del.py:142
+#, fuzzy
+msgid ""
+"This person cannot be deleted because they are associated with one or "
+"more quality controls."
+msgstr ""
+"Esta taxon não pode ser excluída porque ela é estado alternativo de outra"
+" taxon."
+
+#: py/modules/form_del.py:148
+#, fuzzy
+msgid ""
+"This person cannot be deleted because they are associated with one or "
+"more preservations."
+msgstr ""
+"Este controle de qualidade não pode ser excluído porque estas posições de"
+" origem já foram utilizadas em outra preservação."
+
+#: py/modules/form_del.py:158
+#, fuzzy
+msgid ""
+"This institution cannot be deleted because it is associated with one or "
+"more distributions."
+msgstr ""
+"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou"
+" mais linhagens."
+
+#: py/modules/form_del.py:164
+#, fuzzy
+msgid ""
+"This institution cannot be deleted because it is associated with one or "
+"more strain collection events."
+msgstr ""
+"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou"
+" mais linhagens."
+
+#: py/modules/form_del.py:170
+#, fuzzy
+msgid ""
+"This institution cannot be deleted because it is associated with one or "
+"more strain deposits."
+msgstr ""
+"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou"
+" mais linhagens."
+
+#: py/modules/form_del.py:176
+#, fuzzy
+msgid ""
+"This institution cannot be deleted because it is associated with one or "
+"more strain identifications."
+msgstr ""
+"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou"
+" mais linhagens."
+
+#: py/modules/form_del.py:182
+#, fuzzy
+msgid ""
+"This institution cannot be deleted because it is associated with one or "
+"more strain isolations."
+msgstr ""
+"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou"
+" mais linhagens."
+
+#: py/modules/form_del.py:195
+msgid ""
+"This distribution can not be deleted because the original positions are "
+"taken by another preservation or stock movement."
+msgstr ""
+"Esta distribuição não pode ser excluída porque estas posições de origem "
+"já foram utilizadas em outra preservação ou movimentação de estoque."
+
+#: js/form.preservation_src.js:1109 js/form.preservation_src.js:1118
+#: py/modules/form_del.py:277 py/modules/form_del.py:282
+#: py/modules/form_del.py:287 py/modules/form_del.py:292
+#: py/modules/form_del.py:297
+msgid ""
+"This preservation can not be deleted because it has been used as origin "
+"of another preservation, a quality control, a distribution, or a stock "
+"movement."
+msgstr ""
+"Esta preservação não pode ser excluída por que ela está sendo usada como "
+"origem de outra preservação, controle de qualidade, distribuição, ou "
+"movimentação de estoque."
+
+#: py/modules/form_del.py:385
 msgid ""
 "This stock movement can not be deleted because one or more destination "
-"positions has been used as origin of a preservation, a quality control, a "
-"distribution, or another stock movement."
+"positions has been used as origin of a preservation, a quality control, a"
+" distribution, or another stock movement."
 msgstr ""
 "Esta movimentação de estoque não pode ser excluída porque uma ou mais "
 "posições de destino foram utilizadas como origem de uma preservação, "
 "controle de qualidade, distribuição ou outra movimentação de estoque."
 
-#: py/modules/form_del.py:316
+#: py/modules/form_del.py:389
 msgid ""
-"This stock movement can not be deleted because the original positions are "
-"taken by another preservation or stock movement."
+"This stock movement can not be deleted because the original positions are"
+" taken by another preservation or stock movement."
 msgstr ""
-"Esta movimentação de estoque não pode ser excluída porque estas posições de "
-"origem já foram utilizadas em outra preservação ou outra movimentação de "
-"estoque."
+"Esta movimentação de estoque não pode ser excluída porque estas posições "
+"de origem já foram utilizadas em outra preservação ou outra movimentação "
+"de estoque."
 
-#: py/modules/form_del.py:380
+#: py/modules/form_del.py:453
 msgid "This container can not be deleted."
-msgstr ""
-"Este contêiner não pode ser excluído porque ele já está sendo utilizado."
+msgstr "Este contêiner não pode ser excluído porque ele já está sendo utilizado."
 
 #: py/modules/textlink.py:20
 msgid "Invalid Text Link"
@@ -273,16 +358,16 @@ msgstr "Visualização da Referência"
 msgid "Document Visualization"
 msgstr "Visualização do Documento"
 
-#: py/modules/subcollections.py:16 py/modules/labels.py:272
+#: py/modules/labels.py:275 py/modules/subcollections.py:16
 msgid "Collection"
 msgstr "Coleção"
 
-#: py/modules/quality.py:60 py/modules/labels.py:389 py/modules/labels.py:554
+#: py/modules/labels.py:392 py/modules/labels.py:558 py/modules/quality.py:60
 msgid "New"
 msgstr "Novo"
 
-#: py/modules/quality.py:68 py/modules/getdata.py:3429
-#: js/form.strains.quality.js:79 js/form.strains.quality_src.js:449
+#: js/form.strains.quality_src.js:477 py/modules/getdata.py:3505
+#: py/modules/quality.py:68
 #, python-format
 msgid "Number of Used %s"
 msgstr "Número de %s Utilizados(as)"
@@ -291,32 +376,31 @@ msgstr "Número de %s Utilizados(as)"
 msgid "Responsible technician"
 msgstr "Técnico Responsável"
 
-#: py/modules/quality.py:81 py/modules/labels.py:137 py/modules/labels.py:145
-#: py/modules/labels.py:198 py/modules/labels.py:199 py/modules/labels.py:228
-#: py/modules/labels.py:237 py/modules/labels.py:364 py/modules/labels.py:374
-#: py/modules/labels.py:817 py/modules/getdata.py:1634
-#: py/modules/getdata.py:1709 py/modules/getdata.py:3646
-#: js/form.preservation_src.js:708 js/form.preservation_src.js:887
-#: js/form.preservation.js:89 js/form.preservation.js:117
+#: js/form.preservation_src.js:793 js/form.preservation_src.js:989
+#: py/modules/getdata.py:1652 py/modules/getdata.py:1727
+#: py/modules/getdata.py:3723 py/modules/labels.py:140 py/modules/labels.py:148
+#: py/modules/labels.py:201 py/modules/labels.py:202 py/modules/labels.py:231
+#: py/modules/labels.py:240 py/modules/labels.py:367 py/modules/labels.py:377
+#: py/modules/labels.py:821 py/modules/quality.py:81
 msgid "Lot"
 msgstr "Lote"
 
-#: py/modules/quality.py:97 py/modules/labels.py:455
+#: py/modules/labels.py:459 py/modules/quality.py:97
 msgid "EDIT"
 msgstr "EDITAR"
 
-#: py/modules/quality.py:105 py/modules/labels.py:453
+#: py/modules/labels.py:457 py/modules/quality.py:105
 msgid "Do you really want to delete this item?"
 msgstr "Você realmente deseja apagar este item?"
 
-#: py/modules/quality.py:105 py/modules/labels.py:454
+#: py/modules/labels.py:458 py/modules/quality.py:105
 msgid "DELETE"
 msgstr "DELETAR"
 
-#: py/modules/quality.py:108 py/modules/labels.py:46 py/modules/labels.py:73
-#: py/modules/labels.py:86 py/modules/labels.py:97 py/modules/labels.py:104
-#: py/modules/labels.py:136 py/modules/labels.py:225 py/modules/labels.py:245
-#: py/modules/labels.py:377 py/modules/labels.py:616
+#: py/modules/labels.py:47 py/modules/labels.py:74 py/modules/labels.py:87
+#: py/modules/labels.py:98 py/modules/labels.py:105 py/modules/labels.py:139
+#: py/modules/labels.py:228 py/modules/labels.py:248 py/modules/labels.py:380
+#: py/modules/labels.py:620 py/modules/quality.py:108
 msgid "Date"
 msgstr "Data"
 
@@ -324,64 +408,64 @@ msgstr "Data"
 msgid "There are no quality tests for this strain."
 msgstr "Não há testes de qualidade para esta linhagem."
 
-#: py/modules/quality.py:144 py/modules/getdata.py:3449
+#: py/modules/getdata.py:3525 py/modules/quality.py:144
 msgid "Ok"
 msgstr "Ok"
 
+#: py/modules/getdata.py:3421 py/modules/getdata.py:3527
 #: py/modules/quality.py:146 py/modules/quality.py:298
-#: py/modules/getdata.py:3350 py/modules/getdata.py:3451
 msgid "Contaminated"
 msgstr "Contaminado"
 
-#: py/modules/quality.py:149 py/modules/labels.py:135 py/modules/labels.py:219
-#: py/modules/getdata.py:3454 py/modules/getdata.py:3464
+#: py/modules/getdata.py:3530 py/modules/getdata.py:3540
+#: py/modules/labels.py:138 py/modules/labels.py:222 py/modules/quality.py:149
 msgid "Does not apply"
 msgstr "Não se aplica"
 
-#: py/modules/quality.py:170 py/modules/labels.py:139
+#: py/modules/labels.py:142 py/modules/quality.py:170
 msgid "Used Test"
 msgstr "Teste Utilizado"
 
-#: py/modules/quality.py:171 py/modules/labels.py:132 py/modules/labels.py:212
-#: py/modules/labels.py:213
+#: py/modules/labels.py:135 py/modules/labels.py:215 py/modules/labels.py:216
+#: py/modules/quality.py:171
 msgid "Purity"
 msgstr "Pureza"
 
-#: py/modules/quality.py:172 py/modules/labels.py:133 py/modules/labels.py:217
+#: py/modules/labels.py:136 py/modules/labels.py:220 py/modules/quality.py:172
 msgid "Counting"
 msgstr "Contagem"
 
-#: py/modules/quality.py:173 py/modules/labels.py:99 py/modules/labels.py:140
+#: py/modules/labels.py:100 py/modules/labels.py:143 py/modules/quality.py:173
 msgid "Result"
 msgstr "Resultado"
 
-#: py/modules/quality.py:174 py/modules/labels.py:141 py/modules/labels.py:208
+#: py/modules/labels.py:144 py/modules/labels.py:211 py/modules/quality.py:174
 msgid "Observations"
 msgstr "Observações"
 
-#: py/modules/quality.py:297 py/modules/labels.py:461
-#: py/modules/getdata.py:3349
+#: py/modules/getdata.py:3420 py/modules/labels.py:465
+#: py/modules/quality.py:297
 msgid "OK"
 msgstr "OK"
 
-#: py/modules/sciname.py:70 py/modules/sciname.py:83
+#: py/modules/sciname.py:107 py/modules/sciname.py:125
 msgid ""
-"Another taxa with that Higher Taxa and Scientific Name combination already "
-"exists."
+"Another taxa with that Higher Taxa and Scientific Name combination "
+"already exists."
 msgstr ""
 "Já existe uma taxon com a mesma combinação de taxonomia superior e nome "
 "científico."
 
-#: py/modules/sql.py:24
+#: py/modules/sql.py:42
 msgid "not found in XML file"
 msgstr "não encontrado no arquivo XML"
 
+#: py/modules/getdata.py:3508 py/modules/getdata.py:3650
 #: py/modules/location.py:150 py/modules/location.py:152
-#: py/modules/getdata.py:3432 py/modules/getdata.py:3574
 msgid "Not identified"
 msgstr "Não identificado"
 
-#: py/modules/labels.py:11 py/modules/labels.py:448
+#: py/modules/labels.py:11 py/modules/labels.py:451
 msgid "Container"
 msgstr "Contêiner"
 
@@ -390,15 +474,15 @@ msgid "Rep Division"
 msgstr "Divisão"
 
 #: py/modules/labels.py:15 py/modules/labels.py:16 py/modules/labels.py:32
-#: py/modules/labels.py:44 py/modules/labels.py:59 py/modules/labels.py:72
-#: py/modules/labels.py:79 py/modules/labels.py:91 py/modules/labels.py:109
-#: py/modules/labels.py:123 py/modules/labels.py:162 py/modules/labels.py:171
-#: py/modules/labels.py:189 py/modules/labels.py:254 py/modules/labels.py:771
-#: py/modules/labels.py:780 py/modules/labels.py:796 py/modules/labels.py:811
+#: py/modules/labels.py:45 py/modules/labels.py:60 py/modules/labels.py:73
+#: py/modules/labels.py:80 py/modules/labels.py:92 py/modules/labels.py:110
+#: py/modules/labels.py:126 py/modules/labels.py:165 py/modules/labels.py:174
+#: py/modules/labels.py:192 py/modules/labels.py:257 py/modules/labels.py:775
+#: py/modules/labels.py:784 py/modules/labels.py:800 py/modules/labels.py:815
 msgid "Comments"
 msgstr "Comentários"
 
-#: py/modules/labels.py:17 py/modules/labels.py:192 py/modules/labels.py:793
+#: py/modules/labels.py:17 py/modules/labels.py:195 py/modules/labels.py:797
 msgid "Author"
 msgstr "Autor"
 
@@ -410,57 +494,56 @@ msgstr "Taxon"
 msgid "Classification"
 msgstr "Classificação"
 
-#: py/modules/labels.py:20 py/modules/labels.py:804
+#: py/modules/labels.py:20 py/modules/labels.py:808
 msgid "Taxonomic References"
 msgstr "Referências Taxonômicas"
 
-#: py/modules/labels.py:21 py/modules/labels.py:805
+#: py/modules/labels.py:21 py/modules/labels.py:809
 msgid "Synonym"
 msgstr "Sinonímia"
 
-#: py/modules/labels.py:22 py/modules/labels.py:806
+#: py/modules/labels.py:22 py/modules/labels.py:810
 msgid "Hazard_Group"
 msgstr "Grupo de Risco"
 
-#: py/modules/labels.py:23 py/modules/labels.py:467 js/textlink_src.js:56
-#: js/textlink.js:14
+#: js/textlink.js:14 js/textlink_src.js:60 py/modules/labels.py:23
+#: py/modules/labels.py:471
 msgid "Reference"
 msgstr "Referência"
 
-#: py/modules/labels.py:24 py/modules/labels.py:809
+#: py/modules/labels.py:24 py/modules/labels.py:813
 msgid "Alternative State"
 msgstr "Estado Alternativo"
 
-#: py/modules/labels.py:25 py/modules/labels.py:39 py/modules/labels.py:267
-#: py/modules/labels.py:562 py/modules/labels.py:650
-#: py/modules/form_save.py:203
+#: py/modules/form_save.py:231 py/modules/labels.py:25 py/modules/labels.py:39
+#: py/modules/labels.py:270 py/modules/labels.py:566 py/modules/labels.py:654
 msgid "Type"
 msgstr "Tipo"
 
-#: py/modules/labels.py:26 py/modules/labels.py:802
+#: py/modules/labels.py:26 py/modules/labels.py:806
 msgid "Scientific Name"
 msgstr "Nome Científico"
 
-#: py/modules/labels.py:27 py/modules/labels.py:801
+#: py/modules/labels.py:27 py/modules/labels.py:805
 msgid "Higher Taxa"
 msgstr "Taxonomia Superior"
 
-#: py/modules/labels.py:28 py/modules/labels.py:800
+#: py/modules/labels.py:28 py/modules/labels.py:804
 msgid "Taxonomic Group"
 msgstr "Grupo taxonômico"
 
-#: py/modules/labels.py:31 py/modules/labels.py:177 py/modules/labels.py:187
-#: py/modules/labels.py:196 py/modules/labels.py:259 py/modules/labels.py:274
-#: py/modules/labels.py:644 py/modules/labels.py:783 py/modules/labels.py:791
+#: py/modules/labels.py:31 py/modules/labels.py:180 py/modules/labels.py:190
+#: py/modules/labels.py:199 py/modules/labels.py:262 py/modules/labels.py:277
+#: py/modules/labels.py:648 py/modules/labels.py:787 py/modules/labels.py:795
 msgid "Code"
 msgstr "Código"
 
-#: py/modules/labels.py:34 py/modules/labels.py:263 py/modules/labels.py:643
-#: js/configuration_src.js:1159 js/configuration.js:286
+#: js/configuration.js:286 js/configuration_src.js:1264 py/modules/labels.py:34
+#: py/modules/labels.py:266 py/modules/labels.py:647
 msgid "Division"
 msgstr "Divisão"
 
-#: py/modules/labels.py:35 py/modules/labels.py:645
+#: py/modules/labels.py:35 py/modules/labels.py:649
 msgid "Number"
 msgstr "Número"
 
@@ -468,1798 +551,1803 @@ msgstr "Número"
 msgid "Auto Numeration"
 msgstr "Auto numeração"
 
-#: py/modules/labels.py:37 py/modules/labels.py:646
+#: py/modules/labels.py:37 py/modules/labels.py:650
 msgid "Origin Code"
 msgstr "Código de origem"
 
-#: py/modules/labels.py:38 py/modules/labels.py:65 py/modules/labels.py:84
-#: py/modules/labels.py:102 py/modules/labels.py:661
+#: py/modules/labels.py:38 py/modules/labels.py:66 py/modules/labels.py:85
+#: py/modules/labels.py:103 py/modules/labels.py:665
 msgid "Taxonomic Complement"
 msgstr "Complemento taxonômico"
 
-#: py/modules/labels.py:40 py/modules/labels.py:647
+#: py/modules/labels.py:40 py/modules/labels.py:651
 msgid "Status"
 msgstr "Status"
 
-#: py/modules/labels.py:41 py/modules/labels.py:121
+#: py/modules/labels.py:41 py/modules/labels.py:124
 msgid "OGM"
 msgstr "OGM"
 
-#: py/modules/labels.py:42 py/modules/labels.py:662
+#: py/modules/labels.py:42 py/modules/labels.py:666
 msgid "History"
 msgstr "Histórico"
 
-#: py/modules/labels.py:43
+#: py/modules/labels.py:43 py/modules/labels.py:625
+msgid "Subcollection Code"
+msgstr "Código da subcoleção"
+
+#: py/modules/labels.py:44
 msgid "Codes in Other Collections"
 msgstr "Códigos em Outras Coleções"
 
-#: py/modules/labels.py:45
+#: py/modules/labels.py:46
 msgid "Origin Place"
 msgstr "Local de Coleta"
 
-#: py/modules/labels.py:47
+#: py/modules/labels.py:48
 msgid "Collector"
 msgstr "Coletor"
 
-#: py/modules/labels.py:48 py/modules/labels.py:75 py/modules/labels.py:88
-#: py/modules/labels.py:92 py/modules/labels.py:241
+#: py/modules/labels.py:49 py/modules/labels.py:76 py/modules/labels.py:89
+#: py/modules/labels.py:93 py/modules/labels.py:244
 msgid "Person"
 msgstr "Pessoa"
 
-#: py/modules/labels.py:49 py/modules/labels.py:76 py/modules/labels.py:89
-#: py/modules/labels.py:93 py/modules/labels.py:172 py/modules/labels.py:240
-#: py/modules/labels.py:244 py/modules/getdata.py:2414
-#: py/modules/getdata.py:2444
+#: py/modules/getdata.py:2453 py/modules/getdata.py:2483
+#: py/modules/labels.py:50 py/modules/labels.py:77 py/modules/labels.py:90
+#: py/modules/labels.py:94 py/modules/labels.py:175 py/modules/labels.py:243
+#: py/modules/labels.py:247
 msgid "Institution"
 msgstr "Instituição"
 
-#: py/modules/labels.py:50 py/modules/labels.py:670
+#: py/modules/labels.py:51 py/modules/labels.py:674
 msgid "Country"
 msgstr "País"
 
-#: py/modules/labels.py:51
+#: py/modules/labels.py:52
 msgid "State"
 msgstr "Estado"
 
-#: py/modules/labels.py:52 py/modules/labels.py:673
+#: py/modules/labels.py:53 py/modules/labels.py:677
 msgid "City"
 msgstr "Cidade"
 
-#: py/modules/labels.py:53 py/modules/labels.py:674
+#: py/modules/labels.py:54 py/modules/labels.py:678
 msgid "Place"
 msgstr "Localidade"
 
-#: py/modules/labels.py:54
+#: py/modules/labels.py:55
 msgid "GPS"
 msgstr "GPS"
 
-#: py/modules/labels.py:55 py/modules/labels.py:675
+#: py/modules/labels.py:56 py/modules/labels.py:679
 msgid "Latitude"
 msgstr "Latitude"
 
-#: py/modules/labels.py:56 py/modules/labels.py:678
+#: py/modules/labels.py:57 py/modules/labels.py:682
 msgid "Longitude"
 msgstr "Longitude"
 
-#: py/modules/labels.py:57
+#: py/modules/labels.py:58
 msgid "Precision"
 msgstr "Precisão"
 
-#: py/modules/labels.py:58 py/modules/labels.py:681
+#: py/modules/labels.py:59 py/modules/labels.py:685
 msgid "Datum"
 msgstr "Datum"
 
-#: py/modules/labels.py:60
+#: py/modules/labels.py:61
 msgid "(m)"
 msgstr "(m)"
 
-#: py/modules/labels.py:61
+#: py/modules/labels.py:62
 msgid "HOST"
 msgstr "HOSPEDEIRO"
 
-#: py/modules/labels.py:62
+#: py/modules/labels.py:63
 msgid "Common Name"
 msgstr "Nome Vulgar"
 
-#: py/modules/labels.py:63 py/modules/labels.py:81 py/modules/labels.py:100
+#: py/modules/labels.py:64 py/modules/labels.py:82 py/modules/labels.py:101
 msgid "Genus"
 msgstr "Gênero"
 
-#: py/modules/labels.py:64 py/modules/labels.py:83 py/modules/labels.py:101
+#: py/modules/labels.py:65 py/modules/labels.py:84 py/modules/labels.py:102
 msgid "Infraespecific Name"
 msgstr "Subespécie"
 
-#: py/modules/labels.py:66 py/modules/labels.py:85 py/modules/labels.py:103
-#: py/modules/labels.py:270
+#: py/modules/labels.py:67 py/modules/labels.py:86 py/modules/labels.py:104
+#: py/modules/labels.py:273
 msgid "Level"
 msgstr "Nível"
 
-#: py/modules/labels.py:67 py/modules/labels.py:691
+#: py/modules/labels.py:68 py/modules/labels.py:695
 msgid "International Code"
 msgstr "Código internacional"
 
-#: py/modules/labels.py:68 py/modules/labels.py:684
+#: py/modules/labels.py:69 py/modules/labels.py:688
 msgid "Substratum"
 msgstr "Substrato"
 
-#: py/modules/labels.py:69
+#: py/modules/labels.py:70
 msgid "Clinic Form"
 msgstr "Forma Clínica"
 
-#: py/modules/labels.py:70 py/modules/labels.py:694
+#: py/modules/labels.py:71 py/modules/labels.py:698
 msgid "HIV"
 msgstr "HIV"
 
-#: py/modules/labels.py:71 py/modules/labels.py:108
+#: py/modules/labels.py:72 py/modules/labels.py:109
 msgid "Specific Epithet"
 msgstr "Espécie"
 
-#: py/modules/labels.py:74
+#: py/modules/labels.py:75
 msgid "Isolated by"
 msgstr "Isolado por"
 
-#: py/modules/labels.py:77
+#: py/modules/labels.py:78
 msgid "Isolated from"
 msgstr "Isolado de"
 
-#: py/modules/labels.py:78 py/modules/labels.py:90
+#: py/modules/labels.py:79 py/modules/labels.py:91
 msgid "Method"
 msgstr "Método"
 
-#: py/modules/labels.py:80
+#: py/modules/labels.py:81
 msgid "Identified as"
 msgstr "Identificado como"
 
-#: py/modules/labels.py:82
+#: py/modules/labels.py:83
 msgid "Specie"
 msgstr "Espécie"
 
-#: py/modules/labels.py:87
+#: py/modules/labels.py:88
 msgid "Identified by"
 msgstr "Identificado por"
 
-#: py/modules/labels.py:94
+#: py/modules/labels.py:95
 msgid "Deposited as"
 msgstr "Depositado como"
 
-#: py/modules/labels.py:95
+#: py/modules/labels.py:96
 msgid "Deposited by"
 msgstr "Depositado por"
 
-#: py/modules/labels.py:96
+#: py/modules/labels.py:97
 msgid "Authentication"
 msgstr "Autenticação"
 
-#: py/modules/labels.py:98 py/modules/labels.py:142 py/modules/labels.py:197
-#: py/modules/labels.py:236
+#: py/modules/labels.py:99 py/modules/labels.py:145 py/modules/labels.py:200
+#: py/modules/labels.py:239
 msgid "Responsible"
 msgstr "Responsável"
 
-#: py/modules/labels.py:105
+#: py/modules/labels.py:106
 msgid "Deposit Type"
 msgstr "Tipo de Depósito"
 
-#: py/modules/labels.py:106 py/modules/labels.py:728
+#: py/modules/labels.py:107 py/modules/labels.py:732
 msgid "Recommended Preservation Method"
 msgstr "Método de preservação recomendado"
 
-#: py/modules/labels.py:107
+#: py/modules/labels.py:108
 msgid "How Culture was sent"
 msgstr "Forma de Recebimento"
 
-#: py/modules/labels.py:110
+#: py/modules/labels.py:111
 msgid "Recommended Culture Medium"
 msgstr "Meio de Cultura Recomendado"
 
-#: py/modules/labels.py:111 py/modules/labels.py:736
+#: py/modules/labels.py:112 py/modules/labels.py:740
 msgid "Recommended Temperature"
 msgstr "Temperatura recomendada"
 
-#: py/modules/labels.py:112 py/modules/labels.py:226 py/modules/labels.py:737
+#: py/modules/labels.py:113 py/modules/labels.py:229 py/modules/labels.py:741
 msgid "Incubation Time"
 msgstr "Tempo de Incubação"
 
-#: py/modules/labels.py:113 py/modules/labels.py:738
+#: py/modules/labels.py:114 py/modules/labels.py:742
 msgid "PH"
 msgstr "PH"
 
-#: py/modules/labels.py:114 py/modules/labels.py:739
+#: py/modules/labels.py:115 py/modules/labels.py:743
 msgid "Oxygen Requirements"
 msgstr "Requerimento de oxigênio"
 
-#: py/modules/labels.py:115
+#: py/modules/labels.py:116
 msgid "Biochemical"
 msgstr "Bioquímicas"
 
-#: py/modules/labels.py:116
+#: py/modules/labels.py:117
 msgid "Molecular"
 msgstr "Moleculares"
 
-#: py/modules/labels.py:117
+#: py/modules/labels.py:118
 msgid "Immunological"
 msgstr "Imunológicas"
 
-#: py/modules/labels.py:118
+#: py/modules/labels.py:119
 msgid "Morphological"
 msgstr "Morfológicas"
 
-#: py/modules/labels.py:119
+#: py/modules/labels.py:120
 msgid "Pathogenic"
 msgstr "Patogênicas"
 
-#: py/modules/labels.py:120
+#: py/modules/labels.py:121
 msgid "Genotypic"
 msgstr "Genotípicas"
 
-#: py/modules/labels.py:124
+#: py/modules/labels.py:122
+msgid "Genomic"
+msgstr "Genômicas"
+
+#: py/modules/labels.py:123
+msgid "Metabolomic"
+msgstr "Matabolômicas"
+
+#: py/modules/labels.py:127
 msgid "Biological Risk Comments"
 msgstr "Risco Biológico - Comentários"
 
-#: py/modules/labels.py:125 py/modules/labels.py:750
+#: py/modules/labels.py:128 py/modules/labels.py:754
 msgid "Restrictions"
 msgstr "Restrições"
 
-#: py/modules/labels.py:126 py/modules/labels.py:751
+#: py/modules/labels.py:129 py/modules/labels.py:755
 msgid "Pictures"
 msgstr "Imagens"
 
-#: py/modules/labels.py:127 py/modules/labels.py:131
+#: py/modules/labels.py:130 py/modules/labels.py:134
 msgid "References (links etc.)"
 msgstr "Referências (links etc.)"
 
-#: py/modules/labels.py:128
+#: py/modules/labels.py:131
 msgid "Additional Notes to Catalog"
 msgstr "Observações Adicionais ao Catálogo"
 
-#: py/modules/labels.py:129 py/modules/labels.py:531 py/modules/labels.py:754
+#: py/modules/labels.py:132 py/modules/labels.py:535 py/modules/labels.py:758
 msgid "Properties"
 msgstr "Propriedades"
 
-#: py/modules/labels.py:130 py/modules/labels.py:755
+#: py/modules/labels.py:133 py/modules/labels.py:759
 msgid "Applications"
 msgstr "Aplicações"
 
-#: py/modules/labels.py:134 py/modules/labels.py:218
+#: py/modules/labels.py:137 py/modules/labels.py:221
 msgid "UFC/mL"
 msgstr "UFC/mL"
 
-#: py/modules/labels.py:138
+#: py/modules/labels.py:141
 msgid "Add new test"
 msgstr "Adicionar novo Teste"
 
-#: py/modules/labels.py:143 py/modules/labels.py:231 js/general_src.js:37
-#: js/general.js:14
+#: js/general.js:14 js/general_src.js:41 py/modules/labels.py:146
+#: py/modules/labels.py:234
 msgid "Minimize"
 msgstr "Minimizar"
 
-#: py/modules/labels.py:144
+#: py/modules/labels.py:147
 msgid "Remove test"
 msgstr "Remover teste"
 
-#: py/modules/labels.py:146 py/modules/labels.py:224
-#: py/modules/getdata.py:1638 py/modules/getdata.py:1713
+#: py/modules/getdata.py:1656 py/modules/getdata.py:1731
+#: py/modules/labels.py:149 py/modules/labels.py:227
 msgid "Minimum Stock"
 msgstr "Estoque Mínimo"
 
-#: py/modules/labels.py:147 py/modules/labels.py:215 py/modules/labels.py:379
-#: py/modules/labels.py:816
+#: py/modules/labels.py:150 py/modules/labels.py:218 py/modules/labels.py:382
+#: py/modules/labels.py:820
 msgid "Preservation Method"
 msgstr "Método de Preservação"
 
-#: py/modules/labels.py:148
+#: py/modules/labels.py:151
 msgid "Total of available ampoules"
 msgstr "Total de ampolas disponíveis"
 
-#: py/modules/labels.py:149 py/modules/labels.py:227
+#: py/modules/labels.py:152 py/modules/labels.py:230
 msgid "In Stock"
 msgstr "Em Estoque"
 
-#: py/modules/labels.py:150 py/modules/getdata.py:900
+#: py/modules/getdata.py:916 py/modules/labels.py:153
 msgid "This strain goes to catalog"
 msgstr "Esta linhagem pode ser publicada no catálogo"
 
-#: py/modules/labels.py:153 py/modules/labels.py:760
+#: py/modules/labels.py:156 py/modules/labels.py:764
 msgid "Code1"
 msgstr "CNPJ"
 
-#: py/modules/labels.py:154 py/modules/labels.py:761
+#: py/modules/labels.py:157 py/modules/labels.py:765
 msgid "Code2"
 msgstr "IE"
 
-#: py/modules/labels.py:155 py/modules/labels.py:762
+#: py/modules/labels.py:158 py/modules/labels.py:766
 msgid "Code3"
 msgstr "IM"
 
-#: py/modules/labels.py:156 py/modules/labels.py:764
+#: py/modules/labels.py:159 py/modules/labels.py:768
 msgid "Locator"
 msgstr "Localização"
 
-#: py/modules/labels.py:157 py/modules/labels.py:169 py/modules/labels.py:249
-#: py/modules/labels.py:260 py/modules/labels.py:265 py/modules/labels.py:273
-#: py/modules/labels.py:401 py/modules/labels.py:651 py/modules/labels.py:765
-#: py/modules/labels.py:774
+#: py/modules/labels.py:160 py/modules/labels.py:172 py/modules/labels.py:252
+#: py/modules/labels.py:263 py/modules/labels.py:268 py/modules/labels.py:276
+#: py/modules/labels.py:404 py/modules/labels.py:655 py/modules/labels.py:769
+#: py/modules/labels.py:778
 msgid "Name"
 msgstr "Nome"
 
-#: py/modules/labels.py:158 py/modules/labels.py:766 py/modules/labels.py:776
+#: py/modules/labels.py:161 py/modules/labels.py:770 py/modules/labels.py:780
 msgid "Address"
 msgstr "Endereço"
 
-#: py/modules/labels.py:159 py/modules/labels.py:170 py/modules/labels.py:767
-#: py/modules/labels.py:777
+#: py/modules/labels.py:162 py/modules/labels.py:173 py/modules/labels.py:771
+#: py/modules/labels.py:781
 msgid "Phones/Fax"
 msgstr "Telefones/Fax"
 
-#: py/modules/labels.py:160 py/modules/labels.py:768 py/modules/labels.py:778
+#: py/modules/labels.py:163 py/modules/labels.py:772 py/modules/labels.py:782
 msgid "Email"
 msgstr "E-mail"
 
-#: py/modules/labels.py:161 py/modules/labels.py:769
+#: py/modules/labels.py:164 py/modules/labels.py:773
 msgid "Website"
 msgstr "Endereço WEB"
 
-#: py/modules/labels.py:163 py/modules/labels.py:763
+#: py/modules/labels.py:166 py/modules/labels.py:767
 msgid "Complement"
 msgstr "Complemento"
 
-#: py/modules/labels.py:164 py/modules/getdata.py:2677
+#: py/modules/getdata.py:2726 py/modules/labels.py:167
 msgid "This institution goes to catalog"
 msgstr "Esta instituição pode ser publicada no catálogo"
 
-#: py/modules/labels.py:167 py/modules/getdata.py:2347
+#: py/modules/getdata.py:2386 py/modules/labels.py:170
 msgid "This people goes to catalog"
 msgstr "Esta pessoa pode ser publicada no catálogo"
 
-#: py/modules/labels.py:168 py/modules/labels.py:775
+#: py/modules/labels.py:171 py/modules/labels.py:779
 msgid "NickName"
 msgstr "Apelido"
 
-#: py/modules/labels.py:173
+#: py/modules/labels.py:176
 msgid "Personal Address"
 msgstr "Endereço Pessoal"
 
-#: py/modules/labels.py:174
+#: py/modules/labels.py:177
 msgid "Personal E-mail"
 msgstr "E-mail Pessoal"
 
-#: py/modules/labels.py:178 py/modules/labels.py:784 js/textlink_src.js:67
-#: js/textlink.js:14
+#: js/textlink.js:14 js/textlink_src.js:71 py/modules/labels.py:181
+#: py/modules/labels.py:788
 msgid "Qualifier"
 msgstr "Qualificador"
 
-#: py/modules/labels.py:179 py/modules/labels.py:788
-#: py/modules/getdata.py:1932
+#: py/modules/getdata.py:1955 py/modules/labels.py:182 py/modules/labels.py:792
 msgid "Category"
 msgstr "classificação"
 
-#: py/modules/labels.py:180 py/modules/labels.py:188 py/modules/labels.py:471
-#: py/modules/labels.py:785 py/modules/labels.py:792 js/textlink_src.js:79
-#: js/textlink.js:14
+#: js/textlink.js:14 js/textlink_src.js:83 py/modules/labels.py:183
+#: py/modules/labels.py:191 py/modules/labels.py:475 py/modules/labels.py:789
+#: py/modules/labels.py:796
 msgid "Title"
 msgstr "Título"
 
-#: py/modules/labels.py:181 py/modules/labels.py:266 py/modules/labels.py:378
-#: py/modules/labels.py:386 py/modules/labels.py:563 py/modules/labels.py:652
-#: py/modules/labels.py:786 py/modules/getdata.py:4151 js/jstree_src.js:1329
-#: js/jstree.js:172
+#: js/jstree_src.js:1401 py/modules/getdata.py:4229 py/modules/labels.py:184
+#: py/modules/labels.py:269 py/modules/labels.py:381 py/modules/labels.py:389
+#: py/modules/labels.py:567 py/modules/labels.py:656 py/modules/labels.py:790
 msgid "Description"
 msgstr "Descrição"
 
-#: py/modules/labels.py:182 py/modules/labels.py:787
+#: py/modules/labels.py:185 py/modules/labels.py:791
 msgid "File Name"
 msgstr "Nome do Arquivo"
 
-#: py/modules/labels.py:183
+#: py/modules/labels.py:186
 msgid "Update/Insert File"
 msgstr "Atualizar/Inserir Arquivo"
 
-#: py/modules/labels.py:184 py/modules/getdata.py:1896
+#: py/modules/getdata.py:1919 py/modules/labels.py:187
 msgid "This document goes to catalog"
 msgstr "Este documento pode ser publicado no catálogo"
 
-#: py/modules/labels.py:190 py/modules/labels.py:287 py/modules/labels.py:794
+#: py/modules/labels.py:193 py/modules/labels.py:290 py/modules/labels.py:798
 msgid "Year"
 msgstr "Ano"
 
-#: py/modules/labels.py:191 py/modules/labels.py:795
+#: py/modules/labels.py:194 py/modules/labels.py:799
 msgid "URL"
 msgstr "complemento (livro, capitulo, revista, paper, url, etc.)"
 
-#: py/modules/labels.py:193 py/modules/getdata.py:2164
+#: py/modules/getdata.py:2196 py/modules/labels.py:196
 msgid "This reference goes to catalog"
 msgstr "Esta referência pode ser publicada no catálogo"
 
-#: py/modules/labels.py:200
+#: py/modules/labels.py:203
 msgid "Original Position"
 msgstr "Posição de Origem"
 
-#: py/modules/labels.py:201
+#: py/modules/labels.py:204
 msgid "Used Method"
 msgstr "Método Utilizado"
 
-#: py/modules/labels.py:202
+#: py/modules/labels.py:205
 msgid "Min."
 msgstr "Mín."
 
-#: py/modules/labels.py:203
+#: py/modules/labels.py:206
 msgid "Preservation Type"
 msgstr "Método de Preservação"
 
-#: py/modules/labels.py:204
+#: py/modules/labels.py:207
 msgid "Process Data"
 msgstr "Dados de processamento"
 
-#: py/modules/labels.py:205
+#: py/modules/labels.py:208
 msgid "Macroscopic Characteristics"
 msgstr "Características Macroscópicas"
 
-#: py/modules/labels.py:206
+#: py/modules/labels.py:209
 msgid "Microscopic Characteristics"
 msgstr "Características Microscópicas"
 
-#: py/modules/labels.py:207
+#: py/modules/labels.py:210
 msgid "Results"
 msgstr "Resultados"
 
-#: py/modules/labels.py:209 py/modules/labels.py:242 py/modules/labels.py:243
+#: py/modules/labels.py:212 py/modules/labels.py:245 py/modules/labels.py:246
 msgid "Strain"
 msgstr "Linhagem"
 
-#: py/modules/labels.py:210 py/modules/labels.py:211
+#: py/modules/labels.py:213 py/modules/labels.py:214
 msgid "Origin"
 msgstr "Origem"
 
-#: py/modules/labels.py:214 py/modules/labels.py:441
+#: py/modules/labels.py:217 py/modules/labels.py:444
 msgid "Stock Position"
 msgstr "Posição no Estoque"
 
-#: py/modules/labels.py:216
+#: py/modules/labels.py:219
 msgid "Cryoprotector"
 msgstr "Crioprotetor"
 
-#: py/modules/labels.py:220
+#: py/modules/labels.py:223
 msgid "Culture Conditions"
 msgstr "Condições de Cultivo"
 
-#: py/modules/labels.py:221 py/modules/getdata.py:3458
+#: py/modules/getdata.py:3534 py/modules/labels.py:224
 msgid "Culture Medium"
 msgstr "Meio de Cultura"
 
-#: py/modules/labels.py:222
+#: py/modules/labels.py:225
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: py/modules/labels.py:223
+#: py/modules/labels.py:226
 msgid "Decrease Stock"
 msgstr "Retirar do Estoque"
 
-#: py/modules/labels.py:229
+#: py/modules/labels.py:232
 msgid "Original Location"
 msgstr "Posição de Origem"
 
-#: py/modules/labels.py:230 js/general_src.js:43 js/general.js:16
+#: js/general.js:16 js/general_src.js:47 py/modules/labels.py:233
 msgid "Maximize"
 msgstr "Maximizar"
 
-#: py/modules/labels.py:232
+#: py/modules/labels.py:235
 msgid "remove Strain"
 msgstr "remover Linhagem"
 
-#: py/modules/labels.py:233
+#: py/modules/labels.py:236
 msgid "add new Strain"
 msgstr "adicionar nova Linhagem"
 
-#: py/modules/labels.py:238
+#: py/modules/labels.py:241
 msgid "Qtty."
 msgstr "Qtd."
 
-#: py/modules/labels.py:239
+#: py/modules/labels.py:242
 msgid "Reason"
 msgstr "Motivo"
 
-#: py/modules/labels.py:250 py/modules/labels.py:402
+#: py/modules/labels.py:253 py/modules/labels.py:405
 msgid "Login"
 msgstr "Login"
 
-#: py/modules/labels.py:251 py/modules/labels.py:403 py/modules/labels.py:409
+#: py/modules/labels.py:254 py/modules/labels.py:406 py/modules/labels.py:412
 msgid "Password"
 msgstr "Senha"
 
-#: py/modules/labels.py:252
+#: py/modules/labels.py:255
 msgid "Password quality"
 msgstr "Qualidade da Senha"
 
-#: py/modules/labels.py:253 py/modules/labels.py:404
+#: py/modules/labels.py:256 py/modules/labels.py:407
 msgid "Confirm password"
 msgstr "Confirme a senha"
 
-#: py/modules/labels.py:255 py/modules/labels.py:405 py/modules/labels.py:500
+#: py/modules/labels.py:258 py/modules/labels.py:408 py/modules/labels.py:504
 msgid "Groups"
 msgstr "Grupos"
 
-#: py/modules/labels.py:256
+#: py/modules/labels.py:259
 msgid "Create"
 msgstr "Criar"
 
-#: py/modules/labels.py:257 js/configuration_src.js:160
-#: js/configuration_src.js:313 js/configuration_src.js:461
-#: js/configuration_src.js:571 js/configuration_src.js:1056
-#: js/configuration_src.js:1145 js/configuration.js:49 js/configuration.js:92
-#: js/configuration.js:132 js/configuration.js:155 js/configuration.js:265
-#: js/configuration.js:283 js/contact_relations_manipulation_src.js:67
-#: js/contact_relations_manipulation_src.js:71
+#: js/configuration.js:49 js/configuration.js:92 js/configuration.js:132
+#: js/configuration.js:155 js/configuration.js:265 js/configuration.js:283
+#: js/configuration_src.js:176 js/configuration_src.js:341
+#: js/configuration_src.js:501 js/configuration_src.js:620
+#: js/configuration_src.js:1150 js/configuration_src.js:1250
 #: js/contact_relations_manipulation.js:5
+#: js/contact_relations_manipulation_src.js:80 py/modules/labels.py:260
 msgid "Delete"
 msgstr "Apagar"
 
-#: py/modules/labels.py:258
+#: py/modules/labels.py:261
 msgid "Base"
 msgstr "Base de Dados"
 
-#: py/modules/labels.py:261
+#: py/modules/labels.py:264
 msgid "Logo"
 msgstr "Logo"
 
-#: py/modules/labels.py:262
+#: py/modules/labels.py:265
 msgid "(130x30)"
 msgstr "(130x30)"
 
-#: py/modules/labels.py:264 py/modules/getdata.py:4169
-#: js/configuration_src.js:1159 js/jstree_src.js:1514 js/jstree_src.js:1536
-#: js/configuration.js:286 js/jstree.js:172
+#: js/configuration.js:286 js/configuration_src.js:1264 js/jstree_src.js:1588
+#: js/jstree_src.js:1610 py/modules/getdata.py:4247 py/modules/labels.py:267
 msgid "Pattern"
 msgstr "Modelo"
 
-#: py/modules/labels.py:268
+#: py/modules/labels.py:271
 msgid "Modules"
 msgstr "Módulos"
 
-#: py/modules/labels.py:271
+#: py/modules/labels.py:274
 msgid "Group Members"
 msgstr "Membros do Grupo"
 
-#: py/modules/labels.py:275 py/modules/labels.py:338
+#: py/modules/labels.py:278 py/modules/labels.py:341
 msgid "Date Input Mask"
 msgstr "Máscara para Entrada de Data"
 
-#: py/modules/labels.py:276 py/modules/labels.py:339
+#: py/modules/labels.py:279 py/modules/labels.py:342
 msgid "Date Output Mask"
 msgstr "Máscara para Saída de Data"
 
-#: py/modules/labels.py:277 py/modules/labels.py:340
+#: py/modules/labels.py:280 py/modules/labels.py:343
 msgid "Input Language"
 msgstr "Idioma para Inserção"
 
-#: py/modules/labels.py:278 py/modules/labels.py:288 py/modules/labels.py:293
-#: py/modules/labels.py:301 py/modules/labels.py:308 py/modules/labels.py:315
-#: py/modules/labels.py:341
+#: py/modules/labels.py:281 py/modules/labels.py:291 py/modules/labels.py:296
+#: py/modules/labels.py:304 py/modules/labels.py:311 py/modules/labels.py:318
+#: py/modules/labels.py:344
 msgid "Associates"
 msgstr "Associa"
 
-#: py/modules/labels.py:279 py/modules/labels.py:289 py/modules/labels.py:294
-#: py/modules/labels.py:302 py/modules/labels.py:309 py/modules/labels.py:316
-#: py/modules/labels.py:342
+#: py/modules/labels.py:282 py/modules/labels.py:292 py/modules/labels.py:297
+#: py/modules/labels.py:305 py/modules/labels.py:312 py/modules/labels.py:319
+#: py/modules/labels.py:345
 msgid "Not Associates"
 msgstr "Não Associa"
 
-#: py/modules/labels.py:280 py/modules/labels.py:295 py/modules/labels.py:303
-#: py/modules/labels.py:310 py/modules/labels.py:317 py/modules/labels.py:343
+#: py/modules/labels.py:283 py/modules/labels.py:298 py/modules/labels.py:306
+#: py/modules/labels.py:313 py/modules/labels.py:320 py/modules/labels.py:346
 msgid "To Associate"
 msgstr "Associar"
 
-#: py/modules/labels.py:281 py/modules/labels.py:296 py/modules/labels.py:304
-#: py/modules/labels.py:311 py/modules/labels.py:318 py/modules/labels.py:344
+#: py/modules/labels.py:284 py/modules/labels.py:299 py/modules/labels.py:307
+#: py/modules/labels.py:314 py/modules/labels.py:321 py/modules/labels.py:347
 msgid "To Dissociate"
 msgstr "Desassociar"
 
-#: py/modules/labels.py:282 py/modules/labels.py:290 py/modules/labels.py:297
-#: py/modules/labels.py:305 py/modules/labels.py:312 py/modules/labels.py:319
-#: py/modules/labels.py:345
+#: py/modules/labels.py:285 py/modules/labels.py:293 py/modules/labels.py:300
+#: py/modules/labels.py:308 py/modules/labels.py:315 py/modules/labels.py:322
+#: py/modules/labels.py:348
 msgid "Move Up"
 msgstr "Mover para cima"
 
-#: py/modules/labels.py:283 py/modules/labels.py:291 py/modules/labels.py:298
-#: py/modules/labels.py:306 py/modules/labels.py:313 py/modules/labels.py:320
-#: py/modules/labels.py:346
+#: py/modules/labels.py:286 py/modules/labels.py:294 py/modules/labels.py:301
+#: py/modules/labels.py:309 py/modules/labels.py:316 py/modules/labels.py:323
+#: py/modules/labels.py:349
 msgid "Move Down"
 msgstr "Mover para baixo"
 
-#: py/modules/labels.py:284 py/modules/labels.py:347 py/modules/labels.py:397
-#: py/modules/labels.py:570
+#: py/modules/labels.py:287 py/modules/labels.py:350 py/modules/labels.py:400
+#: py/modules/labels.py:574
 msgid "Language"
 msgstr "Idioma"
 
-#: py/modules/labels.py:285
+#: py/modules/labels.py:288
 msgid "Day"
 msgstr "Dia"
 
-#: py/modules/labels.py:286
+#: py/modules/labels.py:289
 msgid "Month"
 msgstr "Mês"
 
-#: py/modules/labels.py:292
+#: py/modules/labels.py:295
 msgid "Strain - General - Type"
 msgstr "Linhagem - Geral - Tipo"
 
-#: py/modules/labels.py:299
+#: py/modules/labels.py:302
 msgid "New Item"
 msgstr "Novo Ítem"
 
-#: py/modules/labels.py:300
+#: py/modules/labels.py:303
 msgid "Document - Test - Group"
 msgstr "Documento - Teste - Grupo"
 
-#: py/modules/labels.py:307
+#: py/modules/labels.py:310
 msgid "Preservation Method / Unit of Measure"
 msgstr "Método de Preservação / Unidade de Medida"
 
-#: py/modules/labels.py:314 py/modules/labels.py:648
+#: py/modules/labels.py:317 py/modules/labels.py:652
 msgid "Taxon Group"
 msgstr "Grupo taxonômico"
 
-#: py/modules/labels.py:321
+#: py/modules/labels.py:324
 msgid "Databases Data"
 msgstr "Dados"
 
-#: py/modules/labels.py:322
+#: py/modules/labels.py:325
 msgid "Data DBMS"
 msgstr "SGBD"
 
-#: py/modules/labels.py:323 js/configuration_src.js:1099
-#: js/configuration.js:272
+#: js/configuration.js:272 js/configuration_src.js:1195
+#: py/modules/labels.py:326
 msgid "Data Host"
 msgstr "Servidor"
 
-#: py/modules/labels.py:324 js/configuration_src.js:1099
-#: js/configuration.js:272
+#: js/configuration.js:272 js/configuration_src.js:1195
+#: py/modules/labels.py:327
 msgid "Data Port"
 msgstr "Porta"
 
-#: py/modules/labels.py:325 js/configuration_src.js:1099
-#: js/configuration.js:272
+#: js/configuration.js:272 js/configuration_src.js:1195
+#: py/modules/labels.py:328
 msgid "Data Name"
 msgstr "Nome"
 
-#: py/modules/labels.py:326
+#: py/modules/labels.py:329
 msgid "Data User"
 msgstr "Usuário"
 
-#: py/modules/labels.py:327
+#: py/modules/labels.py:330
 msgid "Data Password"
 msgstr "Senha"
 
-#: py/modules/labels.py:328
+#: py/modules/labels.py:331
 msgid "Database Tracebility"
 msgstr "Rastreabilidade"
 
-#: py/modules/labels.py:329
+#: py/modules/labels.py:332
 msgid "Tracebility DBMS"
 msgstr "SGBD"
 
-#: py/modules/labels.py:330 js/configuration_src.js:1099
-#: js/configuration.js:272
+#: js/configuration.js:272 js/configuration_src.js:1195
+#: py/modules/labels.py:333
 msgid "Tracebility Host"
 msgstr "Servidor"
 
-#: py/modules/labels.py:331 js/configuration_src.js:1099
-#: js/configuration.js:272
+#: js/configuration.js:272 js/configuration_src.js:1195
+#: py/modules/labels.py:334
 msgid "Tracebility Port"
 msgstr "Porta"
 
-#: py/modules/labels.py:332 js/configuration_src.js:1099
-#: js/configuration.js:272
+#: js/configuration.js:272 js/configuration_src.js:1195
+#: py/modules/labels.py:335
 msgid "Tracebility Name"
 msgstr "Nome"
 
-#: py/modules/labels.py:333
+#: py/modules/labels.py:336
 msgid "Tracebility User"
 msgstr "Usuário"
 
-#: py/modules/labels.py:334
+#: py/modules/labels.py:337
 msgid "Tracebility Password"
 msgstr "Senha"
 
-#: py/modules/labels.py:335 js/configuration_src.js:1198
-#: js/configuration.js:297
+#: js/configuration.js:297 js/configuration_src.js:1310
+#: py/modules/labels.py:338
 msgid "Index URL"
 msgstr "Índice URL"
 
-#: py/modules/labels.py:336 js/configuration_src.js:1198
-#: js/configuration.js:297
+#: js/configuration.js:297 js/configuration_src.js:1310
+#: py/modules/labels.py:339
 msgid "Root Directory"
 msgstr "Diretório Raiz"
 
-#: py/modules/labels.py:337
+#: py/modules/labels.py:340
 msgid "Start Page"
 msgstr "Página Inicial"
 
-#: py/modules/labels.py:348
+#: py/modules/labels.py:351
 msgid "Maximum upload size (bytes)"
 msgstr "Tamanho de upload máximo (bytes)"
 
-#: py/modules/labels.py:349
+#: py/modules/labels.py:352
 msgid "Leave blank to disable size limit"
 msgstr "Deixe em branco para desabilitar limite de tamanho"
 
-#: py/modules/labels.py:350 py/modules/labels.py:351 py/modules/labels.py:352
+#: py/modules/labels.py:353 py/modules/labels.py:354 py/modules/labels.py:355
 msgid "Subcollection"
 msgstr "Subcoleção"
 
-#: py/modules/labels.py:353
+#: py/modules/labels.py:356
 msgid "Select a Subcoll"
 msgstr "Selecione a subcoleção"
 
-#: py/modules/labels.py:356 py/modules/labels.py:367
+#: py/modules/labels.py:359 py/modules/labels.py:370
 msgid "Date/Time"
 msgstr "Data/Hora"
 
-#: py/modules/labels.py:357 py/modules/labels.py:368
+#: py/modules/labels.py:360 py/modules/labels.py:371
 msgid "to"
 msgstr "à"
 
-#: py/modules/labels.py:359 py/modules/labels.py:370
+#: py/modules/labels.py:362 py/modules/labels.py:373
 msgid "Operation"
 msgstr "Operação"
 
-#: py/modules/labels.py:360 py/modules/labels.py:371
+#: py/modules/labels.py:363 py/modules/labels.py:374
 msgid "Record"
 msgstr "Registro"
 
-#: py/modules/labels.py:361 py/modules/labels.py:372 py/modules/labels.py:556
+#: py/modules/labels.py:364 py/modules/labels.py:375 py/modules/labels.py:560
 msgid "Search"
 msgstr "Busca"
 
-#: py/modules/labels.py:362
+#: py/modules/labels.py:365
 msgid "Reset Search"
 msgstr "Limpar campos"
 
-#: py/modules/labels.py:363 py/modules/labels.py:373
+#: py/modules/labels.py:366 py/modules/labels.py:376
 msgid "Strain Code"
 msgstr "Código"
 
-#: py/modules/labels.py:365 py/modules/labels.py:375 py/modules/reports.py:394
+#: py/modules/labels.py:368 py/modules/labels.py:378 py/modules/reports.py:484
 msgid "Field"
 msgstr "Campo"
 
-#: py/modules/labels.py:366 py/modules/labels.py:376
-#: py/modules/form_save.py:210
+#: py/modules/form_save.py:243 py/modules/labels.py:369
+#: py/modules/labels.py:379
 msgid "Value"
 msgstr "Valor"
 
-#: py/modules/labels.py:380 py/modules/getdata.py:4866
+#: py/modules/getdata.py:4957 py/modules/labels.py:383
 msgid "Stock Movement From"
 msgstr "Origem"
 
-#: py/modules/labels.py:381 py/modules/getdata.py:4867
+#: py/modules/getdata.py:4958 py/modules/labels.py:384
 msgid "Stock Movement To"
 msgstr "Destino"
 
-#: py/modules/labels.py:382
+#: py/modules/labels.py:385
 msgid "Stock Movement Positions"
 msgstr "Posições no Estoque"
 
-#: py/modules/labels.py:385 py/modules/getdata.py:4151 js/jstree_src.js:1290
-#: js/jstree.js:172
+#: js/jstree_src.js:1360 py/modules/getdata.py:4229 py/modules/labels.py:388
 msgid "Abbreviation"
 msgstr "Abreviação"
 
-#: py/modules/labels.py:387
+#: py/modules/labels.py:390
 msgid "Preservation Methods"
 msgstr "Métodos de Preservação"
 
-#: py/modules/labels.py:388
+#: py/modules/labels.py:391
 msgid "Structure"
 msgstr "Estrutura"
 
-#: py/modules/labels.py:390
+#: py/modules/labels.py:393
 msgid "Del"
 msgstr "Apagar"
 
-#: py/modules/labels.py:391
+#: py/modules/labels.py:394
 msgid "Copy"
 msgstr "Copiar"
 
-#: py/modules/labels.py:392
+#: py/modules/labels.py:395
 msgid "Paste"
 msgstr "Colar"
 
-#: py/modules/labels.py:395 js/configuration_src.js:163 js/configuration.js:49
+#: js/configuration.js:49 js/configuration_src.js:179 py/modules/labels.py:398
 msgid "Leave blank to maintain previous password."
 msgstr "Deixe vazio para manter a senha atual."
 
-#: py/modules/labels.py:396
+#: py/modules/labels.py:399
 msgid "Account"
 msgstr "Conta"
 
-#: py/modules/labels.py:398
+#: py/modules/labels.py:401
 msgid "Lines shown per page"
 msgstr "Linhas mostradas por página"
 
-#: py/modules/labels.py:399
+#: py/modules/labels.py:402
 msgid "Maximum number of pages"
 msgstr "Número máximo de páginas"
 
-#: py/modules/labels.py:400
+#: py/modules/labels.py:403
 msgid "Show inactive strains"
 msgstr "Exibir linhagens inativas"
 
-#: py/modules/labels.py:410
+#: py/modules/labels.py:413
 msgid "Type your name user and password to enter."
 msgstr "Digite seu nome de usuário e senha para entrar."
 
-#: py/modules/labels.py:411
+#: py/modules/labels.py:414
 msgid "Type your user name"
 msgstr "Digite seu nome de usuário"
 
-#: py/modules/labels.py:412
+#: py/modules/labels.py:415
 msgid "Type your password"
 msgstr "Digite sua senha"
 
-#: py/modules/labels.py:413
+#: py/modules/labels.py:416
 msgid "Enter"
 msgstr "Entrar"
 
-#: py/modules/labels.py:416
+#: py/modules/labels.py:419
 msgid "Logged Out Successfully"
 msgstr "Desconectado com Sucesso"
 
-#: py/modules/labels.py:417
+#: py/modules/labels.py:420
 msgid "You have logged out correctly."
 msgstr "Você se desconectou corretamente."
 
-#: py/modules/labels.py:418
+#: py/modules/labels.py:421
 msgid "Login again"
 msgstr "Reconectar"
 
-#: py/modules/labels.py:421
+#: py/modules/labels.py:424
 msgid "Choose the subcolletion"
 msgstr "Escolha uma subcoleção"
 
-#: py/modules/labels.py:424
+#: py/modules/labels.py:427
 msgid "An unknown error has occurred during operation."
 msgstr "Um erro desconhecido ocorreu durante a operação."
 
-#: py/modules/labels.py:425
+#: py/modules/labels.py:428
 msgid "Contact the System Administrator and inform him the following message:"
 msgstr "Contate o Administrador do Sistema e informe-o da seguinte mensagem:"
 
-#: py/modules/labels.py:426
+#: py/modules/labels.py:429
 msgid "Return to form and try again"
 msgstr "Retorne ao formulário e tente novamente"
 
-#: py/modules/labels.py:427
+#: py/modules/labels.py:430
 msgid "Operation Error"
 msgstr "Erro na Operação"
 
-#: py/modules/labels.py:430
+#: py/modules/labels.py:433
 msgid "JavaScript Error"
 msgstr "Erro de JavaScript"
 
-#: py/modules/labels.py:431
+#: py/modules/labels.py:434
 msgid "Your browser does not have JavaScript support or it is disabled."
 msgstr "Seu browser não tem suporte a JavaScript ou o mesmo está desabilitado."
 
-#: py/modules/labels.py:432
+#: py/modules/labels.py:435
 msgid "This feature is essential for some system features."
 msgstr "Este recurso é essencial para algumas funções do sistema."
 
-#: py/modules/labels.py:433
-msgid ""
-"Please verify your browser's JavaScript support, enable it and try again."
+#: py/modules/labels.py:436
+msgid "Please verify your browser's JavaScript support, enable it and try again."
 msgstr ""
-"Por favor verifique o suporte de JavaScript em seu browser, ative-o e tente "
-"novamente."
+"Por favor verifique o suporte de JavaScript em seu browser, ative-o e "
+"tente novamente."
 
-#: py/modules/labels.py:434
+#: py/modules/labels.py:437
 msgid "Cookie Error"
 msgstr "Erro de Cookie"
 
-#: py/modules/labels.py:435
+#: py/modules/labels.py:438
 msgid "Your browser does not have Cookies support or it is disabled."
 msgstr "Seu browser não tem suporte a Cookie ou o mesmo está desabilitado."
 
-#: py/modules/labels.py:436
+#: py/modules/labels.py:439
 msgid "This feature is essential to use thise system."
 msgstr "Este recurso é essencial para o uso deste sistema."
 
-#: py/modules/labels.py:437
+#: py/modules/labels.py:440
 msgid "Please verify your browser's Cookie support, enable it and try again."
 msgstr ""
 "Por favor, verifique o suporte a Cookie em seu browser, ative-o e tente "
 "novamente."
 
-#: py/modules/labels.py:440 py/modules/labels.py:442
+#: py/modules/labels.py:443 py/modules/labels.py:445
 msgid "Origin Locations"
 msgstr "Posições de Origem"
 
-#: py/modules/labels.py:445
+#: py/modules/labels.py:448
 msgid "Version"
 msgstr "Versão"
 
-#: py/modules/labels.py:446
+#: py/modules/labels.py:449
 msgid "Collection Information System of Biotechnological Interest, SICol"
 msgstr "Sistema de Informação de Coleções de Interesse Biotecnológico, SICol"
 
-#: py/modules/labels.py:447
+#: py/modules/labels.py:450
 msgid "ACCESS DENIED!"
 msgstr "ACESSO NEGADO!"
 
-#: py/modules/labels.py:449 py/modules/getdata.py:1637
-#: py/modules/getdata.py:1712
+#: py/modules/getdata.py:1655 py/modules/getdata.py:1730
+#: py/modules/labels.py:452
 msgid "Location"
 msgstr "Posição"
 
-#: py/modules/labels.py:450
+#: py/modules/labels.py:453
+#, fuzzy
+msgid "Click Quantity"
+msgstr "Clique para editar"
+
+#: py/modules/labels.py:454
 msgid "yes"
 msgstr "Sim"
 
-#: py/modules/labels.py:451
+#: py/modules/labels.py:455
 msgid "no"
 msgstr "Não"
 
-#: py/modules/labels.py:452
+#: py/modules/labels.py:456
 msgid "PRINT"
 msgstr "IMPRIMIR"
 
-#: py/modules/labels.py:456
+#: py/modules/labels.py:460
 msgid "SAVE_AS"
 msgstr "SALVAR COMO"
 
-#: py/modules/labels.py:457
+#: py/modules/labels.py:461
 msgid "Permission"
 msgstr "Permissão"
 
-#: py/modules/labels.py:458
+#: py/modules/labels.py:462
 msgid "SAVE"
 msgstr "SALVAR"
 
-#: py/modules/labels.py:459 js/loc.js:98 js/loc_src.js:1056 js/location.js:6
-#: js/location.js:7 js/location_src.js:29 js/location_src.js:30
+#: js/loc.js:121 js/loc_src.js:1159 js/location.js:6 js/location.js:7
+#: js/location_src.js:31 js/location_src.js:32 py/modules/labels.py:463
 msgid "CANCEL"
 msgstr "CANCELAR"
 
-#: py/modules/labels.py:460 py/modules/labels.py:568
+#: py/modules/labels.py:464 py/modules/labels.py:572
 msgid "Filter"
 msgstr "Filtro"
 
-#: py/modules/labels.py:462
+#: py/modules/labels.py:466
 msgid "Do Filter"
 msgstr "Filtrar"
 
-#: py/modules/labels.py:463
+#: py/modules/labels.py:467
 msgid "this field supports textLinks"
 msgstr "Este campo aceita TextLinks"
 
-#: py/modules/labels.py:466
+#: py/modules/labels.py:470
 msgid "TextLink Type"
 msgstr "Tipo TextLink"
 
-#: py/modules/labels.py:468 js/textlink_src.js:68 js/textlink.js:14
+#: js/textlink.js:14 js/textlink_src.js:72 py/modules/labels.py:472
 msgid "Document"
 msgstr "Documento"
 
-#: py/modules/labels.py:469
+#: py/modules/labels.py:473
 msgid "Taxa"
 msgstr "Taxa"
 
-#: py/modules/labels.py:470 js/textlink_src.js:78 js/textlink.js:14
+#: js/textlink.js:14 js/textlink_src.js:82 py/modules/labels.py:474
 msgid "Link"
 msgstr "Link"
 
-#: py/modules/labels.py:472 py/modules/labels.py:614
-#: py/modules/getdata.py:2426
+#: py/modules/getdata.py:2465 py/modules/labels.py:476 py/modules/labels.py:618
 msgid "Insert"
 msgstr "Inserir"
 
-#: py/modules/labels.py:473 py/modules/labels.py:615
-#: js/configuration_src.js:76 js/configuration_src.js:273
-#: js/configuration_src.js:447 js/configuration_src.js:516
-#: js/configuration_src.js:688 js/configuration_src.js:1030
-#: js/configuration_src.js:1133 js/configuration.js:28 js/configuration.js:82
-#: js/configuration.js:130 js/configuration.js:148 js/configuration.js:183
-#: js/configuration.js:263 js/configuration.js:281
+#: js/configuration.js:28 js/configuration.js:82 js/configuration.js:130
+#: js/configuration.js:148 js/configuration.js:183 js/configuration.js:263
+#: js/configuration.js:281 js/configuration_src.js:84
+#: js/configuration_src.js:297 js/configuration_src.js:485
+#: js/configuration_src.js:563 js/configuration_src.js:745
+#: js/configuration_src.js:1120 js/configuration_src.js:1236
+#: py/modules/labels.py:477 py/modules/labels.py:619
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: py/modules/labels.py:484 py/modules/labels.py:505 py/modules/labels.py:555
+#: py/modules/labels.py:488 py/modules/labels.py:509 py/modules/labels.py:559
 msgid "Reports"
 msgstr "Relatórios"
 
-#: py/modules/labels.py:485 py/modules/labels.py:516 py/modules/labels.py:517
-#: py/modules/labels.py:518 py/modules/labels.py:519 py/modules/labels.py:520
-#: py/modules/labels.py:521 py/modules/labels.py:522 py/modules/labels.py:523
-#: py/modules/labels.py:524
+#: py/modules/labels.py:489 py/modules/labels.py:520 py/modules/labels.py:521
+#: py/modules/labels.py:522 py/modules/labels.py:523 py/modules/labels.py:524
+#: py/modules/labels.py:525 py/modules/labels.py:526 py/modules/labels.py:527
+#: py/modules/labels.py:528
 msgid "General"
 msgstr "Geral"
 
-#: py/modules/labels.py:486 py/modules/labels.py:654
+#: py/modules/labels.py:490 py/modules/labels.py:658
 msgid "Fields"
 msgstr "Campos"
 
-#: py/modules/labels.py:487
+#: py/modules/labels.py:491
 msgid "Filters"
 msgstr "Filtros"
 
-#: py/modules/labels.py:488 py/modules/labels.py:573
+#: py/modules/labels.py:492 py/modules/labels.py:577
 msgid "Format"
 msgstr "Formato"
 
-#: py/modules/labels.py:489 py/modules/labels.py:534 py/modules/labels.py:535
-#: py/modules/labels.py:536 py/modules/labels.py:537 py/modules/labels.py:538
-#: py/modules/labels.py:539 py/modules/labels.py:540 py/modules/labels.py:541
-#: py/modules/labels.py:542
+#: py/modules/labels.py:493 py/modules/labels.py:538 py/modules/labels.py:539
+#: py/modules/labels.py:540 py/modules/labels.py:541 py/modules/labels.py:542
+#: py/modules/labels.py:543 py/modules/labels.py:544 py/modules/labels.py:545
+#: py/modules/labels.py:546
 msgid "Security"
 msgstr "Segurança"
 
-#: py/modules/labels.py:490
+#: py/modules/labels.py:494
 msgid "Strains Tip"
 msgstr "Cadastro de Linhagens"
 
-#: py/modules/labels.py:491
+#: py/modules/labels.py:495
 msgid "Species Tip"
 msgstr "Cadastro de Espécies"
 
-#: py/modules/labels.py:492
+#: py/modules/labels.py:496
 msgid "People Tip"
 msgstr "Cadastro de Pessoas"
 
-#: py/modules/labels.py:493
+#: py/modules/labels.py:497
 msgid "Institutions Tip"
 msgstr "Cadastro de Instituições"
 
-#: py/modules/labels.py:494
+#: py/modules/labels.py:498
 msgid "Documents Tip"
 msgstr "Cadastro de Documentos"
 
-#: py/modules/labels.py:495
+#: py/modules/labels.py:499
 msgid "References Tip"
 msgstr "Cadastro de Referências Bibliográficas"
 
-#: py/modules/labels.py:496 py/modules/labels.py:548
+#: py/modules/labels.py:500 py/modules/labels.py:552
 msgid "Preferences"
 msgstr "Preferências"
 
-#: py/modules/labels.py:497 py/modules/labels.py:549
+#: py/modules/labels.py:501 py/modules/labels.py:553
 msgid "Configuration"
 msgstr "Configurações"
 
-#: py/modules/labels.py:498 py/modules/labels.py:545
+#: py/modules/labels.py:502 py/modules/labels.py:549
 msgid "Traceability"
 msgstr "Rastreabilidade"
 
-#: py/modules/labels.py:499
+#: py/modules/labels.py:503
 msgid "Users"
 msgstr "Usuários"
 
-#: py/modules/labels.py:501
+#: py/modules/labels.py:505
 msgid "Collections"
 msgstr "Coleções"
 
-#: py/modules/labels.py:502
+#: py/modules/labels.py:506
 msgid "Subcollections"
 msgstr "Subcoleções"
 
-#: py/modules/labels.py:503
+#: py/modules/labels.py:507
 msgid "Combos"
 msgstr "Combos"
 
-#: py/modules/labels.py:504
+#: py/modules/labels.py:508
 msgid "Divisions"
 msgstr "Divisões"
 
-#: py/modules/labels.py:506
+#: py/modules/labels.py:510
 msgid "Databases"
 msgstr "Conexões"
 
-#: py/modules/labels.py:507
+#: py/modules/labels.py:511
 msgid "Config.xml"
 msgstr "Config.xml"
 
-#: py/modules/labels.py:508
+#: py/modules/labels.py:512
 msgid "General Tip"
 msgstr "Geral"
 
-#: py/modules/labels.py:509
+#: py/modules/labels.py:513
 msgid "Deposit Tip"
 msgstr "Depósito"
 
-#: py/modules/labels.py:510
+#: py/modules/labels.py:514
 msgid "Collection-Event Tip"
 msgstr "Coleta"
 
-#: py/modules/labels.py:511
+#: py/modules/labels.py:515
 msgid "Isolation Tip"
 msgstr "Isolamento"
 
-#: py/modules/labels.py:512
+#: py/modules/labels.py:516
 msgid "Identification Tip"
 msgstr "Identificação"
 
-#: py/modules/labels.py:513
+#: py/modules/labels.py:517
 msgid "Culture Tip"
 msgstr "Cultivo"
 
-#: py/modules/labels.py:514
+#: py/modules/labels.py:518
 msgid "Characteristics Tip"
 msgstr "Características"
 
-#: py/modules/labels.py:515
+#: py/modules/labels.py:519
 msgid "Security Tip"
 msgstr "Segurança"
 
-#: py/modules/labels.py:525
+#: py/modules/labels.py:529
 msgid "Deposit"
 msgstr "Depósito"
 
-#: py/modules/labels.py:526
+#: py/modules/labels.py:530
 msgid "Collection-Event"
 msgstr "Coleta"
 
-#: py/modules/labels.py:527
+#: py/modules/labels.py:531
 msgid "Isolation"
 msgstr "Isolamento"
 
-#: py/modules/labels.py:528
+#: py/modules/labels.py:532
 msgid "Identification"
 msgstr "Identificação"
 
-#: py/modules/labels.py:529
+#: py/modules/labels.py:533
 msgid "Culture"
 msgstr "Cultivo"
 
-#: py/modules/labels.py:530
+#: py/modules/labels.py:534
 msgid "Characteristics"
 msgstr "Características"
 
-#: py/modules/labels.py:532
+#: py/modules/labels.py:536
 msgid "Quality"
 msgstr "CQ"
 
-#: py/modules/labels.py:533 py/modules/getdata.py:1635
-#: py/modules/getdata.py:1710
+#: py/modules/getdata.py:1653 py/modules/getdata.py:1728
+#: py/modules/labels.py:537
 msgid "Stock"
 msgstr "Estoque"
 
-#: py/modules/labels.py:543
+#: py/modules/labels.py:547
 msgid "Stock Movement"
 msgstr "Movimentação de Estoque"
 
-#: py/modules/labels.py:544
+#: py/modules/labels.py:548
 msgid "Containers"
 msgstr "Contêineres"
 
-#: py/modules/labels.py:550
+#: py/modules/labels.py:554
 msgid "Utilities"
 msgstr "Utilitários"
 
-#: py/modules/labels.py:551
+#: py/modules/labels.py:555
 msgid "Exit"
 msgstr "Sair"
 
-#: py/modules/labels.py:552
+#: py/modules/labels.py:556
 msgid "Choose other Subcollection or Exit"
 msgstr "Escolha outra Subcoleção ou Desconecte"
 
-#: py/modules/labels.py:553
+#: py/modules/labels.py:557
 msgid "Logout"
 msgstr "Desconectar"
 
-#: py/modules/labels.py:557
+#: py/modules/labels.py:561
 msgid "Advanced Search"
 msgstr "Busca Avançada"
 
-#: py/modules/labels.py:558
+#: py/modules/labels.py:562
 msgid "Include New"
 msgstr "Incluir Novo"
 
-#: py/modules/labels.py:561
+#: py/modules/labels.py:565
 msgid "ID"
 msgstr "ID"
 
-#: py/modules/labels.py:564 py/modules/labels.py:655 js/loc.js:16
-#: js/loc_src.js:240
+#: js/loc.js:27 js/loc_src.js:295 py/modules/labels.py:568
+#: py/modules/labels.py:659
 msgid "Selected"
 msgstr "Selecionado"
 
-#: py/modules/labels.py:565
+#: py/modules/labels.py:569
 msgid "Group by"
 msgstr "Agrupado por"
 
-#: py/modules/labels.py:566
+#: py/modules/labels.py:570
 msgid "Order by"
 msgstr "Ordenado por"
 
-#: py/modules/labels.py:567
+#: py/modules/labels.py:571
 msgid "Totalized by"
 msgstr "Totalizado por"
 
-#: py/modules/labels.py:569
+#: py/modules/labels.py:573
 msgid "Report format"
 msgstr "Formato"
 
-#: py/modules/labels.py:571
+#: py/modules/labels.py:575
 msgid "Use fields content in"
 msgstr "Usar conteúdo dos campos em"
 
-#: py/modules/labels.py:574 py/modules/labels.py:575 py/modules/labels.py:576
+#: py/modules/labels.py:578 py/modules/labels.py:579 py/modules/labels.py:580
 msgid "Default HTML"
 msgstr "Tabela padrão"
 
-#: py/modules/labels.py:577 py/modules/labels.py:578
+#: py/modules/labels.py:581 py/modules/labels.py:582
 msgid "CSV"
 msgstr "CSV"
 
-#: py/modules/labels.py:579 py/modules/labels.py:580
+#: py/modules/labels.py:583 py/modules/labels.py:584
 msgid "Chart"
 msgstr "Gráfico"
 
-#: py/modules/labels.py:581 py/modules/labels.py:582 py/modules/labels.py:583
+#: py/modules/labels.py:585 py/modules/labels.py:586 py/modules/labels.py:587
 msgid "Custom HTML"
 msgstr "Customizado"
 
-#: py/modules/labels.py:584 py/modules/labels.py:585
+#: py/modules/labels.py:588 py/modules/labels.py:589
 msgid "XML"
 msgstr "XML"
 
-#: py/modules/labels.py:587
+#: py/modules/labels.py:591
 msgid "SICol - Report"
 msgstr "SICol - Relatório"
 
-#: py/modules/labels.py:589
+#: py/modules/labels.py:593
 msgid "Header"
 msgstr "Cabeçalho"
 
-#: py/modules/labels.py:590
+#: py/modules/labels.py:594
 msgid "External"
 msgstr "Externo"
 
-#: py/modules/labels.py:591
+#: py/modules/labels.py:595
 msgid "Internal"
 msgstr "Interno"
 
-#: py/modules/labels.py:594
+#: py/modules/labels.py:598
 msgid "Separator"
 msgstr "Separador"
 
-#: py/modules/labels.py:596
+#: py/modules/labels.py:600
 msgid "Chart Type"
 msgstr "Tipo"
 
-#: py/modules/labels.py:597
+#: py/modules/labels.py:601
 msgid "Bar"
 msgstr "Barra"
 
-#: py/modules/labels.py:598
+#: py/modules/labels.py:602
 msgid "Pie"
 msgstr "Pizza"
 
-#: py/modules/labels.py:599 py/modules/form_save.py:202 js/jstree_src.js:1536
-#: js/jstree.js:172
+#: js/jstree_src.js:1610 py/modules/form_save.py:230 py/modules/labels.py:603
 msgid "Line"
 msgstr "Linha"
 
-#: py/modules/labels.py:600 js/jstree_src.js:1536 js/jstree.js:172
+#: js/jstree_src.js:1610 py/modules/labels.py:604
 msgid "Column"
 msgstr "Coluna"
 
-#: py/modules/labels.py:602
+#: py/modules/labels.py:606
 msgid "Header template"
 msgstr "Modelo do cabeçalho"
 
-#: py/modules/labels.py:603
+#: py/modules/labels.py:607
 msgid "Footer template"
 msgstr "Modelo do rodapé"
 
-#: py/modules/labels.py:604
+#: py/modules/labels.py:608
 msgid "Data template"
 msgstr "Modelo da área de dados"
 
-#: py/modules/labels.py:605
+#: py/modules/labels.py:609
 msgid "CSS template"
 msgstr "Estilos (CSS)"
 
-#: py/modules/labels.py:607
+#: py/modules/labels.py:611
 msgid "Use SubColl Templates"
 msgstr "Anexar modelo da subcoleção"
 
-#: py/modules/labels.py:608
+#: py/modules/labels.py:612
 msgid "Header Template"
 msgstr "Modelo do cabeçalho"
 
-#: py/modules/labels.py:609
+#: py/modules/labels.py:613
 msgid "Footer Template"
 msgstr "Modelo do rodapé"
 
-#: py/modules/labels.py:611
+#: py/modules/labels.py:615
 msgid "FieldLink Type"
 msgstr "Tipo"
 
-#: py/modules/labels.py:612
+#: py/modules/labels.py:616
 msgid "System Fields"
 msgstr "Campos do sistema"
 
-#: py/modules/labels.py:613
+#: py/modules/labels.py:617
 msgid "Report Fields"
 msgstr "Campos"
 
-#: py/modules/labels.py:617
+#: py/modules/labels.py:621
 msgid "Time"
 msgstr "Hora"
 
-#: py/modules/labels.py:618
+#: py/modules/labels.py:622
 msgid "Collection Name"
 msgstr "Nome da coleção"
 
-#: py/modules/labels.py:619
+#: py/modules/labels.py:623
 msgid "Collection Code"
 msgstr "Código da coleção"
 
-#: py/modules/labels.py:620
+#: py/modules/labels.py:624
 msgid "Subcollection Name"
 msgstr "Nome da subcoleção"
 
-#: py/modules/labels.py:621
-msgid "Subcollection Code"
-msgstr "Código da subcoleção"
-
-#: py/modules/labels.py:622
+#: py/modules/labels.py:626
 msgid "User Name"
 msgstr "Nome do usuário"
 
-#: py/modules/labels.py:623
+#: py/modules/labels.py:627
 msgid "Report Description"
 msgstr "Descrição"
 
-#: py/modules/labels.py:624
+#: py/modules/labels.py:628
 msgid "Total"
 msgstr "Total"
 
-#: py/modules/labels.py:626 py/modules/reports.py:386
+#: py/modules/labels.py:630 py/modules/reports.py:476
 msgid "Equals"
 msgstr "Igual"
 
-#: py/modules/labels.py:627 py/modules/reports.py:386
+#: py/modules/labels.py:631 py/modules/reports.py:476
 msgid "Differs"
 msgstr "Diferente"
 
-#: py/modules/labels.py:628 py/modules/reports.py:386
+#: py/modules/labels.py:632 py/modules/reports.py:476
 msgid "Contains"
 msgstr "Contém"
 
-#: py/modules/labels.py:629 py/modules/reports.py:386
+#: py/modules/labels.py:633 py/modules/reports.py:476
 msgid "In"
 msgstr "Dentre"
 
-#: py/modules/labels.py:630
+#: py/modules/labels.py:634
 msgid "Not In"
 msgstr "Exceto"
 
-#: py/modules/labels.py:631 py/modules/reports.py:387
+#: py/modules/labels.py:635 py/modules/reports.py:477
 msgid "Greater"
 msgstr "Maior"
 
-#: py/modules/labels.py:632
+#: py/modules/labels.py:636
 msgid "Greater or Equal"
 msgstr "Maior ou igual"
 
-#: py/modules/labels.py:633 py/modules/reports.py:388
+#: py/modules/labels.py:637 py/modules/reports.py:478
 msgid "Less"
 msgstr "Menor"
 
-#: py/modules/labels.py:634
+#: py/modules/labels.py:638
 msgid "Less or Equal"
 msgstr "Menor ou igual"
 
-#: py/modules/labels.py:636 js/form.strains.js:57 js/form.strains_src.js:402
+#: js/form.strains_src.js:447 py/modules/labels.py:640
 msgid "and"
 msgstr "e"
 
-#: py/modules/labels.py:637
+#: py/modules/labels.py:641
 msgid "or"
 msgstr "ou"
 
-#: py/modules/labels.py:642
+#: py/modules/labels.py:646
 msgid "Strain ID"
 msgstr "ID"
 
-#: py/modules/labels.py:649 py/modules/labels.py:815 js/textlink_src.js:89
-#: js/textlink.js:14
+#: js/textlink.js:14 js/textlink_src.js:93 py/modules/labels.py:653
+#: py/modules/labels.py:819
 msgid "Taxon"
 msgstr "Taxon"
 
-#: py/modules/labels.py:653 py/modules/getdata.py:392
-#: py/modules/getdata.py:407 py/modules/getdata.py:750
-#: py/modules/getdata.py:765 py/modules/getdata.py:1844
-#: py/modules/getdata.py:1859 py/modules/getdata.py:2110
-#: py/modules/getdata.py:2125 py/modules/getdata.py:2289
-#: py/modules/getdata.py:2304 py/modules/getdata.py:2615
-#: py/modules/getdata.py:2630 py/modules/getdata.py:2984
-#: py/modules/getdata.py:2999 py/modules/getdata.py:3232
-#: py/modules/getdata.py:3247 py/modules/getdata.py:4052
-#: py/modules/getdata.py:4067 py/modules/getdata.py:4499
-#: py/modules/getdata.py:4514 py/modules/getdata.py:4793
-#: py/modules/getdata.py:4808
+#: py/modules/getdata.py:403 py/modules/getdata.py:418
+#: py/modules/getdata.py:765 py/modules/getdata.py:780
+#: py/modules/getdata.py:1867 py/modules/getdata.py:1882
+#: py/modules/getdata.py:2142 py/modules/getdata.py:2157
+#: py/modules/getdata.py:2328 py/modules/getdata.py:2343
+#: py/modules/getdata.py:2664 py/modules/getdata.py:2679
+#: py/modules/getdata.py:3040 py/modules/getdata.py:3055
+#: py/modules/getdata.py:3295 py/modules/getdata.py:3310
+#: py/modules/getdata.py:4130 py/modules/getdata.py:4145
+#: py/modules/getdata.py:4584 py/modules/getdata.py:4599
+#: py/modules/getdata.py:4884 py/modules/getdata.py:4899
+#: py/modules/labels.py:657
 msgid "Next"
 msgstr "Próximo"
 
-#: py/modules/labels.py:657
+#: py/modules/labels.py:661
 msgid "Totalized"
 msgstr "Totalizado por"
 
-#: py/modules/labels.py:658
+#: py/modules/labels.py:662
 msgid "Step1"
 msgstr "Step1"
 
-#: py/modules/labels.py:659
+#: py/modules/labels.py:663
 msgid "Step2"
 msgstr "Step2"
 
-#: py/modules/labels.py:660
+#: py/modules/labels.py:664
 msgid "Is Ogm"
 msgstr "Ogm"
 
-#: py/modules/labels.py:663
+#: py/modules/labels.py:667
 msgid "Other Codes"
 msgstr "Códigos em outras coleções"
 
-#: py/modules/labels.py:664
+#: py/modules/labels.py:668
 msgid "General Comments"
 msgstr "Comentários gerais"
 
-#: py/modules/labels.py:665
+#: py/modules/labels.py:669
 msgid "Collect Date"
 msgstr "Data da coleta"
 
-#: py/modules/labels.py:666
+#: py/modules/labels.py:670
 msgid "Collect Year"
 msgstr "Ano da coleta"
 
-#: py/modules/labels.py:667
+#: py/modules/labels.py:671
 msgid "Collect Month"
 msgstr "Mês da coleta"
 
-#: py/modules/labels.py:668
+#: py/modules/labels.py:672
 msgid "Collect Person"
 msgstr "Coletado por (pessoa)"
 
-#: py/modules/labels.py:669
+#: py/modules/labels.py:673
 msgid "Collect Institution"
 msgstr "Coletado por (instituição)"
 
-#: py/modules/labels.py:671
+#: py/modules/labels.py:675
 msgid "State Code"
 msgstr "Estado (código)"
 
-#: py/modules/labels.py:672
+#: py/modules/labels.py:676
 msgid "State Name"
 msgstr "Estado (nome)"
 
-#: py/modules/labels.py:676
+#: py/modules/labels.py:680
 msgid "Latitude DMS"
 msgstr "Latitude (DMS)"
 
-#: py/modules/labels.py:677
+#: py/modules/labels.py:681
 msgid "Latitude Mode"
 msgstr "Modo da latitude"
 
-#: py/modules/labels.py:679
+#: py/modules/labels.py:683
 msgid "Longitude DMS"
 msgstr "Longitude (DMS)"
 
-#: py/modules/labels.py:680
+#: py/modules/labels.py:684
 msgid "Longitude Mode"
 msgstr "Modo da longitude"
 
-#: py/modules/labels.py:682
+#: py/modules/labels.py:686
 msgid "GPS Precision"
 msgstr "Precisão do GPS"
 
-#: py/modules/labels.py:683
+#: py/modules/labels.py:687
 msgid "GPS Comments"
 msgstr "Comentários de GPS"
 
-#: py/modules/labels.py:685
+#: py/modules/labels.py:689
 msgid "Host Name"
 msgstr "Hospedeiro (nome vulgar)"
 
-#: py/modules/labels.py:686
+#: py/modules/labels.py:690
 msgid "Host Genus"
 msgstr "Hospedeiro (gênero)"
 
-#: py/modules/labels.py:687
+#: py/modules/labels.py:691
 msgid "Host Species"
 msgstr "Hospedeiro (espécie)"
 
-#: py/modules/labels.py:688
+#: py/modules/labels.py:692
 msgid "Host Level"
 msgstr "Hospedeiro (nível)"
 
-#: py/modules/labels.py:689
+#: py/modules/labels.py:693
 msgid "Host Subspecies"
 msgstr "Hospedeiro (subespécie)"
 
-#: py/modules/labels.py:690
+#: py/modules/labels.py:694
 msgid "Host Taxonomic Complement"
 msgstr "Hospedeiro (complemento taxonômico)"
 
-#: py/modules/labels.py:692
+#: py/modules/labels.py:696
 msgid "Clinical Form Code"
 msgstr "Forma Clínica (código)"
 
-#: py/modules/labels.py:693
+#: py/modules/labels.py:697
 msgid "Clinical Form Name"
 msgstr "Forma Clínica (nome)"
 
-#: py/modules/labels.py:695
+#: py/modules/labels.py:699
 msgid "Collect Comments"
 msgstr "Comentários da coleta"
 
-#: py/modules/labels.py:696
+#: py/modules/labels.py:700
 msgid "Isolation Date"
 msgstr "Data do isolamento"
 
-#: py/modules/labels.py:697
+#: py/modules/labels.py:701
 msgid "Isolation Year"
 msgstr "Ano do isolamento"
 
-#: py/modules/labels.py:698
+#: py/modules/labels.py:702
 msgid "Isolation Month"
 msgstr "Mês do isolamento"
 
-#: py/modules/labels.py:699
+#: py/modules/labels.py:703
 msgid "Isolation Person"
 msgstr "Isolado por (pessoa)"
 
-#: py/modules/labels.py:700
+#: py/modules/labels.py:704
 msgid "Isolation Institution"
 msgstr "Isolado por (instituição)"
 
-#: py/modules/labels.py:701
+#: py/modules/labels.py:705
 msgid "Isolation From"
 msgstr "Isolado de"
 
-#: py/modules/labels.py:702
+#: py/modules/labels.py:706
 msgid "Isolation Method"
 msgstr "Método de isolamento"
 
-#: py/modules/labels.py:703
+#: py/modules/labels.py:707
 msgid "Isolation Comments"
 msgstr "Comentários do isolamento"
 
-#: py/modules/labels.py:704
+#: py/modules/labels.py:708
 msgid "Identification Date"
 msgstr "Data de identificação"
 
-#: py/modules/labels.py:705
+#: py/modules/labels.py:709
 msgid "Identification Year"
 msgstr "Ano da identificação"
 
-#: py/modules/labels.py:706
+#: py/modules/labels.py:710
 msgid "Identification Month"
 msgstr "Mês da identificação"
 
-#: py/modules/labels.py:707
+#: py/modules/labels.py:711
 msgid "Identification Person"
 msgstr "Identificado por (pessoa)"
 
-#: py/modules/labels.py:708
+#: py/modules/labels.py:712
 msgid "Identification Institution"
 msgstr "Identificado por (instituição)"
 
-#: py/modules/labels.py:709
+#: py/modules/labels.py:713
 msgid "Identification Genus"
 msgstr "Identificado como (genus)"
 
-#: py/modules/labels.py:710
+#: py/modules/labels.py:714
 msgid "Identification Species"
 msgstr "Identificado como (espécie)"
 
-#: py/modules/labels.py:711
+#: py/modules/labels.py:715
 msgid "Identification Level"
 msgstr "Identificado como (nível)"
 
-#: py/modules/labels.py:712
+#: py/modules/labels.py:716
 msgid "Identification Subspecies"
 msgstr "Identificado como (subespécie)"
 
-#: py/modules/labels.py:713
+#: py/modules/labels.py:717
 msgid "Identification Taxonomic Complement"
 msgstr "Identificado como (complemento taxonômico)"
 
-#: py/modules/labels.py:714
+#: py/modules/labels.py:718
 msgid "Identification Method"
 msgstr "Método de identificação"
 
-#: py/modules/labels.py:715
+#: py/modules/labels.py:719
 msgid "Identification Comments"
 msgstr "Comentários da identificação"
 
-#: py/modules/labels.py:716
+#: py/modules/labels.py:720
 msgid "Deposit Date"
 msgstr "Data do depósito"
 
-#: py/modules/labels.py:717
+#: py/modules/labels.py:721
 msgid "Deposit Year"
 msgstr "Ano do depósito"
 
-#: py/modules/labels.py:718
+#: py/modules/labels.py:722
 msgid "Deposit Month"
 msgstr "Mês do depósito"
 
-#: py/modules/labels.py:719
+#: py/modules/labels.py:723
 msgid "Deposit Person"
 msgstr "Depositado por (pessoa)"
 
-#: py/modules/labels.py:720
+#: py/modules/labels.py:724
 msgid "Deposit Institution"
 msgstr "Depositado por (instituição)"
 
-#: py/modules/labels.py:721
+#: py/modules/labels.py:725
 msgid "Deposit Genus"
 msgstr "Depositado como (gênero)"
 
-#: py/modules/labels.py:722
+#: py/modules/labels.py:726
 msgid "Deposit Species"
 msgstr "Depositado como (espécie)"
 
-#: py/modules/labels.py:723
+#: py/modules/labels.py:727
 msgid "Deposit Level"
 msgstr "Depositado como (nível)"
 
-#: py/modules/labels.py:724
+#: py/modules/labels.py:728
 msgid "Deposit Subspecies"
 msgstr "Depositado como (subespécie)"
 
-#: py/modules/labels.py:725
+#: py/modules/labels.py:729
 msgid "Deposit Taxonomic Complement"
 msgstr "Depositado como (complemento taxonômico)"
 
-#: py/modules/labels.py:726
+#: py/modules/labels.py:730
 msgid "Deposit Reason"
 msgstr "Tipo de depósito"
 
-#: py/modules/labels.py:727
+#: py/modules/labels.py:731
 msgid "Deposit Form"
 msgstr "Forma de recebimento"
 
-#: py/modules/labels.py:729
+#: py/modules/labels.py:733
 msgid "Authentication Date"
 msgstr "Data da autenticação"
 
-#: py/modules/labels.py:730
+#: py/modules/labels.py:734
 msgid "Authentication Year"
 msgstr "Ano da autenticação"
 
-#: py/modules/labels.py:731
+#: py/modules/labels.py:735
 msgid "Authentication Month"
 msgstr "Mês da autenticação"
 
-#: py/modules/labels.py:732
+#: py/modules/labels.py:736
 msgid "Authentication Person"
 msgstr "Responsável pela autenticação"
 
-#: py/modules/labels.py:733
+#: py/modules/labels.py:737
 msgid "Authentication Result"
 msgstr "Resultado da autenticação"
 
-#: py/modules/labels.py:734
+#: py/modules/labels.py:738
 msgid "Deposit Comments"
 msgstr "Comentários do depósito"
 
-#: py/modules/labels.py:735
+#: py/modules/labels.py:739
 msgid "Recommended Growth Medium"
 msgstr "Meio de cultura recomendado"
 
-#: py/modules/labels.py:740
+#: py/modules/labels.py:744
 msgid "Growth Comments"
 msgstr "Comentários do cultivo"
 
-#: py/modules/labels.py:741
+#: py/modules/labels.py:745
 msgid "Morphological Characteristics"
 msgstr "Características morfológicas"
 
-#: py/modules/labels.py:742
+#: py/modules/labels.py:746
 msgid "Molecular Characteristics"
 msgstr "Características moleculares"
 
-#: py/modules/labels.py:743
+#: py/modules/labels.py:747
 msgid "Biochemical Characteristics"
 msgstr "Características bioquímicas"
 
-#: py/modules/labels.py:744
+#: py/modules/labels.py:748
 msgid "Immunologic Characteristics"
 msgstr "Características imunológicas"
 
-#: py/modules/labels.py:745
+#: py/modules/labels.py:749
 msgid "Pathogenic Characteristics"
 msgstr "Características patogênicas"
 
-#: py/modules/labels.py:746
+#: py/modules/labels.py:750
 msgid "Genotypic Characteristics"
 msgstr "Características genotípicas"
 
-#: py/modules/labels.py:747
+#: py/modules/labels.py:751
 msgid "OGM Group"
 msgstr "Grupo de OGM"
 
-#: py/modules/labels.py:748
+#: py/modules/labels.py:752
 msgid "OGM Comments"
 msgstr "Comentários de OGM"
 
-#: py/modules/labels.py:749
+#: py/modules/labels.py:753
 msgid "Biorisk Comments"
 msgstr "Comentários do risco biológico"
 
-#: py/modules/labels.py:752
+#: py/modules/labels.py:756
 msgid "Characteristics References"
 msgstr "Referências das características"
 
-#: py/modules/labels.py:753
+#: py/modules/labels.py:757
 msgid "Catalogue Notes"
 msgstr "Observações adicionais ao catálogo"
 
-#: py/modules/labels.py:756
+#: py/modules/labels.py:760
 msgid "Properties References"
 msgstr "Referências das propriedades"
 
-#: py/modules/labels.py:757 py/modules/labels.py:770 py/modules/labels.py:779
-#: py/modules/labels.py:789 py/modules/labels.py:797
+#: py/modules/labels.py:761 py/modules/labels.py:774 py/modules/labels.py:783
+#: py/modules/labels.py:793 py/modules/labels.py:801
 msgid "Go Catalog"
 msgstr "Vai para catálogo"
 
-#: py/modules/labels.py:759
+#: py/modules/labels.py:763
 msgid "Institution ID"
 msgstr "ID"
 
-#: py/modules/labels.py:773
+#: py/modules/labels.py:777
 msgid "Person ID"
 msgstr "ID"
 
-#: py/modules/labels.py:782
+#: py/modules/labels.py:786
 msgid "Document ID"
 msgstr "ID"
 
-#: py/modules/labels.py:799
+#: py/modules/labels.py:803
 msgid "Taxon ID"
 msgstr "ID"
 
-#: py/modules/labels.py:803
+#: py/modules/labels.py:807
 msgid "Scientific Name No Auth"
 msgstr "Nome Científico (sem autor)"
 
-#: py/modules/labels.py:807
+#: py/modules/labels.py:811
 msgid "Hazard Group Reference"
 msgstr "Referências do Grupo de Risco"
 
-#: py/modules/labels.py:808
+#: py/modules/labels.py:812
 msgid "Hazard Group Comments"
 msgstr "Comentários do Grupo de Risco"
 
-#: py/modules/labels.py:810
+#: py/modules/labels.py:814
 msgid "Alternative State Type"
 msgstr "Estado Alternativo (Tipo)"
 
-#: py/modules/labels.py:813
+#: py/modules/labels.py:817
 msgid "Strain (Code)"
 msgstr "Linhagem (código)"
 
-#: py/modules/labels.py:814
+#: py/modules/labels.py:818
 msgid "Strain (Number)"
 msgstr "Linhagem (número)"
 
-#: py/modules/labels.py:818
+#: py/modules/labels.py:822
 msgid "Position"
 msgstr "Posição"
 
-#: py/modules/labels.py:819
+#: py/modules/labels.py:823
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: py/modules/labels.py:823
+#: py/modules/labels.py:827
 msgid "Error in Report Generation"
 msgstr "Erro na Geração do Relatório"
 
-#: py/modules/labels.py:824
+#: py/modules/labels.py:828
 msgid "Return to Reports List"
 msgstr "Retornar a Lista de Relatórios"
 
@@ -2912,89 +3000,89 @@ msgstr "Exclusão de CQ"
 msgid "Log Strain"
 msgstr "Linhagem"
 
-#: py/modules/labels_traceability.py:186 py/modules/label_values_reports.py:37
-#: py/modules/getdata.py:847
+#: py/modules/getdata.py:862 py/modules/label_values_reports.py:37
+#: py/modules/labels_traceability.py:186
 msgid "Unknown"
 msgstr "Desconhecido"
 
-#: py/modules/labels_traceability.py:187 py/modules/label_values_reports.py:38
-#: py/modules/getdata.py:849 py/modules/getdata.py:1529
+#: py/modules/getdata.py:864 py/modules/getdata.py:1547
+#: py/modules/label_values_reports.py:38 py/modules/labels_traceability.py:187
 msgid "Group I"
 msgstr "Grupo I"
 
-#: py/modules/labels_traceability.py:188 py/modules/label_values_reports.py:39
-#: py/modules/getdata.py:851 py/modules/getdata.py:1531
+#: py/modules/getdata.py:866 py/modules/getdata.py:1549
+#: py/modules/label_values_reports.py:39 py/modules/labels_traceability.py:188
 msgid "Group II"
 msgstr "Grupo II"
 
-#: py/modules/labels_traceability.py:189 py/modules/labels_traceability.py:192
 #: py/modules/label_values_reports.py:40 py/modules/label_values_reports.py:43
+#: py/modules/labels_traceability.py:189 py/modules/labels_traceability.py:192
 msgid "False"
 msgstr "Falso"
 
-#: py/modules/labels_traceability.py:190 py/modules/labels_traceability.py:191
 #: py/modules/label_values_reports.py:41 py/modules/label_values_reports.py:42
+#: py/modules/labels_traceability.py:190 py/modules/labels_traceability.py:191
 msgid "True"
 msgstr "Verdadeiro"
 
-#: py/modules/reports.py:43 py/modules/form_save.py:106
-#: py/modules/dbconnection.py:58
+#: py/modules/dbconnection.py:78 py/modules/form_save.py:118
+#: py/modules/form_save.py:1513 py/modules/reports.py:53
 msgid "Error"
 msgstr "Erro"
 
-#: py/modules/reports.py:43 py/modules/form_save.py:106
+#: py/modules/form_save.py:118 py/modules/reports.py:53
 msgid "Obrigatory fields left blank"
 msgstr "Campos obrigatórios não podem estar vazios."
 
-#: py/modules/reports.py:53 py/modules/reports.py:57
-#: py/modules/form_save.py:116 py/modules/form_save.py:120
-#: py/modules/form_save.py:125 py/modules/form_save.py:2801
-#: py/modules/form_save.py:2834 js/form.reports.step3.js:26
-#: js/form.reports.step3.js:28 js/form.reports.step3.js:44
-#: js/form.reports.step3_src.js:88 js/form.reports.step3_src.js:108
-#: js/form.reports.step3_src.js:235
+#: js/form.reports.step3.js:26 js/form.reports.step3.js:28
+#: js/form.reports.step3.js:44 js/form.reports.step3_src.js:90
+#: js/form.reports.step3_src.js:110 js/form.reports.step3_src.js:237
+#: py/modules/form_save.py:128 py/modules/form_save.py:132
+#: py/modules/form_save.py:137 py/modules/form_save.py:2908
+#: py/modules/form_save.py:2942 py/modules/reports.py:63
+#: py/modules/reports.py:67
 msgid "field"
 msgstr "campo"
 
-#: py/modules/reports.py:53 py/modules/reports.py:57
-#: py/modules/form_save.py:116 py/modules/form_save.py:120
-#: py/modules/form_save.py:125 py/modules/form_save.py:2801
-#: py/modules/form_save.py:2834
+#: py/modules/form_save.py:128 py/modules/form_save.py:132
+#: py/modules/form_save.py:137 py/modules/form_save.py:2908
+#: py/modules/form_save.py:2942 py/modules/reports.py:63
+#: py/modules/reports.py:67
 msgid "must not be empty."
 msgstr "não pode estar vazio."
 
-#: py/modules/reports.py:387
+#: py/modules/reports.py:477
 msgid "Not in"
 msgstr "Exceto"
 
-#: py/modules/reports.py:387
+#: py/modules/reports.py:477
 msgid "Greater or equal"
 msgstr "Maior ou igual"
 
-#: py/modules/reports.py:388
+#: py/modules/reports.py:478
 msgid "Less or equal"
 msgstr "Menor ou igual"
 
-#: py/modules/reports.py:392
+#: py/modules/reports.py:482
 msgid "Fixed"
 msgstr "Fixo"
 
-#: py/modules/reports.py:393
+#: py/modules/reports.py:483
 msgid "Variable"
 msgstr "Variável"
 
-#: py/modules/label_values_reports.py:30 py/modules/getdata.py:908
-#: py/modules/getdata.py:1347
+#: py/modules/getdata.py:924 py/modules/getdata.py:1365
+#: py/modules/label_values_reports.py:30
 msgid "Active"
 msgstr "Ativo"
 
-#: py/modules/label_values_reports.py:31 py/modules/getdata.py:909
-#: py/modules/getdata.py:1348
+#: py/modules/getdata.py:925 py/modules/getdata.py:1366
+#: py/modules/label_values_reports.py:31
 msgid "Inactive"
 msgstr "Inativo"
 
-#: py/modules/label_values_reports.py:32 py/modules/getdata.py:910
-#: py/modules/getdata.py:1349
+#: py/modules/getdata.py:926 py/modules/getdata.py:1367
+#: py/modules/label_values_reports.py:32
 msgid "Pending"
 msgstr "Pendente"
 
@@ -3006,13 +3094,13 @@ msgstr "Decimal"
 msgid "DMS"
 msgstr "SGBD"
 
-#: py/modules/label_values_reports.py:35 py/modules/getdata.py:893
-#: py/modules/getdata.py:1543 py/modules/getdata.py:1576
+#: py/modules/getdata.py:909 py/modules/getdata.py:1561
+#: py/modules/getdata.py:1594 py/modules/label_values_reports.py:35
 msgid "Yes"
 msgstr "Sim"
 
-#: py/modules/label_values_reports.py:36 py/modules/getdata.py:896
-#: py/modules/getdata.py:1543 py/modules/getdata.py:1578
+#: py/modules/getdata.py:912 py/modules/getdata.py:1561
+#: py/modules/getdata.py:1596 py/modules/label_values_reports.py:36
 msgid "No"
 msgstr "Não"
 
@@ -3080,127 +3168,169 @@ msgstr "3"
 msgid "4"
 msgstr "4"
 
-#: py/modules/label_values_reports.py:60 py/modules/getdata.py:535
-#: py/modules/getdata.py:597
+#: py/modules/getdata.py:546 py/modules/getdata.py:611
+#: py/modules/label_values_reports.py:60
 msgid "Anamorfic"
 msgstr "Anamórfico"
 
-#: py/modules/label_values_reports.py:61 py/modules/getdata.py:536
-#: py/modules/getdata.py:598
+#: py/modules/getdata.py:547 py/modules/getdata.py:612
+#: py/modules/label_values_reports.py:61
 msgid "Teleomorfic"
 msgstr "Teleomórfico"
 
-#: py/modules/form_save.py:201
+#: py/modules/form_save.py:229
 msgid "File"
 msgstr "Arquivo"
 
-#: py/modules/form_save.py:464
+#: py/modules/form_save.py:501
 msgid "This numeric code already exists in database."
 msgstr "Este código já existe no banco de dados."
 
-#: py/modules/form_save.py:1145 js/feedback_src.js:92 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:125 py/modules/form_save.py:1196
 msgid "Please, choose at least one test."
 msgstr "Por favor, escolha ao menos um teste."
 
-#: py/modules/form_save.py:1315
+#: py/modules/form_save.py:1366
 msgid ""
 "This quality control can not be deleted because the original places are "
 "taken by another preservation."
 msgstr ""
-"Este controle de qualidade não pode ser excluído porque estas posições de "
-"origem já foram utilizadas em outra preservação."
+"Este controle de qualidade não pode ser excluído porque estas posições de"
+" origem já foram utilizadas em outra preservação."
 
-#: py/modules/form_save.py:1446
+#: py/modules/form_save.py:1494
+msgid "No file was uploaded or file is empty"
+msgstr ""
+
+#: py/modules/form_save.py:1502
+msgid "Document directory does not exist"
+msgstr ""
+
+#: py/modules/form_save.py:1512
+msgid "Document directory is not writable"
+msgstr ""
+
+#: py/modules/form_save.py:1514
+#, fuzzy
+msgid "Current user"
+msgstr ". Tamanho atual = "
+
+#: py/modules/form_save.py:1515
+#, fuzzy
+msgid "Solution"
+msgstr "Isolamento"
+
+#: py/modules/form_save.py:1515
+msgid "Contact administrator to fix directory permissions"
+msgstr ""
+
+#: py/modules/form_save.py:1523
 msgid "Code value already exists in database!"
 msgstr "O código já existe no banco de dados!"
 
-#: py/modules/form_save.py:1446 py/modules/form_save.py:2311
+#: py/modules/form_save.py:1523 py/modules/form_save.py:2409
 msgid "Please insert a different value."
 msgstr "Favor inserir um valor diferente."
 
-#: py/modules/form_save.py:1497 py/modules/form_save.py:1522
+#: py/modules/form_save.py:1579 py/modules/form_save.py:1612
 msgid "Exceeded maximum size limit of"
 msgstr "Excedeu o limite máximo de"
 
-#: py/modules/form_save.py:1497 py/modules/form_save.py:1522
+#: py/modules/form_save.py:1579 py/modules/form_save.py:1612
 msgid "bytes"
 msgstr "bytes"
 
-#: py/modules/form_save.py:2138
+#: py/modules/form_save.py:2230
 msgid "At least one stock position must me chosen."
 msgstr "Ao menos uma posição de estoque deve ser escolhida."
 
-#: py/modules/form_save.py:2285
+#: py/modules/form_save.py:2383
 msgid "At least one strain must me chosen."
 msgstr "Ao menos uma linhagem deve ser escolhida."
 
-#: py/modules/form_save.py:2311
+#: py/modules/form_save.py:2409
 msgid "Lot Number already exists in database!"
 msgstr "O número do lote já existe no banco de dados!"
 
-#: py/modules/form_save.py:2602
+#: py/modules/form_save.py:2704
 msgid "The preservation has less than ampoules has already been used."
 msgstr ""
 "A preservação está com menos quantidade de ampolas que a quatidade já "
 "utilizada."
 
-#: py/modules/form_save.py:2786 py/modules/form_save.py:2816
+#: py/modules/form_save.py:2893 py/modules/form_save.py:2924
 msgid "A container with the same abbreviation already exists."
 msgstr "Já existe um contêiner com a mesma abreviação."
 
-#: py/modules/form_save.py:2801 py/modules/form_save.py:2834
+#: py/modules/form_save.py:2908 py/modules/form_save.py:2942
 msgid "structure"
 msgstr "Estrutura"
 
 #: py/modules/dbconnection.py:85
+#, fuzzy
+msgid "Solution:"
+msgstr "Isolamento"
+
+#: py/modules/dbconnection.py:86
+msgid "Your machine IP is not authorized to connect to the MySQL database."
+msgstr ""
+
+#: py/modules/dbconnection.py:88
+msgid ""
+"Run this command from the microSICol root directory to configure "
+"automatic permissions."
+msgstr ""
+
+#: py/modules/dbconnection.py:122
 msgid "Sqlite Connection Failed!"
 msgstr "Falha na conexão com o Sqlite."
 
-#: py/modules/dbconnection.py:85
+#: py/modules/dbconnection.py:122
 msgid "This database file does not exist:"
 msgstr "Este arquivo de dados não existe:"
 
-#: py/modules/dbconnection.py:190
+#: py/modules/dbconnection.py:231
 msgid "Error in SQLite execute"
 msgstr "Erro na execução do Sqlite"
 
-#: py/modules/dbconnection.py:190 py/modules/dbconnection.py:226
+#: py/modules/dbconnection.py:231 py/modules/dbconnection.py:275
 msgid "Sql function"
 msgstr "Função SQL"
 
-#: py/modules/dbconnection.py:190 py/modules/dbconnection.py:226
+#: py/modules/dbconnection.py:231 py/modules/dbconnection.py:275
 msgid "Sql line"
 msgstr "Linha SQL"
 
-#: py/modules/dbconnection.py:216
+#: py/modules/dbconnection.py:257
 msgid "Duplicate entry"
 msgstr "Entrada duplicada"
 
-#: py/modules/dbconnection.py:221
+#: py/modules/dbconnection.py:264
 msgid "Unable to delete due associations with table \"Strains\""
 msgstr ""
 "Não foi possível apagar devido a associações existentes com a tabela "
 "\"Linhagens\""
 
-#: py/modules/dbconnection.py:224
+#: py/modules/dbconnection.py:269 py/modules/dbconnection.py:271
+#: py/modules/dbconnection.py:273
 msgid "Unable to update/delete due foreign key constrain"
 msgstr ""
 "Não foi possível apagar/atualizar este registro porque existem outros "
 "registros relacionados a ele."
 
-#: py/modules/dbconnection.py:224
+#: py/modules/dbconnection.py:269
 msgid "Foreign Table Name"
 msgstr "Nome da Tabela Associada"
 
-#: py/modules/dbconnection.py:226
+#: py/modules/dbconnection.py:275
 msgid "Error in MySQL execute"
 msgstr "Erro na execução do MySQL"
 
-#: py/modules/dbconnection.py:226
+#: py/modules/dbconnection.py:275
 msgid "Values"
 msgstr "Valores"
 
-#: py/modules/dbconnection.py:229
+#: py/modules/dbconnection.py:278
 msgid "Database not implemented."
 msgstr "Banco de Dados não implementado."
 
@@ -3212,33 +3342,31 @@ msgstr "Não pode ser convertido para tipo TextLink"
 msgid "Invalid value type in list."
 msgstr "Tipo de valor inválido na lista."
 
-#: py/modules/lists.py:600
+#: py/modules/lists.py:613
 msgid "Critical stock levels"
 msgstr "Limite Crítico de Estoque"
 
-#: py/modules/lists.py:604
+#: py/modules/lists.py:617
 msgid "There are items with critical stock levels. Click for details."
 msgstr "Há itens abaixo do limite de estoque. Clique para detalhes."
 
-#: py/modules/lists.py:1037 py/modules/getdata.py:2396
-#: js/contact_relations_manipulation_src.js:143
-#: js/contact_relations_manipulation_src.js:279
 #: js/contact_relations_manipulation.js:16
 #: js/contact_relations_manipulation.js:36
+#: js/contact_relations_manipulation_src.js:152
+#: js/contact_relations_manipulation_src.js:288 py/modules/getdata.py:2435
+#: py/modules/lists.py:1059
 msgid "contact"
 msgstr "contato"
 
-#: py/modules/ajax_mount.py:142
+#: py/modules/ajax_mount.py:141
 msgid "No containers found for this preservation method on this subcollection"
-msgstr ""
-"Não existem contêineres para este método de preservação nesta subcoleção."
+msgstr "Não existem contêineres para este método de preservação nesta subcoleção."
 
-#: py/modules/ajax_mount.py:196
+#: py/modules/ajax_mount.py:198
 msgid ""
 "No containers with stock found for this preservation method on this "
 "subcollection"
-msgstr ""
-"Não existem contêineres para este método de preservação nesta subcoleção."
+msgstr "Não existem contêineres para este método de preservação nesta subcoleção."
 
 #: py/modules/login.py:55
 msgid "No subcollections found for this user. Verify table Accesses."
@@ -3250,430 +3378,427 @@ msgstr ""
 msgid "returned invalid code"
 msgstr "retornou um código inválido"
 
-#: py/modules/getdata.py:143
+#: py/modules/getdata.py:142
 msgid "System Default"
 msgstr "Padrão do Sistema"
 
-#: py/modules/getdata.py:302
+#: py/modules/getdata.py:312
 msgid "Species Edit"
 msgstr "Editar Taxon"
 
-#: py/modules/getdata.py:305
+#: py/modules/getdata.py:315
 msgid "Species New"
 msgstr "Novo Taxon"
 
-#: py/modules/getdata.py:400 py/modules/getdata.py:758
-#: py/modules/getdata.py:1852 py/modules/getdata.py:2118
-#: py/modules/getdata.py:2297 py/modules/getdata.py:2623
-#: py/modules/getdata.py:2992 py/modules/getdata.py:3240
-#: py/modules/getdata.py:4060 py/modules/getdata.py:4507
-#: py/modules/getdata.py:4801
+#: py/modules/getdata.py:411 py/modules/getdata.py:773
+#: py/modules/getdata.py:1875 py/modules/getdata.py:2150
+#: py/modules/getdata.py:2336 py/modules/getdata.py:2672
+#: py/modules/getdata.py:3048 py/modules/getdata.py:3303
+#: py/modules/getdata.py:4138 py/modules/getdata.py:4592
+#: py/modules/getdata.py:4892
 msgid "Previous"
 msgstr "Anterior"
 
-#: py/modules/getdata.py:1543 py/modules/getdata.py:1580
+#: py/modules/getdata.py:1561 py/modules/getdata.py:1598
 msgid "Not Determined"
 msgstr "Não Determinado"
 
-#: py/modules/getdata.py:1621 py/modules/getdata.py:1690
-#: py/modules/getdata.py:1694 py/modules/getdata.py:1698
+#: py/modules/getdata.py:1639 py/modules/getdata.py:1708
+#: py/modules/getdata.py:1712 py/modules/getdata.py:1716
 msgid "in stock"
 msgstr "Em Estoque"
 
-#: py/modules/getdata.py:1623 py/modules/getdata.py:1690
-#: py/modules/getdata.py:1698
+#: py/modules/getdata.py:1641 py/modules/getdata.py:1708
+#: py/modules/getdata.py:1716
 msgid "minimum stock"
 msgstr "Estoque Mínimo"
 
-#: py/modules/getdata.py:1636 py/modules/getdata.py:1711
+#: py/modules/getdata.py:1654 py/modules/getdata.py:1729
 msgid "Unit"
 msgstr "Unidade"
 
-#: py/modules/getdata.py:1749 js/form.strains.quality.js:47
-#: js/form.distribution.js:41 js/form.distribution_src.js:230
-#: js/form.strains.quality_src.js:275
+#: js/form.distribution.js:41 js/form.distribution_src.js:250
+#: js/form.strains.quality_src.js:294 py/modules/getdata.py:1767
 msgid "There are no Lot Numbers for this Strain."
 msgstr "Não há lotes para esta linhagem."
 
-#: py/modules/getdata.py:1918
+#: py/modules/getdata.py:1941
 msgid "download"
 msgstr "download"
 
-#: py/modules/getdata.py:2002
+#: py/modules/getdata.py:2027
 msgid ""
 "This document qualifier cannot be modified because it is been used by a "
 "preservation."
 msgstr ""
-"Esta linhagem não pode ser removida porque esta posição de origem está sendo "
-"utilizada em outra linhagem nesta preservação."
+"Esta linhagem não pode ser removida porque esta posição de origem está "
+"sendo utilizada em outra linhagem nesta preservação."
 
-#: py/modules/getdata.py:2010
+#: py/modules/getdata.py:2035
 msgid ""
 "This document qualifier cannot be modified because it is been used by a "
 "quality control."
 msgstr ""
-"O qualificador deste documento não pode ser alterado porque ele está sendo "
-"utilizado em um controle de qualidade."
+"O qualificador deste documento não pode ser alterado porque ele está "
+"sendo utilizado em um controle de qualidade."
 
-#: py/modules/getdata.py:2414 py/modules/getdata.py:2444
+#: py/modules/getdata.py:2453 py/modules/getdata.py:2483
 msgid "Department"
 msgstr "Departamento"
 
-#: py/modules/getdata.py:2414 py/modules/getdata.py:2444
+#: py/modules/getdata.py:2453 py/modules/getdata.py:2483
 msgid "E-mail"
 msgstr "E-mail"
 
-#: py/modules/getdata.py:2444
+#: py/modules/getdata.py:2483
 msgid "Contact"
 msgstr "Contato"
 
-#: py/modules/getdata.py:3356
+#: py/modules/getdata.py:3427
 msgid "Preservation by Spores"
 msgstr "Preservação por Esporos"
 
-#: py/modules/getdata.py:3357
+#: py/modules/getdata.py:3428
 msgid "Preservation by Blocks"
 msgstr "Preservação por Blocos"
 
-#: py/modules/getdata.py:3410
+#: py/modules/getdata.py:3486
 #, python-format
 msgid "Number of Prepared %s"
 msgstr "Número de %s Preparados(as)"
 
-#: py/modules/getdata.py:3416 py/modules/getdata.py:3638
-#: js/form.preservation_src.js:707 js/form.preservation_src.js:873
-#: js/form.preservation_src.js:886 js/form.preservation.js:89
-#: js/form.preservation.js:114 js/form.preservation.js:117
+#: js/form.preservation_src.js:792 js/form.preservation_src.js:975
+#: js/form.preservation_src.js:988 py/modules/getdata.py:3492
+#: py/modules/getdata.py:3715
 msgid "Original Culture"
 msgstr "Cultura Original"
 
-#: py/modules/getdata.py:3430
+#: py/modules/getdata.py:3506
 msgid "Lot Number"
 msgstr "Número do Lote"
 
-#: py/modules/getdata.py:3460
+#: py/modules/getdata.py:3536
 msgid "By Blocks"
 msgstr "Por Blocos"
 
-#: py/modules/getdata.py:3462
+#: py/modules/getdata.py:3538
 msgid "By Spores"
 msgstr "Por Esporos"
 
-#: py/modules/getdata.py:4134
+#: py/modules/getdata.py:4212
 msgid "Structure not defined."
 msgstr "A estrutura do contêiner não foi definida."
 
-#: py/modules/getdata.py:4165 js/jstree_src.js:1368 js/jstree.js:172
+#: js/jstree_src.js:1441 py/modules/getdata.py:4243
 msgid "Rows"
 msgstr "Linhas"
 
-#: py/modules/getdata.py:4166
+#: py/modules/getdata.py:4244
 msgid "Cols"
 msgstr "Colunas"
 
-#: py/modules/getdata.py:4167
+#: py/modules/getdata.py:4245
 msgid "Ini row"
 msgstr "Linha inicial"
 
-#: py/modules/getdata.py:4168
+#: py/modules/getdata.py:4246
 msgid "Ini col"
 msgstr "Coluna inicial"
 
-#: py/modules/getdata.py:4877
+#: py/modules/getdata.py:4968
 msgid "(Discard)"
 msgstr "(Descartado)"
 
-#: js/textlink_src.js:22 js/textlink.js:7
+#: js/textlink.js:7 js/textlink_src.js:24
 msgid "Please, select a reference."
 msgstr "Por favor, selecione uma referencia."
 
-#: js/textlink_src.js:29 js/textlink.js:9
+#: js/textlink.js:9 js/textlink_src.js:31
 msgid "Please, select a document."
 msgstr "Por favor, selecione um documento."
 
-#: js/feedback_src.js:17 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:20
 msgid "The nodes must contain the maximum of 14 children per node."
 msgstr "A estrutura não pode exceder o limite máximo de 14 níveis."
 
-#: js/feedback_src.js:22 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:27
 msgid "The nodes must contain the same number of children."
 msgstr "Todos os nós da estrutura devem ter a mesma quantidade de níveis."
 
-#: js/feedback_src.js:27 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:34
 msgid "Missing Separator value for CSV Report. "
 msgstr "O separador não foi definido."
 
-#: js/feedback_src.js:32 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:41
 msgid "Invalid value for highlighted field "
 msgstr "Favor checar todos os campos realçados."
 
-#: js/feedback_src.js:37 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:48
 msgid "The Chart type can not be selected without a totalizer."
 msgstr ""
-"Relatórios do tipo gráfico não podem ser criados sem a escolha de um campo "
-"totalizador."
+"Relatórios do tipo gráfico não podem ser criados sem a escolha de um "
+"campo totalizador."
 
-#: js/feedback_src.js:42 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:55
 msgid "Enter the selected field or totalizer."
 msgstr "Nenhum campo de seleção ou totalizador foi definido."
 
-#: js/feedback_src.js:47 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:62
 msgid "Division cannot be deleted because it is in use by some strain."
 msgstr ""
-"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou "
-"mais linhagens."
+"Esta divisão não pode ser excluída porque ela está sendo usada por uma ou"
+" mais linhagens."
 
-#: js/feedback_src.js:52 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:69
 msgid "Pattern field need at least one #."
 msgstr "O campo Modelo deve conter ao menos um caractere #."
 
-#: js/feedback_src.js:57 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:76
 msgid "An unknow error occurred."
 msgstr "Um erro desconhecido ocorreu durante a operação."
 
-#: js/feedback_src.js:62 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:83
 msgid "Access Denied on database."
 msgstr "Acesso negado ao banco de dados."
 
-#: js/feedback_src.js:67 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:90
 msgid "Access denied for user sicol@% to database."
 msgstr "Acesso negado ao banco de dados para o usuário sicol@% ."
 
-#: js/feedback_src.js:72 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:97
 msgid "Database has not been activated."
 msgstr "Banco de Dados não implementado."
 
-#: js/feedback_src.js:77 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:104
 msgid "Could not connect to database."
 msgstr "Falha ao conectar ao banco de dados."
 
-#: js/feedback_src.js:82 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:111
 msgid "Repeated code for this collection."
 msgstr "Código repetido para esta Coleção"
 
-#: js/feedback_src.js:87 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:118
 msgid "Repeated code for this Subcollection."
 msgstr "Código repetido para esta Subcoleção"
 
-#: js/feedback_src.js:97 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:132
 msgid "Invalid image file."
 msgstr "Arquivo de imagem inválido."
 
-#: js/feedback_src.js:102 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:139
 msgid "Permission denied to edit config.xml."
 msgstr "Permissão negada para editar config.xml."
 
-#: js/feedback_src.js:107 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:146
 msgid "Please check all highlighted fields."
 msgstr "Favor checar todos os campos realçados."
 
-#: js/feedback_src.js:117 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:158
 msgid "Data inserted/updated successfully."
 msgstr "Dado inserido/atualizado com sucesso."
 
-#: js/feedback_src.js:123 js/feedback.js:4
+#: js/feedback.js:4 js/feedback_src.js:165
 msgid "Data deleted successfully."
 msgstr "Dado deletado com sucesso."
 
-#: js/configuration_src.js:10 js/configuration.js:4
+#: js/configuration.js:4 js/configuration_src.js:15
 msgid "Unable to remove Administrator function."
 msgstr "Impossível remover o papel de administrador do sistema."
 
-#: js/configuration_src.js:60 js/configuration.js:22
+#: js/configuration.js:22 js/configuration_src.js:67
 msgid "It is not possible to delete yourself."
 msgstr "Não é possível apagar a si mesmo."
 
-#: js/configuration_src.js:64 js/configuration.js:24
+#: js/configuration.js:24 js/configuration_src.js:72
 msgid "It is not possible to delete super user."
 msgstr "Não é possível apagar um super-usuário."
 
-#: js/configuration_src.js:66 js/configuration.js:25
+#: js/configuration.js:25 js/configuration_src.js:74
 msgid "Delete User. Are you sure?"
 msgstr "Deletar usuário. Tem certeza?"
 
-#: js/configuration_src.js:75 js/configuration.js:28
+#: js/configuration.js:28 js/configuration_src.js:83
 msgid "Save User"
 msgstr "Salvar Usuário"
 
-#: js/configuration_src.js:134 js/configuration.js:42
+#: js/configuration.js:42 js/configuration_src.js:148
 msgid "Please fill in the Login and Name fields."
 msgstr "Por favor digite o Login e o Nome."
 
-#: js/configuration_src.js:140 js/configuration.js:44
+#: js/configuration.js:44 js/configuration_src.js:154
 msgid "Please fill in the Password field."
 msgstr "Por favor, digite a Senha."
 
-#: js/configuration_src.js:147 js/configuration.js:46 js/form.preferences.js:3
-#: js/form.preferences_src.js:15
+#: js/configuration.js:46 js/configuration_src.js:162 js/form.preferences.js:3
+#: js/form.preferences_src.js:19
 msgid "Passwords do not match."
 msgstr "As senhas informadas estão diferentes."
 
-#: js/configuration_src.js:246 js/configuration_src.js:1365
-#: js/configuration.js:74 js/configuration.js:333
+#: js/configuration.js:74 js/configuration.js:333 js/configuration_src.js:264
+#: js/configuration_src.js:1499
 msgid "Create New User"
 msgstr "Criar Usuário"
 
-#: js/configuration_src.js:258 js/configuration.js:77
+#: js/configuration.js:77 js/configuration_src.js:282
 msgid "Unable to delete Administrator Level."
 msgstr "Não é possível apagar o grupo de administradores."
 
-#: js/configuration_src.js:262 js/configuration.js:79
+#: js/configuration.js:79 js/configuration_src.js:286
 msgid "Delete Group. Are you sure?"
 msgstr "Apagar Grupo. Tem certeza?"
 
-#: js/configuration_src.js:272 js/configuration.js:82
+#: js/configuration.js:82 js/configuration_src.js:296
 msgid "Save Group"
 msgstr "Salvar Grupo"
 
-#: js/configuration_src.js:405 js/configuration_src.js:639
-#: js/configuration.js:117 js/configuration.js:174
+#: js/configuration.js:117 js/configuration.js:174 js/configuration_src.js:435
+#: js/configuration_src.js:689
 msgid "Please fill in the Name field."
 msgstr "Por favor digite o Nome."
 
-#: js/configuration_src.js:423 js/configuration_src.js:1369
-#: js/configuration.js:123 js/configuration.js:333
+#: js/configuration.js:123 js/configuration.js:333 js/configuration_src.js:455
+#: js/configuration_src.js:1503
 msgid "Create New Group"
 msgstr "Criar Grupo"
 
-#: js/configuration_src.js:435 js/configuration.js:126
+#: js/configuration.js:126 js/configuration_src.js:473
 msgid "Unable to delete current Collection."
 msgstr "Não é possível apagar a Coleção em uso."
 
-#: js/configuration_src.js:437 js/configuration.js:127
+#: js/configuration.js:127 js/configuration_src.js:475
 msgid "Delete Collection. Are you sure?"
 msgstr "Apagar Coleção. Tem certeza?"
 
-#: js/configuration_src.js:446 js/configuration.js:130
+#: js/configuration.js:130 js/configuration_src.js:484
 msgid "Save Collection"
 msgstr "Salvar Coleção"
 
-#: js/configuration_src.js:480 js/configuration.js:137
+#: js/configuration.js:137 js/configuration_src.js:520
 msgid "Please fill in the Code field."
 msgstr "Por favor, digite o Código."
 
-#: js/configuration_src.js:492 js/configuration_src.js:1373
-#: js/configuration.js:141 js/configuration.js:333
+#: js/configuration.js:141 js/configuration.js:333 js/configuration_src.js:533
+#: js/configuration_src.js:1507
 msgid "Create New Collection"
 msgstr "Criar Coleção"
 
-#: js/configuration_src.js:504 js/configuration.js:144
+#: js/configuration.js:144 js/configuration_src.js:551
 msgid "Unable to delete current Subcollection."
 msgstr "Não é possível apagar a Subcoleção atual."
 
-#: js/configuration_src.js:506 js/configuration.js:145
+#: js/configuration.js:145 js/configuration_src.js:553
 msgid "Delete Subcollection. Are you sure?"
 msgstr "Apagar Subcoleção. Tem certeza?"
 
-#: js/configuration_src.js:515 js/configuration.js:148
+#: js/configuration.js:148 js/configuration_src.js:562
 msgid "Save Subcollection"
 msgstr "Salvar Subcoleção"
 
-#: js/configuration_src.js:550 js/configuration_src.js:1393
-#: js/configuration.js:151 js/configuration.js:333
+#: js/configuration.js:151 js/configuration.js:333 js/configuration_src.js:599
+#: js/configuration_src.js:1527
 msgid "Save Template"
 msgstr "Salvar modelo"
 
-#: js/configuration_src.js:646 js/configuration_src.js:1190
-#: js/configuration.js:176 js/configuration.js:295
+#: js/configuration.js:176 js/configuration.js:295 js/configuration_src.js:696
+#: js/configuration_src.js:1302
 msgid "Please, choose one or more input languages."
 msgstr "Por favor, escolha um ou mais idiomas."
 
-#: js/configuration_src.js:665 js/configuration_src.js:1377
-#: js/configuration.js:181 js/configuration.js:333
+#: js/configuration.js:181 js/configuration.js:333 js/configuration_src.js:716
+#: js/configuration_src.js:1511
 msgid "Create New Subcollection"
 msgstr "Criar Subcoleção"
 
-#: js/configuration_src.js:687 js/configuration.js:183
+#: js/configuration.js:183 js/configuration_src.js:744
 msgid "Save Subcollection Combo Configuration"
 msgstr "Salvar Configuração de Combo para esta Subcoleção"
 
-#: js/configuration_src.js:693 js/configuration.js:184
+#: js/configuration.js:184 js/configuration_src.js:750
 msgid "Edit Subcollection Combo Configuration"
 msgstr "Editar Configuração de Combo para esta Subcoleção"
 
-#: js/configuration_src.js:921 js/configuration_src.js:926
-#: js/configuration.js:231 js/configuration.js:233
+#: js/configuration.js:231 js/configuration.js:233 js/configuration_src.js:999
+#: js/configuration_src.js:1004
 msgid "Please, fill in all language fields if a new item is to be inserted."
 msgstr ""
 "Por favor, preencha os campos em todas as línguas se um novo ítem for "
 "inserido."
 
-#: js/configuration_src.js:941 js/configuration.js:237
+#: js/configuration.js:237 js/configuration_src.js:1020
 msgid "Please, choose one or more Taxon Groups for this Subcollection."
 msgstr "Por favor, escolha um ou mais Grupos Taxonômicos para esta Subcoleção."
 
-#: js/configuration_src.js:947 js/configuration.js:239
+#: js/configuration.js:239 js/configuration_src.js:1026
 msgid "Please, choose one or more Strain Types for this Subcollection."
 msgstr "Por favor, escolha um ou mais Tipos de Linhagem para esta Subcoleção."
 
-#: js/configuration_src.js:955 js/configuration.js:241
+#: js/configuration.js:241 js/configuration_src.js:1035
 msgid "Please, choose one or more Strain Deposit Types for this Subcollection."
 msgstr ""
 "Por favor, escolha um ou mais Tipos de Depósito de Linhagem para esta "
 "Subcoleção."
 
-#: js/configuration_src.js:963 js/configuration.js:243
+#: js/configuration.js:243 js/configuration_src.js:1044
 msgid "Please, choose one or more Preservation Methods for this Subcollection."
-msgstr ""
-"Por favor, escolha um ou mais Métodos de Preservação para esta Subcoleção."
+msgstr "Por favor, escolha um ou mais Métodos de Preservação para esta Subcoleção."
 
-#: js/configuration_src.js:971 js/configuration.js:245
+#: js/configuration.js:245 js/configuration_src.js:1053
 msgid "Please, choose one or more Test Groups for this Subcollection."
 msgstr "Por favor, escolha um ou mais Grupos de Teste para esta Subcoleção."
 
-#: js/configuration_src.js:1020 js/configuration.js:260
+#: js/configuration.js:260 js/configuration_src.js:1110
 msgid "Delete base reference. Are you sure?"
 msgstr "Remover conexão de banco de dados. Tem certeza?"
 
-#: js/configuration_src.js:1029 js/configuration.js:263
+#: js/configuration.js:263 js/configuration_src.js:1119
 msgid "Save Base"
 msgstr "Salvar Conexão de Banco de Dados"
 
-#: js/configuration_src.js:1099 js/configuration_src.js:1159
-#: js/configuration_src.js:1198 js/configuration.js:272
-#: js/configuration.js:286 js/configuration.js:297
+#: js/configuration.js:272 js/configuration.js:286 js/configuration.js:297
+#: js/configuration_src.js:1195 js/configuration_src.js:1264
+#: js/configuration_src.js:1310
 msgid "Please fill in the following fields:"
 msgstr "Por favor preencha os seguintes campos:"
 
-#: js/configuration_src.js:1111 js/configuration_src.js:1385
-#: js/configuration.js:276 js/configuration.js:333
+#: js/configuration.js:276 js/configuration.js:333 js/configuration_src.js:1208
+#: js/configuration_src.js:1519
 msgid "Create New Base"
 msgstr "Criar Conexão de Banco de Dados"
 
-#: js/configuration_src.js:1122 js/configuration.js:278
+#: js/configuration.js:278 js/configuration_src.js:1225
 msgid "Delete division. Are you sure?"
 msgstr "Deletar divisão. Tem certeza?"
 
-#: js/configuration_src.js:1132 js/configuration.js:281
+#: js/configuration.js:281 js/configuration_src.js:1235
 msgid "Save Division"
 msgstr "Salvar divisão"
 
-#: js/configuration_src.js:1164 js/configuration.js:288
+#: js/configuration.js:288 js/configuration_src.js:1269
 msgid "Please fill pattern field with at least one #."
 msgstr "Por favor, preencha o campo Modelo com ao menos um caractere #."
 
-#: js/configuration_src.js:1177 js/configuration_src.js:1389
-#: js/configuration.js:292 js/configuration.js:333
+#: js/configuration.js:292 js/configuration.js:333 js/configuration_src.js:1283
+#: js/configuration_src.js:1523
 msgid "Create New Division"
 msgstr "Criar divisão"
 
-#: js/configuration_src.js:1210 js/configuration.js:300
+#: js/configuration.js:300 js/configuration_src.js:1323
 msgid "Effects will take place after re-entering the system."
 msgstr "Mudanças serão efetivadas após re-entrar no sistema."
 
-#: js/configuration_src.js:1397 js/configuration.js:333
+#: js/configuration.js:333 js/configuration_src.js:1531
 msgid "Save config.xml"
 msgstr "salvar config.xml"
 
-#: js/configuration_src.js:1424 js/configuration.js:339
+#: js/configuration.js:339 js/configuration_src.js:1558
 msgid ""
 "cannot be choosen, because it doesn't have structure of scientific name "
 "definition."
 msgstr ""
-"não pode ser associado(a) porque não possui definição da estrutura do nome "
-"científico."
+"não pode ser associado(a) porque não possui definição da estrutura do "
+"nome científico."
 
-#: js/general_src.js:289 js/general.js:74
+#: js/general.js:74 js/general_src.js:317
 msgid "You are about to leave SICol. Do you confirm?"
 msgstr "Você está prestes a sair do SICol. Deseja continuar?"
 
@@ -3683,42 +3808,27 @@ msgstr ""
 "Por favor, selecione o lote de origem antes de selecionar a posição de "
 "origem."
 
-#: js/form.strains.quality.js:18 js/form.strains.quality.js:55
-#: js/form.strains.quality_src.js:141 js/form.strains.quality_src.js:304
-msgid "The number of ampoules must be greater than zero."
-msgstr "O número de ampolas deve ser maior do que zero."
-
-#: js/form.strains.quality.js:57 js/form.distribution.js:36
-#: js/form.distribution_src.js:207 js/form.strains.quality_src.js:314
-#: js/form.preservation_src.js:850 js/form.preservation.js:110
-msgid ""
-"Exceeded maximum amount of existing ampoules. Switching to maximum allowed "
-"value."
-msgstr ""
-"Máxima quantidade de ampolas possíveis foi excedido. Trocando para o máximo "
-"permitido."
-
-#: js/open_popup_src.js:4 js/open_popup.js:3
+#: js/open_popup.js:3 js/open_popup_src.js:4
 msgid "Close"
 msgstr "Fechar"
 
-#: js/form.stockmovement_src.js:46 js/form.container.js:14
-#: js/form.container_src.js:48 js/form.default.js:60 js/form.doc__src.js:64
-#: js/form.stockmovement.js:6 js/form.reports.step3.js:204
+#: js/form.container.js:14 js/form.container_src.js:48 js/form.default.js:60
+#: js/form.default_src.js:237 js/form.doc_.js:9 js/form.doc__src.js:79
 #: js/form.reports.js:10 js/form.reports.js:14 js/form.reports.js:20
-#: js/form.reports.js:63 js/form.reports.step3_src.js:776
-#: js/form.default_src.js:214 js/form.doc_.js:9 js/form.reports_src.js:30
-#: js/form.reports_src.js:45 js/form.reports_src.js:46
-#: js/form.reports_src.js:67 js/form.reports_src.js:190
+#: js/form.reports.js:63 js/form.reports.step3_src.js:793
+#: js/form.reports_src.js:30 js/form.reports_src.js:45
+#: js/form.reports_src.js:46 js/form.reports_src.js:67
+#: js/form.reports_src.js:190 js/form.stockmovement.js:6
+#: js/form.stockmovement_src.js:49
 msgid "Field must not be empty."
 msgstr "Campo precisa ser preenchido."
 
-#: js/form.stockmovement_src.js:60 js/form.stockmovement_src.js:92
 #: js/form.stockmovement.js:12 js/form.stockmovement.js:21
+#: js/form.stockmovement_src.js:64 js/form.stockmovement_src.js:98
 msgid "Repeated stock position."
 msgstr "Posição no estoque repetida."
 
-#: js/form.stockmovement_src.js:105 js/form.stockmovement.js:26
+#: js/form.stockmovement.js:26 js/form.stockmovement_src.js:112
 msgid "Please choose at least one stock position."
 msgstr "Favor escolha ao menos uma posição no estoque."
 
@@ -3726,436 +3836,404 @@ msgstr "Favor escolha ao menos uma posição no estoque."
 msgid "Container must have at least an location data."
 msgstr "O contêiner deve possuir ao menos um item em sua estrutura."
 
-#: js/form.container.new_src.js:34 js/form.container.new.js:7
+#: js/form.container.new.js:7 js/form.container.new_src.js:35
 msgid "The root node cannot be removed."
 msgstr "O nó raíz não pode ser removido."
 
-#: js/loc.js:21 js/loc_src.js:262 js/loc_src.js:265
+#: js/loc.js:44 js/loc_src.js:343 js/loc_src.js:346
 msgid "Removed"
 msgstr "Removido"
 
-#: js/loc.js:23 js/loc_src.js:295
+#: js/loc.js:46 js/loc_src.js:379
 msgid "stock input"
 msgstr "Entrada no estoque"
 
-#: js/loc.js:24 js/loc_src.js:300
+#: js/loc.js:47 js/loc_src.js:385
 msgid "stock output"
 msgstr "Retirada do estoque"
 
-#: js/loc.js:75 js/loc.js:83 js/loc_src.js:852 js/loc_src.js:920
+#: js/loc.js:98 js/loc.js:106 js/loc_src.js:945 js/loc_src.js:1019
 msgid ""
-"You can select a maximum of [maxSelections] location, please deselect one "
-"before continuing."
+"You can select a maximum of [maxSelections] location, please deselect one"
+" before continuing."
 msgstr ""
 "Você pode selecionar no máximo [maxSelections] posição(ões), por favor, "
 "retire uma posição antes de continuar."
 
-#: js/loc.js:98 js/loc_src.js:1055 js/location.js:4 js/location.js:5
-#: js/location_src.js:26 js/location_src.js:27
+#: js/loc.js:121 js/loc_src.js:1158 js/location.js:4 js/location.js:5
+#: js/location_src.js:28 js/location_src.js:29
 msgid "CONFIRM"
 msgstr "CONFIRMAR"
 
-#: js/jstree_src.js:1270 js/jstree.js:172
+#: js/jstree_src.js:1340
 msgid "Abbrev"
 msgstr "Abrev"
 
-#: js/jstree_src.js:1307 js/jstree.js:172
+#: js/jstree_src.js:1378
 msgid "Descr"
 msgstr "Descr"
 
-#: js/jstree_src.js:1346 js/jstree.js:172
+#: js/jstree_src.js:1419
 msgid "R"
 msgstr "L"
 
-#: js/jstree_src.js:1389 js/jstree.js:172
+#: js/jstree_src.js:1463
 msgid "C"
 msgstr "C"
 
-#: js/jstree_src.js:1411 js/jstree.js:172
+#: js/jstree_src.js:1485
 msgid "Columns"
 msgstr "Colunas"
 
-#: js/jstree_src.js:1431 js/jstree.js:172
+#: js/jstree_src.js:1505
 msgid "IR"
 msgstr "LI"
 
-#: js/jstree_src.js:1453 js/jstree.js:172
+#: js/jstree_src.js:1527
 msgid "Initial Row"
 msgstr "Linha inicial"
 
-#: js/jstree_src.js:1473 js/jstree.js:172
+#: js/jstree_src.js:1547
 msgid "IC"
 msgstr "CI"
 
-#: js/jstree_src.js:1495 js/jstree.js:172
+#: js/jstree_src.js:1569
 msgid "Initial Column"
 msgstr "Coluna inicial"
 
-#: js/form.distribution.js:12 js/form.distribution_src.js:115
+#: js/form.distribution.js:12 js/form.distribution_src.js:128
 msgid "You need to choose at least one stock position"
 msgstr "Você precisa escolher ao menos uma posição no estoque."
 
-#: js/form.default.js:24 js/form.default_src.js:87
+#: js/form.distribution.js:36 js/form.distribution_src.js:223
+#: js/form.preservation_src.js:949 js/form.strains.quality_src.js:335
+msgid ""
+"Exceeded maximum amount of existing ampoules. Switching to maximum "
+"allowed value."
+msgstr ""
+"Máxima quantidade de ampolas possíveis foi excedido. Trocando para o "
+"máximo permitido."
+
+#: js/form.default.js:24 js/form.default_src.js:97
 msgid "Text and HTML code exceeded maximum allowed size = "
 msgstr "Texto e código HTML excederam o tamanho máximo permitido = "
 
-#: js/form.default.js:24 js/form.default_src.js:87
+#: js/form.default.js:24 js/form.default_src.js:97
 msgid ". Current size = "
 msgstr ". Tamanho atual = "
 
-#: js/form.default.js:28 js/form.default_src.js:100
+#: js/form.default.js:28 js/form.default_src.js:111
 msgid "Please, choose an option."
 msgstr "Por favor, escolha uma opção."
 
-#: js/form.default.js:98 js/form.default_src.js:349 js/form.default_src.js:350
+#: js/form.default.js:98 js/form.default_src.js:386 js/form.default_src.js:387
 msgid "Warning Icon"
 msgstr "Atenção: esta Aba contém erros."
 
-#: js/form.default.js:122 js/form.default_src.js:443
+#: js/form.default.js:122 js/form.default_src.js:491
 msgid "Field must not be empty in any language."
 msgstr "Campo deve ser preenchido em todos os idiomas disponíveis."
 
-#: js/form.default.js:129 js/form.default_src.js:464
+#: js/form.default.js:129 js/form.default_src.js:513
 msgid "Code field must not have any spaces."
 msgstr "Campo código não deve possuir espaços."
 
-#: js/form.default.js:131 js/form.default_src.js:469
+#: js/form.default.js:131 js/form.default_src.js:518
 msgid "Use only characters like a-z, A-Z, 0-9 or any of"
 msgstr "Utilize apenas caracteres como a-z, A-Z, 0-9 ou quaisquer de"
 
 #: js/form.default.js:151 js/form.default.js:161 js/form.default.js:166
-#: js/form.default.js:169 js/form.default_src.js:531
-#: js/form.default_src.js:562 js/form.default_src.js:576
-#: js/form.default_src.js:583
+#: js/form.default.js:169 js/form.default_src.js:584 js/form.default_src.js:616
+#: js/form.default_src.js:630 js/form.default_src.js:637
 msgid "Invalid email format."
 msgstr "Formato de e-mail inválido."
 
 #: js/form.default.js:180 js/form.default.js:185 js/form.default.js:188
-#: js/form.default_src.js:613 js/form.default_src.js:627
-#: js/form.default_src.js:634
+#: js/form.default_src.js:667 js/form.default_src.js:681
+#: js/form.default_src.js:688
 msgid "Invalid URL format."
 msgstr "Formato de URL inválido."
 
-#: js/form.default.js:258 js/form.default_src.js:934
+#: js/form.default.js:258 js/form.default_src.js:1023
 msgid "The date format should be dd/mm/yyyy"
 msgstr "O formato da data deve ser dd/mm/aaaa"
 
-#: js/form.default.js:259 js/form.default_src.js:939
+#: js/form.default.js:259 js/form.default_src.js:1029
 msgid "Please enter a valid month"
 msgstr "Por favor, coloque um mês válido."
 
-#: js/form.default.js:260 js/form.default_src.js:944
+#: js/form.default.js:260 js/form.default_src.js:1035
 msgid "Please enter a valid day"
 msgstr "Por favor, coloque um dia válido."
 
-#: js/form.default.js:261 js/form.default_src.js:949
+#: js/form.default.js:261 js/form.default_src.js:1041
 msgid "Please enter a valid 4 digit year no greater than "
 msgstr "Por favor, coloque um ano válido com 4 dígitos, menor que "
 
-#: js/form.default.js:262 js/form.default_src.js:954
+#: js/form.default.js:262 js/form.default_src.js:1047
 msgid "Please enter a valid date"
 msgstr "Por favor, coloque uma data válida."
 
-#: js/form.default.js:267 js/form.default_src.js:971
+#: js/form.default.js:267 js/form.default_src.js:1064
 msgid "Please enter a date no greater than "
 msgstr "Por favor, coloque uma data menor ou igual a "
 
-#: js/form.default.js:325 js/form.default.js:336 js/form.default_src.js:1201
-#: js/form.default_src.js:1230 js/form.strains_src.js:588
-#: js/form.strains_src.js:595 js/form.strains_src.js:602
-#: js/form.strains_src.js:610 js/form.strains_src.js:617
-#: js/form.strains_src.js:625
+#: js/form.default.js:325 js/form.default.js:336 js/form.default_src.js:1325
+#: js/form.default_src.js:1354
 msgid "Date out of limit."
 msgstr "Data fora do limite."
 
-#: js/form.default.js:483 js/form.default_src.js:1790
+#: js/form.default.js:483 js/form.default_src.js:1982
 msgid "Latitude does not accept W/E directions, only N/S."
 msgstr "Latitude não aceita direções W/E, apenas N/S."
 
-#: js/form.default.js:488 js/form.default_src.js:1803
+#: js/form.default.js:488 js/form.default_src.js:1995
 msgid "Longitude does not accept N/S directions, only W/E."
 msgstr "Longitude não aceita direções N/S, apenas W/E."
 
-#: js/form.default.js:492 js/form.default_src.js:1814
+#: js/form.default.js:492 js/form.default_src.js:2006
 msgid "Direction appears twice."
 msgstr "Direção aperece duas vezes."
 
-#: js/form.default.js:494 js/form.default_src.js:1819
+#: js/form.default.js:494 js/form.default_src.js:2011
 msgid "Minute decimals and seconds cannot coexist."
 msgstr "Segundos e parte decimal de minutos não podem coexistir."
 
 #: js/form.default.js:496 js/form.default.js:523 js/form.default.js:527
-#: js/form.default_src.js:1824 js/form.default_src.js:1900
-#: js/form.default_src.js:1909
+#: js/form.default_src.js:2016 js/form.default_src.js:2095
+#: js/form.default_src.js:2105
 msgid "Degrees cannot be higher than 180."
 msgstr "Graus não podem ser maiores que 180."
 
-#: js/form.default.js:498 js/form.default_src.js:1829
+#: js/form.default.js:498 js/form.default_src.js:2021
 msgid "Minutes cannot be higher than 59."
 msgstr "Minutos não podem ultrapassar 59."
 
-#: js/form.default.js:500 js/form.default_src.js:1834
+#: js/form.default.js:500 js/form.default_src.js:2026
 msgid "Seconds cannot be higher than 59."
 msgstr "Segundos não podem ultrapassar 59."
 
-#: js/form.default.js:502 js/form.default_src.js:1841
+#: js/form.default.js:502 js/form.default_src.js:2033
 msgid "No direction defined. Allowed directions = "
 msgstr "Nenhuma direção definida. Direções permitidas = "
 
-#: js/form.default.js:529 js/form.default_src.js:1917
+#: js/form.default.js:529 js/form.default_src.js:2114
 msgid "Invalid format."
 msgstr "Formato inválido."
 
-#: js/login.js:3 js/login_src.js:8
+#: js/login.js:3 js/login_src.js:9
 msgid "Login Success"
 msgstr "Login Bem-Sucedido"
 
-#: js/login.js:4 js/login_src.js:20 js/login_src.js:48
+#: js/login.js:4 js/login_src.js:24 js/login_src.js:58
 msgid "Unknown error on Login"
 msgstr "Erro desconhecido no Login"
 
-#: js/login.js:4 js/login_src.js:24
+#: js/login.js:4 js/login_src.js:29
 msgid "Empty field(s)."
 msgstr "Campo(s) vazio(s)."
 
-#: js/login.js:4 js/login_src.js:28
+#: js/login.js:4 js/login_src.js:34
 msgid "Incorrect user or password."
 msgstr "Usuário ou senha incorreta."
 
-#: js/login.js:4 js/login_src.js:32
+#: js/login.js:4 js/login_src.js:39
 msgid "Access denied on main database."
 msgstr "Acesso negado ao banco de dados principal."
 
-#: js/login.js:4 js/login_src.js:36
+#: js/login.js:4 js/login_src.js:44
 msgid "Unable to connect to database."
 msgstr "Incapaz de conectar-se ao banco de dados."
 
-#: js/login.js:4 js/login_src.js:40
+#: js/login.js:4 js/login_src.js:49
 msgid "Invalid label_lang entry in config.xml."
 msgstr "Entrada label_lang inválida em config.xml."
 
-#: js/login.js:4 js/login_src.js:44
+#: js/login.js:4 js/login_src.js:53
 msgid "Login Failed: User does not have access to this database."
 msgstr "Falha de Login: usuário não tem acesso a este banco de dados."
 
-#: js/form.ref_src.js:58 js/form.ref_src.js:65 js/form.ref.js:10
-#: js/form.ref.js:13
+#: js/form.ref.js:10 js/form.ref.js:13 js/form.ref_src.js:73
+#: js/form.ref_src.js:80
 msgid "Invalid year."
 msgstr "Ano inválido."
 
-#: js/form.reports.step3.js:26 js/form.reports.step3_src.js:85
+#: js/form.reports.step3.js:26 js/form.reports.step3_src.js:87
 msgid "connector"
 msgstr "Conector"
 
 #: js/form.reports.step3.js:26 js/form.reports.step3.js:28
-#: js/form.reports.step3_src.js:91 js/form.reports.step3_src.js:111
+#: js/form.reports.step3_src.js:93 js/form.reports.step3_src.js:113
 msgid "condition"
 msgstr "Condição"
 
 #: js/form.reports.step3.js:26 js/form.reports.step3.js:28
-#: js/form.reports.step3_src.js:94 js/form.reports.step3_src.js:114
+#: js/form.reports.step3_src.js:96 js/form.reports.step3_src.js:116
 msgid "type"
 msgstr "Tipo"
 
 #: js/form.reports.step3.js:26 js/form.reports.step3.js:28
 #: js/form.reports.step3.js:40 js/form.reports.step3.js:42
-#: js/form.reports.step3.js:51 js/form.reports.step3_src.js:97
-#: js/form.reports.step3_src.js:117 js/form.reports.step3_src.js:222
-#: js/form.reports.step3_src.js:229 js/form.reports.step3_src.js:253
+#: js/form.reports.step3.js:51 js/form.reports.step3_src.js:99
+#: js/form.reports.step3_src.js:119 js/form.reports.step3_src.js:224
+#: js/form.reports.step3_src.js:231 js/form.reports.step3_src.js:255
 msgid "value"
 msgstr "Valor"
 
-#: js/form.reports.step3.js:119 js/form.reports.step3.js:122
-#: js/form.reports.js:32 js/form.reports.js:35
-#: js/form.reports.step3_src.js:496 js/form.reports.step3_src.js:506
-#: js/form.reports_src.js:98 js/form.reports_src.js:110
-msgid "Only numbers are allowed for this field."
-msgstr "Apenas números são permitidos para este campo."
-
-#: js/form.reports.step3.js:148 js/form.reports.step3.js:153
-#: js/form.reports.js:41 js/form.reports.js:46
-#: js/form.reports.step3_src.js:578 js/form.reports.step3_src.js:590
-#: js/form.reports_src.js:127 js/form.reports_src.js:140
-msgid "Only decimal gps format: (+/-)DD.DDDDDDDD are allowed for this field."
-msgstr ""
-"Apenas valores de GPS em formato decimal ((+/-)DD.DDDDDDDD) são permitidos "
-"para este campo."
-
-#: js/form.reports.step3.js:159 js/form.reports.js:53
-#: js/form.reports.step3_src.js:608 js/form.reports_src.js:159
-msgid "Only decimal numbers are allowed for this field."
-msgstr "Apenas números decimais são permitidos para este campo."
-
-#: js/contact_relations_manipulation_src.js:7
-#: js/contact_relations_manipulation_src.js:127
 #: js/contact_relations_manipulation.js:4
 #: js/contact_relations_manipulation.js:12
+#: js/contact_relations_manipulation_src.js:8
+#: js/contact_relations_manipulation_src.js:136
 msgid "Please, enter a valid Institution."
 msgstr "Por favor, coloque uma Instituição válida."
 
-#: js/contact_relations_manipulation_src.js:28
-#: js/contact_relations_manipulation_src.js:40
-#: js/contact_relations_manipulation_src.js:48
-#: js/contact_relations_manipulation_src.js:55
 #: js/contact_relations_manipulation.js:5
+#: js/contact_relations_manipulation_src.js:30
+#: js/contact_relations_manipulation_src.js:46
+#: js/contact_relations_manipulation_src.js:55
+#: js/contact_relations_manipulation_src.js:63
 msgid "click to edit"
 msgstr "Clique para editar"
 
-#: js/contact_relations_manipulation_src.js:65
-#: js/contact_relations_manipulation_src.js:69
 #: js/contact_relations_manipulation.js:5
+#: js/contact_relations_manipulation_src.js:78
 msgid "Edit"
 msgstr "Editar"
 
-#: js/contact_relations_manipulation_src.js:66
-#: js/contact_relations_manipulation_src.js:70
 #: js/contact_relations_manipulation.js:5
+#: js/contact_relations_manipulation_src.js:79
 msgid "Set"
 msgstr "Configurar"
 
-#: js/contact_relations_manipulation_src.js:322
 #: js/contact_relations_manipulation.js:48
+#: js/contact_relations_manipulation_src.js:331
 msgid "There are institutions in edit mode. Please, check before continuing."
-msgstr ""
-"Há instituições em modo de edição. Por favor verifique antes de continuar."
+msgstr "Há instituições em modo de edição. Por favor verifique antes de continuar."
 
-#: js/contact_relations_manipulation_src.js:329
 #: js/contact_relations_manipulation.js:50
+#: js/contact_relations_manipulation_src.js:338
 msgid "There are duplicated institutions in contacts"
 msgstr "Existem instituições duplicadas em contatos"
 
-#: js/form.reports.js:80 js/form.strains.js:28 js/form.strains.js:36
-#: js/form.strains.js:65 js/form.reports_src.js:246 js/form.strains_src.js:286
-#: js/form.strains_src.js:318 js/form.strains_src.js:425
+#: js/form.strains.quality_src.js:146 js/form.strains.quality_src.js:325
+msgid "The number of ampoules must be greater than zero."
+msgstr "O número de ampolas deve ser maior do que zero."
+
+#: js/form.reports.js:32 js/form.reports.js:35 js/form.reports.step3_src.js:502
+#: js/form.reports.step3_src.js:512 js/form.reports_src.js:98
+#: js/form.reports_src.js:110
+msgid "Only numbers are allowed for this field."
+msgstr "Apenas números são permitidos para este campo."
+
+#: js/form.reports.js:41 js/form.reports.js:46 js/form.reports.step3_src.js:584
+#: js/form.reports.step3_src.js:596 js/form.reports_src.js:127
+#: js/form.reports_src.js:140
+msgid "Only decimal gps format: (+/-)DD.DDDDDDDD are allowed for this field."
+msgstr ""
+"Apenas valores de GPS em formato decimal ((+/-)DD.DDDDDDDD) são "
+"permitidos para este campo."
+
+#: js/form.reports.js:53 js/form.reports.step3_src.js:616
+#: js/form.reports_src.js:159
+msgid "Only decimal numbers are allowed for this field."
+msgstr "Apenas números decimais são permitidos para este campo."
+
+#: js/form.reports.js:80 js/form.reports_src.js:249 js/form.strains.js:28
+#: js/form.strains_src.js:325 js/form.strains_src.js:357
+#: js/form.strains_src.js:470
 msgid "Out of format:"
 msgstr "Fora do formato:"
 
-#: js/form.reports.js:80 js/form.strains.js:28 js/form.strains.js:36
-#: js/form.reports_src.js:250 js/form.strains_src.js:290
-#: js/form.strains_src.js:320
-msgid "where D = digit."
-msgstr "onde D = dígito."
-
-#: js/form.reports.js:80 js/form.strains.js:28 js/form.strains.js:36
-#: js/form.reports_src.js:251 js/form.strains_src.js:291
-#: js/form.strains_src.js:321
-msgid "Positive values only."
-msgstr "Apenas valores positivos."
-
-#: js/location.js:3 js/location_src.js:23
+#: js/location.js:3 js/location_src.js:25
 msgid "Stock Location"
 msgstr "Posição no Estoque"
 
-#: js/form.preservation_src.js:200 js/form.preservation.js:18
+#: js/form.preservation.js:18 js/form.preservation_src.js:240
 msgid ""
-"This strain is already in used in this preservation, please choose another "
-"strain."
+"This strain is already in used in this preservation, please choose "
+"another strain."
 msgstr ""
 "Esta linhagem já está sendo utilizada nesta preservação, por favor, "
 "selecione outra linhagem."
 
-#: js/form.preservation_src.js:378 js/form.preservation.js:29
+#: js/form.preservation.js:29 js/form.preservation_src.js:423
 msgid ""
-"You need to select an original location before picking a destination location"
+"You need to select an original location before picking a destination "
+"location"
 msgstr ""
-"Você deve selecionar a posição de origem antes de selecionar as posições de "
-"destino."
+"Você deve selecionar a posição de origem antes de selecionar as posições "
+"de destino."
 
-#: js/form.preservation_src.js:389 js/form.preservation.js:30
+#: js/form.preservation.js:30 js/form.preservation_src.js:434
 msgid ""
-"This strain's origin location cannot be change because its reused by another "
-"strain in this preservation"
+"This strain's origin location cannot be change because its reused by "
+"another strain in this preservation"
 msgstr ""
-"A posição desta linhagem não pode ser alterada porque ela está sendo usada "
-"por outra linhagem nesta preservação."
+"A posição desta linhagem não pode ser alterada porque ela está sendo "
+"usada por outra linhagem nesta preservação."
 
-#: js/form.preservation_src.js:496 js/form.preservation.js:42
+#: js/form.preservation_src.js:553
 msgid "You need to choose at least one stock position for this strain"
-msgstr ""
-"Você precisa escolher ao menos uma posição no estoque para esta linhagem."
+msgstr "Você precisa escolher ao menos uma posição no estoque para esta linhagem."
 
-#: js/form.preservation_src.js:504 js/form.preservation_src.js:543
-#: js/form.preservation.js:44 js/form.preservation.js:52
+#: js/form.preservation_src.js:562 js/form.preservation_src.js:607
 msgid "Please choose at least one strain."
 msgstr "Favor escolha ao menos uma linhagem."
 
-#: js/form.preservation_src.js:530 js/form.preservation.js:49
+#: js/form.preservation_src.js:593
 msgid "Repeated Strain:"
 msgstr "Linhagem Repetida:"
 
-#: js/form.preservation_src.js:531 js/form.preservation.js:49
+#: js/form.preservation_src.js:594
 msgid "Repeated Strain"
 msgstr "Linhagem Repetida"
 
-#: js/form.preservation_src.js:793 js/form.preservation.js:96
+#: js/form.preservation_src.js:889
 msgid ""
-"This strain cannot be removed because it has been used as origin of another "
-"preservation, a quality control or a distribution."
+"This strain cannot be removed because it has been used as origin of "
+"another preservation, a quality control or a distribution."
 msgstr ""
-"Esta linhagem não pode ser excluída por que ela está sendo usada como origem "
-"de outra preservação, controle de qualidade, distribuição, ou movimentação "
-"de estoque."
+"Esta linhagem não pode ser excluída por que ela está sendo usada como "
+"origem de outra preservação, controle de qualidade, distribuição, ou "
+"movimentação de estoque."
 
-#: js/form.preservation_src.js:838 js/form.preservation.js:107
+#: js/form.preservation_src.js:936
 msgid ""
-"Exceeded minimum amount of existing ampoules. Switching to minimum allowed "
-"value."
+"Exceeded minimum amount of existing ampoules. Switching to minimum "
+"allowed value."
 msgstr ""
 "A quantidade mínima de ampolas foi ultrapassada. Trocando para o mínimo "
 "permitido."
 
-#: js/form.preservation_src.js:982 js/form.preservation.js:129
+#: js/form.preservation_src.js:1102
 msgid ""
 "This strain cannot be removed because its origin location is reused by "
 "another strain in this preservation"
 msgstr ""
-"Esta linhagem não pode ser removida porque esta posição de origem está sendo "
-"utilizada em outra linhagem nesta preservação."
+"Esta linhagem não pode ser removida porque esta posição de origem está "
+"sendo utilizada em outra linhagem nesta preservação."
 
-#: js/login_src.js:55
-msgid "Attempts:"
-msgstr "Tentativas:"
+#: js/form.reports_src.js:253 js/form.strains_src.js:329
+#: js/form.strains_src.js:359
+msgid "where D = digit."
+msgstr "onde D = dígito."
 
-#: js/login_src.js:55
-msgid "times."
-msgstr "vezes."
+#: js/form.reports_src.js:254 js/form.strains_src.js:330
+#: js/form.strains_src.js:360
+msgid "Positive values only."
+msgstr "Apenas valores positivos."
 
-#: js/form.strains.js:57 js/form.strains_src.js:402
+#: js/form.strains_src.js:447
 msgid "Value must be between"
 msgstr "Valor deve estar entre"
 
-#: js/form.strains.js:65 js/form.strains_src.js:425
+#: js/form.strains_src.js:470
 msgid "Where: A = letter;YYYY = year;* = any character."
 msgstr "Onde: A = letra; YYYY = ano; * = qualquer caractere."
 
-#: js/form.strains.js:82 js/form.strains_src.js:492
+#: js/form.strains_src.js:545
 msgid "Please add the state code according to the example: State Name (SN)."
-msgstr ""
-"Favor inserir o código do estado segundo o exemplo: Nome do Estado (NE)"
-
-#: js/form.strains_src.js:589
-msgid "The deposit date is less than the identification date."
-msgstr "A data de depósito está menor que a data de identificação."
-
-#: js/form.strains_src.js:596
-msgid "The deposit date is less than the isolation date."
-msgstr "A data de depósito está menor que a data de isolamento."
-
-#: js/form.strains_src.js:603
-msgid "The deposit date is less than the origin date."
-msgstr "A data de depósito está menor que a data de coleta."
-
-#: js/form.strains_src.js:611
-msgid "The identification date is less than the isolation date."
-msgstr "A data de identificação está menor que a data de isolamento."
-
-#: js/form.strains_src.js:618
-msgid "The identification date is less than the origin date."
-msgstr "A data de identificação está menor que a data de origem."
-
-#: js/form.strains_src.js:626
-msgid "The isolation date is less than the origin date."
-msgstr "A data de isolamento está menor que a data de origem."
+msgstr "Favor inserir o código do estado segundo o exemplo: Nome do Estado (NE)"
 
 #~ msgid "0"
 #~ msgstr "0"
@@ -4232,24 +4310,23 @@ msgstr "A data de isolamento está menor que a data de origem."
 #~ msgid "Number of removed %s of the stock"
 #~ msgstr "Número de %s retirados(as) do estoque"
 
-#~ msgid ""
-#~ "It is not possible to identify a lot after their date of preservation!"
-#~ msgstr ""
-#~ "Não é possível identificar um lote antes de sua data de preservação!"
+#~ msgid "It is not possible to identify a lot after their date of preservation!"
+#~ msgstr "Não é possível identificar um lote antes de sua data de preservação!"
 
 #~ msgid ""
-#~ "It is not possible to apply a test of quality in a lot before its "
-#~ "creation date!"
+#~ "It is not possible to apply a "
+#~ "test of quality in a lot before"
+#~ " its creation date!"
 #~ msgstr ""
-#~ "Não é possível fazer teste de qualidade em um lote antes de sua data de "
-#~ "criação!"
+#~ "Não é possível fazer teste de "
+#~ "qualidade em um lote antes de sua"
+#~ " data de criação!"
 
 #~ msgid "It is not possible to distribute a lot before its creation date!"
 #~ msgstr "Não é possível fornecer um lote antes de sua data de criação!"
 
 #~ msgid "It is not possible to preserve a lot before its identification date!"
-#~ msgstr ""
-#~ "Não é possível preservar um lote antes de sua data de identificação!"
+#~ msgstr "Não é possível preservar um lote antes de sua data de identificação!"
 
 #~ msgid "It is not possible to preserve a lot before its isolation date!"
 #~ msgstr "Não é possível preservar um lote antes de sua data de isolamento!"
@@ -4261,10 +4338,12 @@ msgstr "A data de isolamento está menor que a data de origem."
 #~ msgstr "Esta linhagem não pode ser excluída porque "
 
 #~ msgid ""
-#~ "Amount of available ampoules changed while you were filling in the form. "
-#~ "Please fill in again."
+#~ "Amount of available ampoules changed "
+#~ "while you were filling in the "
+#~ "form. Please fill in again."
 #~ msgstr ""
-#~ "A quantidade de ampolas disponíveis foi alterada enquanto se preenchia o "
+#~ "A quantidade de ampolas disponíveis foi"
+#~ " alterada enquanto se preenchia o "
 #~ "formulário. Por favor preencha-o novamente."
 
 #~ msgid "Way"
@@ -4374,3 +4453,28 @@ msgstr "A data de isolamento está menor que a data de origem."
 
 #~ msgid "Unable to disable current Collection."
 #~ msgstr "Não é possível impedir acesso à coleção atual."
+
+#~ msgid "Attempts:"
+#~ msgstr "Tentativas:"
+
+#~ msgid "times."
+#~ msgstr "vezes."
+
+#~ msgid "The deposit date is less than the identification date."
+#~ msgstr "A data de depósito está menor que a data de identificação."
+
+#~ msgid "The deposit date is less than the isolation date."
+#~ msgstr "A data de depósito está menor que a data de isolamento."
+
+#~ msgid "The deposit date is less than the origin date."
+#~ msgstr "A data de depósito está menor que a data de coleta."
+
+#~ msgid "The identification date is less than the isolation date."
+#~ msgstr "A data de identificação está menor que a data de isolamento."
+
+#~ msgid "The identification date is less than the origin date."
+#~ msgstr "A data de identificação está menor que a data de origem."
+
+#~ msgid "The isolation date is less than the origin date."
+#~ msgstr "A data de isolamento está menor que a data de origem."
+

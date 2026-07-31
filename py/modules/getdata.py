@@ -895,6 +895,7 @@ class Getdata(object):
                 data['division'] = general['division']
 
                 data['internal_code'] = general['internal_code']
+                data['strain_subcoll_code'] = general['strain_subcoll_code']
                 data['id_species'] = general['id_species']
                 data['sciname'] = general['sciname']
                 data['hi_tax'] = general['hi_tax']
@@ -1204,6 +1205,8 @@ class Getdata(object):
                 data['cha_molecular'] = charac['molecular'] #TextLink
                 data['cha_pathogenic'] = charac['pathogenic'] #TextLink
                 data['cha_genotypic'] = charac['genotypic'] #TextLink
+                data['cha_genomic'] = charac['genomic'] #TextLink
+                data['cha_metabolomic'] = charac['metabolomic'] #TextLink
                 data['cha_ogm'] = ogm_type
                 data['cha_ogm_label'] = ogm_label
 

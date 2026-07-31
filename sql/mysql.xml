@@ -441,7 +441,7 @@
             SELECT st.code as code, st.numeric_code as numeric_code, st.id_division as id_division, dl.division as division, st.internal_code as internal_code, st.id_species as id_species,
             sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, sty.id_type as id_type, sp.id_taxon_group as taxon_group,
             st.status as status, st.is_ogm as is_ogm, st.infra_complement as infra_complement, st.go_catalog as go_catalog, sty.type as type,
-            st.history as history, st.extra_codes as extra_codes, st.comments as comments
+            st.history as history, st.extra_codes as extra_codes, st.comments as comments, st.subcoll_code as strain_subcoll_code
             FROM strain st
             INNER JOIN species sp USING(id_species)
             INNER JOIN scientific_names sc USING (id_sciname)
@@ -1014,7 +1014,7 @@
                 WHERE cult.id_strain = %(id)s AND cult.id_coll = %(id_coll)s;]]></sql>
 
         <sql name="get_str_characs_data"><![CDATA[
-            SELECT cha.biochemical as biochemical, cha.immunologic as immunologic, cha.morphologic as morphologic, cha.molecular as molecular, cha.pathogenic as pathogenic,cha.genotypic as genotypic, cha.ogm as ogm, oco.ogm_comments as ogm_comments, bio.biorisk_comments as biorisk_comments, res.restrictions as restrictions, pic.pictures as pictures, u.urls as urls, cat.catalogue_notes as catalogue_notes
+            SELECT cha.biochemical as biochemical, cha.immunologic as immunologic, cha.morphologic as morphologic, cha.molecular as molecular, cha.pathogenic as pathogenic,cha.genotypic as genotypic, cha.ogm as ogm, oco.ogm_comments as ogm_comments, bio.biorisk_comments as biorisk_comments, res.restrictions as restrictions, pic.pictures as pictures, u.urls as urls, cat.catalogue_notes as catalogue_notes, cha.genomic as genomic, cha.metabolomic as metabolomic
             FROM str_characs cha
             LEFT JOIN str_cha_restrictions res
                 ON cha.id_strain = res.id_strain
@@ -2778,7 +2778,9 @@
                 str_characs.morphologic AS cha_morphologic,
                 str_characs.immunologic AS cha_immunologic,
                 str_characs.molecular AS cha_molecular,
-                str_characs.biochemical AS cha_biochemical
+                str_characs.biochemical AS cha_biochemical,
+                str_characs.genomic AS cha_genomic,
+                str_characs.metabolomic AS cha_metabolomic
             FROM
                 str_characs
             WHERE
@@ -3059,7 +3061,8 @@
                         comments = %(general_comments)s,
                         last_update = NOW(),
                         is_ogm = %(is_ogm)s,
-                        go_catalog = %(go_catalog)s
+                        go_catalog = %(go_catalog)s,
+                        subcoll_code = %(strain_subcoll_code)s
                 WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
 
         <sql name="update_str_deposit"><![CDATA[
@@ -3220,6 +3223,8 @@
                         molecular = %(cha_molecular)s,
                         pathogenic = %(cha_pathogenic)s,
                         genotypic = %(cha_genotypic)s,
+                        genomic = %(cha_genomic)s,
+                        metabolomic = %(cha_metabolomic)s,
                         ogm = %(cha_ogm)s
                 WHERE id_strain = %(id)s AND id_coll = %(id_coll)s;]]></sql>
 
@@ -3553,8 +3558,8 @@
             VALUES (%(id)s, %(data_lang)s, %(comments)s);]]></sql>
 
         <sql name="insert_strain"><![CDATA[
-             INSERT INTO strain (code, numeric_code, id_division, internal_code, status, id_coll, id_species, id_subcoll, infra_complement, id_type, history, extra_codes, comments, last_update,is_ogm,go_catalog)
-            VALUES (%(code)s, %(numeric_code)s, %(id_division)s, %(internal_code)s, %(status)s, %(id_coll)s, %(id_species)s, %(id_subcoll)s, %(infra_complement)s, %(id_type)s, %(history)s, %(extra_codes)s, %(general_comments)s, NOW(),%(is_ogm)s,%(go_catalog)s);]]></sql>
+             INSERT INTO strain (code, numeric_code, id_division, internal_code, status, id_coll, id_species, id_subcoll, infra_complement, id_type, history, extra_codes, comments, last_update,is_ogm,go_catalog, subcoll_code)
+            VALUES (%(code)s, %(numeric_code)s, %(id_division)s, %(internal_code)s, %(status)s, %(id_coll)s, %(id_species)s, %(id_subcoll)s, %(infra_complement)s, %(id_type)s, %(history)s, %(extra_codes)s, %(general_comments)s, NOW(),%(is_ogm)s,%(go_catalog)s, %(strain_subcoll_code)s);]]></sql>
 
         <sql name="insert_str_deposit"><![CDATA[
             INSERT INTO str_deposit (id_strain, id_coll, id_person, id_institution, genus,species,classification,infra_name,infra_complement, date, id_dep_reason, preserv_method, form, aut_date, aut_person, aut_result, comments)
@@ -3629,8 +3634,8 @@
             VALUES (%(id)s, %(id_coll)s, %(data_lang)s, %(cul_comments)s);]]></sql>
 
         <sql name="insert_str_characs"><![CDATA[
-            INSERT INTO str_characs (id_strain, id_coll, biochemical, immunologic, morphologic, molecular, pathogenic, genotypic, ogm)
-            VALUES (%(id)s, %(id_coll)s, %(cha_biochemical)s, %(cha_immunologic)s, %(cha_morphologic)s, %(cha_molecular)s, %(cha_pathogenic)s, %(cha_genotypic)s,%(cha_ogm)s);]]></sql>
+            INSERT INTO str_characs (id_strain, id_coll, biochemical, immunologic, morphologic, molecular, pathogenic, genotypic, ogm, genomic, metabolomic)
+            VALUES (%(id)s, %(id_coll)s, %(cha_biochemical)s, %(cha_immunologic)s, %(cha_morphologic)s, %(cha_molecular)s, %(cha_pathogenic)s, %(cha_genotypic)s,%(cha_ogm)s,%(cha_genomic)s,%(cha_metabolomic)s);]]></sql>
 
         <sql name="insert_str_properties"><![CDATA[
             INSERT INTO str_properties (id_strain, id_coll)

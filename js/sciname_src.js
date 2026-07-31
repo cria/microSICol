@@ -20,7 +20,7 @@ var caseFormatters = {
 var formatFormatters = {
     'italic':
         function(name) {
-            if (name.search(/sp\\./) == -1) { 
+            if (name.toLowerCase().trim() !== "sp.") { 
                 return '<i>'+name+'</i>';
             }
             return name;
@@ -56,7 +56,6 @@ function formatSciName(taxon_group, seq, use_author) {
     var name = document.getElementById(prefix + "_value_" + taxon_group + "_" + seq).value;
 
     name = name.replace(/^\\s+|\\s+\$/g,'');
-	
 	if (name == '') {
         var default_value = defDict['default_value'];
 		name = default_value;
