@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 #project imports
-from .sicol_enum import Enum
+from .sicol_enum import Enum, EnumInstance
 from .dbconnection import dbConnection
 from urllib.parse import urlencode
 
@@ -41,7 +41,7 @@ class TextLink(object):
             else:
                 self.__keyword = Keyword.NONE
 
-        elif isinstance(value, type(Keyword)):
+        elif isinstance(value, EnumInstance):
             self.__keyword = value
 
         else:
