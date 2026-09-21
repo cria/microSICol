@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 from sys import exit,platform
@@ -15,20 +15,19 @@ if platform == "win32": #Windows reads upload/download as Text instead of Binary
 
 import cgitb; cgitb.enable()
 #python imports
-from string import join
 from cgi import FieldStorage
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 #project imports
-from i18n import I18n
-import exception
-from session import Session
-from cookie import Cookie
-from general import General,DefDict
-from dbconnection import dbConnection
-from loghelper import Logging
-from ajax import AjaxBuilder
-from location import LocationBuilder, LocationHelper
+from .i18n import I18n
+from . import exception
+from .session import Session
+from .cookie import Cookie
+from .general import General,DefDict
+from .dbconnection import dbConnection
+from .loghelper import Logging
+from .ajax import AjaxBuilder
+from .location import LocationBuilder, LocationHelper
 
 class Principal(object):
     i18n = I18n()
@@ -50,7 +49,7 @@ class Principal(object):
 
         #Set Language according to user preference
         self.i18n = I18n(cookie_value=self.cookie_value)
-        from labels import label_dict
+        from .labels import label_dict
         self.label_dict = label_dict
 
         #Define Sqlite Connection
@@ -85,7 +84,7 @@ class Principal(object):
             if page == 'location':
                 self.html = self.handle_location(action)
 
-        except Exception, e:
+        except Exception as e:
             # import traceback
             # self.logger.error('Error while running Ajax interaction: %s', traceback.format_exc(e))
             self.logger.error('Error while running Ajax interaction: %s', e)
@@ -164,7 +163,10 @@ class Principal(object):
             data['sel_location'] = ''
             
             ret = {}
-            ret['html'] = self.g.read_html('location.form') % (data)
+            html_content = self.g.read_html('location.form')
+            if isinstance(html_content, bytes):
+                html_content = html_content.decode('utf-8')
+            ret['html'] = html_content % (data)
             ret['containers'] = containers
             ret['hierarchy'] = hierarchy
             ret['hierarchyMap'] = hierarchyMap
@@ -217,7 +219,10 @@ class Principal(object):
             data['sel_location'] = ''
             
             ret = {}
-            ret['html'] = self.g.read_html('location.form') % (data)
+            html_content = self.g.read_html('location.form')
+            if isinstance(html_content, bytes):
+                html_content = html_content.decode('utf-8')
+            ret['html'] = html_content % (data)
             ret['containers'] = containers
             ret['hierarchy'] = hierarchy
             ret['hierarchyMap'] = hierarchyMap

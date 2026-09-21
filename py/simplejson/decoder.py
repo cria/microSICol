@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 """
@@ -53,8 +53,8 @@ _CONSTANTS = {
 
 STRINGCHUNK = re.compile(r'(.*?)(["\\\x00-\x1f])', FLAGS)
 BACKSLASH = {
-    '"': u'"', '\\': u'\\', '/': u'/',
-    'b': u'\b', 'f': u'\f', 'n': u'\n', 'r': u'\r', 't': u'\t',
+    '"': '"', '\\': '\\', '/': '/',
+    'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t',
 }
 
 DEFAULT_ENCODING = "utf-8"
@@ -73,8 +73,8 @@ def py_scanstring(s, end, encoding=None, strict=True, _b=BACKSLASH, _m=STRINGCHU
         end = chunk.end()
         content, terminator = chunk.groups()
         if content:
-            if not isinstance(content, unicode):
-                content = unicode(content, encoding)
+            if not isinstance(content, str):
+                content = str(content, encoding)
             _append(content)
         if terminator == '"':
             break
@@ -114,12 +114,12 @@ def py_scanstring(s, end, encoding=None, strict=True, _b=BACKSLASH, _m=STRINGCHU
                     uni2 = int(esc2, 16)
                     uni = 0x10000 + (((uni - 0xd800) << 10) | (uni2 - 0xdc00))
                     next_end += 6
-                m = unichr(uni)
+                m = chr(uni)
             except ValueError:
                 raise ValueError(errmsg(msg, s, end))
             end = next_end
         _append(m)
-    return u''.join(chunks), end
+    return ''.join(chunks), end
 
 
 # Use speedup if available
@@ -128,7 +128,8 @@ scanstring = c_scanstring or py_scanstring
 WHITESPACE = re.compile(r'[ \t\n\r]*', FLAGS)
 WHITESPACE_STR = ' \t\n\r'
 
-def JSONObject((s, end), encoding, strict, scan_once, object_hook, _w=WHITESPACE.match, _ws=WHITESPACE_STR):
+def JSONObject(xxx_todo_changeme, encoding, strict, scan_once, object_hook, _w=WHITESPACE.match, _ws=WHITESPACE_STR):
+    (s, end) = xxx_todo_changeme
     pairs = {}
     nextchar = s[end:end + 1]
     # Normally we expect nextchar == '"'
@@ -201,7 +202,8 @@ def JSONObject((s, end), encoding, strict, scan_once, object_hook, _w=WHITESPACE
         pairs = object_hook(pairs)
     return pairs, end
 
-def JSONArray((s, end), scan_once, _w=WHITESPACE.match, _ws=WHITESPACE_STR):
+def JSONArray(xxx_todo_changeme1, scan_once, _w=WHITESPACE.match, _ws=WHITESPACE_STR):
+    (s, end) = xxx_todo_changeme1
     values = []
     nextchar = s[end:end + 1]
     if nextchar in _ws:

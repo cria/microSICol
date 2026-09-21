@@ -1,5 +1,7 @@
-#!/usr/bin/env python 
-#-*- coding: utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
 
 #local imports
 from modules.page_mount import Principal

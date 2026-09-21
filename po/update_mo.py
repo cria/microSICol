@@ -1,4 +1,4 @@
-#! /usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 import os
@@ -8,7 +8,7 @@ for path in os.listdir("."):
     if path.endswith(".po"):
         os.system("msgfmt %s" % path)
         code = path.rsplit(".",1)[0]
-        print code
+        print(code)
         try:
             os.mkdir(code)
             os.mkdir (os.path.join(code, "LC_MESSAGES"))

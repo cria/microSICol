@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 '''
@@ -40,6 +40,7 @@ label_dict = {
 "label_Strains_General_Status" : _("Status"),
 "label_Strains_General_Is_OGM" : _("OGM"),
 "label_Strains_General_History" : _("History"),
+"label_Strains_General_SubcollCode" : "Codigo da Subcoleção",
 "label_Strains_General_Codes_In_Other_Collections" : _("Codes in Other Collections"),
 "label_Strains_Origin_Comments": _("Comments"),
 "label_Strains_Origin_Origin_Place" : _("Origin Place"),
@@ -118,6 +119,8 @@ label_dict = {
 "label_Strains_Characteristics_Morphologic" : _("Morphological"),
 "label_Strains_Characteristics_Pathogenic" : _("Pathogenic"),
 "label_Strains_Characteristics_Genotypic" : _("Genotypic"),
+"label_Strains_Characteristics_Genomic" : "Genômicas",
+"label_Strains_Characteristics_Metabolomic": "Metabolômicas",
 "label_Strains_Characteristics_OGM" : _("OGM"),
 "label_Strains_Characteristics_OGM_Group" : _("Group"),
 "label_Strains_Characteristics_OGM_Comments" : _("Comments"),

@@ -1,5 +1,9 @@
 DROP DATABASE IF EXISTS sicol_v110;
+DROP USER IF EXISTS 'sicol'@'localhost';
+CREATE USER 'sicol'@'localhost' IDENTIFIED BY 'sicol';
 CREATE DATABASE IF NOT EXISTS sicol_v110 CHARACTER SET utf8;
+GRANT ALL PRIVILEGES ON sicol_v110 . * TO 'sicol'@'localhost'; flush privileges;
+GRANT ALL PRIVILEGES ON sicol_v110_log . * TO 'sicol'@'localhost'; flush privileges;
 USE sicol_v110;
 
 -- MySQL dump 10.11
@@ -1602,6 +1606,8 @@ CREATE TABLE `str_characs` (
   `morphologic` text,
   `pathogenic` text,
   `genotypic` text,
+  `genomic` text, 
+  `metabolomic` text,
   `ogm` enum('0','1','2') default NULL,
   PRIMARY KEY  (`id_coll`,`id_strain`),
   KEY `FK_strain_coll` (`id_strain`,`id_coll`),
@@ -2305,6 +2311,7 @@ CREATE TABLE `strain` (
   `last_update` datetime default NULL,
   `is_ogm` tinyint(1) NOT NULL default '0' COMMENT '0 = false, 1 = true',
   `go_catalog` tinyint(1) NOT NULL default '0' COMMENT '0 = false, 1 = true',
+  subcoll_code varchar(50),
   PRIMARY KEY  (`id_strain`,`id_coll`),
   UNIQUE KEY `numeric_code_coll` (`numeric_code`,`id_coll`),
   KEY `FK_species` (`id_species`),

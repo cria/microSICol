@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -8,14 +8,26 @@ try:
     from hashlib import sha1 as new_sha
 except ImportError:
     from sha import new as new_sha
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from general import General
-from log import Log
+from .session import Session
+from .dbconnection import dbConnection
+from .general import General
+from .log import Log
+from . import exception
 #from dbgp.client import brk
+
+# Import translation function
+try:
+    from .i18n import I18n
+    # Create a temporary instance to initialize the global _
+    _temp_i18n = I18n()
+    from builtins import _
+except (ImportError, AttributeError):
+    # Fallback if translation is not available
+    def _(text):
+        return text
 
 class Delete(object):
 
@@ -65,56 +77,116 @@ class Delete(object):
             if (len(alt_state) > 0):
                 self.feedback(-1, _("This taxon can not be deleted because this is alternate state of the other taxon."))
             else:
-                self.execute('get_sciname_for_species', {'id':self.data['id']})
-                self.data['id_sciname'] = self.fetch('one')
+                # Verificar se a espécie está sendo usada por alguma linhagem
+                self.execute('exists_sciname_usage_in_strain_general', {'id':self.data['id']})
+                strains_using_species = self.fetch('rows')
+                if (len(strains_using_species) > 0):
+                    self.feedback(-1, _("This species cannot be deleted because it is in use by some strains."))
+                else:
+                    self.execute('get_sciname_for_species', {'id':self.data['id']})
+                    self.data['id_sciname'] = self.fetch('one')
 
-                self.delete('delete_species')
-                if not self.html.has_key('error_info'):
-                    self.delete('delete_sciname')
-                if not self.html.has_key('error_info'):
-                    self.delete('delete_species_security')
-        elif who=='strains':
-            id_log_level = 1
-            id_log_entity = 1
-            id_log_operation = 3
+                    self.delete('delete_species')
+                    if 'error_info' not in self.html:
+                        self.delete('delete_sciname')
+                    if 'error_info' not in self.html:
+                        self.delete('delete_species_security')
+        elif who == 'strains':
+            # Verificar se a linhagem está sendo usada em lot_strain (preservações, distribuições, etc.)
+            self.execute('verify_lot_exist', {'id_strain': self.data['id']})
+            lot_count = self.fetch('one')
+            if lot_count and int(lot_count) > 0:
+                self.feedback(-1, _("This strain cannot be deleted because it has associated lots in preservation, distribution, or stock movement."))
+            else:
+                id_log_level = 1
+                id_log_entity = 1
+                id_log_operation = 3
 
-            if self.l.checkLogLevel(id_log_level):
-                return_sql = []
+                if self.l.checkLogLevel(id_log_level):
+                    return_sql = []
 
-                self.execute('get_str_general_log', self.data)
-                dict_temp = self.fetch('all')[0]
-                tmp = {'numeric_code': ''}
-                return_sql.extend(self.l.checkModifiedFields('', tmp, self.data['id'], dict_temp['code'], '', 'delete', id_log_operation, id_log_entity,''));
+                    self.execute('get_str_general_log', self.data)
+                    dict_temp = self.fetch('all')[0]
+                    tmp = {'numeric_code': ''}
+                    return_sql.extend(self.l.checkModifiedFields('', tmp, self.data['id'], dict_temp['code'], '', 'delete', id_log_operation, id_log_entity,''));
 
-                sql_final = "".join(return_sql)[0:len("".join(return_sql))-1]
+                    sql_final = "".join(return_sql)[0:len("".join(return_sql))-1]
 
-            self.delete('delete_strain')
-            if not self.html.has_key('error_info'):
-                self.delete('delete_strain_security')
+                self.delete('delete_strain')
+                if 'error_info' not in self.html:
+                    self.delete('delete_strain_security')
 
-            if not self.html.has_key('error_info'):
-                self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
-                self.db_log.connect.commit();
+                if 'error_info' not in self.html:
+                    self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
+                    self.db_log.connect.commit();
 
         elif who=='doc':
             self.del_doc()
-            if not self.html.has_key('error_info'):
+            if 'error_info' not in self.html:
                 self.delete('delete_doc_security')
         elif who=='ref':
             self.delete('delete_ref')
-            if not self.html.has_key('error_info'):
+            if 'error_info' not in self.html:
                 self.delete('delete_ref_security')
         elif who=='people':
-            self.delete('delete_person')
-            if not self.html.has_key('error_info'):
-                self.delete('delete_person_security')
+            # Verificar se a pessoa está sendo usada em distribuições
+            self.execute('exists_person_usage_in_distribution', {'id': self.data['id']})
+            distribution_count = self.fetch('one')
+            if distribution_count and int(distribution_count) > 0:
+                self.feedback(-1, _("This person cannot be deleted because they are associated with one or more distributions."))
+            else:
+                # Verificar se a pessoa está sendo usada em controle de qualidade
+                self.execute('exists_person_usage_in_quality', {'id': self.data['id']})
+                quality_count = self.fetch('one')
+                if quality_count and int(quality_count) > 0:
+                    self.feedback(-1, _("This person cannot be deleted because they are associated with one or more quality controls."))
+                else:
+                    # Verificar se a pessoa está sendo usada em preservações
+                    self.execute('exists_person_usage_in_preservation', {'id': self.data['id']})
+                    preservation_count = self.fetch('one')
+                    if preservation_count and int(preservation_count) > 0:
+                        self.feedback(-1, _("This person cannot be deleted because they are associated with one or more preservations."))
+                    else:
+                        self.delete('delete_person')
+                        if 'error_info' not in self.html:
+                            self.delete('delete_person_security')
         elif who=='institutions':
-            self.delete('delete_institution')
-            if not self.html.has_key('error_info'):
-                self.delete('delete_institution_security')
+            # Verificar se a instituição está sendo usada em distribuições
+            self.execute('exists_institution_usage_in_distribution', {'id': self.data['id']})
+            distribution_count = self.fetch('one')
+            if distribution_count and int(distribution_count) > 0:
+                self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more distributions."))
+            else:
+                # Verificar se a instituição está sendo usada em eventos de coleta
+                self.execute('exists_institution_usage_in_str_coll_event', {'id': self.data['id']})
+                coll_event_count = self.fetch('one')
+                if coll_event_count and int(coll_event_count) > 0:
+                    self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain collection events."))
+                else:
+                    # Verificar se a instituição está sendo usada em depósitos
+                    self.execute('exists_institution_usage_in_str_deposit', {'id': self.data['id']})
+                    deposit_count = self.fetch('one')
+                    if deposit_count and int(deposit_count) > 0:
+                        self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain deposits."))
+                    else:
+                        # Verificar se a instituição está sendo usada em identificações
+                        self.execute('exists_institution_usage_in_str_identification', {'id': self.data['id']})
+                        identification_count = self.fetch('one')
+                        if identification_count and int(identification_count) > 0:
+                            self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain identifications."))
+                        else:
+                            # Verificar se a instituição está sendo usada em isolamentos
+                            self.execute('exists_institution_usage_in_str_isolation', {'id': self.data['id']})
+                            isolation_count = self.fetch('one')
+                            if isolation_count and int(isolation_count) > 0:
+                                self.feedback(-1, _("This institution cannot be deleted because it is associated with one or more strain isolations."))
+                            else:
+                                self.delete('delete_institution')
+                                if 'error_info' not in self.html:
+                                    self.delete('delete_institution_security')
         elif who=='reports':
             self.delete('delete_reports')
-            if not self.html.has_key('error_info'):
+            if 'error_info' not in self.html:
                 self.delete('delete_reports_security')
         elif who=='distribution':
             self.execute('get_distribution_usage_information', {'id_distribution': self.data['id']})
@@ -129,6 +201,7 @@ class Delete(object):
                     id_log_level = 3
                     id_log_entity = 1
                     save_log = self.l.checkLogLevel(id_log_level)
+                    return_sql = []
                     dic_qt = {}
 
                     if save_log:
@@ -147,12 +220,11 @@ class Delete(object):
 
                     self.execute('delete_distribution_origin',{'id':self.data['id']})
                     self.delete('delete_distribution')
-                    if not self.html.has_key('error_info'):
+                    if 'error_info' not in self.html:
                         self.delete('delete_distribution_security')
 
                     if save_log:
-                        return_sql = []
-                        from location import LocationBuilder
+                        from .location import LocationBuilder
                         self.location = LocationBuilder(self.cookie_value)
 
                         #get actual quantity location after distribution
@@ -182,7 +254,7 @@ class Delete(object):
                         #Save log data
                         self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
 
-                except Exception, e:
+                except Exception as e:
                     self.dbconnection.connect.rollback()
                     if return_sql and save_log: self.db_log.connect.rollback()
                     self.feedback(-1)
@@ -233,7 +305,7 @@ class Delete(object):
 
                 try:
 
-                    if not self.html.has_key('error_info'):
+                    if 'error_info' not in self.html:
                         #Get Strains related to this preservation
                         self.execute('get_preservation_strains',{'id':self.data['id']})
                         strains = self.fetch('rows')
@@ -251,7 +323,7 @@ class Delete(object):
 
                             id_log_operation = 10
 
-                            from location import LocationBuilder
+                            from .location import LocationBuilder
                             self.location = LocationBuilder(self.cookie_value)
 
                             self.execute('get_preservation_strain_origin_data', {'id': self.data['id'], 'id_strain': id_strain });
@@ -291,7 +363,7 @@ class Delete(object):
                         #self.commit()
                         #Delete PRESERVATION DATA
                         self.delete('delete_preservation')
-                        if not self.html.has_key('error_info'):
+                        if 'error_info' not in self.html:
                             self.delete('delete_preservation_security')
 
                         sql_final = "".join(return_sql)[0:len("".join(return_sql))-1]
@@ -300,7 +372,7 @@ class Delete(object):
                         if save_log:
                             self.execute_log('insert_log', {'insert_values_log':sql_final}, raw_mode = True)
 
-                except Exception, e:
+                except Exception as e:
                     self.dbconnection.connect.rollback()
                     self.db_log.connect.rollback()
                 else:
@@ -316,7 +388,7 @@ class Delete(object):
                 if int(self.fetch('one')) > 0:
                     self.feedback(-1, _("This stock movement can not be deleted because the original positions are taken by another preservation or stock movement."))
             
-            if not self.html.has_key('error_info'):
+            if 'error_info' not in self.html:
                 #brk(host="localhost", port=9000)
                 #id_log_entity for strains is 1
                 id_log_entity = 1
@@ -332,7 +404,7 @@ class Delete(object):
                     if (save_log):
                         self.execute('get_stock_movement_location_data', {'id': self.data['id']})
                         locations_movements = self.fetch('all')
-                        from location import LocationBuilder
+                        from .location import LocationBuilder
                         self.location = LocationBuilder(self.cookie_value)                    
                         
                         for location_data_from_to in locations_movements:
@@ -367,7 +439,7 @@ class Delete(object):
                     self.execute('delete_lot_strain_locations_to',{'id':self.data['id']})
                     self.delete('delete_stock_movement')
                         
-                except Exception, e:
+                except Exception as e:
                     self.dbconnection.connect.rollback()
                     self.db_log.connect.rollback()
                 else:
@@ -380,7 +452,7 @@ class Delete(object):
             if len(self.fetch('rows')) > 0:
                 self.feedback(-1, _("This container can not be deleted."))
             else:
-                if not self.html.has_key('error_info'):
+                if 'error_info' not in self.html:
                     self.delete('delete_container_subcoll', {'id': self.data['id']})
                     self.delete('delete_container_preservation_method', {'id': self.data['id']})
                     self.delete('delete_container_location', {'id': self.data['id']})                                        
@@ -409,8 +481,12 @@ class Delete(object):
         try:
           self.execute(sql, self.data)
           self.commit()
-          print self.g.redirect(urljoin(self.index_url, self.who_list))
-        except Exception, e:
+          redirect_url = urljoin(self.index_url, self.who_list)
+          raise exception.SicolException("REDIRECT:" + redirect_url)
+        except exception.SicolException:
+          # Re-raise SicolException (including REDIRECT) to be handled by the caller
+          raise
+        except Exception as e:
           self.rollback(e)
 
     def del_doc(self):
@@ -426,12 +502,12 @@ class Delete(object):
             #Delete Files Uploaded
             for language in languages:
                 file_code = self.data['id'] + str(language)
-                file_code = new_sha(file_code).hexdigest()
+                file_code = new_sha(file_code.encode('utf-8')).hexdigest()
                 file = path.join(self.doc_dir, file_code)
                 try: remove(file)
                 except OSError: pass
 
-        except Exception, e: self.rollback(e)
+        except Exception as e: self.rollback(e)
         else: self.commit()
 
     def delete_preservation_strain(self,isRootNode,id_strain,id_lot):

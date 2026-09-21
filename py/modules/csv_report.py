@@ -1,23 +1,22 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 #from dbgp.client import brk
-from cgi import escape
-from urlparse import urljoin
+from urllib.parse import urljoin
 from re import findall
 from sys import exit
-from urllib import urlencode
+from urllib.parse import urlencode
 import cgi
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from reports_common import Reports_Common
-from labels import label_dict
-from dom_xml import Xml
-from label_values_reports import label_values_dict
-from label_values_reports import values_dict
+from .session import Session
+from .dbconnection import dbConnection
+from .reports_common import Reports_Common
+from .labels import label_dict
+from .dom_xml import Xml
+from .label_values_reports import label_values_dict
+from .label_values_reports import values_dict
 #from dbgp.client import brk
 
 
@@ -68,20 +67,20 @@ class CSV_Report(Reports_Common):
                 
                 try:
                     list = self.get_data(select, param['filters'], append_where, group)
-                except Exception, err:
+                except Exception as err:
                     raise err
                 
                 for line in list:
                     string = ""
                     i = 0
                     for value in look_back:
-                        string = string + self.process_field(param['group'][i], value) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(param['group'][i], value) + str(param['separator'])
                         i = i + 1
                     
                     if param['total']['function'] == 'count':
-                        string = string + self.process_field(param['total']['name'], line[param['total']['name']]) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(param['total']['name'], line[param['total']['name']]) + str(param['separator'])
                         
-                    string = string + self.ConvertStrUnicode(line[aggr]) + str(param['separator']).decode("utf-8")
+                    string = string + self.ConvertStrUnicode(line[aggr]) + str(param['separator'])
                 
                     string = string + "\n"
                                 
@@ -96,12 +95,12 @@ class CSV_Report(Reports_Common):
                     string = ""
                     i = 0
                     for value in look_back:
-                        string = string + self.process_field(param['group'][i], value) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(param['group'][i], value) + str(param['separator'])
                         i = i + 1
                         
                     
                     for field in param['select']:
-                        string = string + self.process_field(field, line[field]) + str(param['separator']).decode("utf-8")
+                        string = string + self.process_field(field, line[field]) + str(param['separator'])
                     
                     string = string + "\n"         
                     
@@ -115,7 +114,7 @@ class CSV_Report(Reports_Common):
                
             try:             
                 list_group = self.get_data(select, param['filters'], append_where, group, True)
-            except Exception, err:
+            except Exception as err:
                     raise err
             
             for item in list_group:
@@ -127,7 +126,12 @@ class CSV_Report(Reports_Common):
                 group_value = ''
                 tmp2 = type(item[param['group'][num_group_by]]).__name__
                 if tmp2 != "str":
-                    group_value = param['group'][num_group_by] + " LIKE x'" + self.ConvertStrUnicode(item[param['group'][num_group_by]]).encode("utf-8").encode("hex") + "' "
+                    converted_value = self.ConvertStrUnicode(item[param['group'][num_group_by]])
+                    if isinstance(converted_value, str):
+                        hex_value = converted_value.encode("utf-8").hex()
+                    else:
+                        hex_value = str(converted_value).encode("utf-8").hex()
+                    group_value = param['group'][num_group_by] + " LIKE x'" + hex_value + "' "
                 else:
                     group_value = param['group'][num_group_by] + " IS NULL "
                
@@ -153,48 +157,51 @@ class CSV_Report(Reports_Common):
         self.fields_definition = tmp.get_dict('name', ['label', 'data_type', 'aggregate_function', 'label_value_lookup', 'function_lookup'])
         
         self.code              =              data[0]['code']
-               
-    
-    
-    def mount_report_file(self):              
-              
-        self.timeout = 0  
+
+
+    def mount_report_file(self):          
+        self.timeout = 0
         output = ""
         #brk(host="localhost", port=9000)
-        
+
         if self.report_params['header'] == 'true':
-            
+
             for field in self.report_params['group']:
-                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator']).decode("utf-8")
-            
+                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator'])
+
             for field in self.report_params['select']:
-                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator']).decode("utf-8")
-                
+                output = output + label_dict[self.fields_definition[field]['label']] + str(self.report_params['separator'])
+
             if len(self.report_params.get('total','')) > 0:
-                output = output + label_dict[self.fields_definition[self.report_params['total']['name']]['label']] + str(self.report_params['separator']).decode("utf-8")
+                output = output + label_dict[self.fields_definition[self.report_params['total']['name']]['label']] + str(self.report_params['separator'])
                 if self.report_params['total']['function'] == 'count':
-                    output = output + "Total" + str(self.report_params['separator']).decode("utf-8")
-            
+                    output = output + "Total" + str(self.report_params['separator'])
+
             #output = output + "<br/>"
             output = output + "\n"
-        
-        
-        
+
         try:
             table = self.write_report(self.report_params, 0, "", [])
-        except Exception, err:
-                    raise err
-        
+        except Exception as err:
+            raise err
+
         output = output + table
-        
+
         import sys
+
+        # Make sure we flush any buffered output before writing headers
+        sys.stdout.flush()
+        sys.stderr.flush()
+
+        # Use print for CGI headers - this is the standard way
+        print("Content-Type: application/octet-stream")
+        print(f"Content-Length: {len(output.encode('utf-8'))}")
+        print("Content-Disposition: attachment; filename=\"sicol_report.csv\"")
+        print()  # Empty line to end headers
         
-        sys.stdout.write("Content-Type: application/octet-stream\n")
-        sys.stdout.write("Content-Length: " + str(len(output)) + "\n")
-        sys.stdout.write("Content-Disposition: attachment; filename=\"sicol_report.csv\"\r\n\n")
-        sys.stdout.write(output.encode("utf-8-sig"))
-                        
-        return output
+        # Write the actual CSV content using print to avoid encoding issues
+        print(output, end='')
         
-        
-  
+        # Flush everything and exit
+        sys.stdout.flush()
+        sys.exit(0)

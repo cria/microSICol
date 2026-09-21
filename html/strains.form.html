@@ -41,10 +41,11 @@
 									<label for="internal_code" id="label_internal_code">%(label_Strains_General_Origin_Code)s</label><br />
 									<input size="20" name="internal_code" id="internal_code" type="text" maxlength="30" value="%(internal_code)s" />
 								</p>
+
 								<p class="cols_5">
-									<label for="status" id="label_status">%(label_Strains_General_Status)s</label><br />
-									<select name="status" id="status">%(status)s</select>
-								</p>
+									<label for="strain_subcoll_code" id="label_internal_code">%(label_Strains_General_SubcollCode)s</label><br />
+									<input size="25" name="strain_subcoll_code" id="strain_subcoll_code" type="text" maxlength="50" value="%(strain_subcoll_code)s" />
+								</p>								
 							</div>
 					</div>
 					<table style="padding-right:224px;">
@@ -61,11 +62,18 @@
 									<select name="id_type" id="id_type">%(type)s</select>
 								</p>
 							</td>
+							
+							<td>
+								<p class="cols_5">
+									<label for="status" id="label_status">%(label_Strains_General_Status)s</label><br />
+									<select name="status" id="status">%(status)s</select>
+								</p>
+							</td>
 							<td>
 							  <p>
 							    <br />
-                  <input class="checkbox" type="checkbox" %(is_ogm_check)s id="is_ogm" name="is_ogm" style="display:inline;" /><label for="is_ogm" id="label_is_ogm">%(label_Strains_General_Is_OGM)s</label>
-                </p>
+								<input class="checkbox" type="checkbox" %(is_ogm_check)s id="is_ogm" name="is_ogm" style="display:inline;" /><label for="is_ogm" id="label_is_ogm">%(label_Strains_General_Is_OGM)s</label>
+							</p>							
 							</td>
 						</tr>
 					</table>
@@ -453,6 +461,14 @@
 					<p>
 						<label for="cha_genotypic" id="label_cha_genotypic">%(label_Strains_Characteristics_Genotypic)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
 						<textarea name="cha_genotypic" id="cha_genotypic" class="mceEditor" cols="" rows="">%(cha_genotypic)s</textarea>
+					</p>
+					<p>
+						<label for="cha_genomic" id="label_cha_genomic">%(label_Strains_Characteristics_Genomic)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_genomic" id="cha_genomic" class="mceEditor" cols="" rows="">%(cha_genomic)s</textarea>
+					</p>
+					<p>
+						<label for="cha_metabolomic" id="label_cha_metabolomic">%(label_Strains_Characteristics_Metabolomic)s</label><img src="../img/icon_textlink.png" title="%(label_Textlink_Support)s" alt="%(label_Textlink_Support)s" /><br />
+						<textarea name="cha_metabolomic" id="cha_metabolomic" class="mceEditor" cols="" rows="">%(cha_metabolomic)s</textarea>
 					</p>
 
 					<fieldset><legend>%(label_Strains_Characteristics_OGM)s</legend>
