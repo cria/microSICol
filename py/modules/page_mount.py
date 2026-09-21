@@ -249,7 +249,7 @@ class Principal(object):
             self.session.save()
         except Exception as e:
             import traceback
-            self.logger.error('Error logging user in: %s', traceback.format_exc(e))
+            self.logger.error('Error logging user in: %s', traceback.format_exc())
             raise e
 
     def get_label_code(self):

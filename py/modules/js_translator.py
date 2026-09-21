@@ -90,7 +90,7 @@ class JS_Translator(object):
         if js_original is not []: #If there is no translatable string then do nothing
             #Get translations
             for original_text in js_original:
-                js_translated[original_text] = self.i18n.gettext(original_text).encode('utf-8')
+                js_translated[original_text] = self.i18n.gettext(original_text)
 
             #Get javascript translation function
             fjavaheader = open(path.join(self.js_i18n_dir, "base_translation.js"), 'r')
