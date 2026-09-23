@@ -3,3 +3,10 @@ session/*.ini
 db/sqlite.db
 config.xml
 py/sicol.log
+db/scripts/v108/mysql_script_empty - C�pia.sql
+db/scripts/v107/mysql_script_empty - C�pia.sql
+db/scripts/v108/mysql_script_empty - C�pia.sql
+py/modules/utilities - C�pia.py
+db/scripts/v108/mysql_script_empty - C�pia.sql
+py/modules/utilities - C�pia.py
+db/scripts/v107/mysql_script_empty - C�pia.sql

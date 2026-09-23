@@ -249,7 +249,7 @@ class Principal(object):
             self.session.save()
         except Exception as e:
             import traceback
-            self.logger.error('Error logging user in: %s', traceback.format_exc())
+            self.logger.error('Error logging user in: %s', traceback.format_exc(e))
             raise e
 
     def get_label_code(self):
@@ -374,6 +374,11 @@ class Principal(object):
                     ex_error = str(ex_error)
                 # User related error - show differently from developer generated error
                 self.user_related_error(ex_error, page, category, js, css)
+        except Exception:
+            # TEMP DIAGNOSTIC: log full traceback of any unhandled error to sicol.log
+            import traceback as _tb
+            self.logger.error("[page: %s] UNHANDLED EXCEPTION:\n%s" % (page, _tb.format_exc()))
+            raise
 
         # join data for output
         self.data.update(self.session.data)
@@ -777,6 +782,14 @@ class Principal(object):
                 trace = Traceability(self.cookie_value, self.form)
                 page_data = trace.render_page()
                 self.data.update(page_data)
+                return
+
+            elif page == 'specieslink.list':
+                # Only Administrator and Manager can view utilites area
+                if (self.g.isManager(self.session.data['roles'])):
+                    self.data['page'] = self.g.read_html('specieslink.list')
+                else:
+                    self.data['page'] = self.g.read_html('access.denied')
                 return
 
             elif page == 'textlink':
