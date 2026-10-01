@@ -93,6 +93,12 @@ class Principal(object):
                      'who': '',
                      'feedback_value': 0,
                     })
+        # Species Link tab: only shown when "specieslink_dir" exists (config.xml)
+        self.specieslink_enabled = self.g.is_specieslink_enabled()
+        if self.specieslink_enabled:
+            self.data['tab_specieslink'] = '<a href="./specieslink.list.py" id="tab_specieslink">%s</a>' % self.label_dict['menu_SpeciesLink']
+        else:
+            self.data['tab_specieslink'] = ''
         self.set_version()
         self.process_data = {}
         self.page_parts = {}
@@ -785,6 +791,10 @@ class Principal(object):
                 return
 
             elif page == 'specieslink.list':
+                # Species Link disabled for this installation: behave as if the page did not exist
+                if not self.specieslink_enabled:
+                    print((self.g.redirect(self.start_page)))
+                    return
                 # Only Administrator and Manager can view utilites area
                 if (self.g.isManager(self.session.data['roles'])):
                     self.data['page'] = self.g.read_html('specieslink.list')

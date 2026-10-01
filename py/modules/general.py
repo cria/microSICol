@@ -373,6 +373,17 @@ class General( object ):
         (Administrator, id_role = 2, Manager, id_role = 4 HARDCODED)
         '''
         return ((2 in roles) or (4 in roles))
+
+    def is_specieslink_enabled(self):
+        '''
+        Species Link is enabled only when config "specieslink_dir" points to an
+        existing directory (absolute, or relative to root_dir)
+        '''
+        from os import path
+        specieslink_dir = self.get_config('specieslink_dir')
+        if not specieslink_dir or not specieslink_dir.strip():
+            return False
+        return path.isdir(path.join(self.root_dir, specieslink_dir.strip()))
         
     def saveListOrder(self,id_user,id_subcoll,area,field):
         '''
