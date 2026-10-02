@@ -371,7 +371,7 @@
         <sql name="get_strain_list"><![CDATA[
             SELECT st.id_strain as id_strain, st.code as code, st.internal_code as internal_code,
             sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, ty.type as type, st.status as status,
-            st.infra_complement as infra_complement
+            st.infra_complement as infra_complement, st.subcoll_code as subcoll_code
             FROM strain st
             INNER JOIN species sp USING (id_species)
             INNER JOIN scientific_names sc USING (id_sciname)
@@ -392,7 +392,7 @@
         <sql name="get_strain_list_order_code"><![CDATA[
             SELECT st.id_strain as id_strain, st.code as code, st.internal_code as internal_code,
             sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, ty.type as type, st.status as status,
-            st.infra_complement as infra_complement
+            st.infra_complement as infra_complement, st.subcoll_code as subcoll_code
             FROM strain st
             INNER JOIN species sp USING (id_species)
             INNER JOIN scientific_names sc USING (id_sciname)
@@ -405,7 +405,7 @@
         <sql name="get_strain_list_restrict"><![CDATA[
             SELECT st.id_strain as id_strain, st.code as code, st.internal_code as internal_code,
             sp.id_sciname, sc.sciname, sc.sciname_no_auth, sc.hi_tax, sc.hi_tax, ty.type as type, st.status as status,
-            st.infra_complement as infra_complement
+            st.infra_complement as infra_complement, st.subcoll_code as subcoll_code
             FROM strain st
             INNER JOIN species sp USING (id_species) LEFT JOIN str_type_lang ty ON st.id_type = ty.id_type AND ty.id_lang = '%(id_lang)s'
             INNER JOIN scientific_names sc USING (id_sciname)

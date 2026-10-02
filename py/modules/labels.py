@@ -41,6 +41,7 @@ label_dict = {
 "label_Strains_General_Is_OGM" : _("OGM"),
 "label_Strains_General_History" : _("History"),
 "label_Strains_General_SubcollCode" : _("Subcollection Code"),
+"label_Strains_List_SubcollCode" : _("Subcoll. Code"),
 "label_Strains_General_Codes_In_Other_Collections" : _("Codes in Other Collections"),
 "label_Strains_Origin_Comments": _("Comments"),
 "label_Strains_Origin_Origin_Place" : _("Origin Place"),

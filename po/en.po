@@ -560,6 +560,11 @@ msgid "History"
 msgstr "History"
 
 #: py/modules/labels.py:43 py/modules/labels.py:625
+#: py/modules/labels.py:44
+msgid "Subcoll. Code"
+msgstr "Subcoll. Code"
+
+#: py/modules/labels.py:43 py/modules/labels.py:626
 msgid "Subcollection Code"
 msgstr "Subcollection code"
 
@@ -4446,3 +4451,6 @@ msgstr "Please add the state code according to the example: State Name (SN)."
 #~ msgid "The isolation date is less than the origin date."
 #~ msgstr "The isolation date is less than the origin date."
 
+#: py/modules/form_save.py:511
+msgid "Subcollection code must contain only numbers."
+msgstr "Subcollection code must contain only numbers."

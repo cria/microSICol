@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
@@ -302,6 +303,9 @@ class Save(object):
                 data['id_sciname'] = form.getvalue('id_sciname')
                 data['sciname'] = form.getvalue('sciname_html')
                 data['alt_state'] = form.getvalue('alt_state')
+
+                self.logger.debug("LEO 2: %s" % (form.getvalue('sciname_html')))
+
                 if (form.getvalue('alt_state') != None):
                     data['alt_state_type'] = form.getvalue('alt_state_type')
                 else:
@@ -317,7 +321,7 @@ class Save(object):
 
                 if is_first:
                     sciname = SciNameBuilder(self.cookie_value, self.dbconnection)
-                    if self.action == 'insert':
+                    if self.action == 'insert':                                               
                         data['id_sciname'] = sciname.insert(self.session.data['id_subcoll'], self.session.data['id_lang'], form)
                         self.execute('insert_species', data)
                         #Get id_inserted and insert others Species parts
@@ -503,6 +507,8 @@ class Save(object):
                                                                 
                 general['internal_code'] = form.getvalue('internal_code')
                 general['strain_subcoll_code'] = form.getvalue('strain_subcoll_code')
+                if general['strain_subcoll_code'] and not str(general['strain_subcoll_code']).strip().isdigit():
+                    raise Exception(_("Subcollection code must contain only numbers."))
                 general['status'] = form.getvalue('status')
                 general['id_species'] = form.getvalue('id_species')
                 general['infra_complement'] = form.getvalue('infra_complement')

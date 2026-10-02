@@ -573,6 +573,11 @@ msgid "History"
 msgstr "Histórico"
 
 #: py/modules/labels.py:43 py/modules/labels.py:625
+#: py/modules/labels.py:44
+msgid "Subcoll. Code"
+msgstr "Cod. Subcoleção"
+
+#: py/modules/labels.py:43 py/modules/labels.py:626
 msgid "Subcollection Code"
 msgstr "Código da subcoleção"
 
@@ -4482,3 +4487,6 @@ msgstr "Favor inserir o código do estado segundo o exemplo: Nome do Estado (NE)
 #~ msgid "The isolation date is less than the origin date."
 #~ msgstr "A data de isolamento está menor que a data de origem."
 
+#: py/modules/form_save.py:511
+msgid "Subcollection code must contain only numbers."
+msgstr "O código da subcoleção deve conter apenas números."

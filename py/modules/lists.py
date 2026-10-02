@@ -428,6 +428,7 @@ class Lists(object):
     def strains(self):
         html = '%s<tr class="%s" onclick="location=\'./strains.detail.py?id=%s&row=%s\'" style="white-space:nowrap; %s">\
                   %s  <td class="code">%s</td>\
+                  %s  <td class="subcoll_code">%s</td>\
                   %s  <td class="species">%s</td>\
                   %s  <td class="internal_code">%s</td>\
                   %s  <td class="type">%s</td>\
@@ -464,6 +465,7 @@ class Lists(object):
                 aux_condition.append(
                                         "AND (st.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
                                         "OR st.internal_code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR st.subcoll_code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
                                         "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
                                         "OR ty.type LIKE x'25" + word.encode("utf-8").hex() + "25' " +
                                         "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
@@ -497,6 +499,8 @@ class Lists(object):
             field = stripped_sciname + ' ' + mode
         elif field == 'code':
             field = "%s %s" % (field, mode)
+        elif field == 'subcoll_code':
+            field = "st.subcoll_code %s" % mode
         else:
             field = field + ' ' + mode
 
@@ -573,6 +577,11 @@ class Lists(object):
 
             code = strain['code']
 
+            #Subcollection Code: subcollection acronym - strain subcollection code
+            subcoll_code = '-'
+            if strain['subcoll_code']:
+                subcoll_code = "%s - %s" % (self.session.data['subcoll_code'], strain['subcoll_code'])
+
             #if status active color black, else color gray
             style_tr = ''
             if strain['status'] != 'inactive':
@@ -632,6 +641,7 @@ class Lists(object):
             #Output
             self.html += html % (self.indent_size, css_class, str(strain['id_strain']), absolute_row, style_tr,
                                  self.indent_size, code,
+                                 self.indent_size, subcoll_code,
                                  self.indent_size, species,
                                  self.indent_size, strain['internal_code'],
                                  self.indent_size, strain['type'],

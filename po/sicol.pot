@@ -525,6 +525,11 @@ msgid "History"
 msgstr ""
 
 #: py/modules/labels.py:43 py/modules/labels.py:625
+#: py/modules/labels.py:44
+msgid "Subcoll. Code"
+msgstr ""
+
+#: py/modules/labels.py:43 py/modules/labels.py:626
 msgid "Subcollection Code"
 msgstr ""
 
@@ -4133,3 +4138,6 @@ msgstr ""
 msgid "Please add the state code according to the example: State Name (SN)."
 msgstr ""
 
+#: py/modules/form_save.py:511
+msgid "Subcollection code must contain only numbers."
+msgstr ""

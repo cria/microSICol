@@ -44,7 +44,7 @@
 
 								<p class="cols_5">
 									<label for="strain_subcoll_code" id="label_internal_code">%(label_Strains_General_SubcollCode)s</label><br />
-									<input size="25" name="strain_subcoll_code" id="strain_subcoll_code" type="text" maxlength="50" value="%(strain_subcoll_code)s" />
+									<input size="25" onkeyup="numberOnly(this);" onblur="numberOnly(this);" name="strain_subcoll_code" id="strain_subcoll_code" type="text" maxlength="50" value="%(strain_subcoll_code)s" />
 								</p>								
 							</div>
 					</div>
