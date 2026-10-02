@@ -102,6 +102,9 @@ class SciNameBuilder(object):
     def update(self, id_subcoll, id_lang, id_sciname, form):
         hi_tax = form.getvalue('higher_taxa_html') or ''
         sciname = form.getvalue('sciname_html') or ''
+        if not sciname.strip():
+            from . import exception
+            raise exception.SicolException (_("Scientific Name is required. Check if the taxonomic hierarchy is configured for this subcollection and language."))
         if self.check_existing(hi_tax, sciname, id_subcoll, id_sciname):
             from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
@@ -120,6 +123,9 @@ class SciNameBuilder(object):
     def insert(self, id_subcoll, id_lang, form):
         hi_tax = form.getvalue('higher_taxa_html') or ''
         sciname = form.getvalue('sciname_html') or ''
+        if not sciname.strip():
+            from . import exception
+            raise exception.SicolException (_("Scientific Name is required. Check if the taxonomic hierarchy is configured for this subcollection and language."))
         if self.check_existing(hi_tax, sciname, id_subcoll, 0):
             from . import exception
             raise exception.SicolException (_("Another taxa with that Higher Taxa and Scientific Name combination already exists."))
@@ -306,7 +312,7 @@ class SciNameBuilder(object):
             prev_row = row.copy()
 
         #last iteration of the loop
-        self.add_sciname_block(dict, html_template, html_body, hitax_html, sciname_html, current_taxon_group, row, id_taxon_group)
+        self.add_sciname_block(dict, html_template, html_body, hitax_html, sciname_html, current_taxon_group, prev_row, id_taxon_group)
 
         #creates a json variable from the dictionary
         js = JsonBuilder.createJson(js_data)
