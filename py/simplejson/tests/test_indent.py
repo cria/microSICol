@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
@@ -39,6 +39,6 @@ class TestIndent(TestCase):
         h1 = S.loads(d1)
         h2 = S.loads(d2)
 
-        self.assertEquals(h1, h)
-        self.assertEquals(h2, h)
-        self.assertEquals(d2, expect)
+        self.assertEqual(h1, h)
+        self.assertEqual(h2, h)
+        self.assertEqual(d2, expect)

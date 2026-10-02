@@ -81,6 +81,32 @@
 			
 			if(validateReports(3))
 			{
+				// Check if this is a file download (XML or CSV) by looking at xml_dict
+				var xmlDict = $("input[name='xml_dict']").val();
+				var isFileDownload = false;
+				
+				if(xmlDict) {
+					try {
+						var parsedDict = eval('(' + xmlDict + ')');
+						var format = parsedDict.format;
+						if(format && (format.toLowerCase() === 'xml' || format.toLowerCase() === 'csv')) {
+							isFileDownload = true;
+						}
+					} catch(e) {
+						// If parsing fails, continue with AJAX
+					}
+				}
+				
+				if(isFileDownload) {
+					// For file downloads, submit the form directly instead of using AJAX
+					var form = $("form#detail");
+					form.attr('action', './%(who)s.show.py');
+					form.attr('method', 'POST');
+					form.submit();
+					return false;
+				}
+				
+				// For other formats (HTML), use AJAX as before
 				mostraCarregando();	   
 				$.ajax({
 				       type: "POST",

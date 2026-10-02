@@ -1,22 +1,21 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
-from cgi import escape
-from urlparse import urljoin
+from urllib.parse import urljoin
 from re import findall
 from sys import exit
-from urllib import urlencode
+from urllib.parse import urlencode
 import cgi
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from general import General, DefDict
-from lists import Lists
-from textlinkfactory import TextLinkFactory
-from loghelper import Logging
-from location import LocationBuilder
+from .session import Session
+from .dbconnection import dbConnection
+from .general import General, DefDict
+from .lists import Lists
+from .textlinkfactory import TextLinkFactory
+from .loghelper import Logging
+from .location import LocationBuilder
 from os import path
 from datetime import datetime
 #from dbgp.client import brk
@@ -41,10 +40,10 @@ class Log(object):
         
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if (isinstance(valor, unicode) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno        
         
@@ -64,13 +63,13 @@ class Log(object):
             
             if (len(entity_selected) == 0):
                 data_entity = data.copy()
-                for key, value in data.items():
+                for key, value in list(data.items()):
                     data_entity[key] = ''
             else:
                 data_entity = entity_selected[0]
             
-            for key, value in data.items():
-                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang')):
+            for key, value in list(data.items()):
+                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang') and (key != 'hdnReusedStrain')):
                     valorForm = self.ConvertStrUnicode(data[key])
                     valorBanco = self.ConvertStrUnicode(data_entity[key])
                     if ((valorForm == 'None' and data_entity[key] == '') or (valorForm == valorBanco)):
@@ -96,8 +95,8 @@ class Log(object):
                         
                         return_value.append("('"  + x.strftime('%Y-%m-%d %H:%M:%S') + "', '" + self.session.data['user_name'] + "'," + str(id_log_operation) + "," + str(id_subcoll) + "," + str(id_log_entity) + "," + str(id_entity) + ", '" + code_entity + "'," + lot_name_final + ", " + str(log_dict[key]['id']) + "," + lang_name + ",'" + data_lookup.replace("'", "\\'") + "'),")
         elif(action == "insert"):
-            for key, value in data.items():
-                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang')):
+            for key, value in list(data.items()):
+                if ((key != 'insert') and (key != 'update') and (key != 'id') and (key != 'lang') and (key != 'hdnReusedStrain')):
                     
                     valor = self.ConvertStrUnicode((data[key]))
                     if ((valor != None) and (self.ConvertStrUnicode(valor) != "") and (self.ConvertStrUnicode(valor) != 'None')):
@@ -127,7 +126,7 @@ class Log(object):
         elif(action == "delete"):
             id_log_field = ""
             
-            for key, value in data.items():
+            for key, value in list(data.items()):
                 if len(data) > 0:
                     id_log_field = str(log_dict[key]['id'])
                 else:

@@ -1,5 +1,5 @@
 
-var caseFormatters={'ucfirst':function(name){return name.substr(0,1).toUpperCase()+name.substr(1,name.length-1).toLowerCase();},'upper':function(name){return name.toUpperCase();},'lower':function(name){return name.toLowerCase();}};var formatFormatters={'italic':function(name){if(name.search(/sp\\./)==-1){return'<i>'+name+'</i>';}
+var caseFormatters={'ucfirst':function(name){return name.substr(0,1).toUpperCase()+name.substr(1,name.length-1).toLowerCase();},'upper':function(name){return name.toUpperCase();},'lower':function(name){return name.toLowerCase();}};var formatFormatters={'italic':function(name){if(name.toLowerCase().trim()!=="sp."){return'<i>'+name+'</i>';}
 return name;},'bold':function(name){return'<b>'+name+'</b>';}};var formatters={'string_case':caseFormatters,'string_format':formatFormatters};function formatSciName(taxon_group,seq,use_author){var defDict=sciname_dict[taxon_group][seq];var prefix=defDict['type_prefix'];var sciName='';if(use_author===undefined){use_author=1;}
 var author='';if(use_author==1&&defDict['has_author']==1&&defDict['use_author']==1){author=document.getElementById(prefix+"_author_"+taxon_group+"_"+seq).value;}
 var name=document.getElementById(prefix+"_value_"+taxon_group+"_"+seq).value;name=name.replace(/^\\s+|\\s+\$/g,'');if(name==''){var default_value=defDict['default_value'];name=default_value;}

@@ -127,11 +127,11 @@ function delete_coll(id)
 else if(confirm(_("Delete Collection. Are you sure?")))
 {document.getElementById('util_type').value='coll_delete';document.getElementById('util_form').submit();}}
 function new_coll()
-{clear_submenu();add_submenu_button("save_coll();",_("Save Collection"),"save");add_submenu_button("cancel_coll();",_("Cancel"),"cancel");document.getElementById('util_coll_id').value='';document.getElementById('util_coll_base').selectedIndex=0;document.getElementById('util_coll_code').value='';document.getElementById('util_coll_name').value='';document.getElementById('util_logo_msg').innerHTML="<br /><br /><img src=\"logo.py\" width=\"130\" height=\"30\" />";document.getElementById('util_edit_coll').style.display='block';}
+{clear_submenu();add_submenu_button("save_coll();",_("Save Collection"),"save");add_submenu_button("cancel_coll();",_("Cancel"),"cancel");document.getElementById('util_coll_id').value='';document.getElementById('util_coll_base').selectedIndex=0;document.getElementById('util_coll_code').value='';document.getElementById('util_coll_name').value='';document.getElementById('util_logo_msg').innerHTML="<br /><br /><img src=\"logo.py\" width=\"130\" height=\"30\" />";document.getElementById('util_edit_coll').style.display='block';updateLogoPreview();}
 function edit_coll(_id,_base,_code,_descr,_has_logo)
 {new_coll();add_submenu_button("delete_coll("+_id+");",_("Delete"),"delete");document.getElementById('util_coll_id').value=_id;sel=document.getElementById('util_coll_base');for(var i=0;i<sel.options.length;i++)
 {if(sel.options[i].value==_base)sel.selectedIndex=i;}
-document.getElementById('util_coll_code').value=_code;document.getElementById('util_coll_name').value=_descr;if(_has_logo=='1')document.getElementById('util_logo_msg').innerHTML="<br /><br /><img src='logo.py?id="+_id+"' width=\"130\" height=\"30\" />";else document.getElementById('util_logo_msg').innerHTML="<br /><br /><img src='logo.py' width=\"130\" height=\"30\" />";}
+document.getElementById('util_coll_code').value=_code;document.getElementById('util_coll_name').value=_descr;if(_has_logo=='1')document.getElementById('util_logo_msg').innerHTML="<br /><br /><img src='logo.py?id="+_id+"' width=\"130\" height=\"30\" />";else document.getElementById('util_logo_msg').innerHTML="<br /><br /><img src='logo.py' width=\"130\" height=\"30\" />";updateLogoPreview();}
 function save_coll()
 {_coll_id=document.getElementById('util_coll_id').value;_coll_code=document.getElementById('util_coll_code').value;if(_coll_code=='')
 {alert(_("Please fill in the Code field."));}
@@ -349,3 +349,49 @@ function moveOptionsDown(selectId)
 {var selectList=document.getElementById(selectId);var selectOptions=selectList.getElementsByTagName('option');for(var i=selectOptions.length-2;i>=0;i--)
 {var opt=selectOptions[i];if(opt.selected)
 {var nextOpt=selectOptions[i+1];opt=selectList.removeChild(opt);nextOpt=selectList.replaceChild(opt,nextOpt);selectList.insertBefore(nextOpt,opt);}}}
+
+// Função para atualizar a prévia da logo quando um arquivo é selecionado
+function updateLogoPreview() {
+    var logoInput = document.getElementById('util_coll_logo');
+    var logoMsg = document.getElementById('util_logo_msg');
+    
+    if (logoInput && logoMsg) {
+        logoInput.addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            logoMsg.innerHTML = ''; // Limpar mensagem anterior
+            
+            if (file) {
+                // Verificar se é uma imagem
+                if (file.type.startsWith('image/')) {
+                    // Verificar tamanho do arquivo (máximo 2MB)
+                    var maxSizeBytes = 2 * 1024 * 1024; // 2MB
+                    if (file.size > maxSizeBytes) {
+                        alert(_("File too large. Maximum size is 2MB."));
+                        logoInput.value = '';
+                        logoMsg.innerHTML = "<span style='color: red;'>❌ Arquivo muito grande (máx. 2MB)</span>";
+                        return;
+                    }
+                    
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        logoMsg.innerHTML = "<br /><span style='color: green;'>✓ Imagem carregada:</span><br /><img src='" + e.target.result + "' width=\"130\" height=\"30\" style='border: 1px solid #ccc; margin-top: 5px;' /><br /><small>Arquivo: " + file.name + " (" + Math.round(file.size/1024) + " KB)</small>";
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert(_("Invalid image file. Please select a PNG, JPG, or GIF file."));
+                    logoInput.value = '';
+                    logoMsg.innerHTML = "<span style='color: red;'>❌ Tipo de arquivo inválido</span>";
+                }
+            } else {
+                logoMsg.innerHTML = "";
+            }
+        });
+    }
+}
+
+// Inicializar a funcionalidade quando a página carregar
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateLogoPreview);
+} else {
+    updateLogoPreview();
+}

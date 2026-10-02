@@ -1,25 +1,28 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 from time import time
 from random import sample
 from os import environ, getcwd, path, remove, listdir
-from string import letters, digits, join
-from cPickle import dump, load
+from string import ascii_letters, digits
+from pickle import dump, load
 try:
     from hashlib import sha1 as new_sha
 except ImportError:
     from sha import new as new_sha
 
+import os
+from os import path
+from pickle import dump
 #project imports
-from general import General
-from loghelper import Logging
+from .general import General
+from .loghelper import Logging
 
 class Session(object):
 
     g = General()
-    root_dir = g.get_config('root_dir')
+    root_dir = g.root_dir
     session_dir = g.get_config('session_dir')
     session_path = path.join(root_dir, session_dir)
     extension = g.get_config('session_file_extension')
@@ -29,10 +32,10 @@ class Session(object):
         self.logger = Logging.getLogger("page_mount")
         self.d = self.logger.debug
 
-        import config
+        from . import config
         try:
           self.timeout = config.session_timeout
-        except AttributeError,e:
+        except AttributeError as e:
           self.timeout = 30 * 60 #30 minutes - default value
         self.data = {}
 
@@ -43,7 +46,7 @@ class Session(object):
         self.save()
 
     def random_string(self,size=10):
-        random_string = ''.join( sample(letters + digits,size))
+        random_string = ''.join(sample(ascii_letters + digits, size))
         return random_string
 
     def session_id(self):
@@ -60,7 +63,7 @@ class Session(object):
         #Use Secure Hash Algorithm (SHA) to generate a unique ID
         #The SHA is defined by NIST document FIPS PUB 180-2
         #The SHA algorithm is considered a more secure hash.
-        session_id = new_sha(session_string)
+        session_id = new_sha(session_string.encode('utf8'))
         return session_id.hexdigest()
 
     def isvalid(self, cookie_value):
@@ -75,11 +78,10 @@ class Session(object):
         """Unpickle dictionary of existing session"""
         if session_id:
             try:
-                sessionFile = file(path.join(self.session_path, session_id+self.extension), "rw")
-                self.data = load(sessionFile) #this load() comes from cPickle
-                sessionFile.close()
+                with open(path.join(self.session_path, session_id+self.extension), "rb") as sessionFile:
+                        self.data = load(sessionFile)
             except IOError:
-                import config
+                from . import config
                 out = config.http_header + '\n\n'
                 out += '%s "%s"' % (_("Permission denied to read in"), self.session_path)
 
@@ -96,11 +98,10 @@ class Session(object):
         """Pickle session dictionary to session file"""
         if self.data['id']:
             try:
-                sessionFile = file(path.join(self.session_path, self.data['id']+self.extension), "wb")
-                dump(self.data,sessionFile)
-                sessionFile.close()
+                with open(path.join(self.session_path, self.data['id']+self.extension), "wb") as sessionFile:
+                    dump(self.data, sessionFile)
             except IOError:
-                import config
+                from . import config
                 out = config.http_header + '\n\n'
                 out += '%s "%s"' % (_("Permission denied to write in"), self.session_path)
                 self.logger.error(out)
@@ -117,7 +118,7 @@ class Session(object):
             self.save()
             remove(path.join(self.session_path, file))
         except IOError:
-            import config
+            from . import config
             out = config.http_header + '\n\n'
             out += '%s "%s"' % (_("Permission denied to delete in"), self.session_path)
 
