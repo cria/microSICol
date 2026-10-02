@@ -261,7 +261,8 @@ function AutoSuggest(elem, suggestions)
 	********************************************************/
 	elem.onfocus = function(ev)
 	{
-		me.inputText = this.value;
+		//If the field already holds a valid suggestion (e.g. edit mode), show the whole list
+		me.inputText = (me.suggestions.indexOf(this.value) > -1) ? '' : this.value;
 		me.getEligible();
 		me.createDiv();
 		me.positionDiv();

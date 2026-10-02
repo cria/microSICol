@@ -1160,7 +1160,10 @@
         <sql name="get_city_id"><![CDATA[
             SELECT id_city
             FROM loc_city
-            WHERE city = %(coll_city)s;]]></sql>
+            WHERE city = %(coll_city)s
+              AND (id_state = %(coll_id_state)s OR %(coll_id_state)s IS NULL)
+            ORDER BY id_city
+            LIMIT 1;]]></sql>
 
         <sql name="get_city_name"><![CDATA[
             SELECT city
