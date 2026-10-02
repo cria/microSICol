@@ -3782,6 +3782,17 @@
             ]]>
         </sql>
 
+        <sql name="get_hierarchy_template_subcoll"><![CDATA[
+                SELECT MIN(id_subcoll) FROM hierarchy_group;]]></sql>
+
+        <sql name="copy_subcoll_hierarchy_group"><![CDATA[
+                INSERT IGNORE INTO hierarchy_group
+                  (id_hierarchy, id_taxon_group, id_subcoll, hi_tax, has_author, use_author, in_sciname, required,
+                   important, string_format, string_case, prefix, suffix, default_value)
+                SELECT id_hierarchy, id_taxon_group, %(id_subcoll)s, hi_tax, has_author, use_author, in_sciname, required,
+                   important, string_format, string_case, prefix, suffix, default_value
+                FROM hierarchy_group WHERE id_subcoll = %(id_subcoll_template)s]]></sql>
+
         <sql name="insert_subcoll_taxon_group"><![CDATA[
                 INSERT INTO taxon_group_subcoll (id_taxon_group,id_subcoll)
                 VALUES(%(id_taxon_group)s,%(id_subcoll)s)]]></sql>
@@ -4021,6 +4032,9 @@
                     pms.id_subcoll = %(id_subcoll)s
             );
     ]]></sql>
+
+    <sql name="delete_subcoll_hierarchy_group"><![CDATA[
+            DELETE FROM hierarchy_group WHERE id_subcoll = %(id_subcoll)s;]]></sql>
 
     <sql name="delete_subcoll_combo_taxon_group"><![CDATA[
             DELETE FROM taxon_group_subcoll WHERE id_subcoll = %(id_subcoll)s;]]></sql>

@@ -96,6 +96,7 @@ class Configuration(object):
             self.db.execute('delete_doc_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
             self.db.execute('delete_strain_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
             self.db.execute('delete_species_by_subcoll', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
+            self.db.execute('delete_subcoll_hierarchy_group', {'id_subcoll': str(self.form['util_subcoll_id'].value)})
         else:
             self.execute('delete_subcoll',{'subcoll_id':id_subcoll})
             self.execute('delete_subcoll_template',{'subcoll_id':id_subcoll})
@@ -110,6 +111,7 @@ class Configuration(object):
             self.db.execute('delete_doc_by_subcoll', {'id_subcoll': id_subcoll})
             self.db.execute('delete_strain_by_subcoll', {'id_subcoll': id_subcoll})
             self.db.execute('delete_species_by_subcoll', {'id_subcoll': id_subcoll})
+            self.db.execute('delete_subcoll_hierarchy_group', {'id_subcoll': id_subcoll})
         self.db.connect.commit()
         self.session.data['feedback'] = 2
         self.session.save()
@@ -495,6 +497,12 @@ class Configuration(object):
                 admins = self.db.fetch('rows')
                 for admin in admins:
                     self.execute('insert_access',{'id_user':admin,'id_subcoll':subcoll_id})
+                #Copy taxonomic hierarchy (hierarchy_group) from the first configured subcollection
+                self.db.execute('get_hierarchy_template_subcoll')
+                id_subcoll_template = self.db.fetch('one')
+                if id_subcoll_template:
+                    self.db.execute('copy_subcoll_hierarchy_group', {'id_subcoll': subcoll_id, 'id_subcoll_template': id_subcoll_template})
+                    self.db.connect.commit()
                 #If Collection changed is the same one user is in, then change session data
                 if int(subcoll_id) == int(self.session.data['id_subcoll']):
                     self.session.data['subcoll_code'] = subcoll_code
