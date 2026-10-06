@@ -223,7 +223,7 @@ function init_combo()
 	if (state_name != '') document.getElementById('coll_state').value = state_name;
 	else if (selected_country == 0) document.getElementById('coll_state').disabled = true;
 	if (city_name != '') document.getElementById('coll_city').value = city_name;
-	else document.getElementById('coll_city').disabled = true;
+	else if (state_name == '') document.getElementById('coll_city').disabled = true; //keep city enabled when a state is already selected
 }
 
 function disableLinks()

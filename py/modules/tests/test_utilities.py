@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 from mock import Mock, patch, MagicMock
@@ -41,7 +41,7 @@ class UtilitiesTestCase(unittest.TestCase):
         self.assertFalse(result)
 
         result = self.u.validate_date_mask('%d/%m/%Y')
-        self.assertEquals(result, '%d/%m/%Y')
+        self.assertEqual(result, '%d/%m/%Y')
 
     def test_get_date_time_format(self):
         get_date_format_mock = Mock()
@@ -51,20 +51,20 @@ class UtilitiesTestCase(unittest.TestCase):
         patcher.start()
 
         result = self.u.get_date_time_format()
-        self.assertEquals(get_date_format_mock.call_count, 1)
-        self.assertEquals(result, '%d/%m/%Y %H:%M:%S')
+        self.assertEqual(get_date_format_mock.call_count, 1)
+        self.assertEqual(result, '%d/%m/%Y %H:%M:%S')
 
         patcher.stop()
 
     def test_format_date_time(self):
         result = self.u.format_date_time(None)
-        self.assertEquals(result, '')
+        self.assertEqual(result, '')
 
         result = self.u.format_date_time('')
-        self.assertEquals(result, '')
+        self.assertEqual(result, '')
 
         result = self.u.format_date_time(0)
-        self.assertEquals(result, '')
+        self.assertEqual(result, '')
 
         # Happy path
         get_date_time_format_mock = Mock()
@@ -81,9 +81,9 @@ class UtilitiesTestCase(unittest.TestCase):
         field_mock.timetuple.return_value = (1987, 1, 27, 20, 38, 0, 0, 0, 0)
 
         result = self.u.format_date_time(field_mock)
-        self.assertEquals(get_date_time_format_mock.call_count, 1)
-        self.assertEquals(field_mock.timetuple.call_count, 1)
-        self.assertEquals(result, '27/01/1987 20:38:00')
+        self.assertEqual(get_date_time_format_mock.call_count, 1)
+        self.assertEqual(field_mock.timetuple.call_count, 1)
+        self.assertEqual(result, '27/01/1987 20:38:00')
 
         patcher.stop()
 
@@ -103,8 +103,8 @@ class UtilitiesTestCase(unittest.TestCase):
 
         result = self.u.get_date_format()
         data_mock.__getitem__.assert_called_once_with('date_output_mask')
-        self.assertEquals(validate_date_mask_mock.call_count, 1)
-        self.assertEquals(result, '%d-%m-%Y')
+        self.assertEqual(validate_date_mask_mock.call_count, 1)
+        self.assertEqual(result, '%d-%m-%Y')
 
         patcher.stop()
 
@@ -128,8 +128,8 @@ class UtilitiesTestCase(unittest.TestCase):
 
         result = self.u.get_date_format()
         self.u.g.get_config.assert_called_once_with('date_output_mask')
-        self.assertEquals(validate_date_mask_mock.call_count, 2)
-        self.assertEquals(result, '%m-%d-%Y')
+        self.assertEqual(validate_date_mask_mock.call_count, 2)
+        self.assertEqual(result, '%m-%d-%Y')
 
         patcher.stop()
 
@@ -145,8 +145,8 @@ class UtilitiesTestCase(unittest.TestCase):
         patcher.start()
 
         result = self.u.get_date_format()
-        self.assertEquals(validate_date_mask_mock.call_count, 2)
-        self.assertEquals(result, '%d/%m/%Y')
+        self.assertEqual(validate_date_mask_mock.call_count, 2)
+        self.assertEqual(result, '%d/%m/%Y')
 
         patcher.stop()
 

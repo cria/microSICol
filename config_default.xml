@@ -19,4 +19,7 @@
 	<!-- debug_mode: if the software is on production mode or development mode -->
 	<config name="debug_mode">true</config>
 	<config name="report_timeout">180</config>
+	<!-- specieslink_dir: directory whose existence enables the Species Link page (absolute or relative to root_dir).
+	     Empty, missing or not readable by the web server user = Species Link tab hidden for everyone -->
+	<config name="specieslink_dir"></config>
 </configs>

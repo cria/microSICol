@@ -29,7 +29,7 @@ insert into loc_country_lang values (9,1,'Angola');
 insert into loc_country_lang values (9,2,'Angola');
 insert into loc_country (id_country,code) values (10,'AQ');
 insert into loc_country_lang values (10,1,'Antarctica');
-insert into loc_country_lang values (10,2,'Antárctida');
+insert into loc_country_lang values (10,2,'Antártica');
 insert into loc_country (id_country,code) values (11,'AR');
 insert into loc_country_lang values (11,1,'Argentina');
 insert into loc_country_lang values (11,2,'Argentina');

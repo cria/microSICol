@@ -3,17 +3,17 @@ import re
 
  
 def dump_sql(table, sql):
-    print "--"
-    print "-- table %s"  % (table)
-    print "--"
-    print
-    print "LOCK TABLES `%s` WRITE;" % (table)
-    print "/*!40000 ALTER TABLE `%s` DISABLE KEYS */;" % (table)
-    print "DELETE FROM `%s`;" % (table)
-    print sql
-    print "/*!40000 ALTER TABLE `%s` ENABLE KEYS */;" % (table)
-    print "UNLOCK TABLES;"
-    print
+    print("--")
+    print("-- table %s"  % (table))
+    print("--")
+    print()
+    print("LOCK TABLES `%s` WRITE;" % (table))
+    print("/*!40000 ALTER TABLE `%s` DISABLE KEYS */;" % (table))
+    print("DELETE FROM `%s`;" % (table))
+    print(sql)
+    print("/*!40000 ALTER TABLE `%s` ENABLE KEYS */;" % (table))
+    print("UNLOCK TABLES;")
+    print()
 
 def run(cursor, sql):
     cursor.execute(sql)
@@ -231,7 +231,7 @@ for row in rows:
     
     id_sciname += 1
 
-print """/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+print("""/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
@@ -241,16 +241,16 @@ print """/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-"""
+""")
 
 dump_sql('scientific_names', fmtsql(sql_sciname));
 dump_sql('scientific_names_hierarchy', fmtsql(sql_sciname_hier))
 dump_sql('species', fmtsql(sql_species_all))
 
-print """/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+print("""/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;"""
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;""")
