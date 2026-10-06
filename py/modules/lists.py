@@ -372,6 +372,9 @@ class Lists(object):
             else:
                 page = int(self.session.data['page_species'])
 
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
+
         #Enable paging
         if (totalpages > 1):
             self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
@@ -545,6 +548,9 @@ class Lists(object):
             else:
                 page = int(self.session.data['page_strains'])
 
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -747,6 +753,9 @@ class Lists(object):
             else:
                 page = int(self.session.data['page_docs'])
 
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
+
         #Enable paging
         if (totalpages > 1):
           self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
@@ -888,6 +897,9 @@ class Lists(object):
                 self.session.save()
             else:
                 page = int(self.session.data['page_refs'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1035,6 +1047,9 @@ class Lists(object):
                 self.session.save()
             else:
                 page = int(self.session.data['page_people'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1202,6 +1217,9 @@ class Lists(object):
                 self.session.save()
             else:
                 page = int(self.session.data['page_insts'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1375,6 +1393,9 @@ class Lists(object):
                 self.session.save()
             else:
                 page = int(self.session.data['page_preservations'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1568,6 +1589,9 @@ class Lists(object):
             else:
                 page = int(self.session.data['page_distributions'])
 
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
+
         #Enable paging
         if (totalpages > 1):
           self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
@@ -1728,6 +1752,9 @@ class Lists(object):
                 self.session.save()
             else:
                 page = int(self.session.data['page_reports'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1954,6 +1981,9 @@ class Lists(object):
         elif ('page_stock_movement' in self.session.data):            
             page = int(self.session.data['page_stock_movement'])
 
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
+
         #Enable paging
         if (totalpages > 1):
           self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
@@ -2032,6 +2062,9 @@ class Lists(object):
             self.session.save()
         elif ('page_container' in self.session.data):            
             page = int(self.session.data['page_container'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):

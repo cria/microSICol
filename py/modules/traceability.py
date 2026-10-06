@@ -294,6 +294,9 @@ class Traceability(object):
             else:
                 page = int(self.session.data['page_traceability'])
 
+        # Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, total_pages))
+
         # Enable paging
         limit_query = self.GLUE
         if (total_pages > 1):

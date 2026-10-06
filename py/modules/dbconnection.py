@@ -72,7 +72,7 @@ class dbConnection(object):
                 )
             except mysql.Error as e:
                 import traceback
-                self.logger.error("Error while connecting to MySQL: %s", traceback.format_exc(e))
+                self.logger.error("Error while connecting to MySQL: %s", traceback.format_exc())
 
                 out = '%s%s' % (self.g.get_config('http_header'), '\n\n')
                 out += "%s %d: %s" % (_('Error'), e.args[0], e.args[1])
