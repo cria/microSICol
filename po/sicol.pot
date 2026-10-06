@@ -4141,3 +4141,16 @@ msgstr ""
 #: py/modules/form_save.py:511
 msgid "Subcollection code must contain only numbers."
 msgstr ""
+
+#: py/modules/lists.py
+msgid "Go to page"
+msgstr ""
+
+#: py/modules/lists.py
+msgid "Type the page number and press Enter"
+msgstr ""
+
+#: py/modules/lists.py
+#, python-format
+msgid "Page %s does not exist."
+msgstr ""

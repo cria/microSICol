@@ -72,7 +72,7 @@ class dbConnection(object):
                 )
             except mysql.Error as e:
                 import traceback
-                self.logger.error("Error while connecting to MySQL: %s", traceback.format_exc())
+                self.logger.error("Error while connecting to MySQL: %s", traceback.format_exc(e))
 
                 out = '%s%s' % (self.g.get_config('http_header'), '\n\n')
                 out += "%s %d: %s" % (_('Error'), e.args[0], e.args[1])
@@ -274,5 +274,7 @@ class dbConnection(object):
                 else:
                     raise exception.SicolException("%s: %s" % (_("Error in MySQL execute"), e), 1, "%s: %s\n<br />%s: %s\n<br/>%s: %s" % (_("Sql function"), str(sqlfunction), _("Sql line"), str(sql_line), _("Values"), str(values)))
             self.__fetchall = self.cursor.fetchall()
+            #mysql-connector-python execute() returns None (MySQLdb returned the row count)
+            self.rows = self.cursor.rowcount
         else:
             raise exception.SicolException(_("Database not implemented."), 1, "")

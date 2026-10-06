@@ -4454,3 +4454,16 @@ msgstr "Please add the state code according to the example: State Name (SN)."
 #: py/modules/form_save.py:511
 msgid "Subcollection code must contain only numbers."
 msgstr "Subcollection code must contain only numbers."
+
+#: py/modules/lists.py
+msgid "Go to page"
+msgstr "Go to page"
+
+#: py/modules/lists.py
+msgid "Type the page number and press Enter"
+msgstr "Type the page number and press Enter"
+
+#: py/modules/lists.py
+#, python-format
+msgid "Page %s does not exist."
+msgstr "Page %s does not exist."

@@ -1776,13 +1776,25 @@ class Lists(object):
     def get_foothtml(self, number_columns, current, max_numberpages, total, base_link):
         """Return html for the foot of the list"""
 
-        if total == 1: #Don't show paging when there is only one page to look at
+        if total <= 1: #Don't show paging when there is only one page to look at
           return ''
+
+        #Field to go directly to a typed page (Enter); alert if the page does not exist
+        from html import escape
+        not_found_msg = _("Page %s does not exist.").replace('\\', '\\\\').replace("'", "\\'")
+        goto_onkeydown = "if ((event.keyCode || event.which) == 13) { " \
+                         "var p = this.value.replace(/^\\s+|\\s+$/g, ''); " \
+                         "if (/^[0-9]+$/.test(p) && parseInt(p, 10) >= 1 && parseInt(p, 10) <= %d) { location = '%s' + parseInt(p, 10); } " \
+                         "else { alert('%s'.replace('%%s', p)); this.select(); } " \
+                         "return false; }" % (total, base_link % '', not_found_msg)
+        goto_html = '<li class="gotopage">%s: <input type="text" size="4" maxlength="9" title="%s" style="width:40px; text-align:center;" onkeydown="%s" /></li>' % (
+                        escape(_("Go to page")), escape(_("Type the page number and press Enter")), escape(goto_onkeydown, quote=True))
 
         base_foot = '<tr>\
                        <td colspan="%(number_columns)s">\
                          <ul>\
                            %(li_html)s\
+                           ' + goto_html.replace('%', '%%') + '\
                          </ul>\
                        </td>\
                      </tr>'

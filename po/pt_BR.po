@@ -4490,3 +4490,16 @@ msgstr "Favor inserir o código do estado segundo o exemplo: Nome do Estado (NE)
 #: py/modules/form_save.py:511
 msgid "Subcollection code must contain only numbers."
 msgstr "O código da subcoleção deve conter apenas números."
+
+#: py/modules/lists.py
+msgid "Go to page"
+msgstr "Ir para a página"
+
+#: py/modules/lists.py
+msgid "Type the page number and press Enter"
+msgstr "Digite o número da página e pressione Enter"
+
+#: py/modules/lists.py
+#, python-format
+msgid "Page %s does not exist."
+msgstr "A página %s não existe."
