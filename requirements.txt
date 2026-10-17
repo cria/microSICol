@@ -1,3 +1,4 @@
 beautifulsoup4
 mysql-connector-python
 lxml
+legacy-cgi>=2.6; python_version >= "3.13"
