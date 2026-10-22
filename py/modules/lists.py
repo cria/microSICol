@@ -10,6 +10,7 @@ from functools import cmp_to_key
 from .session import Session
 from .dbconnection import dbConnection
 from .general import General
+from .strain_formatter import StrainFormatter
 import math
 from os import environ
 
@@ -503,7 +504,7 @@ class Lists(object):
         elif field == 'code':
             field = "%s %s" % (field, mode)
         elif field == 'subcoll_code':
-            field = "st.subcoll_code %s" % mode
+            field = "CAST(st.subcoll_code AS UNSIGNED) %s, st.subcoll_code %s" % (mode, mode)
         else:
             field = field + ' ' + mode
 
@@ -583,10 +584,8 @@ class Lists(object):
 
             code = strain['code']
 
-            #Subcollection Code: subcollection acronym - strain subcollection code
-            subcoll_code = '-'
-            if strain['subcoll_code']:
-                subcoll_code = "%s - %s" % (self.session.data['subcoll_code'], strain['subcoll_code'])
+            #Subcollection Code: formatted with the division pattern, using the subcollection acronym (as registered)
+            subcoll_code = StrainFormatter.format_subcoll_code_with_pattern(strain['subcoll_code'], strain['division_pattern'], self.session.data['subcoll_code'])
 
             #if status active color black, else color gray
             style_tr = ''
@@ -663,7 +662,7 @@ class Lists(object):
                 import re
                 self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter
+        return self.html, self.get_foothtml(5, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter
 
     def doc(self):
         html = '%s<tr class="%s" onclick="location=\'./doc.detail.py?id=%s&row=%s\'">\
