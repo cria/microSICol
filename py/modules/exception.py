@@ -13,14 +13,17 @@ class SicolException (Exception):
     """Error catched by the SICOL system"""
     def  __init__ (self, message, level = 1, extras = None):
         global errors
-        self.message = message.encode('utf8')
+        if isinstance(message, bytes):
+            self.message = message.decode('utf-8')
+        else:
+            self.message = str(message)
         errors.append ({"message": message,
                         "level": level,
                         "extras": extras})
         self.error_index = len(errors) - 1
         Exception.__init__ (self, message)
         
-    def supressErrorMessage():
+    def supressErrorMessage(self):
         global errors
         error = errors[self.error_index]
         del errors[self.error_index]

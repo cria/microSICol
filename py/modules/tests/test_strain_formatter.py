@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 from mock import Mock, patch
@@ -29,9 +29,9 @@ class StrainFormatterTestCase(unittest.TestCase):
         self.assertRaises(StrainFormatterError, self.s.convert_to_usual_pattern, 'CBMAI')
 
     def testValidFormatStrainCodeWithPatternOk(self):
-        self.assertEqual(self.s.format_strain_code_with_pattern(32, u'CB #### MAI'), 'CB 0032 MAI')
-        self.assertEqual(self.s.format_strain_code_with_pattern(21, u'CB A#### MAI'), 'CB A0021 MAI')
-        self.assertEqual(self.s.format_strain_code_with_pattern('21', u'CB A#### MAI'), 'CB A0021 MAI')
+        self.assertEqual(self.s.format_strain_code_with_pattern(32, 'CB #### MAI'), 'CB 0032 MAI')
+        self.assertEqual(self.s.format_strain_code_with_pattern(21, 'CB A#### MAI'), 'CB A0021 MAI')
+        self.assertEqual(self.s.format_strain_code_with_pattern('21', 'CB A#### MAI'), 'CB A0021 MAI')
 
     def testValidFormatStrainCodeWithDivisionOk(self):
         self.s.get_division_pattern = Mock()

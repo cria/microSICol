@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 import re
 
-from dbconnection import dbConnection
+from .dbconnection import dbConnection
 
 
 class StrainFormatterError(Exception):
@@ -93,6 +93,43 @@ class StrainFormatter(object):
         formatted = self.convert_to_usual_pattern(pattern) % code
 
         return formatted
+
+    @staticmethod
+    def format_subcoll_code_with_pattern(subcoll_code, pattern, acronym):
+        """
+        Return the strain subcollection code formatted with the division
+        pattern, replacing the division fixed text by the subcollection
+        acronym (e.g. pattern 'DIV-###', acronym 'CCbr', code 7 -> 'CCbr-007').
+
+        Separators around the sharps are kept. If the pattern is missing or
+        has no sharps, returns acronym-code.
+        """
+
+        if not subcoll_code:
+            return ''
+
+        subcoll_code = str(subcoll_code).strip()
+        match = re.search('#+', pattern or '')
+        if not match:
+            return '%s-%s' % (acronym, subcoll_code)
+
+        prefix = pattern[:match.start()]
+        suffix = pattern[match.end():]
+
+        #Replace the alphanumeric part of the fixed text (prefix first, else suffix) by the acronym
+        alnum_span = re.compile(r'[^\W_](.*[^\W_])?', re.UNICODE)
+        if alnum_span.search(prefix):
+            prefix = alnum_span.sub(lambda m: acronym, prefix, count=1)
+        elif alnum_span.search(suffix):
+            suffix = alnum_span.sub(lambda m: acronym, suffix, count=1)
+        else:
+            prefix = acronym + prefix
+
+        #Zero padding like the strain code; legacy non-numeric values are shown as they are
+        if subcoll_code.isdigit():
+            subcoll_code = '%0*d' % (len(match.group(0)), int(subcoll_code))
+
+        return prefix + subcoll_code + suffix
 
     def insert_division(self, id_subcoll, pattern, division):
         """

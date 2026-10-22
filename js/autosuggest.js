@@ -18,7 +18,7 @@ else me.highlighted=(me.eligible.length-1);me.changeHighlight(key);return false;
 return true;};elem.onkeyup=function(ev)
 {if(!ev)ev=window.event;var key=me.getKeyCode(ev);switch(key)
 {case TAB:case ENTER:case ESC:case KEYUP:case KEYDN:return;default:me.inputText=this.value;me.getEligible();me.createDiv();me.positionDiv();if(me.eligible.toString()!='')me.showDiv();else me.hideDiv();break;}};elem.onfocus=function(ev)
-{me.inputText=this.value;me.getEligible();me.createDiv();me.positionDiv();if(me.eligible.toString()!='')me.showDiv();else me.hideDiv();};this.onBlurEvent=function(ev)
+{me.inputText=(me.suggestions.indexOf(this.value)>-1)?'':this.value;me.getEligible();me.createDiv();me.positionDiv();if(me.eligible.toString()!='')me.showDiv();else me.hideDiv();};this.onBlurEvent=function(ev)
 {me.hideDiv();};elem.onblur=me.onBlurEvent;this.useSuggestion=function()
 {if(this.highlighted>-1)
 {this.elem.value=this.eligible[this.highlighted];if(elem.onchange)elem.onchange();this.hideDiv();}};this.showDiv=function()

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 '''
@@ -40,6 +40,8 @@ label_dict = {
 "label_Strains_General_Status" : _("Status"),
 "label_Strains_General_Is_OGM" : _("OGM"),
 "label_Strains_General_History" : _("History"),
+"label_Strains_General_SubcollCode" : _("Subcollection Code"),
+"label_Strains_List_SubcollCode" : _("Subcoll. Code"),
 "label_Strains_General_Codes_In_Other_Collections" : _("Codes in Other Collections"),
 "label_Strains_Origin_Comments": _("Comments"),
 "label_Strains_Origin_Origin_Place" : _("Origin Place"),
@@ -118,6 +120,8 @@ label_dict = {
 "label_Strains_Characteristics_Morphologic" : _("Morphological"),
 "label_Strains_Characteristics_Pathogenic" : _("Pathogenic"),
 "label_Strains_Characteristics_Genotypic" : _("Genotypic"),
+"label_Strains_Characteristics_Genomic" : _("Genomic"),
+"label_Strains_Characteristics_Metabolomic": _("Metabolomic"),
 "label_Strains_Characteristics_OGM" : _("OGM"),
 "label_Strains_Characteristics_OGM_Group" : _("Group"),
 "label_Strains_Characteristics_OGM_Comments" : _("Comments"),
@@ -497,6 +501,7 @@ label_dict = {
 "menu_Preferences": _("Preferences"),
 "menu_Configuration": _("Configuration"),
 "menu_Traceability": _("Traceability"),
+"menu_SpeciesLink": _("Species Link"),
 "menu_Users": _("Users"),
 "menu_Groups": _("Groups"),
 "menu_Collections": _("Collections"),
@@ -544,6 +549,7 @@ label_dict = {
 "menu_Stockmovement": _("Stock Movement"),
 "menu_Containers": _("Containers"),
 "menu_Traceability": _("Traceability"),
+"menu_SpeciesLink": _("Species Link"),
 
 #links
 "link_Preferences": _("Preferences"),

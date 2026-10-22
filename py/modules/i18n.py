@@ -1,8 +1,8 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 #-*- coding: utf-8 -*-
 
 #project imports
-from general import General
+from .general import General
 
 #fill in the dictionary bellow if your posix locale language code
 #differs from the iso code used in the database:
@@ -19,11 +19,11 @@ class I18n(object):
             if not cookie_value:
                 lang_code = self.g.get_config('label_lang')
             else:
-                from session import Session
+                from .session import Session
                 session = Session()
                 try:
                     session.load(cookie_value)
-                    if (session.data.has_key('label_lang_code')):
+                    if ('label_lang_code' in session.data):
                         lang_code = session.data['label_lang_code']
                     else:
                         lang_code = self.g.get_config('label_lang')
@@ -33,12 +33,12 @@ class I18n(object):
             lang_code = 'en'
 
         #If needed, convert lang_code to posix locale code
-        if code_dict.has_key(lang_code):
+        if lang_code in code_dict:
             lang_code = code_dict[lang_code]
 
         #Install lang
         from os import path
-        self.locale_dir = path.join(self.g.get_config('root_dir'), self.g.get_config('po_dir'))
+        self.locale_dir = path.join(self.g.root_dir, self.g.get_config('po_dir'))
         self.language_install(lang_code)
 
     def language_install (self, lang_code):
@@ -50,25 +50,28 @@ class I18n(object):
             #self.gettext = _ = lang.ugettext
         #if lang does not exist, bind _ to a do nothing function
         except IOError:
+            from gettext import NullTranslations
+            self.lang = NullTranslations()
             _ = lambda x: x
-        import __builtin__
-        __builtin__.__dict__['_'] = _
+        import builtins
+        builtins.__dict__['_'] = _
 
-    def gettext(self,text):
+    def gettext(self, text):
         '''
         Format translated data in order to avoid
         Unicode(De|En)codeErrors
         '''
         try:
-          tr_text = str(self.lang.ugettext(text))
-        except UnicodeEncodeError:
-          try:
-            tr_text = str(self.lang.ugettext(text).encode('utf8'))
-          except UnicodeEncodeError:
-            tr_text = str(self.lang.ugettext(text).decode('utf8'))
-        return tr_text.decode('utf8')
+            tr_text = self.lang.gettext(text)
+            # In Python 3, gettext returns strings, not bytes
+            if isinstance(tr_text, bytes):
+                tr_text = tr_text.decode('utf8')
+            return tr_text
+        except (UnicodeDecodeError, UnicodeEncodeError):
+            # Fallback to original text if there are encoding issues
+            return text
 
     def set_lang(self, lang_code):
-        if code_dict.has_key(lang_code):
+        if lang_code in code_dict:
             lang_code = code_dict[lang_code]
         self.language_install(lang_code)

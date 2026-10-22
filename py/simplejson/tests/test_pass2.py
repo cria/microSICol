@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
@@ -14,4 +14,4 @@ class TestPass2(TestCase):
         # test in/out equivalence and parsing
         res = S.loads(JSON)
         out = S.dumps(res)
-        self.assertEquals(res, S.loads(out))
+        self.assertEqual(res, S.loads(out))

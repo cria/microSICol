@@ -1,14 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 #python imports
 from sys import exit
+from functools import cmp_to_key
 #from dbgp.client import brk
 
 #project imports
-from session import Session
-from dbconnection import dbConnection
-from general import General
+from .session import Session
+from .dbconnection import dbConnection
+from .general import General
+from .strain_formatter import StrainFormatter
 import math
 from os import environ
 
@@ -18,6 +20,10 @@ class Lists(object):
     page_parts = {}
     page_parts['top'] = g.read_html('default.top.list')
     page_parts['submenu'] = g.read_html('submenu.list')
+    if isinstance(page_parts['top'], bytes):
+        page_parts['top'] = page_parts['top'].decode('utf-8')
+    if isinstance(page_parts['submenu'], bytes):
+        page_parts['submenu'] = page_parts['submenu'].decode('utf-8')
     session = None
 
     def __init__(self, form=None, cookie_value=''):
@@ -30,7 +36,7 @@ class Lists(object):
             self.session.load(cookie_value)
 
             #check feedback parameter
-            if self.session.data.has_key('feedback') and self.session.data['feedback']:
+            if 'feedback' in self.session.data and self.session.data['feedback']:
                 self.feedback_value = self.session.data['feedback']
                 self.session.data['feedback'] = 0
                 self.session.save()
@@ -67,13 +73,13 @@ class Lists(object):
 			
     def ConvertStrUnicode(self, valor):
         retorno = '';
-        if isinstance(valor, (int, long, float)):
+        if isinstance(valor, (int, float)):
             return str(valor)
             
-        if (isinstance(valor, unicode) == False):
-            retorno = str(valor).decode("utf8")
+        if isinstance(valor, bytes):
+            retorno = valor.decode("utf8")
         else:
-            retorno = valor
+            retorno = str(valor)
         
         return retorno
 
@@ -104,9 +110,9 @@ class Lists(object):
         "genus" is mandatory and "lang" is always a two-letter language code
         """
 
-        from loghelper import Logging
+        from .loghelper import Logging
 
-        if parts_dict.has_key('sciname'):
+        if 'sciname' in parts_dict:
             if use_author:
                 ret = parts_dict['sciname']
             else:
@@ -120,9 +126,9 @@ class Lists(object):
 
             if data != []:
                 parts = parts_dict.copy()
-                if not parts.has_key('species'):
+                if 'species' not in parts:
                     parts['species'] = ''
-                if not parts.has_key('subspecies'):
+                if 'subspecies' not in parts:
                     parts['subspecies'] = ''
 
                 data['sp_dictionary'] = "genus=%(genus)s&species=%(species)s&subspecies=%(subspecies)s&lang=%%s" % parts
@@ -250,17 +256,17 @@ class Lists(object):
         #Not a valid date
         if len(date) != 3: return ''
         if len(date[2]) == 2 or len(date[2]) == 1: #Convert 1 or 2-digit year to 4-digit year
-          import datetime
-          date[2] = int(date[2])
-          if date[2] <= int(str(datetime.date.today().year)[2:]):
-            date[2] += 2000
-            date[2] = str(date[2])
-          else:
-            date[2] += 1900
-            date[2] = str(date[2])
-        date = "/".join(date)
-        sql_date = strftime("%Y-%m-%d",strptime(date,self.get_dateformat('input')))
-        return sql_date
+            import datetime
+            date[2] = int(date[2])
+            if date[2] <= int(str(datetime.date.today().year)[2:]):
+                date[2] += 2000
+                date[2] = str(date[2])
+            else:
+                date[2] += 1900
+                date[2] = str(date[2])
+            date = "/".join(date)
+            sql_date = strftime("%Y-%m-%d",strptime(date,self.get_dateformat('input')))
+            return sql_date
 
     def get_stripped(self, field):
         return "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(%s, '<b>', ''), '<i>', ''), '</b>', ''), '</i>', ''), '  ', ' ')" % (field)
@@ -276,16 +282,16 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_species'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_species')):
+        elif ('filter_species' in self.session.data):
             filter = self.session.data['filter_species']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -294,15 +300,15 @@ class Lists(object):
                 #0x25 == '%'
                 #self.data['condition'].append("AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' OR sp.genus LIKE x'25" + word.encode("hex") + "25' OR sp.subgenus LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR sp.species LIKE x'25" + word.encode("hex") + "25' OR sub.subdiv LIKE x'25" + word.encode("hex") + "25' OR sp.infra_name LIKE x'25" + word.encode("hex") + "25' OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
                 self.data['condition'].append(
-                                              "AND (tgl.taxon_group LIKE x'25" + word.encode("hex") + "25' " +
-                                              "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                              "OR sp.hazard_group LIKE x'25" + word.encode("hex") + "25') ")
+                                              "AND (tgl.taxon_group LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                              "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                              "OR sp.hazard_group LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'species', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -312,9 +318,9 @@ class Lists(object):
 
         #Define if order is Asc, or Desc
         if mode == "ASC":
-          self.img="<img class='order' src='"+self.img_path_up+"'/>"
+            self.img="<img class='order' src='"+self.img_path_up+"'/>"
         else:
-          self.img="<img class='order' src='"+self.img_path_down+"'/>"
+            self.img="<img class='order' src='"+self.img_path_down+"'/>"
 
         #define what img in HTML must be changed
         self.order_img = "img_" + field
@@ -334,20 +340,24 @@ class Lists(object):
 
         #Execute again for rows count
         if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-          self.execute('get_species_list', self.data, True)
+            self.execute('get_species_list', self.data, True)
         else:
-          roles = str(self.session.data['roles']).replace("L","")
-          roles = roles.replace("[","(")
-          roles = roles.replace("]",")")
-          self.data['roles_list'] = roles
-          self.execute('get_species_list_restrict', self.data,raw_mode = True)
+            roles = str(self.session.data['roles']).replace("L","")
+            roles = roles.replace("[","(")
+            roles = roles.replace("]",")")
+            self.data['roles_list'] = roles
+            self.execute('get_species_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -355,27 +365,30 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_species'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_species')):
-            if (self.form.has_key('filter')):
+        elif ('page_species' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_species'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_species'])
 
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
+
         #Enable paging
         if (totalpages > 1):
-          self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
+            self.data['paging'] = 'LIMIT ' + str((page - 1) * self.session.data['lines_per_page']) + ',' + str(self.session.data['lines_per_page']) + ';'
 
         #SELECT id_species, taxon_group, genus, subgenus, species, subdiv, infra_name, hazard_group
         if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-          self.execute('get_species_list', self.data, True)
+            self.execute('get_species_list', self.data, True)
         else:
-          roles = str(self.session.data['roles']).replace("L","")
-          roles = roles.replace("[","(")
-          roles = roles.replace("]",")")
-          self.data['roles_list'] = roles
-          self.execute('get_species_list_restrict', self.data, raw_mode = True)
+            roles = str(self.session.data['roles']).replace("L","")
+            roles = roles.replace("[","(")
+            roles = roles.replace("]",")")
+            self.data['roles_list'] = roles
+            self.execute('get_species_list_restrict', self.data, raw_mode = True)
 
         list_species = self.fetch('all')
 
@@ -405,20 +418,21 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'species', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'species', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
     
     def strains(self):
         html = '%s<tr class="%s" onclick="location=\'./strains.detail.py?id=%s&row=%s\'" style="white-space:nowrap; %s">\
                   %s  <td class="code">%s</td>\
+                  %s  <td class="subcoll_code">%s</td>\
                   %s  <td class="species">%s</td>\
                   %s  <td class="internal_code">%s</td>\
                   %s  <td class="type">%s</td>\
@@ -428,16 +442,16 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_strains'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_strains')):
+        elif ('filter_strains' in self.session.data):
             filter = self.session.data['filter_strains']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         filter_temp = filter
 
@@ -453,11 +467,12 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 aux_condition.append(
-                                        "AND (st.code LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR st.internal_code LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR ty.type LIKE x'25" + word.encode("hex") + "25' " +
-                                        "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                                        "AND (st.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR st.internal_code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR st.subcoll_code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR ty.type LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                        "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(aux_condition)
         else:
             if (self.session.data['show_str_inactives'] == 0):
@@ -467,7 +482,7 @@ class Lists(object):
 
         #raise self.data['condition']
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'strains', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -488,6 +503,8 @@ class Lists(object):
             field = stripped_sciname + ' ' + mode
         elif field == 'code':
             field = "%s %s" % (field, mode)
+        elif field == 'subcoll_code':
+            field = "CAST(st.subcoll_code AS UNSIGNED) %s, st.subcoll_code %s" % (mode, mode)
         else:
             field = field + ' ' + mode
 
@@ -508,11 +525,15 @@ class Lists(object):
           self.execute('get_strain_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -520,14 +541,17 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_strains'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_strains')):
-            if (self.form.has_key('filter')):
+        elif ('page_strains' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_strains'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_strains'])
 
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -560,6 +584,9 @@ class Lists(object):
 
             code = strain['code']
 
+            #Subcollection Code: formatted with the division pattern, using the subcollection acronym (as registered)
+            subcoll_code = StrainFormatter.format_subcoll_code_with_pattern(strain['subcoll_code'], strain['division_pattern'], self.session.data['subcoll_code'])
+
             #if status active color black, else color gray
             style_tr = ''
             if strain['status'] != 'inactive':
@@ -567,7 +594,7 @@ class Lists(object):
             else:
                 style_tr = 'color:#A2A2A2'
 
-            from labels import label_dict
+            from .labels import label_dict
             has_critical = False
             critical_stock_html = []
             #Check critical stock for this strain by preservation method
@@ -619,22 +646,23 @@ class Lists(object):
             #Output
             self.html += html % (self.indent_size, css_class, str(strain['id_strain']), absolute_row, style_tr,
                                  self.indent_size, code,
+                                 self.indent_size, subcoll_code,
                                  self.indent_size, species,
                                  self.indent_size, strain['internal_code'],
                                  self.indent_size, strain['type'],
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'strains', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'strains', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(5, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter
 
     def doc(self):
         html = '%s<tr class="%s" onclick="location=\'./doc.detail.py?id=%s&row=%s\'">\
@@ -645,29 +673,29 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_docs'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_docs')):
+        elif ('filter_docs' in self.session.data):
             filter = self.session.data['filter_docs']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
             self.data['condition']= []
             for word in words:
                 #0x25 == '%'
-                self.data['condition'].append("AND (q.qualifier LIKE x'25" + word.encode("hex") + "25' OR doc.code LIKE x'25" + word.encode("hex") + "25' OR t.title LIKE x'25" + word.encode("hex") + "25') ")
+                self.data['condition'].append("AND (q.qualifier LIKE x'25" + word.encode("utf-8").hex() + "25' OR doc.code LIKE x'25" + word.encode("utf-8").hex() + "25' OR t.title LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'doc', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -701,11 +729,14 @@ class Lists(object):
           self.execute('get_doc_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -713,13 +744,16 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_docs'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_docs')):
-            if (self.form.has_key('filter')):
+        elif ('page_docs' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_docs'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_docs'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -758,16 +792,16 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'doc', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'doc', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def ref(self):
         html = '%s<tr class="%s" onclick="location=\'./ref.detail.py?id=%s&row=%s\'">\
@@ -779,29 +813,29 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_refs'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_refs')):
+        elif ('filter_refs' in self.session.data):
             filter = self.session.data['filter_refs']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
             self.data['condition']= []
             for word in words:
                 #0x25 == '%'
-                self.data['condition'].append("AND (ref.id_ref LIKE x'25" + word.encode("hex") + "25' OR ref.author LIKE x'25" + word.encode("hex") + "25' OR ref.title LIKE x'25" + word.encode("hex") + "25' OR ref.year LIKE x'25" + word.encode("hex") + "25') ")
+                self.data['condition'].append("AND (ref.id_ref LIKE x'25" + word.encode("utf-8").hex() + "25' OR ref.author LIKE x'25" + word.encode("utf-8").hex() + "25' OR ref.title LIKE x'25" + word.encode("utf-8").hex() + "25' OR ref.year LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'ref', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -840,11 +874,14 @@ class Lists(object):
           self.execute('get_ref_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -852,13 +889,16 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_refs'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_refs')):
-            if (self.form.has_key('filter')):
+        elif ('page_refs' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_refs'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_refs'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -898,16 +938,16 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'ref', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'ref', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(4, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def people(self):
         html = '%s<tr class="%s" onclick="location=\'./people.detail.py?id=%s&row=%s\'">\
@@ -917,16 +957,16 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_people'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_people')):
+        elif ('filter_people' in self.session.data):
             filter = self.session.data['filter_people']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -935,15 +975,15 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 if self.g.isManager(self.session.data['roles']): #Administrator or Manager
-                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("utf-8").hex() + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("utf-8").hex() + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("utf-8").hex() + "25' OR institution.nickname LIKE x'25" + word.encode("utf-8").hex() + "25')) > 0)) ")
                 else:
-                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("hex") + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("hex") + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("hex") + "25' OR institution.nickname LIKE x'25" + word.encode("hex") + "25')) > 0)) ")
+                    self.data['condition'].append("AND (p.name LIKE x'25" + word.encode("utf-8").hex() + "25' OR p.nickname LIKE REPLACE(REPLACE(x'25" + word.encode("utf-8").hex() + "25', '(', ''), ')', '') OR ((SELECT COUNT(institution.id_institution) FROM institution INNER JOIN contact_relations ON (institution.id_institution = contact_relations.id_institution) WHERE contact_relations.id_person = p.id_person AND (institution.complement LIKE x'25" + word.encode("utf-8").hex() + "25' OR institution.nickname LIKE x'25" + word.encode("utf-8").hex() + "25')) > 0)) ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'people', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -984,11 +1024,14 @@ class Lists(object):
           self.execute('get_person_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -996,13 +1039,16 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_people'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_people')):
-            if (self.form.has_key('filter')):
+        elif ('page_people' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_people'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_people'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1044,9 +1090,9 @@ class Lists(object):
         #If order is institution use ins_people_cmp
         if isInstitution:
             if self.data['field_order'][-3:] == 'ASC':
-                list_people2.sort(self.ins_people_cmp)
+                list_people2.sort(key=cmp_to_key(self.ins_people_cmp))
             elif self.data['field_order'][-4:] == 'DESC':
-                list_people2.sort(cmp=self.ins_people_cmp, reverse=True)
+                list_people2.sort(key=cmp_to_key(self.ins_people_cmp), reverse=True)
 
         i = 0
 
@@ -1068,14 +1114,14 @@ class Lists(object):
 
         #Security
         #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'people', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'people', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def inst(self):
         #Output
@@ -1087,16 +1133,16 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_insts'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_insts')):
+        elif ('filter_insts' in self.session.data):
             filter = self.session.data['filter_insts']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -1104,15 +1150,15 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 if self.g.isManager(self.session.data['roles']): #Administrator or Manager:
-                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("utf-8").hex() + "25' OR name LIKE x'25" + word.encode("utf-8").hex() + "25' OR complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
                 else:
-                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("hex") + "25' OR name LIKE x'25" + word.encode("hex") + "25' OR complement LIKE x'25" + word.encode("hex") + "25') ")
+                    self.data['condition'].append("AND (nickname LIKE x'25" + word.encode("utf-8").hex() + "25' OR name LIKE x'25" + word.encode("utf-8").hex() + "25' OR complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'inst', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1148,11 +1194,14 @@ class Lists(object):
           self.execute('get_inst_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1160,13 +1209,16 @@ class Lists(object):
             self.session.data['page_insts'] = page
             self.session.save()
 
-        elif (self.session.data.has_key('page_insts')):
-            if (self.form.has_key('filter')):
+        elif ('page_insts' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_insts'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_insts'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1203,16 +1255,16 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'institutions', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'institutions', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def preservation(self):
         html = '%s<tr class="%s" onclick="location=\'./preservation.detail.py?id=%s&row=%s\'">\
@@ -1228,16 +1280,16 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_preservations'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_preservations')):
+        elif ('filter_preservations' in self.session.data):
             filter = self.session.data['filter_preservations']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -1245,25 +1297,25 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 self.data['condition'].append(
-                        "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
+                        "AND (DATE_FORMAT(p.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR l.name LIKE x'25" + word.encode("utf-8").hex() + "25' " +
                         "OR ((SELECT COUNT(preservation.id_preservation) " +
                         "FROM preservation " +
                         "INNER JOIN preservation_strain USING (id_preservation) " +
                         "INNER JOIN strain USING (id_strain) " +
                         "INNER JOIN species USING (id_species) " +
                         "WHERE preservation.id_preservation = p.id_preservation " +
-                        "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR strain.code LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25')) > 0) "
-                        "OR pml.method LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                        "AND ('" + self.session.data['subcoll_code'] + "' LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR strain.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25')) > 0) "
+                        "OR pml.method LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'preservation', self.form['field_order'].value)
 
         isTaxon = False;
@@ -1318,11 +1370,14 @@ class Lists(object):
           self.execute('get_preservation_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1330,13 +1385,16 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_preservations'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_preservations')):
-            if (self.form.has_key('filter')):
+        elif ('page_preservations' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_preservations'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_preservations'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1382,9 +1440,9 @@ class Lists(object):
         #If order is taxon use preserv_strain_cmp
         if isTaxon:
             if self.data['field_order'][-3:] == 'ASC':
-                strain_list.sort(self.preserv_strain_cmp)
+                strain_list.sort(key=cmp_to_key(self.preserv_strain_cmp))
             elif self.data['field_order'][-4:] == 'DESC':
-                strain_list.sort(cmp=self.preserv_strain_cmp, reverse=True)
+                strain_list.sort(key=cmp_to_key(self.preserv_strain_cmp), reverse=True)
 
         i = 0
 
@@ -1407,16 +1465,16 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'preservation', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'preservation', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(6, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(6, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def distribution(self):
         html = '%s<tr class="%s" onclick="location=\'./distribution.detail.py?id=%s&row=%s\'">\
@@ -1431,17 +1489,16 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
+            filter = self.ConvertStrUnicode(filter)
 
             #Save filter on session
             self.session.data['filter_distributions'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_distributions')):
+        elif ('filter_distributions' in self.session.data):
             filter = self.session.data['filter_distributions']
-            filter = self.ConvertStrUnicode(filter).encode("utf-8")
-			
+            filter = self.ConvertStrUnicode(filter)
 
         if (filter != ''):
             words = [x for x in filter.split(" ") if x != '']
@@ -1449,18 +1506,18 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 self.data['condition'].append(
-                        "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR l.name LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR st.code LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("hex") + "25' "
-                        "OR dol.quantity = x'" + word.encode("hex") + "' OR i.name LIKE x'25" + word.encode("hex") + "25' OR p.name LIKE x'25" + word.encode("hex") + "25' " +
-                        "OR st.infra_complement LIKE x'25" + word.encode("hex") + "25') ")
+                        "AND (DATE_FORMAT(d.date,'" + self.get_dateformat('output') + "') LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR l.name LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR st.code LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR " + stripped_sciname + " LIKE x'25" + word.encode("utf-8").hex() + "25' "
+                        "OR dol.quantity = x'" + word.encode("utf-8").hex() + "' OR i.name LIKE x'25" + word.encode("utf-8").hex() + "25' OR p.name LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                        "OR st.infra_complement LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'distribution', self.form['field_order'].value)
 
         isInstitution = False;
@@ -1508,11 +1565,14 @@ class Lists(object):
           self.data['roles_list'] = roles
           self.execute('get_distribution_list_restrict', self.data,raw_mode = True)
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1520,13 +1580,16 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_distributions'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_distributions')):
-            if (self.form.has_key('filter')):
+        elif ('page_distributions' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_distributions'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_distributions'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1562,9 +1625,9 @@ class Lists(object):
         #If order is institution use ins_people_cmp
         if isInstitution:
             if self.data['field_order'][-3:] == 'ASC':
-                distributions2.sort(self.ins_people_cmp)
+                distributions2.sort(key=cmp_to_key(self.ins_people_cmp))
             elif self.data['field_order'][-4:] == 'DESC':
-                distributions2.sort(cmp=self.ins_people_cmp, reverse=True)
+                distributions2.sort(key=cmp_to_key(self.ins_people_cmp), reverse=True)
 
         i = 0
 
@@ -1589,16 +1652,16 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'distribution', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
+            #Security
+            #If user does not have permission to create then don't show the "new" button
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'distribution', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])
 
-        return self.html, self.get_foothtml(5, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(5, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def reports(self):
         #brk(host="localhost", port=9000)
@@ -1609,13 +1672,13 @@ class Lists(object):
 
         #Filter
         filter = ''
-        if (self.form.has_key('filter')):
+        if ('filter' in self.form):
             filter = str(self.form['filter'].value).strip()
 
             #Save filter on session
             self.session.data['filter_reports'] = filter
             self.session.save()
-        elif (self.session.data.has_key('filter_reports')):
+        elif ('filter_reports' in self.session.data):
             filter = self.session.data['filter_reports']
 
         if (filter != ''):
@@ -1625,14 +1688,14 @@ class Lists(object):
             for word in words:
                 #0x25 == '%'
                 self.data['condition'].append(
-                                              "AND (replang.type LIKE x'25" + word.encode("hex") + "25' " +
-                                              "OR rep.description LIKE x'25" + word.encode("hex") + "25') ")
+                                              "AND (replang.type LIKE x'25" + word.encode("utf-8").hex() + "25' " +
+                                              "OR rep.description LIKE x'25" + word.encode("utf-8").hex() + "25') ")
             self.data['condition']= "".join(self.data['condition'])
         else:
             self.data['condition'] = ' '
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'reports', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1666,11 +1729,14 @@ class Lists(object):
           self.execute('get_report_list_restrict', self.data,raw_mode = True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1678,13 +1744,16 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_reports'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_reports')):
-            if (self.form.has_key('filter')):
+        elif ('page_reports' in self.session.data):
+            if ('filter' in self.form):
                 #Save filter on session
                 self.session.data['page_reports'] = page
                 self.session.save()
             else:
                 page = int(self.session.data['page_reports'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1719,27 +1788,39 @@ class Lists(object):
                                  self.indent_size)
             i += 1
 
-        #Security
-        #If user does not have permission to create then don't show the "new" button	
-        allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'reports', 'allow_create')
-        if self.g.isManager(self.session.data['roles']):
-	  allow_create = 'y'
-        if allow_create != 'y':
-          import re
-          self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])          
+            #Security
+            #If user does not have permission to create then don't show the "new" button	
+            allow_create = self.g.get_area_permission(self.cookie_value, self.session, 'reports', 'allow_create')
+            if self.g.isManager(self.session.data['roles']):
+                allow_create = 'y'
+            if allow_create != 'y':
+                import re
+                self.page_parts['submenu'] = re.sub('<a id="action_new" href="[.]/%\(who\)s[.]new[.]py".*?/a>',"",self.page_parts['submenu'])          
 
-        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, filter.decode('utf8')
+        return self.html, self.get_foothtml(3, page, self.session.data['max_num_pages'], totalpages, '.' + environ['SCRIPT_NAME'][environ['SCRIPT_NAME'].rindex('/'):] + '?page=%s'), page, str(filter)
 
     def get_foothtml(self, number_columns, current, max_numberpages, total, base_link):
         """Return html for the foot of the list"""
 
-        if total == 1: #Don't show paging when there is only one page to look at
+        if total <= 1: #Don't show paging when there is only one page to look at
           return ''
+
+        #Field to go directly to a typed page (Enter); alert if the page does not exist
+        from html import escape
+        not_found_msg = _("Page %s does not exist.").replace('\\', '\\\\').replace("'", "\\'")
+        goto_onkeydown = "if ((event.keyCode || event.which) == 13) { " \
+                         "var p = this.value.replace(/^\\s+|\\s+$/g, ''); " \
+                         "if (/^[0-9]+$/.test(p) && parseInt(p, 10) >= 1 && parseInt(p, 10) <= %d) { location = '%s' + parseInt(p, 10); } " \
+                         "else { alert('%s'.replace('%%s', p)); this.select(); } " \
+                         "return false; }" % (total, base_link % '', not_found_msg)
+        goto_html = '<li class="gotopage">%s: <input type="text" size="4" maxlength="9" title="%s" style="width:40px; text-align:center;" onkeydown="%s" /></li>' % (
+                        escape(_("Go to page")), escape(_("Type the page number and press Enter")), escape(goto_onkeydown, quote=True))
 
         base_foot = '<tr>\
                        <td colspan="%(number_columns)s">\
                          <ul>\
                            %(li_html)s\
+                           ' + goto_html.replace('%', '%%') + '\
                          </ul>\
                        </td>\
                      </tr>'
@@ -1755,8 +1836,8 @@ class Lists(object):
             return base_foot % {'number_columns':number_columns, 'li_html':li_html}
         #Numbers and special pages
         else:
-            num_pages_left = ((max_numberpages-1)/2)
-            num_pages_right = (max_numberpages/2)
+            num_pages_left = ((max_numberpages-1)//2)
+            num_pages_right = (max_numberpages//2)
 
             if ((current - num_pages_left) > 0) and ((current + num_pages_right < total)):
                 if (current - num_pages_left != 1):
@@ -1854,7 +1935,7 @@ class Lists(object):
                   %s</tr>'
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'stockmovement', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1881,11 +1962,14 @@ class Lists(object):
         self.execute('get_stock_movement_list', self.data, True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1893,8 +1977,11 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_stock_movement'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_stock_movement')):            
+        elif ('page_stock_movement' in self.session.data):            
             page = int(self.session.data['page_stock_movement'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
@@ -1930,7 +2017,7 @@ class Lists(object):
                   %s</tr>'
 
         #Verify field_order is changed
-        if self.form.has_key('field_order'):
+        if 'field_order' in self.form:
             self.g.saveListOrder(self.session.data['id_user'], self.session.data['id_subcoll'], 'container', self.form['field_order'].value)
 
         #Get field and mode for order list
@@ -1957,11 +2044,14 @@ class Lists(object):
         self.execute('get_container_list', self.data, True)
 
         #Define totalpages
-        totalpages = int(math.ceil(float(self.getrowscount())/self.session.data['lines_per_page']))
+        rowscount = self.getrowscount()
+        if rowscount is None:
+            rowscount = 0
+        totalpages = int(math.ceil(float(rowscount)/self.session.data['lines_per_page']))
 
         #Verify page
         page = 1
-        if self.form.has_key('page'):
+        if 'page' in self.form:
             page = int(self.form['page'].value)
             if page <= 0: page = 1
             elif page > totalpages: page = totalpages
@@ -1969,8 +2059,11 @@ class Lists(object):
             #Save filter on session
             self.session.data['page_container'] = page
             self.session.save()
-        elif (self.session.data.has_key('page_container')):            
+        elif ('page_container' in self.session.data):            
             page = int(self.session.data['page_container'])
+
+        #Clamp page (session may hold a stale/out-of-range page, e.g. 0)
+        page = max(1, min(page, totalpages))
 
         #Enable paging
         if (totalpages > 1):
