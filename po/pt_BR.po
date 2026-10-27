@@ -789,7 +789,7 @@ msgstr "Genômicas"
 
 #: py/modules/labels.py:123
 msgid "Metabolomic"
-msgstr "Matabolômicas"
+msgstr "Metabolômicas"
 
 #: py/modules/labels.py:127
 msgid "Biological Risk Comments"
