@@ -93,7 +93,7 @@ class Principal(object):
                      'who': '',
                      'feedback_value': 0,
                     })
-        # Species Link tab: only shown when "specieslink_dir" exists (config.xml)
+        # spLinker tab: only shown when "splinker_dir" exists (config.xml)
         self.specieslink_enabled = self.g.is_specieslink_enabled()
         if self.specieslink_enabled:
             self.data['tab_specieslink'] = '<a href="./specieslink.list.py" id="tab_specieslink">%s</a>' % self.label_dict['menu_SpeciesLink']

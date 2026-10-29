@@ -501,7 +501,7 @@ label_dict = {
 "menu_Preferences": _("Preferences"),
 "menu_Configuration": _("Configuration"),
 "menu_Traceability": _("Traceability"),
-"menu_SpeciesLink": _("Species Link"),
+"menu_SpeciesLink": _("spLinker"),
 "menu_Users": _("Users"),
 "menu_Groups": _("Groups"),
 "menu_Collections": _("Collections"),
@@ -549,7 +549,7 @@ label_dict = {
 "menu_Stockmovement": _("Stock Movement"),
 "menu_Containers": _("Containers"),
 "menu_Traceability": _("Traceability"),
-"menu_SpeciesLink": _("Species Link"),
+"menu_SpeciesLink": _("spLinker"),
 
 #links
 "link_Preferences": _("Preferences"),

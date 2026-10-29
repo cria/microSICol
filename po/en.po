@@ -1610,8 +1610,8 @@ msgid "Traceability"
 msgstr "Traceability"
 
 #: py/modules/labels.py:503 py/modules/labels.py:551
-msgid "Species Link"
-msgstr "Species Link"
+msgid "spLinker"
+msgstr "spLinker"
 
 #: py/modules/labels.py:503
 msgid "Users"
